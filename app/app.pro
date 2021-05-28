@@ -4,7 +4,7 @@ TEMPLATE = app
 CONFIG += link_pkgconfig
 PKGCONFIG += fluidsynth drumstick-file
 DEFINES += USE_LIBABCM2PS _FORTIFY_SOURCE=2
-#QMAKE_CXXFLAGS = -O2
+QMAKE_CXXFLAGS = -O2
 TARGET = redrose
 RESOURCES += resources.qrc
 DISTFILES +=  dict.txt config.h.in
