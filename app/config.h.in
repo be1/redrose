@@ -1,0 +1,42 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define TARGET \"$$TARGET\"
+#define PREFIX \"$$PREFIX\"
+#define VERSION \"$$VERSION\"
+#define DATADIR \"$$DATADIR\"
+#define REVISION \"$$REVISION\"
+
+#define SETTINGS_DOMAIN \"Herewe\"
+#define SETTINGS_APP \"QAbc\"
+
+#define PLAYER_KEY \"ABC/player\"
+#define ABC2MIDI \"/usr/bin/abc2midi\"
+#define LIBABC2SMF \"internal\"
+
+#define PSTUNES_KEY \"ABC/pstunes\"
+#define TUNES_ALL \"all\"
+#define TUNES_SELECTED \"selected\"
+
+/* external compiler not used anymore */
+#define COMPILER_KEY \"ABC/compiler\"
+#define ABCM2PS \"$$DATADIR\" \"/$$TARGET/\" \"abcm2ps/abcm2ps\"
+
+#define DRIVER_KEY	\"ABC/driver\"
+#define DRIVER_ALSA	\"alsa\"
+#define DRIVER_PULSEAUDIO	\"pulseaudio\"
+#define DRIVER_JACK	\"jack\"
+#define DRIVER_PORTAUDIO	\"portaudio\"
+
+#define EDITOR_HIGHLIGHT \"ABC/editor/highlight\"
+#define EDITOR_BAR_COLOR \"ABC/editor/bar_color\"
+#define EDITOR_COMMENT_COLOR \"ABC/editor/comment_color\"
+#define EDITOR_DECORATION_COLOR \"ABC/editor/decoration_color\"
+#define EDITOR_EXTRAINSTR_COLOR \"ABC/editor/extrainstr_color\"
+#define EDITOR_GCHORD_COLOR \"ABC/editor/gchord_color\"
+#define EDITOR_HEADER_COLOR \"ABC/editor/header_color\"
+#define EDITOR_LYRIC_COLOR \"ABC/editor/lyric_color\"
+
+#define SOUNDFONT_KEY \"ABC/soundfont\"
+#define DEB_SF2_GM	\"/usr/share/sounds/sf2/default-GM.sf2\"
+#endif

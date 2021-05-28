@@ -1,0 +1,169 @@
+%auxil "struct abc *"
+
+%common{
+#include "abc.h"
+}
+
+%earlysource {
+#define _GNU_SOURCE
+#include <stdio.h>
+}
+
+%source{
+#define PCC_GETCHAR(auxil) get_char(auxil)
+static int get_char(struct abc* auxil) {
+	if (auxil->error)
+		return -1;
+
+	if (auxil->buffer->count == auxil->buffer->index)
+		return -1;
+
+	return auxil->buffer->buf[auxil->buffer->index++];
+}
+
+#define PCC_ERROR(auxil) print_error(auxil)
+static void print_error(struct abc* auxil) {
+	int line = 1;
+
+	int l = 0;
+	for (int i = 0; i < auxil->buffer->index; i++)
+		if (auxil->buffer->buf[i] == '\n') {
+			line++;
+			l = i + 1;
+		}
+
+	auxil->error = 1;
+	auxil->error_line = line;
+	auxil->error_char = auxil->buffer->index - l;
+}
+}
+
+TuneBook <- (Comment EOL+)* Tune EOF
+	/ (Comment EOL+)* Tune TuneBook
+
+Tune <- Xheader (Header EOL)* (Kheader EOL)? (Comment EOL)* Score
+
+Header <- Oheader
+	/ Comment
+#	/ VoiceDef
+
+Xheader <- "X:" Xvalue EOL
+
+Xvalue <- < [1-9][0-9]* > { abc_tune_append(auxil, $0); }
+
+#VoiceDef <- "V:" (!EOL .)+
+
+Kheader <- "K:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'K'); }
+
+Oheader <- "A:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'A'); }
+	/ "B:" < (!EOL .)+ > { abc_header_append(auxil, $2, 'B'); }
+	/ "C:" < (!EOL .)+ > { abc_header_append(auxil, $3, 'C'); }
+	/ "D:" < (!EOL .)+ > { abc_header_append(auxil, $4, 'D'); }
+	/ "F:" < (!EOL .)+ > { abc_header_append(auxil, $5, 'F'); }
+	/ "G:" < (!EOL .)+ > { abc_header_append(auxil, $6, 'G'); }
+	/ "H:" < (!EOL .)+ > { abc_header_append(auxil, $7, 'H'); }
+	/ "I:" < (!EOL .)+ > { abc_header_append(auxil, $8, 'I'); }
+	/ "L:" < (!EOL .)+ > { abc_header_append(auxil, $9, 'L'); }
+	/ "M:" < (!EOL .)+ > { abc_header_append(auxil, $10, 'M'); }
+	/ "N:" < (!EOL .)+ > { abc_header_append(auxil, $11, 'N'); }
+	/ "O:" < (!EOL .)+ > { abc_header_append(auxil, $12, 'O'); }
+	/ "P:" < (!EOL .)+ > { abc_header_append(auxil, $13, 'P'); }
+	/ "Q:" < (!EOL .)+ > { abc_header_append(auxil, $14, 'Q'); }
+	/ "R:" < (!EOL .)+ > { abc_header_append(auxil, $15, 'R'); }
+	/ "S:" < (!EOL .)+ > { abc_header_append(auxil, $16, 'S'); }
+	/ "T:" < (!EOL .)+ > { abc_header_append(auxil, $17, 'T'); }
+	/ "U:" < (!EOL .)+ > { abc_header_append(auxil, $18, 'U'); }
+
+Score <- Vheader EOL Fragment+ Score*
+	/ Fragment+
+
+Fragment <- _ / "y"
+	/ "%%" Instruction EOL
+	/ InlineChange
+	/ Change EOL
+	/ Comment EOL
+	/ NotePunct
+	/ NoteConstruct
+	/ '"' Gchord '"'
+	/ "!" ExDecoration "!"
+	/ Decoration
+	/ Chord Tie*
+	/ Grace
+	/ "(" Nuplet
+	/ SlurStart
+	/ SlurEnd
+	/ Bar SimpleAlter
+	/ Bar
+	/ Alternative
+	/ LineCont
+	/ LineBreak
+	/ "w:" Lyrics
+
+InlineChange <- "[" Change "]"
+Change <- KeySig / Unit / TimeSig / Tempo
+
+KeySig <- < "K:" (!EOL !"]".)+ > { abc_change_append(auxil, $1); }
+Unit <- < "L:" (!EOL !"]" .)+ > { abc_change_append(auxil, $1); }
+TimeSig <- < "M:" (!EOL !"]" .)+ > { abc_change_append(auxil, $1); }
+Tempo <- < "Q:" (!EOL !"]" .)+ > { abc_change_append(auxil, $1); }
+
+Comment <- "%" !"%" (!EOL .)*
+	/ "%" "%" ![A-Z] (!EOL .)*
+
+Vheader <- "V:" Vvalue
+
+Vvalue <- < (!EOL .)+ > { abc_voice_append(auxil, $0); }
+
+NotePunct <- NoteConstruct _* < (">" / "<")+ > _* NoteConstruct { abc_notepunct_set(auxil, $1); }
+
+NoteConstruct <- ("!" ExDecoration "!")* Decoration* Note Duration* Tie*
+
+Instruction <- < !"%" (!EOL .)* > { abc_instruction_append(auxil, $0); }
+
+Lyrics <- < (!EOL .)* > { abc_lyrics_append(auxil, $0); }
+
+Tie <- < "-" > { abc_tie_append(auxil, $0); }
+
+Grace <- < "{/" / "{" > { abc_grace_append(auxil, $0); } NoteConstruct+ < "}" > { abc_grace_append(auxil, $2); }
+
+Chord <- < "[" > { abc_chord_append(auxil, $0); } NoteConstruct+ < "]" > { abc_chord_append(auxil, $2); }
+
+_ <- < [ \t] > { abc_space_append(auxil, $0); }
+
+Decoration <- < "." / "~" / "H" / "L" / "M" / "O" / "P" / "S" / "T" / "u" / "v" > { abc_deco_append(auxil, $0); }
+
+ExDecoration <- < [^!]+ > { abc_deco_append(auxil, $0); }
+
+Nuplet <- p:Digits "::" { abc_nuplet_append(auxil, p, 0, 0); }
+	/ p:Digits ":" q:Digits ":" r:Digits { abc_nuplet_append(auxil, p, q, r); }
+	/ p:Digits ":" q:Digits { abc_nuplet_append(auxil, p, q, 0); }
+	/ p:Digits { abc_nuplet_append(auxil, p, 0, 0); }
+
+Digits <- < [0-9]+ > { $$ = atoi($0); }
+
+Gchord <- < [A-H][^"]* > { abc_gchord_append(auxil, $0); }
+
+SlurStart <- < "(" > { abc_slur_append(auxil, $0); }
+
+SlurEnd <- < ")" > { abc_slur_append(auxil, $0); }
+
+SimpleAlter <- < [1-9]+([-,][1-9]+)* > { abc_alt_append(auxil, $0); }
+
+Alternative <- < "["[1-9]+([-,][1-9]+)* > { abc_alt_append(auxil, $0); }
+
+Bar <- < "["?[:|\]]+ > { abc_bar_append(auxil, $0); }
+
+Duration <- < [0-9]* > "/" { abc_duration_num_set(auxil, $0); } < [1-9][0-9]* > { abc_duration_den_set(auxil, $2); }
+	/ < [0-9]+ > { abc_duration_num_set(auxil, $3); }
+	/ < "/"+ > { abc_duration_den_set(auxil, $4); }
+
+Note <- < [_=^]*[A-Ga-gZz][,']* > { abc_note_append(auxil, $0); }
+
+EOL <- "\r\n" / "\r" / "\n"
+
+LineCont <- "\\" _* EOL
+
+LineBreak <- "\r\n" / "\r" / "\n" { abc_eol_append(auxil, $0); }
+
+EOF <- !.
+

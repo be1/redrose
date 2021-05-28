@@ -1,0 +1,19 @@
+abcparse: libabc.a main.o
+	$(CC) -g main.o -lm  -L. -labc -o $@
+
+%.o: %.c
+	$(CC) -g -c $<
+
+libabc.a: parser.o abc.o
+	$(RM) libabc.a
+	ar r libabc.a parser.o abc.o
+	ar -s libabc.a
+
+parser.c: parser.peg
+	packcc $<
+
+clean:
+	$(RM) *.o
+
+distclean: clean
+	$(RM) abcparse libabc.a
