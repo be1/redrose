@@ -1,7 +1,7 @@
 #include <QDebug>
 #include <QTextCodec>
+#include <drumstick/qsmf.h>
 #include "abcsmf.h"
-#include <drumstick.h>
 
 AbcSmf::AbcSmf(struct abc* yy, int x, QObject *parent) : drumstick::File::QSmf(parent),
         yy(yy),

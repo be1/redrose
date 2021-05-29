@@ -2,7 +2,7 @@
 #define ABCSMF_H
 
 #include <QObject>
-#include <drumstick.h>
+#include <drumstick/qsmf.h>
 #include "../abc/abc.h"
 
 class AbcSmf : public drumstick::File::QSmf
