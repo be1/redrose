@@ -8,7 +8,7 @@
 #define REVISION \"$$REVISION\"
 
 #define SETTINGS_DOMAIN \"Herewe\"
-#define SETTINGS_APP \"QAbc\"
+#define SETTINGS_APP \"Redrose\"
 
 #define PLAYER_KEY \"ABC/player\"
 #define ABC2MIDI \"/usr/bin/abc2midi\"
