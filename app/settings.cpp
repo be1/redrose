@@ -45,7 +45,7 @@ void Settings::check()
 
     color = value(EDITOR_DECORATION_COLOR);
     if (!color.isValid())
-        setValue(EDITOR_DECORATION_COLOR, "yellow");
+        setValue(EDITOR_DECORATION_COLOR, "orange");
 
     color = value(EDITOR_EXTRAINSTR_COLOR);
     if (!color.isValid())
@@ -94,7 +94,7 @@ void Settings::reset()
     setValue(EDITOR_COMMENT_COLOR, "gray");
 
     color = value(EDITOR_DECORATION_COLOR);
-    setValue(EDITOR_DECORATION_COLOR, "yellow");
+    setValue(EDITOR_DECORATION_COLOR, "orange");
 
     color = value(EDITOR_EXTRAINSTR_COLOR);
     setValue(EDITOR_EXTRAINSTR_COLOR, "blue");
