@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
    <mime-type type="application/vnd.abc">
-     <icon name="redrose"/>
      <comment>ABC musical score file</comment>
      <comment xml:lang="fr">Fichier de partition musicale ABC</comment>
      <magic priority="60">
