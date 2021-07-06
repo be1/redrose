@@ -27,7 +27,6 @@ cd ..
 ## Building
 Just a matter of:
 ```
-$ cd qabc
 $ qmake -config release
 $ make
 # make install (as root)
