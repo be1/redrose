@@ -20,7 +20,7 @@ void Settings::check()
 
     QVariant player = value(PLAYER_KEY);
     if (!player.isValid())
-        setValue(PLAYER_KEY, ABC2MIDI);
+        setValue(PLAYER_KEY, LIBABC2SMF);
 
 #ifndef USE_LIBABCM2PS
     QVariant compiler = value(COMPILER_KEY);
@@ -75,7 +75,7 @@ void Settings::reset()
     setValue(DRIVER_KEY, DRIVER_ALSA);
 
     QVariant player = value(PLAYER_KEY);
-    setValue(PLAYER_KEY, ABC2MIDI);
+    setValue(PLAYER_KEY, LIBABC2SMF);
 
 #ifndef USE_LIBABCM2PS
     QVariant compiler = value(COMPILER_KEY);
