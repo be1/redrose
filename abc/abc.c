@@ -352,7 +352,7 @@ unsigned char note2key(const char* keysig, const char* note, int* measure_accid)
         if (accid) {
             measure_accid[(int)tolower(*c)] = accid;
             measure_accid[(int)toupper(*c)] = accid;
-	}
+        }
 
         if (accid == ACCID_NATURAL)
             pitch = pitch_diff_0x3c("Cmaj", *c) + 0 + (octava * 12);
@@ -372,57 +372,57 @@ unsigned char note2key(const char* keysig, const char* note, int* measure_accid)
 
 static
 int smf_key_signature(const char* text, int* mode) {
-        *mode = 0;
-        if (strstr(text, "min"))
-                *mode = 1;
+    *mode = 0;
+    if (strstr(text, "min"))
+        *mode = 1;
 
-        if (!text || !strcmp(text, "C") || !strcmp(text, "Cmaj") || !strcmp(text, "Amin"))
-                return 0;
-
-        if (!strcmp(text, "G") || !strcmp(text, "Gmaj") || !strcmp(text, "Emin"))
-                return 1;
-
-        if (!strcmp(text, "D") || !strcmp(text, "Dmaj") || !strcmp(text, "Bmin"))
-                return 2;
-
-        if (!strcmp(text, "A") || !strcmp(text, "Amaj") || !strcmp(text, "F#min"))
-                return 3;
-
-        if (!strcmp(text, "E") || !strcmp(text, "Emaj") || !strcmp(text, "C#min"))
-                return 4;
-
-        if (!strcmp(text, "B") || !strcmp(text, "Bmaj") || !strcmp(text, "G#min"))
-                return 5;
-
-        if (!strcmp(text, "F#") || !strcmp(text, "F#maj") || !strcmp(text, "D#min"))
-                return 6;
-
-        if (!strcmp(text, "C#") || !strcmp(text, "C#maj") || !strcmp(text, "A#min"))
-                return 7;
-
-
-        if (!strcmp(text, "F") || !strcmp(text, "Fmaj") || !strcmp(text, "Dmin"))
-                return -1;
-
-        if (!strcmp(text, "Bb") || !strcmp(text, "Bbmaj") || !strcmp(text, "Gmin"))
-                return -2;
-
-        if (!strcmp(text, "Eb") || !strcmp(text, "Ebmaj") || !strcmp(text, "Cmin"))
-                return -3;
-
-        if (!strcmp(text, "Ab") || !strcmp(text, "Abmaj") || !strcmp(text, "Fmin"))
-                return -4;
-
-        if (!strcmp(text, "Db") || !strcmp(text, "Dbmaj") || !strcmp(text, "Bbmin"))
-                return -5;
-
-        if (!strcmp(text, "Gb") || !strcmp(text, "Gbmaj") || !strcmp(text, "Ebmin"))
-                return -6;
-
-        if (!strcmp(text, "Cb") || !strcmp(text, "Cbmaj") || !strcmp(text, "Abmin"))
-                return -7;
-
+    if (!text || !strcmp(text, "C") || !strcmp(text, "Cmaj") || !strcmp(text, "Amin"))
         return 0;
+
+    if (!strcmp(text, "G") || !strcmp(text, "Gmaj") || !strcmp(text, "Emin"))
+        return 1;
+
+    if (!strcmp(text, "D") || !strcmp(text, "Dmaj") || !strcmp(text, "Bmin"))
+        return 2;
+
+    if (!strcmp(text, "A") || !strcmp(text, "Amaj") || !strcmp(text, "F#min"))
+        return 3;
+
+    if (!strcmp(text, "E") || !strcmp(text, "Emaj") || !strcmp(text, "C#min"))
+        return 4;
+
+    if (!strcmp(text, "B") || !strcmp(text, "Bmaj") || !strcmp(text, "G#min"))
+        return 5;
+
+    if (!strcmp(text, "F#") || !strcmp(text, "F#maj") || !strcmp(text, "D#min"))
+        return 6;
+
+    if (!strcmp(text, "C#") || !strcmp(text, "C#maj") || !strcmp(text, "A#min"))
+        return 7;
+
+
+    if (!strcmp(text, "F") || !strcmp(text, "Fmaj") || !strcmp(text, "Dmin"))
+        return -1;
+
+    if (!strcmp(text, "Bb") || !strcmp(text, "Bbmaj") || !strcmp(text, "Gmin"))
+        return -2;
+
+    if (!strcmp(text, "Eb") || !strcmp(text, "Ebmaj") || !strcmp(text, "Cmin"))
+        return -3;
+
+    if (!strcmp(text, "Ab") || !strcmp(text, "Abmaj") || !strcmp(text, "Fmin"))
+        return -4;
+
+    if (!strcmp(text, "Db") || !strcmp(text, "Dbmaj") || !strcmp(text, "Bbmin"))
+        return -5;
+
+    if (!strcmp(text, "Gb") || !strcmp(text, "Gbmaj") || !strcmp(text, "Ebmin"))
+        return -6;
+
+    if (!strcmp(text, "Cb") || !strcmp(text, "Cbmaj") || !strcmp(text, "Abmin"))
+        return -7;
+
+    return 0;
 }
 
 void abc_tune_append(struct abc* yy, const char* yytext)
@@ -597,39 +597,39 @@ void abc_note_append(struct abc* yy, const char* yytext)
     new->text = strdup(yytext);
     new->ev.key = note2key(yy->ks, new->text, yy->measure_accid);
     if (new->text[0] == 'Z') {
-	    /* fix numerator */
+        /* fix numerator */
         new->dur_num = abc_unit_per_measure(yy->ul, yy->mm);
     }
 }
 
 void abc_notepunct_set(struct abc* yy, const char* yytext)
 {
-	int count = strlen(yytext);
+    int count = strlen(yytext);
 
-	struct abc_tune* tune = yy->tunes[yy->count-1];
-	struct abc_voice* voice = tune->voices[tune->count-1];
+    struct abc_tune* tune = yy->tunes[yy->count-1];
+    struct abc_voice* voice = tune->voices[tune->count-1];
 
-	if (yytext[0] == '>') {
-		voice->last->dur_den *= pow(2, count);
+    if (yytext[0] == '>') {
+        voice->last->dur_den *= pow(2, count);
 
-		int num, den;
-		num = voice->last->prev->dur_num;
-		den = voice->last->prev->dur_den;
-		while (count) {
-			abc_frac_add(&voice->last->prev->dur_num, &voice->last->prev->dur_den, num, den * pow(2, count));
-			count--;
-		}
-	} else if (yytext[0] == '<') {
-		voice->last->prev->dur_den *= pow(2, count);
+        int num, den;
+        num = voice->last->prev->dur_num;
+        den = voice->last->prev->dur_den;
+        while (count) {
+            abc_frac_add(&voice->last->prev->dur_num, &voice->last->prev->dur_den, num, den * pow(2, count));
+            count--;
+        }
+    } else if (yytext[0] == '<') {
+        voice->last->prev->dur_den *= pow(2, count);
 
-		int num, den;
-		num = voice->last->dur_num;
-		den = voice->last->dur_den;
-		while (count) {
-			abc_frac_add(&voice->last->dur_num, &voice->last->dur_den, num, den * pow(2, count));
-			count--;
-		}
-	}
+        int num, den;
+        num = voice->last->dur_num;
+        den = voice->last->dur_den;
+        while (count) {
+            abc_frac_add(&voice->last->dur_num, &voice->last->dur_den, num, den * pow(2, count));
+            count--;
+        }
+    }
 }
 
 void abc_grace_append(struct abc* yy, const char* yytext)
@@ -732,9 +732,9 @@ void abc_duration_den_set(struct abc* yy, const char* yytext)
     struct abc_voice* voice = tune->voices[tune->count-1];
 
     if (yytext[0] == '/')
-	    voice->last->dur_den = pow(2, strlen(yytext));
+        voice->last->dur_den = pow(2, strlen(yytext));
     else
-	    voice->last->dur_den = atoi(yytext);
+        voice->last->dur_den = atoi(yytext);
 }
 
 int abc_is_endbar(const struct abc_symbol* s) {
@@ -829,8 +829,8 @@ void abc_delete_symbols(struct abc_symbol* s) {
 
 void abc_change_append(struct abc* yy, const char* yytext)
 {
-	struct abc_symbol* new = abc_new_symbol(yy);
-	new->kind = ABC_CHANGE;
+    struct abc_symbol* new = abc_new_symbol(yy);
+    new->kind = ABC_CHANGE;
     new->text = strdup(yytext);
     new->ev.start_den = 1;
     if (new->text[0] == 'K') {
@@ -846,12 +846,12 @@ void abc_change_append(struct abc* yy, const char* yytext)
         new->ev.type = EV_METRIC;
         yy->mm = &new->text[2];
         if (2 != sscanf(yy->mm, "%d/%d", &new->ev.key, &new->ev.value))
-                new->ev.key = 4, new->ev.value = 4;
+            new->ev.key = 4, new->ev.value = 4;
     } else if (new->text[0] == 'L') {
         new->ev.type = EV_UNIT;
         yy->ul = &new->text[2];
         if (2 != sscanf(yy->ul, "%d/%d", &new->ev.key, &new->ev.value))
-                new->ev.key = 1, new->ev.value = 8;
+            new->ev.key = 1, new->ev.value = 8;
     }
 }
 
@@ -1138,7 +1138,7 @@ void abc_compute_pqr(int* p, int* q, int* r, const char* m) {
     int num, den;
 
     if (!m || m[0] == 'C')
-	    m = "4/4";
+        m = "4/4";
     else if (2 != sscanf(m, "%d/%d", &num, &den))
         num = den = 4;
 
@@ -1188,25 +1188,25 @@ void abc_voice_append_symbol(struct abc_voice* voice, struct abc_symbol* s) {
 }
 
 void abc_frac_add(long* num, long* den, long from_num, long from_den) {
-	long ppcm = *den > from_den ? *den : from_den;
+    long ppcm = *den > from_den ? *den : from_den;
 
-	while (1) {
-		if ((ppcm % *den) || (ppcm % from_den)) {
-			ppcm++;
-			continue;
-		}
-		break;
-	}
+    while (1) {
+        if ((ppcm % *den) || (ppcm % from_den)) {
+            ppcm++;
+            continue;
+        }
+        break;
+    }
 
 
-	long cofactor1 = ppcm / *den;
-	long cofactor2 = ppcm / from_den;
+    long cofactor1 = ppcm / *den;
+    long cofactor2 = ppcm / from_den;
 
-	long num1 = *num * cofactor1;
-	long num2 = from_num * cofactor2;
+    long num1 = *num * cofactor1;
+    long num2 = from_num * cofactor2;
 
-	*num = num1 + num2;
-	*den = ppcm;
+    *num = num1 + num2;
+    *den = ppcm;
 }
 
 void abc_duration_add(struct abc_symbol* to, struct abc_symbol* with) {
@@ -1218,19 +1218,19 @@ void abc_duration_add(struct abc_symbol* to, struct abc_symbol* with) {
 }
 
 static int event_cmp(const void* a, const void* b) {
-	const struct abc_symbol* s1 = a;
-	const struct abc_symbol* s2 = b;
-	double s1_v, s2_v;
+    const struct abc_symbol* s1 = a;
+    const struct abc_symbol* s2 = b;
+    double s1_v, s2_v;
 
-	s1_v = (double) s1->ev.start_num / (double) s1->ev.start_den;
-	s2_v = (double) s2->ev.start_num / (double) s2->ev.start_den;
+    s1_v = (double) s1->ev.start_num / (double) s1->ev.start_den;
+    s2_v = (double) s2->ev.start_num / (double) s2->ev.start_den;
 
-	if (s1_v > s2_v)
-		return 1;
-	if (s1_v < s2_v)
-		return -1;
+    if (s1_v > s2_v)
+        return 1;
+    if (s1_v < s2_v)
+        return -1;
 
-	return  a - b;
+    return  a - b;
 }
 
 struct abc_voice* abc_eventy_voice(const struct abc_voice* v) {
@@ -1244,147 +1244,147 @@ struct abc_voice* abc_eventy_voice(const struct abc_voice* v) {
 
     struct abc_symbol* s = v->first;
     while (s) {
-	    switch (s->kind) {
-		    case ABC_CHORD: {
-					    if (s->text[0] == '[')
-						    in_chord = 1;
-					    else
-						    in_chord = 0;
-				    }
-				    break;
-		    case ABC_NOTE: {
-					   if (!in_chord) {
-						   struct abc_symbol* on = NULL;
-						   struct abc_symbol* off = NULL;
+        switch (s->kind) {
+            case ABC_CHORD: {
+                                if (s->text[0] == '[')
+                                    in_chord = 1;
+                                else
+                                    in_chord = 0;
+                            }
+                            break;
+            case ABC_NOTE: {
+                               if (!in_chord) {
+                                   struct abc_symbol* on = NULL;
+                                   struct abc_symbol* off = NULL;
 
-						   on = abc_dup_symbol(s);
-						   on->ev.value = 1;
+                                   on = abc_dup_symbol(s);
+                                   on->ev.value = 1;
 
-						   abc_frac_add(&tick_num, &tick_den, on->dur_num, on->dur_den);
+                                   abc_frac_add(&tick_num, &tick_den, on->dur_num, on->dur_den);
 
-						   off = abc_dup_symbol(on);
-						   off->ev.start_num = tick_num;
-						   off->ev.start_den = tick_den;
-						   off->dur_num = 0;
-						   off->dur_den = 1;
-						   off->ev.value = 0;
+                                   off = abc_dup_symbol(on);
+                                   off->ev.start_num = tick_num;
+                                   off->ev.start_den = tick_den;
+                                   off->dur_num = 0;
+                                   off->dur_den = 1;
+                                   off->ev.value = 0;
 
-						   abc_voice_append_symbol(voice, on);
-						   abc_voice_append_symbol(voice, off);
-					   } else {
-						   /* prepare note on */
-						   struct abc_symbol* starts = NULL;
-						   int start_count = 0;
-						   while (s->kind != ABC_CHORD) { /* got to ']' */
-							   if (s->kind == ABC_NOTE) {
-								   starts = realloc(starts, ++start_count * sizeof (*starts));
-								   struct abc_symbol* dup = abc_dup_symbol(s);
-								   starts[start_count - 1] = *dup;
-								   starts[start_count - 1].ev.value = 1;
+                                   abc_voice_append_symbol(voice, on);
+                                   abc_voice_append_symbol(voice, off);
+                               } else {
+                                   /* prepare note on */
+                                   struct abc_symbol* starts = NULL;
+                                   int start_count = 0;
+                                   while (s->kind != ABC_CHORD) { /* got to ']' */
+                                       if (s->kind == ABC_NOTE) {
+                                           starts = realloc(starts, ++start_count * sizeof (*starts));
+                                           struct abc_symbol* dup = abc_dup_symbol(s);
+                                           starts[start_count - 1] = *dup;
+                                           starts[start_count - 1].ev.value = 1;
 
-								   free(dup);
+                                           free(dup);
 
-							   } else {
-								   /* if we have a BAR, instert it before chord */
-								   struct abc_symbol* new = NULL;
-								   new = abc_dup_symbol(s);
-								   abc_voice_append_symbol(voice, new);
-							   }
-							   s = s->next;
-						   }
+                                       } else {
+                                           /* if we have a BAR, instert it before chord */
+                                           struct abc_symbol* new = NULL;
+                                           new = abc_dup_symbol(s);
+                                           abc_voice_append_symbol(voice, new);
+                                       }
+                                       s = s->next;
+                                   }
 
-						   /* prepare note off based on previous array */
-						   struct abc_symbol* stops = NULL;
-						   int stop_count = start_count;
-						   stops = realloc(stops, stop_count * sizeof (*stops));
-						   for (int i = 0; i < stop_count; i++) {
-							   struct abc_symbol* dup = abc_dup_symbol(&starts[i]);
-							   stops[i] = *dup;
-							   stops[i].ev.value = 0;
+                                   /* prepare note off based on previous array */
+                                   struct abc_symbol* stops = NULL;
+                                   int stop_count = start_count;
+                                   stops = realloc(stops, stop_count * sizeof (*stops));
+                                   for (int i = 0; i < stop_count; i++) {
+                                       struct abc_symbol* dup = abc_dup_symbol(&starts[i]);
+                                       stops[i] = *dup;
+                                       stops[i].ev.value = 0;
 
-							   free(dup);
-						   }
+                                       free(dup);
+                                   }
 
-						   /* reorganize note off members */
-						   for (int i = 0; i < stop_count; i++) {
-							   struct abc_symbol* e = &stops[i];
-							   abc_frac_add(&e->ev.start_num, &e->ev.start_den, e->dur_num, e->dur_den);
+                                   /* reorganize note off members */
+                                   for (int i = 0; i < stop_count; i++) {
+                                       struct abc_symbol* e = &stops[i];
+                                       abc_frac_add(&e->ev.start_num, &e->ev.start_den, e->dur_num, e->dur_den);
 
-							   e->dur_num = 0;
-							   e->dur_den = 1;
-						   }
+                                       e->dur_num = 0;
+                                       e->dur_den = 1;
+                                   }
 
-						   struct abc_symbol* events = NULL;
-						   int event_count = start_count + stop_count;
-						   events = realloc(events, event_count * sizeof (*events));
-						   for (int i = 0; i < start_count; i++) {
-							   struct abc_symbol* dup = abc_dup_symbol(&starts[i]);
-							   events[i] = *dup;
+                                   struct abc_symbol* events = NULL;
+                                   int event_count = start_count + stop_count;
+                                   events = realloc(events, event_count * sizeof (*events));
+                                   for (int i = 0; i < start_count; i++) {
+                                       struct abc_symbol* dup = abc_dup_symbol(&starts[i]);
+                                       events[i] = *dup;
 
-							   free(dup);
-						   }
+                                       free(dup);
+                                   }
 
-						   /* free garbage */
-						   for (int i = 0; i < start_count; i++) {
-							   free(starts[i].text);
-							   free(starts[i].lyr);
-						   }
+                                   /* free garbage */
+                                   for (int i = 0; i < start_count; i++) {
+                                       free(starts[i].text);
+                                       free(starts[i].lyr);
+                                   }
 
-						   free(starts);
+                                   free(starts);
 
-						   for (int i = 0; i < stop_count; i++) {
-							   struct abc_symbol* dup = abc_dup_symbol(&stops[i]);
-							   events[i + start_count] = *dup;
+                                   for (int i = 0; i < stop_count; i++) {
+                                       struct abc_symbol* dup = abc_dup_symbol(&stops[i]);
+                                       events[i + start_count] = *dup;
 
-							   free(dup);
-						   }
+                                       free(dup);
+                                   }
 
-						   /* free garbage */
-						   for (int i = 0; i < stop_count; i++) {
-							   free(stops[i].text);
-							   free(stops[i].lyr);
-						   }
+                                   /* free garbage */
+                                   for (int i = 0; i < stop_count; i++) {
+                                       free(stops[i].text);
+                                       free(stops[i].lyr);
+                                   }
 
-						   free(stops);
+                                   free(stops);
 
-						   /* sort in time on/off events */
-						   qsort(events, event_count, sizeof (*events), event_cmp);
+                                   /* sort in time on/off events */
+                                   qsort(events, event_count, sizeof (*events), event_cmp);
 
-						   for (int i = 0; i < event_count; i++) {
-							   abc_voice_append_symbol(voice, abc_dup_symbol(&events[i]));
-						   }
+                                   for (int i = 0; i < event_count; i++) {
+                                       abc_voice_append_symbol(voice, abc_dup_symbol(&events[i]));
+                                   }
 
-						   /* we must use the complete chord duration as duration to add to main tick! */
-						   int first_start_num = events[0].ev.start_num;
-						   int first_start_den = events[0].ev.start_den;
-						   int last_stop_num = events[event_count -1].ev.start_num;
-						   int last_stop_den = events[event_count - 1].ev.start_den;
-						   abc_frac_add(&tick_num, &tick_den, last_stop_num, last_stop_den);
-						   abc_frac_add(&tick_num, &tick_den, -first_start_num, first_start_den);
+                                   /* we must use the complete chord duration as duration to add to main tick! */
+                                   int first_start_num = events[0].ev.start_num;
+                                   int first_start_den = events[0].ev.start_den;
+                                   int last_stop_num = events[event_count -1].ev.start_num;
+                                   int last_stop_den = events[event_count - 1].ev.start_den;
+                                   abc_frac_add(&tick_num, &tick_den, last_stop_num, last_stop_den);
+                                   abc_frac_add(&tick_num, &tick_den, -first_start_num, first_start_den);
 
-						   /* free garbage */
-						   for (int i = 0; i < event_count; i++) {
-							   free(events[i].text);
-							   free(events[i].lyr);
-						   }
+                                   /* free garbage */
+                                   for (int i = 0; i < event_count; i++) {
+                                       free(events[i].text);
+                                       free(events[i].lyr);
+                                   }
 
-						   free(events);
+                                   free(events);
 
-						   /* go just before ']' */
-						   s = s->prev;
-					   }
-				   }
-				   break;
-		    default: {
-				     /* and ABC_BAR */
-				     struct abc_symbol* new = NULL;
-				     new = abc_dup_symbol(s);
-				     abc_voice_append_symbol(voice, new);
-			     }
+                                   /* go just before ']' */
+                                   s = s->prev;
+                               }
+                           }
+                           break;
+            default: {
+                         /* and ABC_BAR */
+                         struct abc_symbol* new = NULL;
+                         new = abc_dup_symbol(s);
+                         abc_voice_append_symbol(voice, new);
+                     }
 
-	    }
+        }
 
-	    s = s->next;
+        s = s->next;
     }
 
     return voice;
@@ -1412,9 +1412,9 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
 
     struct abc_header* mh = abc_find_header(t, 'M');
     if (!mh || mh->text[0] == 'C')
-            m = "4/4";
+        m = "4/4";
     else
-            m = mh->text;
+        m = mh->text;
 
     struct abc_header* h = abc_find_header(t, 'L');
     if (h && (2 == sscanf(h->text, "%ld/%ld", &l_num, &l_den))) {;}
@@ -1430,7 +1430,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
         switch (s->kind) {
             case ABC_CHANGE: {
                                  if (s->text[0]== 'M') {
-                                         m = &s->text[2];
+                                     m = &s->text[2];
                                  } else if (s->text[0]== 'L') {
                                      long l_n, l_d;
                                      if (2 == sscanf(&s->text[2], "%ld/%ld", &l_n, &l_d)) {
@@ -1478,8 +1478,8 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                    if (!in_chord) {
                                        /* produce simple note */
                                        new = abc_dup_symbol(s);
-				       new->dur_num *= l_mul;
-				       new->dur_den *= l_div;
+                                       new->dur_num *= l_mul;
+                                       new->dur_den *= l_div;
 
                                        if (in_grace) {
                                            new->dur_den *= GRACE_DEN;
@@ -1500,13 +1500,13 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                        abc_frac_add(&tick_num, &tick_den, new->dur_num, new->dur_den);
                                    } else {
                                        new = abc_dup_symbol(s);
-				       new->dur_num *= l_mul;
-				       new->dur_den *= l_div;
+                                       new->dur_num *= l_mul;
+                                       new->dur_den *= l_div;
 
                                        if (nup_r) {
                                            new->dur_num *= nup_q;
                                            new->dur_den *= nup_p;
-				       }
+                                       }
 
                                        abc_frac_add(&new->ev.start_num, &new->ev.start_den, tick_num, tick_den);
                                        /* we use the first note of chord as chord duration! */
@@ -1562,15 +1562,15 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
 
                                                    while (p->kind != ABC_CHORD) {
                                                        if (p->kind == ABC_NOTE && !strcmp(p->text, s->text)) {
-							   long dur_num = l_mul * s->dur_num;
-							   long dur_den = l_div * s->dur_den;
+                                                           long dur_num = l_mul * s->dur_num;
+                                                           long dur_den = l_div * s->dur_den;
 
-							   if (nup_r) {
-								   dur_num *= nup_q;
-								   dur_den *= nup_p;
-							   }
+                                                           if (nup_r) {
+                                                               dur_num *= nup_q;
+                                                               dur_den *= nup_p;
+                                                           }
 
-							   abc_frac_add(&p->dur_num, &p->dur_den, dur_num, dur_den);
+                                                           abc_frac_add(&p->dur_num, &p->dur_den, dur_num, dur_den);
                                                            /* we use the first note of this chord to add to chord duration! */
                                                            if (chord_num == 0) {
                                                                abc_frac_add(&chord_num, &chord_den, dur_num, dur_den);
@@ -1583,29 +1583,29 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
 
                                                    /* corresponding p note to s was not found? */
                                                    if (p->kind == ABC_CHORD) {
-                                                           struct abc_symbol* n = abc_dup_symbol(s);
-							   n->dur_num *= l_mul;
-							   n->dur_den *= l_div;
-							   if (nup_r) {
-								   n->dur_num *= nup_q;
-								   n->dur_den *= nup_p;
-							   }
-                                                           abc_frac_add(&n->ev.start_num, &n->ev.start_den, tick_num, tick_den);
-                                                           /* do not append this note after the ']' chord, instert it! */
-                                                           p = p->prev;
+                                                       struct abc_symbol* n = abc_dup_symbol(s);
+                                                       n->dur_num *= l_mul;
+                                                       n->dur_den *= l_div;
+                                                       if (nup_r) {
+                                                           n->dur_num *= nup_q;
+                                                           n->dur_den *= nup_p;
+                                                       }
+                                                       abc_frac_add(&n->ev.start_num, &n->ev.start_den, tick_num, tick_den);
+                                                       /* do not append this note after the ']' chord, instert it! */
+                                                       p = p->prev;
 
-                                                           n->next = p->next;
-                                                           p->next = n;
-                                                           n->prev = p;
-                                                           n->next->prev = n;
+                                                       n->next = p->next;
+                                                       p->next = n;
+                                                       n->prev = p;
+                                                       n->next->prev = n;
 
-                                                           /* we use the first note of this chord to add to chord duration! */
-                                                           if (chord_num == 0) {
-                                                                   abc_frac_add(&chord_num, &chord_den, n->dur_num, n->dur_den);
-                                                           }
+                                                       /* we use the first note of this chord to add to chord duration! */
+                                                       if (chord_num == 0) {
+                                                           abc_frac_add(&chord_num, &chord_den, n->dur_num, n->dur_den);
+                                                       }
                                                    }
-					       } else if (s->kind == ABC_TIE) { /* in-chord tie */
-						       next_tie = 1; /* we manage the tie globally */
+                                               } else if (s->kind == ABC_TIE) { /* in-chord tie */
+                                                   next_tie = 1; /* we manage the tie globally */
                                                } else {
                                                    /* any other symbol goes here */
                                                    struct abc_symbol* u = abc_dup_symbol(s);
@@ -1628,11 +1628,14 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                            struct abc_symbol* new = calloc(1, sizeof (struct abc_symbol));
                                            new->kind = ABC_CHORD;
                                            new->text = strdup("[");
-					   new->ev.start_den = 1;
-					   new->dur_den = 1;
+                                           new->ev.start_den = 1;
+                                           new->dur_den = 1;
 
                                            /* insert new virtual chord just before the previously accepted note */
-                                           p->prev->next = new;
+                                           if (p->prev)
+                                               p->prev->next = new;
+                                           else
+                                               voice->first = new;
                                            new->prev = p->prev;
                                            p->prev = new;
                                            new->next = p;
@@ -1646,19 +1649,19 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                                        den = l_div * s->dur_den;
 
                                                        if (nup_r) {
-                                                               num *= nup_q;
-                                                               den *= nup_p;
+                                                           num *= nup_q;
+                                                           den *= nup_p;
                                                        }
 
                                                        abc_frac_add(&p->dur_num, &p->dur_den, num, den);
                                                    } else {
-                                                           struct abc_symbol* n = abc_dup_symbol(s);
-							   n->dur_num *= l_mul;
-							   n->dur_den *= l_div;
-                                                           if (nup_r) {
-                                                                   n->dur_num *= nup_q;
-                                                                   n->dur_den *= nup_p;
-                                                           }
+                                                       struct abc_symbol* n = abc_dup_symbol(s);
+                                                       n->dur_num *= l_mul;
+                                                       n->dur_den *= l_div;
+                                                       if (nup_r) {
+                                                           n->dur_num *= nup_q;
+                                                           n->dur_den *= nup_p;
+                                                       }
 
                                                        abc_frac_add(&n->ev.start_num, &n->ev.start_den, tick_num, tick_den);
                                                        abc_voice_append_symbol(voice, n);
@@ -1683,14 +1686,14 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                            }
                            break;
             case ABC_TIE: {
-				  if (in_chord)
-					  next_tie = 1;
-				  else
-					  in_tie = 1;
+                              if (in_chord)
+                                  next_tie = 1;
+                              else
+                                  in_tie = 1;
                           }
                           break;
             default: {
-			 /* and ABC_BAR */
+                         /* and ABC_BAR */
                          new = abc_dup_symbol(s);
                      }
         }
@@ -1721,8 +1724,8 @@ struct abc_voice* abc_unfold_voice(struct abc_voice* v) {
                               new = calloc(1, sizeof (struct abc_symbol));
                               new->kind = ABC_BAR;
                               new->text = strdup("|");
-			      new->ev.start_den = 1;
-			      new->dur_den = 1;
+                              new->ev.start_den = 1;
+                              new->dur_den = 1;
 
                               if (abc_is_repeat(s)) {
                                   if (cur_repeat == s) {
@@ -1816,9 +1819,9 @@ void abc_release_voice(struct abc_voice* v) {
     }
 
     if (v->last) {
-            free(v->last->lyr);
-            free(v->last->text);
-            free(v->last);
+        free(v->last->lyr);
+        free(v->last->text);
+        free(v->last);
     }
 
     free(v->v);
