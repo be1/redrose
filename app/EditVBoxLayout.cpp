@@ -34,7 +34,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 {
     setObjectName("EditVBoxLayout:" + fileName);
 
-    QString t = QDir::tempPath() + QDir::separator() + "qabc-XXXXXX.abc";
+    QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
 	tempFile.setFileTemplate(t);
     xspinbox.setMinimum(1);
 	xlabel.setText(tr("X:"));
