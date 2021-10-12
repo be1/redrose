@@ -805,7 +805,8 @@ void abc_tie_append(struct abc* yy, const char* yytext)
     struct abc_symbol* new = abc_new_symbol(yy);
     new->kind = ABC_TIE;
     new->text = strdup(yytext);
-    new->prev->in_tie = 1;
+    if (new->prev)
+        new->prev->in_tie = 1;
 }
 
 void abc_slur_append(struct abc* yy, const char* yytext)
@@ -1139,7 +1140,8 @@ void abc_compute_pqr(int* p, int* q, int* r, const char* m) {
 
     if (!m || m[0] == 'C')
         m = "4/4";
-    else if (2 != sscanf(m, "%d/%d", &num, &den))
+
+    if (2 != sscanf(m, "%d/%d", &num, &den))
         num = den = 4;
 
     if (!*r)
@@ -1285,7 +1287,7 @@ struct abc_voice* abc_eventy_voice(const struct abc_voice* v) {
                                            free(dup);
 
                                        } else {
-                                           /* if we have a BAR, instert it before chord */
+                                           /* if we have a BAR, insert it before chord */
                                            struct abc_symbol* new = NULL;
                                            new = abc_dup_symbol(s);
                                            abc_voice_append_symbol(voice, new);
@@ -1520,16 +1522,16 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                        int prev_chord = 0;
                                        /* prev note just lasts longer */
                                        struct abc_symbol* p = voice->last;
-                                       while (p->kind != ABC_NOTE) {
+                                       while (p && p->kind != ABC_NOTE) {
                                            if (p->kind == ABC_CHORD)
                                                prev_chord = 1;
                                            p = p->prev;
                                        }
                                        /* prev note could be in a chord! */
                                        if (prev_chord) {
-                                           while (strcmp(p->text, s->text)) {
+                                           while (p && strcmp(p->text, s->text)) {
                                                p = p->prev;
-                                               if (p->kind == ABC_CHORD)
+                                               if (p && p->kind == ABC_CHORD)
                                                    break;
                                            }
                                        }
@@ -1542,7 +1544,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                            nup_r--;
                                        }
 
-                                       if (p->kind == ABC_NOTE) {
+                                       if (p && p->kind == ABC_NOTE) {
                                            abc_frac_add(&p->dur_num, &p->dur_den, nup_num, nup_den);
                                            abc_frac_add(&tick_num, &tick_den, nup_num, nup_den);
                                        }
@@ -1550,10 +1552,10 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                    } else { /* in_tie and in_chord */
                                        /* look if previous note is in a chord or a single note */
                                        struct abc_symbol* p = voice->last;
-                                       while (p->kind != ABC_CHORD && p->kind != ABC_NOTE)
+                                       while (p && p->kind != ABC_CHORD && p->kind != ABC_NOTE)
                                            p = p->prev;
 
-                                       if (p->kind == ABC_CHORD) {
+                                       if (p && p->kind == ABC_CHORD) { /* previous note is in a chord */
                                            /* for each s note, find the p note if any */
                                            while (s->kind != ABC_CHORD) {
                                                if (s->kind == ABC_NOTE) {
@@ -1591,7 +1593,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                                            n->dur_den *= nup_p;
                                                        }
                                                        abc_frac_add(&n->ev.start_num, &n->ev.start_den, tick_num, tick_den);
-                                                       /* do not append this note after the ']' chord, instert it! */
+                                                       /* do not append this note after the ']' chord, insert it! */
                                                        p = p->prev;
 
                                                        n->next = p->next;
@@ -1621,7 +1623,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                            abc_frac_add(&tick_num, &tick_den, chord_num, chord_den);
                                            chord_num = 0, chord_den = 1;
                                            in_chord = 0;
-                                       } else {
+                                       } else { /* previous note is not in a chord */
                                            /* insert chord while we are in tie
                                             * and play some of its notes later
                                             */
@@ -1631,20 +1633,22 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                            new->ev.start_den = 1;
                                            new->dur_den = 1;
 
-                                           /* insert new virtual chord just before the previously accepted note */
-                                           if (p->prev)
+                                           /* insert new virtual chord symbol just before the previously accepted note */
+                                           if (p && p->prev)
                                                p->prev->next = new;
-                                           else
+                                           else /* p was first symbol */
                                                voice->first = new;
-                                           new->prev = p->prev;
-                                           p->prev = new;
+                                           if (p) {
+                                               new->prev = p->prev;
+                                               p->prev = new;
+                                           }
                                            new->next = p;
-                                           int num = p->dur_num;
-                                           int den = p->dur_den;
+                                           int num = p ? p->dur_num : 0;
+                                           int den = p ? p->dur_den : 1;
 
                                            while (s->kind != ABC_CHORD) {
-                                               if (s->kind  == ABC_NOTE) {
-                                                   if (!strcmp(p->text, s->text)) { /* same note */
+                                               if (s->kind == ABC_NOTE) {
+                                                   if (p && !strcmp(p->text, s->text)) { /* same note */
                                                        num = l_mul * s->dur_num;
                                                        den = l_div * s->dur_den;
 
@@ -1666,6 +1670,8 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                                        abc_frac_add(&n->ev.start_num, &n->ev.start_den, tick_num, tick_den);
                                                        abc_voice_append_symbol(voice, n);
                                                    }
+                                               } else if (s->kind == ABC_TIE) { /* in-chord tie */
+                                                   next_tie = 1; /* we manage the tie globally */
                                                } else {
                                                    /* any other symbol goes here */
                                                    struct abc_symbol* u = abc_dup_symbol(s);
