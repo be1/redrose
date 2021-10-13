@@ -1459,7 +1459,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                             }
                             break;
             case ABC_CHORD: {
-                                if (!in_tie)
+                                if (!in_tie && !next_tie)
                                     new = abc_dup_symbol(s);
 
                                 if (s->text[0] == '[') {
@@ -1500,7 +1500,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
 
                                        abc_frac_add(&new->ev.start_num, &new->ev.start_den, tick_num, tick_den);
                                        abc_frac_add(&tick_num, &tick_den, new->dur_num, new->dur_den);
-                                   } else {
+                                   } else { /* in_chord */
                                        new = abc_dup_symbol(s);
                                        new->dur_num *= l_mul;
                                        new->dur_den *= l_div;
@@ -1517,7 +1517,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                            chord_den = new->dur_den;
                                        }
                                    }
-                               } else {
+                               } else { /* in_tie */
                                    if (!in_chord) {
                                        int prev_chord = 0;
                                        /* prev note just lasts longer */
@@ -1552,13 +1552,18 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                    } else { /* in_tie and in_chord */
                                        /* look if previous note is in a chord or a single note */
                                        struct abc_symbol* p = voice->last;
+
+                                       /* when in_tie, this chord starter has not been added.
+                                        * so, the first backward chord symbol is the previous chord end */
                                        while (p && p->kind != ABC_CHORD && p->kind != ABC_NOTE)
                                            p = p->prev;
 
-                                       if (p && p->kind == ABC_CHORD) { /* previous note is in a chord */
+                                       /* here, we are either on the prev chord end, or the last note accepted */
+                                       if (p && p->kind == ABC_CHORD) {
                                            /* for each s note, find the p note if any */
                                            while (s->kind != ABC_CHORD) {
                                                if (s->kind == ABC_NOTE) {
+                                                   /* rewind previous chord */
                                                    p = abc_chord_rewind(p->prev);
                                                    p = abc_chord_first_note(p);
 
@@ -1617,12 +1622,9 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                                s = s->next;
                                            }
 
+                                           s = s->prev; /* this will allow chord closing with next CHORD token */
                                            new = NULL;
                                            in_tie = 0;
-                                           /* do not pass by CHORD token, but manage it here: */
-                                           abc_frac_add(&tick_num, &tick_den, chord_num, chord_den);
-                                           chord_num = 0, chord_den = 1;
-                                           in_chord = 0;
                                        } else { /* previous note is not in a chord */
                                            /* insert chord while we are in tie
                                             * and play some of its notes later
@@ -1683,7 +1685,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                            /* use the first note modified duration to add to main tick */
                                            abc_frac_add(&tick_num, &tick_den, num, den);
 
-                                           s = s->prev; /* this will allow chord closing */
+                                           s = s->prev; /* this will allow chord closing with next CHORD token */
                                            new = NULL;
                                            in_tie = 0;
                                        }
@@ -1796,8 +1798,9 @@ struct abc_symbol* abc_chord_rewind(struct abc_symbol* s) {
         if (s->kind == ABC_CHORD && s->text[0] == ']')
             return NULL;
 
-        if ((s->kind == ABC_CHORD) && (s->text[0] == '['))
+        if (s->kind == ABC_CHORD && s->text[0] == '[')
             return s;
+
         s = s->prev;
     }
 
