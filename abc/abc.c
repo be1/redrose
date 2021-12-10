@@ -1392,37 +1392,266 @@ struct abc_voice* abc_eventy_voice(const struct abc_voice* v) {
     return voice;
 }
 
-struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
-    /* use absolute ticks */
-    long tick_num = 0, tick_den = 1;   /* current tick */
-
-    int nup_p, nup_q, nup_r = 0;
-    int in_tie = 0;
-    int next_tie = 0;
-    int in_chord = 0;
 #define GRACE_DEN 4
-    int in_grace = 0;
-    long grace_num = 0;
-    long grace_den = 1;
-    long l_num = 0;
-    long l_den = 1;
-    long l_mul = 1, l_div = 1; /* for L change */
+struct abc_untie_ctx {
+    long tick_num, tick_den; /* absolute tisks */
+    int nup_p, nup_q, nup_r; /* n-uplets */
+    int in_tie, next_tie;    /* tie state */
+    int in_chord;            /* chord state */
+    int in_grace;            /* grace state */
+    long grace_num, grace_den;
+    long l_num, l_den, l_mul, l_div; /* L */
     const char* m;
-    long chord_num = 0, chord_den = 1; /* chord duration */
+    long chord_num, chord_den; /* chord duration */
+};
+
+struct abc_symbol* abc_untie_voice_produce_single_note(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
+    /* produce simple note */
+    struct abc_symbol* new = abc_dup_symbol(s);
+    new->dur_num *= ctx->l_mul;
+    new->dur_den *= ctx->l_div;
+
+    if (ctx->in_grace) {
+        new->dur_den *= GRACE_DEN;
+        abc_frac_add(&ctx->grace_num, &ctx->grace_den, new->dur_num, new->dur_den);
+    } else {
+        abc_frac_add(&new->dur_num, &new->dur_den, -ctx->grace_num, ctx->grace_den);
+        ctx->grace_num = 0;
+        ctx->grace_den = 1;
+    }
+
+    if (ctx->nup_r) {
+        new->dur_num *= ctx->nup_q;
+        new->dur_den *= ctx->nup_p;
+        ctx->nup_r--;
+    }
+
+    abc_frac_add(&new->ev.start_num, &new->ev.start_den, ctx->tick_num, ctx->tick_den);
+    abc_frac_add(&ctx->tick_num, &ctx->tick_den, new->dur_num, new->dur_den);
+
+    return new;
+}
+
+struct abc_symbol* abc_untie_voice_produce_single_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
+    struct abc_symbol* new = abc_dup_symbol(s);
+    new->dur_num *= ctx->l_mul;
+    new->dur_den *= ctx->l_div;
+
+    if (ctx->nup_r) {
+        new->dur_num *= ctx->nup_q;
+        new->dur_den *= ctx->nup_p;
+    }
+
+    abc_frac_add(&new->ev.start_num, &new->ev.start_den, ctx->tick_num, ctx->tick_den);
+    /* we use the first note of chord as chord duration! */
+    if (ctx->chord_num == 0) {
+        ctx->chord_num = new->dur_num;
+        ctx->chord_den = new->dur_den;
+    }
+
+    return new;
+}
+
+void abc_untie_voice_produce_tied_note(struct abc_untie_ctx* ctx, struct abc_symbol* s, struct abc_voice* voice) {
+    int prev_chord = 0;
+    /* prev note just lasts longer */
+    /* output is produced by modifying voice->last */
+    struct abc_symbol* p = voice->last;
+    while (p && p->kind != ABC_NOTE) {
+        if (p->kind == ABC_CHORD)
+            prev_chord = 1;
+        p = p->prev;
+    }
+    /* prev note could be in a chord! */
+    if (prev_chord) {
+        while (p && strcmp(p->text, s->text)) {
+            p = p->prev;
+            if (p && p->kind == ABC_CHORD)
+                break;
+        }
+    }
+
+    int nup_num = ctx->l_mul * s->dur_num;
+    int nup_den = ctx->l_div * s->dur_den;
+    if (ctx->nup_r) {
+        nup_num *= ctx->nup_q;
+        nup_den *= ctx->nup_p;
+        ctx->nup_r--;
+    }
+
+    if (p && p->kind == ABC_NOTE) {
+        abc_frac_add(&p->dur_num, &p->dur_den, nup_num, nup_den);
+        abc_frac_add(&ctx->tick_num, &ctx->tick_den, nup_num, nup_den);
+    }
+    ctx->in_tie = 0;
+}
+
+void abc_untie_voice_produce_tied_chord(struct abc_untie_ctx* ctx, struct abc_symbol** sp, struct abc_voice* voice) {
+    struct abc_symbol* new = NULL;
+    struct abc_symbol* s = *sp;
+    /* look if previous note is in a chord or a single note */
+    struct abc_symbol* p = voice->last;
+    while (p && p->kind != ABC_CHORD && p->kind != ABC_NOTE)
+        p = p->prev;
+
+    if (p && p->kind == ABC_CHORD) { /* previous note is in a chord */
+        /* for each s note, find the p note if any */
+        while (s->kind != ABC_CHORD) {
+            if (s->kind == ABC_NOTE) {
+                p = abc_chord_rewind(p->prev);
+                p = abc_chord_first_note(p);
+
+                while (p->kind != ABC_CHORD) {
+                    if (p->kind == ABC_NOTE && !strcmp(p->text, s->text)) {
+                        long dur_num = ctx->l_mul * s->dur_num;
+                        long dur_den = ctx->l_div * s->dur_den;
+
+                        if (ctx->nup_r) {
+                            dur_num *= ctx->nup_q;
+                            dur_den *= ctx->nup_p;
+                        }
+
+                        abc_frac_add(&p->dur_num, &p->dur_den, dur_num, dur_den);
+                        /* we use the first note of this chord to add to chord duration! */
+                        if (ctx->chord_num == 0) {
+                            abc_frac_add(&ctx->chord_num, &ctx->chord_den, dur_num, dur_den);
+                        }
+                        break;
+                    }
+
+                    p = p->next;
+                }
+
+                /* corresponding p note to s was not found? */
+                if (p->kind == ABC_CHORD) {
+                    struct abc_symbol* n = abc_dup_symbol(s);
+                    n->dur_num *= ctx->l_mul;
+                    n->dur_den *= ctx->l_div;
+                    if (ctx->nup_r) {
+                        n->dur_num *= ctx->nup_q;
+                        n->dur_den *= ctx->nup_p;
+                    }
+                    abc_frac_add(&n->ev.start_num, &n->ev.start_den, ctx->tick_num, ctx->tick_den);
+                    /* do not append this note after the ']' chord, insert it! */
+                    p = p->prev;
+
+                    n->next = p->next;
+                    p->next = n;
+                    n->prev = p;
+                    n->next->prev = n;
+
+                    /* we use the first note of this chord to add to chord duration! */
+                    if (ctx->chord_num == 0) {
+                        abc_frac_add(&ctx->chord_num, &ctx->chord_den, n->dur_num, n->dur_den);
+                    }
+                }
+            } else if (s->kind == ABC_TIE) { /* in-chord tie */
+                ctx->next_tie = 1; /* we manage the tie globally */
+            } else {
+                /* any other symbol goes here */
+                struct abc_symbol* u = abc_dup_symbol(s);
+                abc_voice_append_symbol(voice, u);
+            }
+
+            s = s->next;
+        }
+
+        new = NULL;
+        ctx->in_tie = 0;
+        /* do not pass by CHORD token, but manage it here: */
+        abc_frac_add(&ctx->tick_num, &ctx->tick_den, ctx->chord_num, ctx->chord_den);
+        ctx->chord_num = 0, ctx->chord_den = 1;
+        ctx->in_chord = 0;
+    } else { /* previous note is not in a chord */
+        /* insert chord while we are in tie and play some of its notes later */
+        struct abc_symbol* new = calloc(1, sizeof (struct abc_symbol));
+        new->kind = ABC_CHORD;
+        new->text = strdup("[");
+        new->ev.start_den = 1;
+        new->dur_den = 1;
+
+        /* insert new virtual chord symbol just before the previously accepted note */
+        if (p && p->prev)
+            p->prev->next = new;
+        else /* p was first symbol */
+            voice->first = new;
+        if (p) {
+            new->prev = p->prev;
+            p->prev = new;
+        }
+        new->next = p;
+        int num = p ? p->dur_num : 0;
+        int den = p ? p->dur_den : 1;
+
+        while (s->kind != ABC_CHORD) {
+            if (s->kind == ABC_NOTE) {
+                if (p && !strcmp(p->text, s->text)) { /* same note */
+                    num = ctx->l_mul * s->dur_num;
+                    den = ctx->l_div * s->dur_den;
+
+                    if (ctx->nup_r) {
+                        num *= ctx->nup_q;
+                        den *= ctx->nup_p;
+                    }
+
+                    abc_frac_add(&p->dur_num, &p->dur_den, num, den);
+                } else {
+                    struct abc_symbol* n = abc_dup_symbol(s);
+                    n->dur_num *= ctx->l_mul;
+                    n->dur_den *= ctx->l_div;
+                    if (ctx->nup_r) {
+                        n->dur_num *= ctx->nup_q;
+                        n->dur_den *= ctx->nup_p;
+                    }
+
+                    abc_frac_add(&n->ev.start_num, &n->ev.start_den, ctx->tick_num, ctx->tick_den);
+                    abc_voice_append_symbol(voice, n);
+                }
+            } else if (s->kind == ABC_TIE) { /* in-chord tie */
+                ctx->next_tie = 1; /* we manage the tie globally */
+            } else {
+                /* any other symbol goes here */
+                struct abc_symbol* u = abc_dup_symbol(s);
+                abc_voice_append_symbol(voice, u);
+            }
+
+            s = s->next;
+        }
+        /* use the first note modified duration to add to main tick */
+        abc_frac_add(&ctx->tick_num, &ctx->tick_den, num, den);
+
+        s = s->prev; /* this will allow chord closing */
+        new = NULL;
+        ctx->in_tie = 0;
+    }
+
+    *sp = s;
+}
+
+struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
+    struct abc_untie_ctx ctx;
+    memset(&ctx, 0, sizeof (ctx));
+    ctx.tick_den = 1;
+    ctx.grace_den = 1;
+    ctx.l_den = 1;
+    ctx.l_mul = 1;
+    ctx.l_div = 1;
+    ctx.chord_den = 1;
+
     struct abc_voice* voice = calloc(1, sizeof (struct abc_voice));
     voice->v = strdup(v->v);
 
     struct abc_header* mh = abc_find_header(t, 'M');
     if (!mh || mh->text[0] == 'C')
-        m = "4/4";
+        ctx.m = "4/4";
     else
-        m = mh->text;
+        ctx.m = mh->text;
 
     struct abc_header* h = abc_find_header(t, 'L');
-    if (h && (2 == sscanf(h->text, "%ld/%ld", &l_num, &l_den))) {;}
+    if (h && (2 == sscanf(h->text, "%ld/%ld", &ctx.l_num, &ctx.l_den))) {;}
     else {
-        l_num = 1;
-        l_den = 8;
+        ctx.l_num = 1;
+        ctx.l_den = 8;
     }
 
     struct abc_symbol* s = v->first;
@@ -1432,12 +1661,12 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
         switch (s->kind) {
             case ABC_CHANGE: {
                                  if (s->text[0]== 'M') {
-                                     m = &s->text[2];
+                                     ctx.m = &s->text[2];
                                  } else if (s->text[0]== 'L') {
                                      long l_n, l_d;
                                      if (2 == sscanf(&s->text[2], "%ld/%ld", &l_n, &l_d)) {
-                                         l_mul = l_n / l_num;
-                                         l_div = l_d / l_den;
+                                         ctx.l_mul = l_n / ctx.l_num;
+                                         ctx.l_div = l_d / ctx.l_den;
                                      }
                                  } else {
                                      new = abc_dup_symbol(s);
@@ -1445,257 +1674,57 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                              }
                              break;
             case ABC_NUP: {
-                              if (3 == sscanf(s->text, "%d:%d:%d", &nup_p, &nup_q, &nup_r)) {
-                                  abc_compute_pqr(&nup_p, &nup_q, &nup_r, m);
+                              if (3 == sscanf(s->text, "%d:%d:%d", &ctx.nup_p, &ctx.nup_q, &ctx.nup_r)) {
+                                  abc_compute_pqr(&ctx.nup_p, &ctx.nup_q, &ctx.nup_r, ctx.m);
                               }
                           }
                           break;
             case ABC_GRACE: {
                                 if (s->text[0] == '{') {
-                                    in_grace = 1;
+                                    ctx.in_grace = 1;
                                 } else {
-                                    in_grace = 0;
+                                    ctx.in_grace = 0;
                                 }
                             }
                             break;
             case ABC_CHORD: {
-                                if (!in_tie)
+                                if (!ctx.in_tie)
                                     new = abc_dup_symbol(s);
 
                                 if (s->text[0] == '[') {
-                                    in_chord = 1;
-                                    next_tie = 0;
+                                    ctx.in_chord = 1;
+                                    ctx.next_tie = 0;
                                 } else {
-                                    in_chord = 0;
-                                    in_tie = next_tie;
-                                    abc_frac_add(&tick_num, &tick_den, chord_num, chord_den);
-                                    chord_num = 0, chord_den = 1;
-                                    if (nup_r)
-                                        nup_r--;
+                                    ctx.in_chord = 0;
+                                    ctx.in_tie = ctx.next_tie;
+                                    abc_frac_add(&ctx.tick_num, &ctx.tick_den, ctx.chord_num, ctx.chord_den);
+                                    ctx.chord_num = 0, ctx.chord_den = 1;
+                                    if (ctx.nup_r)
+                                        ctx.nup_r--;
                                 }
                             }
                             break;
             case ABC_NOTE: {
-                               if (!in_tie) {
-                                   if (!in_chord) {
-                                       /* produce simple note */
-                                       new = abc_dup_symbol(s);
-                                       new->dur_num *= l_mul;
-                                       new->dur_den *= l_div;
-
-                                       if (in_grace) {
-                                           new->dur_den *= GRACE_DEN;
-                                           abc_frac_add(&grace_num, &grace_den, new->dur_num, new->dur_den);
-                                       } else {
-                                           abc_frac_add(&new->dur_num, &new->dur_den, -grace_num, grace_den);
-                                           grace_num = 0;
-                                           grace_den = 1;
-                                       }
-
-                                       if (nup_r) {
-                                           new->dur_num *= nup_q;
-                                           new->dur_den *= nup_p;
-                                           nup_r--;
-                                       }
-
-                                       abc_frac_add(&new->ev.start_num, &new->ev.start_den, tick_num, tick_den);
-                                       abc_frac_add(&tick_num, &tick_den, new->dur_num, new->dur_den);
-                                   } else {
-                                       new = abc_dup_symbol(s);
-                                       new->dur_num *= l_mul;
-                                       new->dur_den *= l_div;
-
-                                       if (nup_r) {
-                                           new->dur_num *= nup_q;
-                                           new->dur_den *= nup_p;
-                                       }
-
-                                       abc_frac_add(&new->ev.start_num, &new->ev.start_den, tick_num, tick_den);
-                                       /* we use the first note of chord as chord duration! */
-                                       if (chord_num == 0) {
-                                           chord_num = new->dur_num;
-                                           chord_den = new->dur_den;
-                                       }
-                                   }
-                               } else {
-                                   if (!in_chord) {
-                                       int prev_chord = 0;
-                                       /* prev note just lasts longer */
-                                       struct abc_symbol* p = voice->last;
-                                       while (p && p->kind != ABC_NOTE) {
-                                           if (p->kind == ABC_CHORD)
-                                               prev_chord = 1;
-                                           p = p->prev;
-                                       }
-                                       /* prev note could be in a chord! */
-                                       if (prev_chord) {
-                                           while (p && strcmp(p->text, s->text)) {
-                                               p = p->prev;
-                                               if (p && p->kind == ABC_CHORD)
-                                                   break;
-                                           }
-                                       }
-
-                                       int nup_num = l_mul * s->dur_num;
-                                       int nup_den = l_div * s->dur_den;
-                                       if (nup_r) {
-                                           nup_num *= nup_q;
-                                           nup_den *= nup_p;
-                                           nup_r--;
-                                       }
-
-                                       if (p && p->kind == ABC_NOTE) {
-                                           abc_frac_add(&p->dur_num, &p->dur_den, nup_num, nup_den);
-                                           abc_frac_add(&tick_num, &tick_den, nup_num, nup_den);
-                                       }
-                                       in_tie = 0;
-                                   } else { /* in_tie and in_chord */
-                                       /* look if previous note is in a chord or a single note */
-                                       struct abc_symbol* p = voice->last;
-                                       while (p && p->kind != ABC_CHORD && p->kind != ABC_NOTE)
-                                           p = p->prev;
-
-                                       if (p && p->kind == ABC_CHORD) { /* previous note is in a chord */
-                                           /* for each s note, find the p note if any */
-                                           while (s->kind != ABC_CHORD) {
-                                               if (s->kind == ABC_NOTE) {
-                                                   p = abc_chord_rewind(p->prev);
-                                                   p = abc_chord_first_note(p);
-
-                                                   while (p->kind != ABC_CHORD) {
-                                                       if (p->kind == ABC_NOTE && !strcmp(p->text, s->text)) {
-                                                           long dur_num = l_mul * s->dur_num;
-                                                           long dur_den = l_div * s->dur_den;
-
-                                                           if (nup_r) {
-                                                               dur_num *= nup_q;
-                                                               dur_den *= nup_p;
-                                                           }
-
-                                                           abc_frac_add(&p->dur_num, &p->dur_den, dur_num, dur_den);
-                                                           /* we use the first note of this chord to add to chord duration! */
-                                                           if (chord_num == 0) {
-                                                               abc_frac_add(&chord_num, &chord_den, dur_num, dur_den);
-                                                           }
-                                                           break;
-                                                       }
-
-                                                       p = p->next;
-                                                   }
-
-                                                   /* corresponding p note to s was not found? */
-                                                   if (p->kind == ABC_CHORD) {
-                                                       struct abc_symbol* n = abc_dup_symbol(s);
-                                                       n->dur_num *= l_mul;
-                                                       n->dur_den *= l_div;
-                                                       if (nup_r) {
-                                                           n->dur_num *= nup_q;
-                                                           n->dur_den *= nup_p;
-                                                       }
-                                                       abc_frac_add(&n->ev.start_num, &n->ev.start_den, tick_num, tick_den);
-                                                       /* do not append this note after the ']' chord, insert it! */
-                                                       p = p->prev;
-
-                                                       n->next = p->next;
-                                                       p->next = n;
-                                                       n->prev = p;
-                                                       n->next->prev = n;
-
-                                                       /* we use the first note of this chord to add to chord duration! */
-                                                       if (chord_num == 0) {
-                                                           abc_frac_add(&chord_num, &chord_den, n->dur_num, n->dur_den);
-                                                       }
-                                                   }
-                                               } else if (s->kind == ABC_TIE) { /* in-chord tie */
-                                                   next_tie = 1; /* we manage the tie globally */
-                                               } else {
-                                                   /* any other symbol goes here */
-                                                   struct abc_symbol* u = abc_dup_symbol(s);
-                                                   abc_voice_append_symbol(voice, u);
-                                               }
-
-                                               s = s->next;
-                                           }
-
-                                           new = NULL;
-                                           in_tie = 0;
-                                           /* do not pass by CHORD token, but manage it here: */
-                                           abc_frac_add(&tick_num, &tick_den, chord_num, chord_den);
-                                           chord_num = 0, chord_den = 1;
-                                           in_chord = 0;
-                                       } else { /* previous note is not in a chord */
-                                           /* insert chord while we are in tie
-                                            * and play some of its notes later
-                                            */
-                                           struct abc_symbol* new = calloc(1, sizeof (struct abc_symbol));
-                                           new->kind = ABC_CHORD;
-                                           new->text = strdup("[");
-                                           new->ev.start_den = 1;
-                                           new->dur_den = 1;
-
-                                           /* insert new virtual chord symbol just before the previously accepted note */
-                                           if (p && p->prev)
-                                               p->prev->next = new;
-                                           else /* p was first symbol */
-                                               voice->first = new;
-                                           if (p) {
-                                               new->prev = p->prev;
-                                               p->prev = new;
-                                           }
-                                           new->next = p;
-                                           int num = p ? p->dur_num : 0;
-                                           int den = p ? p->dur_den : 1;
-
-                                           while (s->kind != ABC_CHORD) {
-                                               if (s->kind == ABC_NOTE) {
-                                                   if (p && !strcmp(p->text, s->text)) { /* same note */
-                                                       num = l_mul * s->dur_num;
-                                                       den = l_div * s->dur_den;
-
-                                                       if (nup_r) {
-                                                           num *= nup_q;
-                                                           den *= nup_p;
-                                                       }
-
-                                                       abc_frac_add(&p->dur_num, &p->dur_den, num, den);
-                                                   } else {
-                                                       struct abc_symbol* n = abc_dup_symbol(s);
-                                                       n->dur_num *= l_mul;
-                                                       n->dur_den *= l_div;
-                                                       if (nup_r) {
-                                                           n->dur_num *= nup_q;
-                                                           n->dur_den *= nup_p;
-                                                       }
-
-                                                       abc_frac_add(&n->ev.start_num, &n->ev.start_den, tick_num, tick_den);
-                                                       abc_voice_append_symbol(voice, n);
-                                                   }
-                                               } else if (s->kind == ABC_TIE) { /* in-chord tie */
-                                                   next_tie = 1; /* we manage the tie globally */
-                                               } else {
-                                                   /* any other symbol goes here */
-                                                   struct abc_symbol* u = abc_dup_symbol(s);
-                                                   abc_voice_append_symbol(voice, u);
-                                               }
-
-                                               s = s->next;
-                                           }
-                                           /* use the first note modified duration to add to main tick */
-                                           abc_frac_add(&tick_num, &tick_den, num, den);
-
-                                           s = s->prev; /* this will allow chord closing */
-                                           new = NULL;
-                                           in_tie = 0;
-                                       }
-                                   }
-                               }
-                           }
-                           break;
+                                if (!ctx.in_tie) {
+                                    if (!ctx.in_chord) {
+                                        new = abc_untie_voice_produce_single_note(&ctx, s);
+                                    } else { /* in_chord */
+                                        new = abc_untie_voice_produce_single_chord(&ctx, s);
+                                    }
+                                } else { /* in_tie */
+                                    if (!ctx.in_chord) {
+                                        abc_untie_voice_produce_tied_note(&ctx, s, voice);
+                                    } else { /* in_tie and in_chord */
+                                        abc_untie_voice_produce_tied_chord(&ctx, &s, voice);
+                                    }
+                                }
+                            }
+                            break;
             case ABC_TIE: {
-                              if (in_chord)
-                                  next_tie = 1;
+                              if (ctx.in_chord)
+                                  ctx.next_tie = 1;
                               else
-                                  in_tie = 1;
+                                  ctx.in_tie = 1;
                           }
                           break;
             default: {
