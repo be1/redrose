@@ -41,6 +41,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 	xlabel.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     xlabel.setBuddy(&xspinbox);
     progress = new QProgressIndicator();
+    progress->setColor(qApp->palette().color(QPalette::Text));
     progress->startAnimation();
 
     hboxlayout.addWidget(&xlabel);
