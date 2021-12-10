@@ -63,8 +63,9 @@ QMessageBox::StandardButton ScoreMenu::gracefulQuit()
     EditTabWidget* tabs = a->mainWindow()->mainHSplitter()->editTabWidget();
 
     int unsaved= 0;
-    for (int i = 0; i < tabs->editWidgetList()->length(); i++) {
-        if (!tabs->editWidgetList()->at(i)->editVBoxLayout()->abcPlainTextEdit()->isSaved())
+    for (int i = 0; i < tabs->count(); i++) {
+        EditWidget* w = qobject_cast<EditWidget*>(tabs->widget(i));
+        if (!w->editVBoxLayout()->abcPlainTextEdit()->isSaved())
             unsaved++;
     }
 
@@ -123,7 +124,7 @@ void ScoreMenu::onSaveActionTriggered()
     if (cur < 0)
         return;
 
-    QString fileName = (*edittabs->currentEditWidget()->fileName());
+    QString fileName = *qobject_cast<EditWidget*>(edittabs->currentWidget())->fileName();
     if (fileName.isEmpty()) {
         QMessageBox::warning(this, tr("Warning"), tr("Could not save an untitled ABC file!"));
         return;
@@ -163,7 +164,8 @@ void ScoreMenu::onSaveAsActionTriggered()
 
     QFileInfo info(fileName);
     edittabs->setTabText(edittabs->currentIndex(), info.baseName());
-    edittabs->currentEditWidget()->setFileName(fileName);
+    EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
+    ew->setFileName(fileName);
     return onSaveActionTriggered();
 }
 
@@ -176,13 +178,13 @@ void ScoreMenu::onExportActionTriggered()
     if (cur < 0)
         return;
 
-    QString exp = *edittabs->currentEditWidget()->fileName();
+    EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
+    QString exp = *ew->fileName();
     exp.replace(QRegularExpression("\\.abc$"), ".mid");
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export MIDI file"), exp, tr("MIDI file (*.mid)"));
     if (fileName.isEmpty())
         return; /* cancelled */
 
-    EditWidget* ew = edittabs->editWidgetList()->at(cur);
     ew->editVBoxLayout()->exportMIDI(fileName);
 }
 
@@ -195,13 +197,13 @@ void ScoreMenu::onExportPsActionTriggered()
     if (cur < 0)
         return;
 
-    QString exp = *edittabs->currentEditWidget()->fileName();
+    EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
+    QString exp = *ew->fileName();
     exp.replace(QRegularExpression("\\.abc$"), ".ps");
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export Postscript file"), exp, tr("Postscript file (*.ps)"));
     if (fileName.isEmpty())
         return; /* cancelled */
 
-    EditWidget* ew = edittabs->editWidgetList()->at(cur);
     ew->editVBoxLayout()->exportPostscript(fileName);
 }
 

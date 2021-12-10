@@ -14,19 +14,9 @@ EditTabWidget::EditTabWidget(QWidget* parent)
 
 EditTabWidget::~EditTabWidget()
 {
-    for (int i = editwidgetlist.length() -1; i >= 0; i-- ) {
+    for (int i = count() -1; i >= 0; i-- ) {
         removeTab(i);
     }
-}
-
-QList<EditWidget*> *EditTabWidget::editWidgetList()
-{
-    return &editwidgetlist;
-}
-
-EditWidget *EditTabWidget::currentEditWidget()
-{
-    return currenteditwidget;
 }
 
 int EditTabWidget::addTab(EditWidget *swidget)
@@ -34,26 +24,21 @@ int EditTabWidget::addTab(EditWidget *swidget)
     QFileInfo info(*(swidget->fileName()));
     int ret = QTabWidget::addTab(swidget, info.baseName());
     setCurrentWidget(swidget);
-    editwidgetlist.append(swidget);
-    currenteditwidget = swidget;
-    qDebug() << "addTab: " << (*currenteditwidget->fileName());
-    currenteditwidget->editVBoxLayout()->onRunClicked();
+    qDebug() << "addTab: " << (*swidget->fileName());
     return ret;
 }
 
 void EditTabWidget::removeTab(int index)
 {
-    EditWidget *w = editwidgetlist.at(index);
+    EditWidget *w = qobject_cast<EditWidget*>(widget(index));
     w->editVBoxLayout()->finalize();
-    editwidgetlist.removeAt(index);
     QTabWidget::removeTab(index);
     delete w;
 }
 
 void EditTabWidget::removeTabs()
 {
-    int len = editWidgetList()->length();
-    for (int i = len -1; i >= 0; i-- ) {
+    for (int i = count() -1; i >= 0; i-- ) {
         removeTab(i);
     }
 }
@@ -63,7 +48,7 @@ void EditTabWidget::askRemoveTab(int index)
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* m = a->mainWindow();
 
-    EditWidget *w = editwidgetlist.at(index);
+    EditWidget *w = qobject_cast<EditWidget*>(widget(index));
     if (!w->editVBoxLayout()->abcPlainTextEdit()->isSaved() &&
             (QMessageBox::StandardButton::No == QMessageBox::question(m, tr("Really close?"),
                                                                       tr("Current score not saved!\nClose this score anyway?"))))
@@ -75,13 +60,10 @@ void EditTabWidget::askRemoveTab(int index)
 
 void EditTabWidget::onCurrentChanged(int index)
 {
-    EditWidget* swidget = static_cast<EditWidget*>(currentWidget());
-    for (int i = 0; i < editwidgetlist.length(); i++) {
-        if (editwidgetlist.at(i) == swidget) {
-            currenteditwidget = editwidgetlist.at(i);
-            qDebug() << "currentTab: " << index << (*currenteditwidget->fileName()) << i;
-            currenteditwidget->editVBoxLayout()->onRunClicked();
-            break;
-        }
-    }
+    if (index < 0)
+        return;
+
+    EditWidget* w = qobject_cast<EditWidget*>(widget(index));
+    qDebug() << "currentTab: " << index << (*w->fileName()) << index;
+    w->editVBoxLayout()->onRunClicked();
 }

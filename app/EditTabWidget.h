@@ -14,9 +14,6 @@ public:
 	EditTabWidget(QWidget* parent = nullptr);
     ~EditTabWidget();
 
-    QList<EditWidget*> *editWidgetList();
-    EditWidget *currentEditWidget();
-
     int addTab(EditWidget *swidget);
     void removeTab(int index);
     void removeTabs(void);
@@ -24,9 +21,5 @@ public:
 
 protected slots:
     void onCurrentChanged(int index);
-
-private:
-    QList<EditWidget*> editwidgetlist;
-    EditWidget* currenteditwidget;
 };
 #endif
