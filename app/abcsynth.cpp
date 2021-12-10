@@ -85,7 +85,8 @@ void AbcSynth::abort()
 {
    if (sfloader && sfloader->isRunning())
        sfloader->terminate();
-   sfloader->deleteLater();
+   if (sfloader)
+       sfloader->deleteLater();
    sfloader = nullptr;
 }
 
