@@ -1405,7 +1405,7 @@ struct abc_untie_ctx {
     long chord_num, chord_den; /* chord duration */
 };
 
-struct abc_symbol* abc_untie_voice_produce_single_note(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
+static struct abc_symbol* abc_untie_voice_produce_single_note(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
     /* produce simple note */
     struct abc_symbol* new = abc_dup_symbol(s);
     new->dur_num *= ctx->l_mul;
@@ -1432,7 +1432,7 @@ struct abc_symbol* abc_untie_voice_produce_single_note(struct abc_untie_ctx* ctx
     return new;
 }
 
-struct abc_symbol* abc_untie_voice_produce_single_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
+static struct abc_symbol* abc_untie_voice_produce_single_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
     struct abc_symbol* new = abc_dup_symbol(s);
     new->dur_num *= ctx->l_mul;
     new->dur_den *= ctx->l_div;
@@ -1452,7 +1452,7 @@ struct abc_symbol* abc_untie_voice_produce_single_chord(struct abc_untie_ctx* ct
     return new;
 }
 
-void abc_untie_voice_produce_tied_note(struct abc_untie_ctx* ctx, struct abc_symbol* s, struct abc_voice* voice) {
+static void abc_untie_voice_produce_tied_note(struct abc_untie_ctx* ctx, struct abc_symbol* s, struct abc_voice* voice) {
     int prev_chord = 0;
     /* prev note just lasts longer */
     /* output is produced by modifying voice->last */
@@ -1486,7 +1486,7 @@ void abc_untie_voice_produce_tied_note(struct abc_untie_ctx* ctx, struct abc_sym
     ctx->in_tie = 0;
 }
 
-void abc_untie_voice_produce_tied_chord(struct abc_untie_ctx* ctx, struct abc_symbol** sp, struct abc_voice* voice) {
+static void abc_untie_voice_produce_tied_chord(struct abc_untie_ctx* ctx, struct abc_symbol** sp, struct abc_voice* voice) {
     struct abc_symbol* new = NULL;
     struct abc_symbol* s = *sp;
     /* look if previous note is in a chord or a single note */
@@ -1673,12 +1673,14 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                  }
                              }
                              break;
+
             case ABC_NUP: {
                               if (3 == sscanf(s->text, "%d:%d:%d", &ctx.nup_p, &ctx.nup_q, &ctx.nup_r)) {
                                   abc_compute_pqr(&ctx.nup_p, &ctx.nup_q, &ctx.nup_r, ctx.m);
                               }
                           }
                           break;
+
             case ABC_GRACE: {
                                 if (s->text[0] == '{') {
                                     ctx.in_grace = 1;
@@ -1687,6 +1689,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                 }
                             }
                             break;
+
             case ABC_CHORD: {
                                 if (!ctx.in_tie)
                                     new = abc_dup_symbol(s);
@@ -1704,6 +1707,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                 }
                             }
                             break;
+
             case ABC_NOTE: {
                                 if (!ctx.in_tie) {
                                     if (!ctx.in_chord) {
@@ -1720,6 +1724,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                 }
                             }
                             break;
+
             case ABC_TIE: {
                               if (ctx.in_chord)
                                   ctx.next_tie = 1;
@@ -1727,6 +1732,7 @@ struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t) {
                                   ctx.in_tie = 1;
                           }
                           break;
+
             default: {
                          /* and ABC_BAR */
                          new = abc_dup_symbol(s);
