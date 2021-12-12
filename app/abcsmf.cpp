@@ -138,10 +138,10 @@ void AbcSmf::onSMFWriteTrack(int track) {
         writeBpmTempo(0, tempo);
         writeKeySignature(0, mks, mode);
 
-        struct abc_voice* f = abc_unfold_voice(t->voices[track]);
-        struct abc_voice* u = abc_untie_voice(f, t);
+        struct abc_voice* f = abc_pass1_unfold_voice(t->voices[track]);
+        struct abc_voice* u = abc_pass2_untie_voice(f, t);
         abc_release_voice(f);
-        struct abc_voice* v = abc_eventy_voice(u);
+        struct abc_voice* v = abc_pass3_ungroup_voice(u);
         abc_release_voice(u);
 
         struct abc_symbol* s = v->first;
@@ -164,7 +164,7 @@ void AbcSmf::onSMFWriteTrack(int track) {
         while (s) {
                 switch (s->kind) {
                 case ABC_NUP:
-                case ABC_CHORD: /* eventing is already done */
+                case ABC_CHORD: /* ungrouping is already done */
                 case ABC_GRACE:
                 case ABC_TIE: /* untying has been already done */
                 case ABC_ALT: /* unfolding is already done */

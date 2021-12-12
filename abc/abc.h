@@ -173,11 +173,11 @@ struct abc* abc_parse_buffer(const char* buffer, int size);
 
 void abc_duration_add(struct abc_symbol* to, struct abc_symbol* with);
 
-struct abc_voice* abc_eventy_voice(const struct abc_voice* v);
+struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v);
 
-struct abc_voice* abc_untie_voice(struct abc_voice* v, struct abc_tune* t);
+struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t);
 
-struct abc_voice* abc_unfold_voice(struct abc_voice* v);
+struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v);
 
 struct abc_symbol* abc_chord_first_note(struct abc_symbol* s);
 
