@@ -1224,11 +1224,12 @@ static int event_cmp(const void* a, const void* b) {
     const struct abc_symbol* s2 = b;
     long s1_v, s2_v;
 
-    /* if the values are the same, return position shift.
-     * this allow repeated notes to not overlap */
+    /* if the tick values are the same, return noteoff first.
+     * this allow repeated notes to not overlap in some cases. */
     if (s1->ev.start_num == s2->ev.start_num
-            && s1->ev.start_den == s2->ev.start_den)
-        return b - a;
+            && s1->ev.start_den == s2->ev.start_den) {
+        return s1->ev.value - s2->ev.value;
+    }
 
     s1_v = (double) s1->ev.start_num / (double) s1->ev.start_den;
     s2_v = (double) s2->ev.start_num / (double) s2->ev.start_den;
