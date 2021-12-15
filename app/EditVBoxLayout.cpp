@@ -204,7 +204,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         for (int l = 0; l < lines.count() && i < selectionIndex; l++) {
             i += lines.at(l).count() +1; /* count \n */
             if (lines.at(l).startsWith("X:")) {
-                xspinbox.setValue(lines.at(l).rightRef(1).toInt());
+                xspinbox.setValue(lines.at(l).right(1).toInt());
                 xl = l;
                 /* don't break on first X: continue until selectionIndex */
             }
@@ -355,7 +355,7 @@ int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
     for (int l = 0; l < lines.count() && i < index; l++) {
         i += lines.at(l).count() +1; /* count \n */
         if (lines.at(l).startsWith("X:")) {
-            x = lines.at(l).rightRef(1).toInt();
+            x = lines.at(l).right(1).toInt();
         }
     }
 

@@ -1,5 +1,8 @@
 include(../common.pri)
 QT += core widgets gui svg printsupport
+equals(QT_MAJOR_VERSION, 6) {
+    QT += svgwidgets core5compat
+}
 TEMPLATE = app
 CONFIG += link_pkgconfig
 PKGCONFIG += fluidsynth drumstick-file
