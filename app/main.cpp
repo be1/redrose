@@ -6,8 +6,37 @@
 #include <QLocale>
 #include <QTranslator>
 
+#ifdef EBUG
+#include <stdio.h>
+#include <execinfo.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#endif
+
+#ifdef EBUG
+void handler(int sig) {
+  int fd = open("/tmp/redrose.trace", O_CREAT|O_WRONLY|O_TRUNC);
+  void *array[10];
+  size_t size;
+
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 10);
+
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, size, fd);
+  close(fd);
+  exit(1);
+}
+#endif
+
 int main(int argc, char** argv)
 {
+#ifdef EBUG
+    signal(SIGSEGV, handler);
+#endif
 	Q_INIT_RESOURCE(resources);
 
 	AbcApplication abcapplication(argc, argv);
