@@ -1469,7 +1469,8 @@ static struct abc_symbol* abc_untie_voice_produce_single_chord(struct abc_untie_
 static void abc_untie_voice_lengthen_tied_note(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
     struct abc_symbol* p = NULL;
     for (int i = 0; i < ctx->ties_len; i++) {
-        if (!strcmp(ctx->ties[i]->text, s->text)) {
+        /* compare MIDI pitch, not text (which could differ with alteration text) */
+        if (ctx->ties[i]->ev.key == s->ev.key) {
             p = ctx->ties[i];
             break;
         }
@@ -1493,7 +1494,8 @@ static void abc_untie_voice_lengthen_tied_chord(struct abc_untie_ctx* ctx, struc
     int found = 0;
     for (int i = 0; i < ctx->ties_len; i++) {
         struct abc_symbol* p = ctx->ties[i];
-        if (s->kind == ABC_NOTE && !strcmp(p->text, s->text)) {
+        /* compare MIDI pitch, not text (which could differ with alteration text) */
+        if (s->kind == ABC_NOTE && p->ev.key == s->ev.key) {
             found = 1;
             /* make tie */
             long dur_num = ctx->l_mul * s->dur_num;
