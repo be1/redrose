@@ -732,6 +732,7 @@ void abc_duration_den_set(struct abc* yy, const char* yytext)
     struct abc_voice* voice = tune->voices[tune->count-1];
 
     if (yytext[0] == '/')
+        /* divide by 2 as many as '/' */
         voice->last->dur_den = pow(2, strlen(yytext));
     else
         voice->last->dur_den = atoi(yytext);
@@ -1547,7 +1548,7 @@ void update_ties(struct abc_untie_ctx* ctx) {
 void update_next_ties(struct abc_untie_ctx* ctx, struct abc_symbol* s, struct abc_voice* voice) {
     int found = 0;
     for (int i = 0; i < ctx->ties_len; i++) {
-        if (s && !strcmp(ctx->ties[i]->text, s->text)) {
+        if (s && ctx->ties[i]->ev.key == s->ev.key) {
             found = 1;
             ctx->next_ties[ctx->next_ties_len++] = ctx->ties[i];
         }
