@@ -161,7 +161,7 @@ bool ScoreMenu::loadFile(const QString& fileName)
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
 
-        EditWidget* widget = new EditWidget(fileName, nullptr);
+        EditWidget* widget = new EditWidget(fileName, edittabs);
 
         AbcPlainTextEdit *edit = widget->editVBoxLayout()->abcPlainTextEdit();
         edit->setPlainText(file.readAll());

@@ -35,19 +35,11 @@ AbcMainWindow *AbcApplication::mainWindow()
 
 void AbcApplication::openFileNames(const QStringList &fileNames)
 {
-        EditTabWidget* edittabs = mainWindow()->mainHSplitter()->editTabWidget();
-        for (int i = 0; i < fileNames.length(); i++) {
-                QString fileName = fileNames[i];
-                QFile file(fileName);
-                if (file.open(QFile::ReadOnly | QFile::Text)) {
-                        EditWidget* widget = new EditWidget(fileName, edittabs);
-                        AbcPlainTextEdit *edit = widget->editVBoxLayout()->abcPlainTextEdit();
-                        edit->setPlainText(file.readAll());
-                        file.close();
-                        edit->setSaved();
-                        edittabs->addTab(widget);
-                }
-        }
+    ScoreMenu* menu = mainWindow()->scoreMenu();
+    for (int i = 0; i < fileNames.length(); i++) {
+        QString fileName = fileNames[i];
+        menu->loadFile(fileName);
+    }
 }
 
 bool AbcApplication::isquit = false;

@@ -21,6 +21,7 @@ public:
     ~AbcMainWindow();
 
     MainHSplitter *mainHSplitter();
+    ScoreMenu *scoreMenu();
 
 protected:
      void closeEvent(QCloseEvent *event);

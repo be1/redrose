@@ -12,9 +12,9 @@ public:
 	ScoreMenu(QWidget* parent = nullptr);
     ~ScoreMenu();
     QMessageBox::StandardButton gracefulQuit();
+    bool loadFile(const QString& fileName);
 
 protected:
-    bool loadFile(const QString& fileName);
     void setRecentFile(const QString& fileName);
     void updateRecentFileActions();
     QString strippedName(const QString &fullFileName);

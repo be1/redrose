@@ -24,6 +24,11 @@ MainHSplitter *AbcMainWindow::mainHSplitter()
     return &mainhsplitter;
 }
 
+ScoreMenu *AbcMainWindow::scoreMenu()
+{
+    return &scoremenu;
+}
+
 void AbcMainWindow::closeEvent(QCloseEvent *event)
 {
     if (QMessageBox::StandardButton::Yes == scoremenu.gracefulQuit()) {
