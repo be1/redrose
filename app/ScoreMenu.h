@@ -13,9 +13,16 @@ public:
     ~ScoreMenu();
     QMessageBox::StandardButton gracefulQuit();
 
+protected:
+    bool loadFile(const QString& fileName);
+    void setRecentFile(const QString& fileName);
+    void updateRecentFileActions();
+    QString strippedName(const QString &fullFileName);
+
 protected slots:
     void onQuitActionTriggered();
     void onOpenActionTriggered();
+    void onOpenRecentActionTriggered();
     void onSaveActionTriggered();
     void onSaveAsActionTriggered();
     void onExportActionTriggered();
@@ -26,6 +33,10 @@ protected slots:
 private:
     QAction newaction;
     QAction openaction;
+
+    enum { MaxRecentFiles = 5 };
+    QAction *recentFileActs[MaxRecentFiles];
+
     QAction saveaction;
     QAction saveasaction;
     QAction exportaction;

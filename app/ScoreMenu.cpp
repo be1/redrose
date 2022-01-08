@@ -3,6 +3,7 @@
 #include "AbcPlainTextEdit.h"
 #include "EditTabWidget.h"
 #include "EditWidget.h"
+#include "settings.h"
 #include <QMessageBox>
 #include <QApplication>
 #include <QFileDialog>
@@ -21,6 +22,18 @@ ScoreMenu::ScoreMenu(QWidget* parent)
     openaction.setText(tr("Open"));
     openaction.setShortcut(QKeySequence(QKeySequence::Open));
     addAction(&openaction);
+
+    for (int i = 0; i < MaxRecentFiles; ++i) {
+        recentFileActs[i] = new QAction(this);
+        recentFileActs[i]->setVisible(false);
+        connect(recentFileActs[i], &QAction::triggered, this, &ScoreMenu::onOpenRecentActionTriggered);
+    }
+
+    QMenu* sub = addMenu(tr("Recently opened"));
+    for (int i = 0; i < MaxRecentFiles; ++i)
+        sub->addAction(recentFileActs[i]);
+
+    updateRecentFileActions();
 
     saveaction.setText(tr("Save"));
     saveaction.setShortcut(QKeySequence(QKeySequence::Save));
@@ -100,6 +113,50 @@ void ScoreMenu::onOpenActionTriggered()
     if (fileName.isEmpty())
         return;
 
+    loadFile(fileName);
+}
+
+QString ScoreMenu::strippedName(const QString& fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
+}
+
+void ScoreMenu::updateRecentFileActions()
+{
+    Settings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
+
+    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+
+    for (int i = 0; i < numRecentFiles; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        recentFileActs[i]->setText(text);
+        recentFileActs[i]->setData(files[i]);
+        recentFileActs[i]->setVisible(true);
+    }
+
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+        recentFileActs[j]->setVisible(false);
+}
+
+void ScoreMenu::setRecentFile(const QString& fileName)
+{
+    Settings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
+
+    settings.setValue("recentFileList", files);
+    updateRecentFileActions();
+}
+
+bool ScoreMenu::loadFile(const QString& fileName)
+{
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    AbcMainWindow* w = a->mainWindow();
+
     QFile file(fileName);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
@@ -111,7 +168,20 @@ void ScoreMenu::onOpenActionTriggered()
         file.close();
         edit->setSaved();
         edittabs->addTab(widget);
+
+        setRecentFile(fileName);
+
+        return true;
     }
+
+    return false;
+}
+
+void ScoreMenu::onOpenRecentActionTriggered()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+        loadFile(action->data().toString());
 }
 
 void ScoreMenu::onSaveActionTriggered()
@@ -140,6 +210,7 @@ void ScoreMenu::onSaveActionTriggered()
         file.write(tosave.toUtf8());
         file.close();
         edit->setSaved();
+        setRecentFile(fileName);
         w->statusBar()->showMessage(tr("Score saved."));
     } else {
         QMessageBox::warning(this, tr("Warning"), tr("Could not save ABC score!"));
