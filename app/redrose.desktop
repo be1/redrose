@@ -2,8 +2,10 @@
 Encoding=UTF-8
 Name=Redrose
 Name[fr]=Redrose
-GenericName=ABC music notation graphical environment
-GenericName[fr]=Environnement graphique de notation musicale ABC
+Comment=ABC music notation graphical environment
+Comment[fr]=Environnement graphique de notation musicale ABC
+GenericName=ABC editor
+GenericName[fr]=Éditeur ABC
 Keywords=music;score;notation;tune;gig;jam
 Keywords[fr]=musique;partition;notation;morceau;concert;jam
 Exec=redrose %F
