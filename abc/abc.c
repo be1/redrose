@@ -302,7 +302,7 @@ unsigned char pitch_diff_0x3c(const char* ks, int note) {
     if (!strcasecmp(ks, "C#") || !strcasecmp(ks, "C#maj") || !strcasecmp(ks, "A#min"))
         return _pitch_diff_CSharpMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "C#") || !strcasecmp(ks, "Dbmaj") || !strcasecmp(ks, "Bbmin"))
+    if (!strcasecmp(ks, "Db") || !strcasecmp(ks, "Dbmaj") || !strcasecmp(ks, "Bbmin"))
         return _pitch_diff_DFlatMaj_0x3c[note];
 
     if (!strcasecmp(ks, "Ab") || !strcasecmp(ks, "Abmaj") || !strcasecmp(ks, "Fmin"))
