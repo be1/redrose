@@ -64,7 +64,7 @@
         <location filename="EditTabWidget.cpp" line="54"/>
         <source>Current score not saved!
 Close this score anyway?</source>
-        <translation>Partition courant non enregistrée !
+        <translation>Partition courante non enregistrée !
 Fermer cette partition quand-même ?</translation>
     </message>
 </context>
