@@ -67,6 +67,6 @@ desktop.files = redrose.desktop
 icon.path = $$DATADIR/icons/hicolor/scalable/apps
 icon.files = redrose.svg
 mime.path = $$DATADIR/mime/packages
-mime.files = application-vnd-abc.xml
+mime.files = redrose.xml
 INSTALLS += target translations desktop icon mime
 
