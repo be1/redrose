@@ -1,4 +1,4 @@
-VERSION = 0.2.5
+VERSION = 0.2.6
 REVISION = $$system(git describe --long --tags 2>/dev/null || echo "stable")
 CONFIG(release, debug|release) {
     DEFINES += QT_NO_DEBUG_OUTPUT _FORTIFY_SOURCE=2
@@ -6,6 +6,7 @@ CONFIG(release, debug|release) {
 CONFIG(debug, debug|release) {
     DEFINES += EBUG
     QMAKE_CXXFLAGS += -rdynamic
+    QMAKE_CFLAGS += -rdynamic
 }
 isEmpty(PREFIX): PREFIX = /usr/local
 isEmpty(BINDIR): BINDIR = $$PREFIX/bin
