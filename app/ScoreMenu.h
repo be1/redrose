@@ -15,7 +15,7 @@ public:
     bool loadFile(const QString& fileName);
 
 protected:
-    void setRecentFile(const QString& fileName);
+    void setRecentFile(const QString& fileName, bool ok);
     void updateRecentFileActions();
     QString strippedName(const QString &fullFileName);
 

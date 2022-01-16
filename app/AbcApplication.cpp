@@ -38,7 +38,8 @@ void AbcApplication::openFileNames(const QStringList &fileNames)
     ScoreMenu* menu = mainWindow()->scoreMenu();
     for (int i = 0; i < fileNames.length(); i++) {
         QString fileName = fileNames[i];
-        menu->loadFile(fileName);
+        QFileInfo info(fileName);
+        menu->loadFile(info.absoluteFilePath());
     }
 }
 

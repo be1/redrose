@@ -139,12 +139,15 @@ void ScoreMenu::updateRecentFileActions()
         recentFileActs[j]->setVisible(false);
 }
 
-void ScoreMenu::setRecentFile(const QString& fileName)
+void ScoreMenu::setRecentFile(const QString& fileName, bool ok)
 {
     Settings settings;
     QStringList files = settings.value("recentFileList").toStringList();
     files.removeAll(fileName);
-    files.prepend(fileName);
+
+    if (ok)
+        files.prepend(fileName);
+
     while (files.size() > MaxRecentFiles)
         files.removeLast();
 
@@ -169,7 +172,7 @@ bool ScoreMenu::loadFile(const QString& fileName)
         edit->setSaved();
         edittabs->addTab(widget);
 
-        setRecentFile(fileName);
+        setRecentFile(fileName, true);
 
         return true;
     }
@@ -179,9 +182,17 @@ bool ScoreMenu::loadFile(const QString& fileName)
 
 void ScoreMenu::onOpenRecentActionTriggered()
 {
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    AbcMainWindow* w = a->mainWindow();
+
     QAction *action = qobject_cast<QAction *>(sender());
-    if (action)
-        loadFile(action->data().toString());
+    if (action) {
+        bool ret = loadFile(action->data().toString());
+        if (!ret) {
+            setRecentFile(action->data().toString(), false);
+            QMessageBox::warning(w, tr("Warning"), tr("Could not open score!"));
+        }
+    }
 }
 
 void ScoreMenu::onSaveActionTriggered()
@@ -196,7 +207,7 @@ void ScoreMenu::onSaveActionTriggered()
 
     QString fileName = *qobject_cast<EditWidget*>(edittabs->currentWidget())->fileName();
     if (fileName.isEmpty()) {
-        QMessageBox::warning(this, tr("Warning"), tr("Could not save an untitled ABC file!"));
+        QMessageBox::warning(w, tr("Warning"), tr("Could not save an untitled ABC file!"));
         return;
     }
 
@@ -210,10 +221,10 @@ void ScoreMenu::onSaveActionTriggered()
         file.write(tosave.toUtf8());
         file.close();
         edit->setSaved();
-        setRecentFile(fileName);
+        setRecentFile(fileName, true);
         w->statusBar()->showMessage(tr("Score saved."));
     } else {
-        QMessageBox::warning(this, tr("Warning"), tr("Could not save ABC score!"));
+        QMessageBox::warning(w, tr("Warning"), tr("Could not save ABC score!"));
     }
 }
 
