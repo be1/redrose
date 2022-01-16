@@ -177,6 +177,7 @@ bool ScoreMenu::loadFile(const QString& fileName)
         return true;
     }
 
+    setRecentFile(fileName, false);
     return false;
 }
 
@@ -187,9 +188,7 @@ void ScoreMenu::onOpenRecentActionTriggered()
 
     QAction *action = qobject_cast<QAction *>(sender());
     if (action) {
-        bool ret = loadFile(action->data().toString());
-        if (!ret) {
-            setRecentFile(action->data().toString(), false);
+        if (!loadFile(action->data().toString())) {
             QMessageBox::warning(w, tr("Warning"), tr("Could not open score!"));
         }
     }
