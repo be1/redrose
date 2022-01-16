@@ -28,10 +28,10 @@ int main() {
 
 		printf("title: %s\n", h? h->text: "");
 		for (int j = 0; j < t->count; j++) {
-			struct abc_voice* u = abc_unfold_voice(t->voices[j]);
-			struct abc_voice* u2 = abc_untie_voice(u, t);
+			struct abc_voice* u = abc_pass1_unfold_voice(t->voices[j]);
+			struct abc_voice* u2 = abc_pass2_untie_voice(u, t);
 			abc_release_voice(u);
-			struct abc_voice* v = abc_eventy_voice(u2);
+			struct abc_voice* v = abc_pass3_ungroup_voice(u2);
 			abc_release_voice(u2);
 			//struct abc_voice* v = t->voices[j];
 			printf("tune %d, voice %s\n", t->x, v->v);
@@ -39,7 +39,7 @@ int main() {
 			for (s = v->first; s; s = s->next) {
 				printf("%d: %d %d:%d -> %d/%d ", s->kind, s->ev.key, s->ev.start_num, s->ev.start_den, s->dur_num, s->dur_den);
 				if (s->text) puts(s->text);
-				if (s->lyric) puts(s->lyric);
+				if (s->lyr) puts(s->lyr);
 			}
 
 			abc_release_voice(v);
