@@ -25,7 +25,7 @@ void SvgGenerator::generate(const QString &input, int xopt, QString output, int 
 
     argv << "-v"; /* SVG output*/
     argv << "-e" << QString::number(xopt); /* one tune to consider */
-    argv << "-N1"; /* numbering pages on  the up-left */
+    argv << "-N1"; /* numbering pages on the up-left */
     if (output.isEmpty()) {
         output = input;
         output.replace(QRegularExpression("\\.abc$"), ".svg"); /* but remind, output will be tempNNN.svg */
