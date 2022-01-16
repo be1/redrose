@@ -440,7 +440,7 @@ Voulez-vous quitter malgré tout ?</translation>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="110"/>
-        <location filename="ScoreMenu.cpp" line="232"/>
+        <location filename="ScoreMenu.cpp" line="243"/>
         <source>ABC score (*.abc)</source>
         <translation>Partition ABC (*.abc)</translation>
     </message>
@@ -450,48 +450,54 @@ Voulez-vous quitter malgré tout ?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="199"/>
-        <location filename="ScoreMenu.cpp" line="216"/>
+        <location filename="ScoreMenu.cpp" line="193"/>
+        <location filename="ScoreMenu.cpp" line="210"/>
+        <location filename="ScoreMenu.cpp" line="227"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="199"/>
+        <location filename="ScoreMenu.cpp" line="193"/>
+        <source>Could not open score!</source>
+        <translation>Impossible d&apos;ouvrir la partition !</translation>
+    </message>
+    <message>
+        <location filename="ScoreMenu.cpp" line="210"/>
         <source>Could not save an untitled ABC file!</source>
         <translation>Impossible d&apos;enregistrer un fichier ABC sans nom !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="214"/>
+        <location filename="ScoreMenu.cpp" line="225"/>
         <source>Score saved.</source>
         <translation>Partition enregistrée.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="216"/>
+        <location filename="ScoreMenu.cpp" line="227"/>
         <source>Could not save ABC score!</source>
         <translation>Impossible d&apos;enregistrer la partition ABC !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="232"/>
+        <location filename="ScoreMenu.cpp" line="243"/>
         <source>Save ABC score</source>
         <translation>Enregistrer la partition ABC</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="255"/>
+        <location filename="ScoreMenu.cpp" line="266"/>
         <source>Export MIDI file</source>
         <translation>Exporter en fichier MIDI</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="255"/>
+        <location filename="ScoreMenu.cpp" line="266"/>
         <source>MIDI file (*.mid)</source>
         <translation>Fichier MIDI (*.mid)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="274"/>
+        <location filename="ScoreMenu.cpp" line="285"/>
         <source>Export Postscript file</source>
         <translation>Exporter en fichier Postscript</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="274"/>
+        <location filename="ScoreMenu.cpp" line="285"/>
         <source>Postscript file (*.ps)</source>
         <translation>Fichier Postscript (*.ps)</translation>
     </message>
