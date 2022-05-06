@@ -30,7 +30,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     fluid_settings = new_fluid_settings();
     fluid_settings_setstr(fluid_settings, "audio.driver", drv);
 
-    QString jack_id = "qabc-" + name;
+    QString jack_id = "redr-" + name;
     ba = jack_id.toUtf8();
     id = (char*) realloc(id, ba.length() + 1);
     strncpy(id, ba.constData(), ba.length());
@@ -69,9 +69,9 @@ AbcSynth::~AbcSynth()
     if (fluid_player && waiter && waiter->isRunning()) {
         fluid_player_stop(fluid_player);
         waiter->wait();
-        delete_fluid_player(fluid_player);
     }
 
+    delete_fluid_player(fluid_player);
     delete_fluid_audio_driver(fluid_adriver);
     delete_fluid_synth(fluid_synth);
     delete_fluid_settings(fluid_settings);
@@ -113,7 +113,7 @@ void AbcSynth::play(const QString& midifile) {
         waiter->deleteLater();
     }
 
-     delete_fluid_player(fluid_player);
+    delete_fluid_player(fluid_player);
 
     fluid_player = new_fluid_player(fluid_synth);
     waiter = new TuneWaiter(fluid_player, this);

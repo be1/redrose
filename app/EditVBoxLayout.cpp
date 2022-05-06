@@ -1,5 +1,6 @@
 #include "config.h"
 #include "EditVBoxLayout.h"
+#include "abcsynth.h"
 #include "AbcApplication.h"
 #include "PreferencesMenu.h"
 #include "sfloader.h"
@@ -32,8 +33,6 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     svggen(this),
     midigen(this)
 {
-    setObjectName("EditVBoxLayout:" + fileName);
-
     QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
 	tempFile.setFileTemplate(t);
     xspinbox.setMinimum(1);
