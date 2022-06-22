@@ -14,16 +14,28 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
 
     mainLayout = new QVBoxLayout;
 
+    int fontRange = settings.value(EDITOR_FONT_RANGE).toInt();
+    fontRangeLabel = new QLabel(tr("Font enlargement"));
+    fontRangeSpinBox = new QSpinBox;
+    fontRangeSpinBox->setRange(-5,+5);
+    fontRangeSpinBox->setValue(fontRange);
+    fontRangeLabel->setBuddy(fontRangeSpinBox);
+    QHBoxLayout* fshbox = new QHBoxLayout;
+    fshbox->addWidget(fontRangeLabel);
+    fshbox->addWidget(fontRangeSpinBox);
+
+    mainLayout->addLayout(fshbox);
+
     bool highlight = settings.value(EDITOR_HIGHLIGHT).toBool();
     highlightLabel = new QLabel(tr("Highlight current line"));
     highlightCheck = new QCheckBox;
     highlightCheck->setChecked(highlight);
     highlightLabel->setBuddy(highlightCheck);
-    QHBoxLayout* hbox = new QHBoxLayout;
-    hbox->addWidget(highlightLabel);
-    hbox->addWidget(highlightCheck);
+    QHBoxLayout* hlhbox = new QHBoxLayout;
+    hlhbox->addWidget(highlightLabel);
+    hlhbox->addWidget(highlightCheck);
 
-    mainLayout->addLayout(hbox);
+    mainLayout->addLayout(hlhbox);
 
     /* WARNING: labels, keys, buttons in the same order */
     colorLabels << tr("Header color") \
@@ -90,6 +102,11 @@ QColor EditorPrefDialog::getColor(QString key)
 bool EditorPrefDialog::getHighlight()
 {
     return highlightCheck->isChecked();
+}
+
+int EditorPrefDialog::getFontRange()
+{
+    return fontRangeSpinBox->value();
 }
 
 void EditorPrefDialog::onColorButtonClicked()

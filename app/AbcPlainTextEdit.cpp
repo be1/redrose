@@ -35,6 +35,11 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     updateLineNumberAreaWidth(0);
 
     Settings settings;
+
+    QVariant fontRange = settings.value(EDITOR_FONT_RANGE);
+    int range = fontRange.toInt();
+    zoomIn(range);
+
     QVariant enableHighlightCurrentLine = settings.value(EDITOR_HIGHLIGHT);
     if (enableHighlightCurrentLine.toBool()) {
         connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::highlightCurrentLine);

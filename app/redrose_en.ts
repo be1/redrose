@@ -70,74 +70,74 @@ Close this score anyway?</source>
 <context>
     <name>EditVBoxLayout</name>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="40"/>
+        <location filename="EditVBoxLayout.cpp" line="39"/>
         <source>X:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="102"/>
+        <location filename="EditVBoxLayout.cpp" line="101"/>
         <source>Cannot load sound font.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="175"/>
+        <location filename="EditVBoxLayout.cpp" line="174"/>
         <source>Generating MIDI for playing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="184"/>
+        <location filename="EditVBoxLayout.cpp" line="183"/>
         <source>Stopping synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="187"/>
+        <location filename="EditVBoxLayout.cpp" line="186"/>
         <source>Please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="263"/>
+        <location filename="EditVBoxLayout.cpp" line="262"/>
         <source>Exporting score...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="279"/>
+        <location filename="EditVBoxLayout.cpp" line="278"/>
         <source>Error during MIDI generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="282"/>
-        <location filename="EditVBoxLayout.cpp" line="284"/>
-        <location filename="EditVBoxLayout.cpp" line="389"/>
+        <location filename="EditVBoxLayout.cpp" line="281"/>
+        <location filename="EditVBoxLayout.cpp" line="283"/>
+        <location filename="EditVBoxLayout.cpp" line="388"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="284"/>
+        <location filename="EditVBoxLayout.cpp" line="283"/>
         <source>Parse error in selected notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="291"/>
+        <location filename="EditVBoxLayout.cpp" line="290"/>
         <source>MIDI generation finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="311"/>
+        <location filename="EditVBoxLayout.cpp" line="310"/>
         <source>Error during synthesis.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="313"/>
+        <location filename="EditVBoxLayout.cpp" line="312"/>
         <source>Synthesis finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="387"/>
+        <location filename="EditVBoxLayout.cpp" line="386"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="396"/>
+        <location filename="EditVBoxLayout.cpp" line="395"/>
         <source>Score generated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -151,41 +151,46 @@ Close this score anyway?</source>
     </message>
     <message>
         <location filename="editorprefdialog.cpp" line="18"/>
-        <source>Highlight current line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="editorprefdialog.cpp" line="29"/>
-        <source>Header color</source>
+        <source>Font enlargement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="editorprefdialog.cpp" line="30"/>
+        <source>Highlight current line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorprefdialog.cpp" line="41"/>
+        <source>Header color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorprefdialog.cpp" line="42"/>
         <source>Comment color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="31"/>
+        <location filename="editorprefdialog.cpp" line="43"/>
         <source>Extra instruction color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="32"/>
+        <location filename="editorprefdialog.cpp" line="44"/>
         <source>Measure bar color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="33"/>
+        <location filename="editorprefdialog.cpp" line="45"/>
         <source>Decoration color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="34"/>
+        <location filename="editorprefdialog.cpp" line="46"/>
         <source>Guitar chord color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="35"/>
+        <location filename="editorprefdialog.cpp" line="47"/>
         <source>Lyric color</source>
         <translation type="unfinished"></translation>
     </message>
