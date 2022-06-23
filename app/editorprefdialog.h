@@ -6,6 +6,7 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QCheckBox>
+#include <QSpinBox>
 
 class EditorPrefDialog : public QDialog
 {
