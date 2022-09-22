@@ -10,6 +10,6 @@ SFLoader::SFLoader(fluid_synth_t *synth, const char *soundfont_path, QObject *pa
 
 void SFLoader::run()
 {
-    int fid = fluid_synth_sfload(synth, soundfont_path, 0);
+    int fid = fluid_synth_sfload(synth, soundfont_path, 1);
     emit sfloadFinished(fid);
 }
