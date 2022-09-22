@@ -170,6 +170,12 @@ void EditVBoxLayout::onPlayClicked()
     if (a->isQuit())
         return;
 
+    if (synth->isLoading()){
+        a->mainWindow()->statusBar()->showMessage(tr("Please wait...") + dot);
+        dot += " ...";
+        return;
+    }
+
     if (playpushbutton.isPlay()) {
         a->mainWindow()->statusBar()->showMessage(tr("Generating MIDI for playing."));
         playpushbutton.flip();
@@ -182,9 +188,6 @@ void EditVBoxLayout::onPlayClicked()
             dot.clear();
             a->mainWindow()->statusBar()->showMessage(tr("Stopping synthesis..."));
             synth->stop();
-        } else if (synth->isLoading()){
-            a->mainWindow()->statusBar()->showMessage(tr("Please wait...") + dot);
-            dot += " ...";
         }
     }
 }

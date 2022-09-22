@@ -30,15 +30,19 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     fluid_settings = new_fluid_settings();
     fluid_settings_setstr(fluid_settings, "audio.driver", drv);
 
-    QString jack_id = "redr-" + name;
-    ba = jack_id.toUtf8();
-    id = (char*) realloc(id, ba.length() + 1);
-    strncpy(id, ba.constData(), ba.length());
-    id[ba.length()] = '\0';
-    fluid_settings_setstr(fluid_settings, "audio.jack.id", id);
+    if (settings.value(DRIVER_KEY) == DRIVER_JACK) {
+        QString jack_id = "redr-" + name;
+        ba = jack_id.toUtf8();
+        id = (char*) realloc(id, ba.length() + 1);
+        strncpy(id, ba.constData(), ba.length());
+        id[ba.length()] = '\0';
+        fluid_settings_setstr(fluid_settings, "audio.jack.id", id);
+    }
 
     fluid_synth = new_fluid_synth(fluid_settings);
     fluid_synth_set_gain(fluid_synth, 1.0);
+
+    /* start synthesizer thread */
     fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
 
     /* early soundfont load */
@@ -93,6 +97,7 @@ void AbcSynth::abort()
 void AbcSynth::onSFontFinished(int fid) {
     inited = true;
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
+
     if (fid == FLUID_FAILED) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load sound font: ") + sf);
         emit initFinished(true);
@@ -107,10 +112,17 @@ void AbcSynth::onSFontFinished(int fid) {
 void AbcSynth::play(const QString& midifile) {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
 
-    if (waiter && waiter->isRunning()) {
-        fluid_player_stop(fluid_player);
-        waiter->wait();
+    if (waiter) {
+        if (waiter->isRunning()) {
+            /* should not happen */
+            disconnect(waiter, &TuneWaiter::playerFinished, this, &AbcSynth::onPlayFinished);
+            qDebug() << "Synth is playing. Stopping it.";
+            fluid_player_stop(fluid_player);
+            waiter->wait();
+        }
+
         waiter->deleteLater();
+        waiter = nullptr;
     }
 
     delete_fluid_player(fluid_player);
@@ -126,12 +138,13 @@ void AbcSynth::play(const QString& midifile) {
     strncpy(mf, ba.constData(), ba.length());
     mf[ba.length()] = '\0';
 
-    qDebug() << mf;
+    qDebug() << "Loading " << mf;
 
     if (FLUID_FAILED == fluid_player_add(fluid_player, mf)) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load MIDI file: ") + mf);
     }
 
+    qDebug() << "Starting playback with SoundFont " << sf;
     fluid_player_play(fluid_player);
     waiter->start();
 
@@ -180,6 +193,9 @@ void AbcSynth::onPlayFinished(int ret)
     qDebug() << ret;
 
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
-    a->mainWindow()->statusBar()->showMessage(tr("Synthesis done."));
+    if (ret == FLUID_FAILED)
+        a->mainWindow()->statusBar()->showMessage(tr("Synthesis error."));
+    else
+        a->mainWindow()->statusBar()->showMessage(tr("Synthesis done."));
     emit synthFinished(ret);
 }
