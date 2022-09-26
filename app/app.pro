@@ -68,5 +68,7 @@ icon.path = $$DATADIR/icons/hicolor/scalable/apps
 icon.files = redrose.svg
 mime.path = $$DATADIR/mime/packages
 mime.files = redrose.xml
-INSTALLS += target translations desktop icon mime
+metainfo.path = $$DATADIR/metainfo
+metainfo.files = fr.free.brouits.redrose.metainfo.xml
+INSTALLS += target translations desktop icon mime metainfo
 

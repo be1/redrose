@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>fr.free.brouits.redrose</id>
+  
+  <name>Redrose</name>
+  <summary>Integrated graphical environment for ABC music notation</summary>
+  
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  
+  <description>
+    <p>
+      Redrose is an integrated graphical environment that allow
+      to write, play and print musical scores in the ABC notation.
+    </p>
+    <p>
+      This program allow to play the written music,
+      preview the output score and print it.
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">redrose.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>http://brouits.free.fr/redrose/redrose.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">http://brouits.free.fr/redrose/</url>
+  <developer_name>Benoît Rouits</developer_name>
+  <update_contact>brouits_AT_free.fr</update_contact>
+  <provides>
+    <binary>redrose</binary>
+  </provides>
+</component>
