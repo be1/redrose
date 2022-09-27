@@ -243,6 +243,9 @@ void ScoreMenu::onSaveAsActionTriggered()
     if (fileName.isEmpty())
         return; /* cancelled */
 
+    if (!fileName.endsWith(".abc"))
+        fileName.append(".abc");
+
     QFileInfo info(fileName);
     edittabs->setTabText(edittabs->currentIndex(), info.baseName());
     EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
