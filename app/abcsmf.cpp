@@ -98,7 +98,7 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, ">)")) in_cresc = 0;
 }
 
-void AbcSmf::writeSingleNote(int track, struct abc_symbol* s) {
+void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
     long delta_tick;
 
     if (s->text[0] == 'Z' || s->text[0] == 'z') {
@@ -111,18 +111,18 @@ void AbcSmf::writeSingleNote(int track, struct abc_symbol* s) {
         setDynamic(delta_tick);
 
         /* prepend with expression pedal if any */
-        writeExpression(track);
+        writeExpression(chan);
 
         /* set note lyrics if any */
         writeLyric(s->lyr);
 
 
         if (s->ev.value) {
-            writeMidiEvent(delta_tick, noteon, track, s->ev.key + transpose, cur_dyn * s->ev.value);
+            writeMidiEvent(delta_tick, noteon, chan, s->ev.key + transpose, cur_dyn * s->ev.value);
         } else {
             long small = tpu * upm / 8;
             small = (delta_tick > small) ? small : delta_tick;
-            writeMidiEvent(delta_tick - (small / shorten), noteon, track, s->ev.key + transpose, 0x00); /* note off */
+            writeMidiEvent(delta_tick - (small / shorten), noteon, chan, s->ev.key + transpose, 0x00); /* note off */
             last_tick -= (small / shorten);
             shorten = in_slur;
         }
@@ -133,6 +133,7 @@ void AbcSmf::onSMFWriteTempoTrack(void) {
 }
 
 void AbcSmf::onSMFWriteTrack(int track) {
+    int chan = track;
     long mspqn = 60000 / tempo;
     writeTempo(0, mspqn);
     writeBpmTempo(0, tempo);
@@ -193,7 +194,7 @@ void AbcSmf::onSMFWriteTrack(int track) {
             break;
         }
         case ABC_NOTE: {
-            writeSingleNote(track, s);
+            writeSingleNote(chan, s);
             break;
         }
         case ABC_DECO: {
@@ -215,13 +216,15 @@ void AbcSmf::onSMFWriteTrack(int track) {
         case ABC_INST: {
             int val;
             if (sscanf(s->text, "MIDI program %d", &val)) {
-                writeMidiEvent(0, program, track, val);
+                writeMidiEvent(0, program, chan, val);
             } else if (sscanf(s->text, "MIDI transpose %d", &val)) {
                 transpose = val;
+            } else if (sscanf(s->text, "MIDI channel %d", &val)) {
+                chan = val -1;
             }
             break;
         }
-        } /* EO case */
+        } /* switch */
         s = s->next;
     }
     writeMetaEvent(0, 0x2F);
@@ -307,9 +310,9 @@ void AbcSmf::setDynamic(long dur) {
         cur_dyn = mark_dyn;
 }
 
-void AbcSmf::writeExpression(int track) {
+void AbcSmf::writeExpression(int chan) {
     if (expr) {
-        writeMidiEvent(0, control, track, 0x0b, expr);
+        writeMidiEvent(0, control, chan, 0x0b, expr);
         expr = EXPRESSION_DEFAULT;
     }
 }
