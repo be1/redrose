@@ -51,8 +51,6 @@ Xheader <- "X:" Xvalue EOL
 
 Xvalue <- < [1-9][0-9]* > { abc_tune_append(auxil, $0); }
 
-#VoiceDef <- "V:" (!EOL .)+
-
 Kheader <- "K:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'K'); }
 
 Oheader <- "A:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'A'); }
@@ -73,6 +71,9 @@ Oheader <- "A:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'A'); }
 	/ "S:" < (!EOL .)+ > { abc_header_append(auxil, $16, 'S'); }
 	/ "T:" < (!EOL .)+ > { abc_header_append(auxil, $17, 'T'); }
 	/ "U:" < (!EOL .)+ > { abc_header_append(auxil, $18, 'U'); }
+    / VoiceDef #ignore
+
+VoiceDef <- "V:" (!EOL .)+
 
 Score <- Vheader EOL Fragment+ Score*
 	/ Fragment+

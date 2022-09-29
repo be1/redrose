@@ -2098,6 +2098,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Xheader(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Xvalue(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Kheader(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Oheader(pcc_context_t *ctx);
+static pcc_thunk_chunk_t *pcc_evaluate_rule_VoiceDef(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Score(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Fragment(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_InlineChange(pcc_context_t *ctx);
@@ -3601,6 +3602,11 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Oheader(pcc_context_t *ctx) {
     L0053:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_VoiceDef, &chunk->thunks, NULL)) goto L0056;
+        goto L0001;
+    L0056:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         goto L0000;
     L0001:;
     }
@@ -3610,6 +3616,66 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Oheader(pcc_context_t *ctx) {
 L0000:;
     ctx->level--;
     PCC_DEBUG(PCC_DBG_NOMATCH, "Oheader", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));
+    pcc_thunk_chunk__destroy(ctx->auxil, chunk);
+    return NULL;
+}
+
+static pcc_thunk_chunk_t *pcc_evaluate_rule_VoiceDef(pcc_context_t *ctx) {
+    pcc_thunk_chunk_t *const chunk = pcc_thunk_chunk__create(ctx->auxil);
+    chunk->pos = ctx->cur;
+    PCC_DEBUG(PCC_DBG_EVALUATE, "VoiceDef", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
+    ctx->level++;
+    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
+    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
+    if (
+        pcc_refill_buffer(ctx, 2) < 2 ||
+        (ctx->buffer.buf + ctx->cur)[0] != 'V' ||
+        (ctx->buffer.buf + ctx->cur)[1] != ':'
+    ) goto L0000;
+    ctx->cur += 2;
+    {
+        const size_t p0 = ctx->cur;
+        const size_t n0 = chunk->thunks.len;
+        int i;
+        for (i = 0;; i++) {
+            const size_t p = ctx->cur;
+            const size_t n = chunk->thunks.len;
+            {
+                const size_t p = ctx->cur;
+                const size_t n = chunk->thunks.len;
+                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0002;
+                ctx->cur = p;
+                pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+                goto L0001;
+            L0002:;
+                ctx->cur = p;
+                pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+            }
+            {
+                int u;
+                const size_t n = pcc_get_char_as_utf32(ctx, &u);
+                if (n == 0) goto L0001;
+                ctx->cur += n;
+            }
+            if (ctx->cur == p) break;
+            continue;
+        L0001:;
+            ctx->cur = p;
+            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+            break;
+        }
+        if (i < 1) {
+            ctx->cur = p0;
+            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n0);
+            goto L0000;
+        }
+    }
+    ctx->level--;
+    PCC_DEBUG(PCC_DBG_MATCH, "VoiceDef", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));
+    return chunk;
+L0000:;
+    ctx->level--;
+    PCC_DEBUG(PCC_DBG_NOMATCH, "VoiceDef", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));
     pcc_thunk_chunk__destroy(ctx->auxil, chunk);
     return NULL;
 }
