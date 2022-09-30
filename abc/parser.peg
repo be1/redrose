@@ -45,7 +45,6 @@ Tune <- Xheader (Header EOL)* (Kheader EOL)? (Comment EOL)* Score
 
 Header <- Oheader
 	/ Comment
-#	/ VoiceDef
 
 Xheader <- "X:" Xvalue EOL
 
