@@ -59,7 +59,6 @@ public:
     bool isSaved();
     void setSaved();
 
-
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *e) override;

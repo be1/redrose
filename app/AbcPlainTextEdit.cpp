@@ -182,7 +182,7 @@ void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
     /* no shortcut pressed, or a modifier-only key is pressed,
      * or the word typed is too short, or it is a complete word:
      * then unshow popup if needed and return */
-    if (!isShortcut && (hasModifier || e->text().isEmpty()|| completionPrefix.length() < 2
+    if (!isShortcut && (hasModifier || e->text().isEmpty() || completionPrefix.length() < 2
                       || eow.contains(e->text().right(1)))) {
         c->popup()->hide();
         return;
