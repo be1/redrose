@@ -3,14 +3,12 @@ ABC music notation integrated environment
 
 ## Dependencies
 Redrose uses third-party software to generate MIDI, AUDIO, SVG and Postscript files.
-- abc2midi (program, not mandatory)
 - drumstick-file (library and headers)
 - fluidsynth (library and headers)
+- abc2midi (program, optional, not mandatory)
 
 Note that Redrose uses a *modified* version of the open source abcm2ps code, maintained in a specific submodule.
 Original `abcm2ps` code is Copyright © 2014-2016 Jean-Francois Moine.
-
-Note that Redrose provides an optionnal internal abc notation parser and MIDI generator.
 
 ## Screenshot
 ![Redrose dark theme screenshot](http://brouits.free.fr/redrose/redrose.png)
