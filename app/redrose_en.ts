@@ -12,44 +12,49 @@
 <context>
     <name>AbcSynth</name>
     <message>
-        <location filename="abcsynth.cpp" line="51"/>
+        <location filename="abcsynth.cpp" line="56"/>
         <source>No soundfont to load! Please check settings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="62"/>
+        <location filename="abcsynth.cpp" line="67"/>
         <source>Loading sound font: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="97"/>
+        <location filename="abcsynth.cpp" line="103"/>
         <source>Cannot load sound font: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="100"/>
+        <location filename="abcsynth.cpp" line="106"/>
         <source>Sound font loaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="132"/>
+        <location filename="abcsynth.cpp" line="138"/>
         <source>Cannot load MIDI file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="140"/>
+        <location filename="abcsynth.cpp" line="147"/>
         <source>Starting synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="143"/>
+        <location filename="abcsynth.cpp" line="150"/>
         <source>Synthesis playing...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="146"/>
-        <location filename="abcsynth.cpp" line="183"/>
+        <location filename="abcsynth.cpp" line="153"/>
+        <location filename="abcsynth.cpp" line="227"/>
         <source>Synthesis done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="abcsynth.cpp" line="225"/>
+        <source>Synthesis error.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -80,64 +85,64 @@ Close this score anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="174"/>
+        <location filename="EditVBoxLayout.cpp" line="180"/>
         <source>Generating MIDI for playing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="183"/>
+        <location filename="EditVBoxLayout.cpp" line="189"/>
         <source>Stopping synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="186"/>
+        <location filename="EditVBoxLayout.cpp" line="174"/>
         <source>Please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="262"/>
+        <location filename="EditVBoxLayout.cpp" line="272"/>
         <source>Exporting score...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="278"/>
+        <location filename="EditVBoxLayout.cpp" line="288"/>
         <source>Error during MIDI generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="281"/>
-        <location filename="EditVBoxLayout.cpp" line="283"/>
-        <location filename="EditVBoxLayout.cpp" line="388"/>
+        <location filename="EditVBoxLayout.cpp" line="291"/>
+        <location filename="EditVBoxLayout.cpp" line="293"/>
+        <location filename="EditVBoxLayout.cpp" line="412"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="283"/>
+        <location filename="EditVBoxLayout.cpp" line="293"/>
         <source>Parse error in selected notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="290"/>
+        <location filename="EditVBoxLayout.cpp" line="300"/>
         <source>MIDI generation finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="310"/>
+        <location filename="EditVBoxLayout.cpp" line="317"/>
         <source>Error during synthesis.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="312"/>
+        <location filename="EditVBoxLayout.cpp" line="319"/>
         <source>Synthesis finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="386"/>
+        <location filename="EditVBoxLayout.cpp" line="410"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="395"/>
+        <location filename="EditVBoxLayout.cpp" line="419"/>
         <source>Score generated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -161,36 +166,41 @@ Close this score anyway?</source>
     </message>
     <message>
         <location filename="editorprefdialog.cpp" line="41"/>
+        <source>Auto play current note</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorprefdialog.cpp" line="52"/>
         <source>Header color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="42"/>
+        <location filename="editorprefdialog.cpp" line="53"/>
         <source>Comment color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="43"/>
+        <location filename="editorprefdialog.cpp" line="54"/>
         <source>Extra instruction color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="44"/>
+        <location filename="editorprefdialog.cpp" line="55"/>
         <source>Measure bar color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="45"/>
+        <location filename="editorprefdialog.cpp" line="56"/>
         <source>Decoration color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="46"/>
+        <location filename="editorprefdialog.cpp" line="57"/>
         <source>Guitar chord color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="47"/>
+        <location filename="editorprefdialog.cpp" line="58"/>
         <source>Lyric color</source>
         <translation type="unfinished"></translation>
     </message>
@@ -485,22 +495,22 @@ Do you want to quit anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="265"/>
+        <location filename="ScoreMenu.cpp" line="268"/>
         <source>Export MIDI file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="265"/>
+        <location filename="ScoreMenu.cpp" line="268"/>
         <source>MIDI file (*.mid)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="284"/>
+        <location filename="ScoreMenu.cpp" line="287"/>
         <source>Export Postscript file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="284"/>
+        <location filename="ScoreMenu.cpp" line="287"/>
         <source>Postscript file (*.ps)</source>
         <translation type="unfinished"></translation>
     </message>
