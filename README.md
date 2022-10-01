@@ -13,7 +13,7 @@ Original `abcm2ps` code is Copyright © 2014-2016 Jean-Francois Moine.
 Note that Redrose provides an optionnal internal abc notation parser and MIDI generator.
 
 ## Screenshot
-[Redrose dark theme screenshot](http://brouits.free.fr/redrose/redrose.png)
+![Redrose dark theme screenshot](http://brouits.free.fr/redrose/redrose.png)
 
 ## Setting up
 ```
