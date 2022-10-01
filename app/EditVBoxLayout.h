@@ -50,10 +50,10 @@ protected:
     void spawnProgram(const QString& prog, const QStringList &args, AbcProcess::ProcessType which, const QDir &wrk, int cont);
     void removeSvgFiles();
     void removeMIDIFile();
-    void playMIDI();
     int xOfCursor(const QTextCursor& c);
     void cleanupProcesses();
     void cleanupThreads();
+    QString constructHeaders();
 
 public slots:
     void onXChanged(int value);
@@ -62,6 +62,7 @@ public slots:
     void onSelectionChanged();
 
 protected slots:
+    void onPlayableNote(const QString& note);
     void onCompileFinished(int exitCode, const QString& errstr, int cont);
     void onGenerateMIDIFinished(int exitCode, const QString& errstr, int cont);
     void onSynthInited(bool err);

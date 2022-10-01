@@ -14,6 +14,8 @@ public:
     ~AbcSynth();
     void abort(void);
     void play(const QString& midifile);
+    void play(const QByteArray& ba);
+    void fire(int key);
     void stop(void);
     bool isLoading(void);
     bool isPlaying(void);

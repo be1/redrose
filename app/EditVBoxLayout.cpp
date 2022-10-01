@@ -53,6 +53,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 	addLayout(&hboxlayout);
 
     connect(&abcplaintextedit, &QPlainTextEdit::selectionChanged, this, &EditVBoxLayout::onSelectionChanged);
+    connect(&abcplaintextedit, &AbcPlainTextEdit::playableNote, this, &EditVBoxLayout::onPlayableNote);
     connect(&xspinbox, SIGNAL(valueChanged(int)), this, SLOT(onXChanged(int)));
 	connect(&playpushbutton, SIGNAL(clicked()), this, SLOT(onPlayClicked()));
 	connect(&runpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onRunClicked);
@@ -69,7 +70,6 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     connect(synth, &AbcSynth::synthFinished, this, &EditVBoxLayout::onSynthFinished);
     playpushbutton.setEnabled(false);
 }
-
 
 EditVBoxLayout::~EditVBoxLayout()
 {
@@ -192,37 +192,44 @@ void EditVBoxLayout::onPlayClicked()
     }
 }
 
+QString EditVBoxLayout::constructHeaders() {
+    QString headers;
+
+    QString all = abcPlainTextEdit()->toPlainText();
+    int i = 0, xl = 0;
+    QStringList lines = all.split('\n');
+
+    /* find last X: before selectionIndex */
+    for (int l = 0; l < lines.count() && i < selectionIndex; l++) {
+        i += lines.at(l).count() +1; /* count \n */
+        if (lines.at(l).startsWith("X:")) {
+            xspinbox.setValue(lines.at(l).right(1).toInt());
+            xl = l;
+            /* don't break on first X: continue until selectionIndex */
+        }
+    }
+
+    /* construct headers */
+    for (int j = xl;  j < lines.count(); j++) {
+        if (lines.at(j).contains(QRegularExpression("^((%[^\n]*)|([A-Z]:[^\n]+))$"))) {
+            if (lines.at(j).startsWith("%%")) /* ignore MIDI instruction, use basic Piano */
+                continue;
+
+            headers += lines.at(j) + "\n";
+        } else
+            break;
+    }
+
+    return headers;
+}
+
 void EditVBoxLayout::exportMIDI(QString filename) {
     QString tosave;
 
     if (selection.isEmpty()) {
         tosave = abcPlainTextEdit()->toPlainText();
     } else {
-        QString all = abcPlainTextEdit()->toPlainText();
-        int i = 0, xl = 0;
-        QStringList lines = all.split('\n');
-
-        /* find last X: before selectionIndex */
-        for (int l = 0; l < lines.count() && i < selectionIndex; l++) {
-            i += lines.at(l).count() +1; /* count \n */
-            if (lines.at(l).startsWith("X:")) {
-                xspinbox.setValue(lines.at(l).right(1).toInt());
-                xl = l;
-                /* don't break on first X: continue until selectionIndex */
-            }
-        }
-
-        /* construct headers */
-        for (int j = xl;  j < lines.count(); j++) {
-            if (lines.at(j).contains(QRegularExpression("^((%[^\n]*)|([A-Z]:[^\n]+))$"))) {
-                if (lines.at(j).startsWith("%%")) /* ignore MIDI instruction, use basic Piano */
-                    continue;
-
-                tosave += lines.at(j) + "\n";
-            } else
-                break;
-        }
-
+        tosave = constructHeaders();
         /* when coming from QTextCursor::selectedText(), LF is replaced by U+2029! */
         tosave += selection.replace(QChar::ParagraphSeparator, "\n");
     }
@@ -291,19 +298,16 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
         }
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
-        if (cont)
-            playMIDI();
-    }
-}
-
-void EditVBoxLayout::playMIDI() {
-        if (synth->isPlaying())
+        if (cont) {
+            if (synth->isPlaying())
                 synth->waitFinish();
 
-        /* midi file can change from tune (xspinbox) index */
-        QString midifile(tempFile.fileName());
-        midifile.replace(QRegularExpression("\\.abc$"), QString::number(xspinbox.value())  + ".mid");
-        synth->play(midifile);
+            /* midi file can change from tune (xspinbox) index */
+            QString midifile(tempFile.fileName());
+            midifile.replace(QRegularExpression("\\.abc$"), QString::number(xspinbox.value())  + ".mid");
+            synth->play(midifile);
+        }
+    }
 }
 
 void EditVBoxLayout::onSynthFinished(bool err)
@@ -377,6 +381,23 @@ void EditVBoxLayout::onSelectionChanged()
         int x = xOfCursor(c);
         xspinbox.setValue(x);
     }
+}
+
+void EditVBoxLayout::onPlayableNote(const QString &note)
+{
+    QString abc = constructHeaders();
+    abc.append(note);
+#if 0
+    const QDataStream* stream = midigen.generate(abc.toUtf8(), xOfCursor(abcplaintextedit.textCursor()));
+    QIODevice* dev = stream->device();
+    dev->seek(0);
+    QByteArray ba = stream->device()->readAll();
+    synth->play(ba);
+    delete stream;
+#else
+    int k = midigen.genFirstNote(abc);
+    synth->fire(k);
+#endif
 }
 
 void EditVBoxLayout::onCompileFinished(int exitCode, const QString& errstr, int cont)

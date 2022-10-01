@@ -10,10 +10,12 @@ class TuneWaiter : public QThread
     Q_OBJECT
 public:
     explicit TuneWaiter(fluid_player_t *p, QObject *parent = nullptr);
-    void run() override;
 
 signals:
     void playerFinished(int code);
+
+protected:
+    void run() override;
 
 private:
     fluid_player_t *player = nullptr;

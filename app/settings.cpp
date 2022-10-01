@@ -9,6 +9,9 @@ Settings::Settings(QObject* parent)
 
 void Settings::check()
 {
+    QVariant autoplay = value(EDITOR_AUTOPLAY);
+    if (!autoplay.isValid())
+        setValue(EDITOR_AUTOPLAY, false);
 
     QVariant sfont = value(SOUNDFONT_KEY);
     if (!sfont.isValid())
@@ -72,6 +75,8 @@ void Settings::check()
 
 void Settings::reset()
 {
+    setValue(EDITOR_AUTOPLAY, false);
+
     setValue(SOUNDFONT_KEY, DEB_SF2_GM);
 
     setValue(DRIVER_KEY, DRIVER_ALSA);
@@ -102,5 +107,4 @@ void Settings::reset()
     setValue(EDITOR_LYRIC_COLOR, "magenta");
 
     sync();
-
 }

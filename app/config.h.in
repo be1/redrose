@@ -37,6 +37,7 @@
 #define EDITOR_GCHORD_COLOR \"ABC/editor/gchord_color\"
 #define EDITOR_HEADER_COLOR \"ABC/editor/header_color\"
 #define EDITOR_LYRIC_COLOR \"ABC/editor/lyric_color\"
+#define EDITOR_AUTOPLAY \"ABC/editor/autoplay\"
 
 #define SOUNDFONT_KEY \"ABC/soundfont\"
 #define DEB_SF2_GM	\"/usr/share/sounds/sf2/default-GM.sf2\"

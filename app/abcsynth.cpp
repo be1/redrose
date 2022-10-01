@@ -1,5 +1,6 @@
 #include "abcsynth.h"
 #include "config.h"
+#include <QTimer>
 #include <QDebug>
 #include "AbcApplication.h"
 #include "settings.h"
@@ -70,9 +71,9 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 AbcSynth::~AbcSynth()
 {
     /* stop synthesis */
-    if (fluid_player && waiter && waiter->isRunning()) {
-        fluid_player_stop(fluid_player);
-        waiter->wait();
+    if (isPlaying()) {
+        stop();
+        waitFinish();
     }
 
     delete_fluid_player(fluid_player);
@@ -112,17 +113,10 @@ void AbcSynth::onSFontFinished(int fid) {
 void AbcSynth::play(const QString& midifile) {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
 
-    if (waiter) {
-        if (waiter->isRunning()) {
-            /* should not happen */
-            disconnect(waiter, &TuneWaiter::playerFinished, this, &AbcSynth::onPlayFinished);
+    if (isPlaying()) {
             qDebug() << "Synth is playing. Stopping it.";
-            fluid_player_stop(fluid_player);
-            waiter->wait();
-        }
-
-        waiter->deleteLater();
-        waiter = nullptr;
+            stop();
+            waitFinish();
     }
 
     delete_fluid_player(fluid_player);
@@ -142,25 +136,54 @@ void AbcSynth::play(const QString& midifile) {
 
     if (FLUID_FAILED == fluid_player_add(fluid_player, mf)) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load MIDI file: ") + mf);
+        qWarning() << "Cannot load MIDI file: " << mf;
+    } else {
+        qDebug() << "Starting playback with SoundFont " << sf;
+        fluid_player_play(fluid_player);
+        waiter->start();
+
+        switch (fluid_player_get_status(fluid_player)) {
+        case FLUID_PLAYER_READY:
+            a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
+            break;
+        case FLUID_PLAYER_PLAYING:
+            a->mainWindow()->statusBar()->showMessage(tr("Synthesis playing..."));
+            break;
+        case FLUID_PLAYER_DONE:
+            a->mainWindow()->statusBar()->showMessage(tr("Synthesis done."));
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void AbcSynth::play(const QByteArray& ba)
+{
+    if (isPlaying()) {
+        qDebug() << "Synth is playing. Stopping it.";
+        stop();
+        waitFinish();
     }
 
-    qDebug() << "Starting playback with SoundFont " << sf;
-    fluid_player_play(fluid_player);
-    waiter->start();
+    delete_fluid_player(fluid_player);
 
-    switch (fluid_player_get_status(fluid_player)) {
-    case FLUID_PLAYER_READY:
-        a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
-        break;
-    case FLUID_PLAYER_PLAYING:
-        a->mainWindow()->statusBar()->showMessage(tr("Synthesis playing..."));
-        break;
-    case FLUID_PLAYER_DONE:
-        a->mainWindow()->statusBar()->showMessage(tr("Synthesis done."));
-        break;
-    default:
-        break;
+    fluid_player = new_fluid_player(fluid_synth);
+    waiter = new TuneWaiter(fluid_player, this);
+
+    if (FLUID_FAILED == fluid_player_add_mem(fluid_player, ba.constData(), ba.size())) {
+        qWarning() << "Cannot load MIDI buffer." ;
+    } else {
+        fluid_player_play(fluid_player);
+        waiter->start();
     }
+}
+
+void AbcSynth::fire(int key)
+{
+    //qDebug() << "Firing: " << key;
+    fluid_synth_noteon(fluid_synth, 0, key, 80);
+    QTimer::singleShot(500, [this, key] () { fluid_synth_noteoff(fluid_synth, 0, key); });
 }
 
 void AbcSynth::stop()
@@ -177,20 +200,25 @@ bool AbcSynth::isLoading()
 bool AbcSynth::isPlaying()
 {
     if (waiter)
-            return waiter->isRunning();
+        return waiter->isRunning();
     else
         return false;
 }
 
 void AbcSynth::waitFinish()
 {
-    if (waiter)
-            waiter->wait();
+    if (waiter) {
+        waiter->wait();
+        waiter->deleteLater();
+    }
+
+    waiter = nullptr;
 }
 
 void AbcSynth::onPlayFinished(int ret)
 {
-    qDebug() << ret;
+    /* purge waiter */
+    waitFinish();
 
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     if (ret == FLUID_FAILED)

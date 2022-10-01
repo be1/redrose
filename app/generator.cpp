@@ -1,10 +1,31 @@
 #include "generator.h"
 #include "AbcProcess.h"
 #include "AbcApplication.h"
+#include "../abc/abc.h"
 #include <QDebug>
 
 Generator::Generator(QObject *parent) : QObject(parent)
 {
+}
+
+int Generator::genFirstNote(const QString &abcbuf)
+{
+    QByteArray ba = abcbuf.toUtf8();
+    struct abc* abc = abc_parse_buffer(ba.constData(), ba.size());
+    if (!abc->count)
+        return -1;
+    if (!abc->tunes[0]->count)
+        return -1;
+    struct abc_symbol* sym = abc->tunes[0]->voices[0]->first;
+    if (!sym)
+        return -1;
+    while (sym && sym->kind != ABC_NOTE)
+            sym = sym->next;
+
+    if (sym)
+        return sym->ev.key;
+
+    return -1;
 }
 
 void Generator::spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, const QDir& wrk, int cont)

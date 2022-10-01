@@ -37,6 +37,17 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
 
     mainLayout->addLayout(hlhbox);
 
+    bool autoplay = settings.value(EDITOR_AUTOPLAY).toBool();
+    autoplayLabel = new QLabel(tr("Auto play current note"));
+    autoplayCheck = new QCheckBox;
+    autoplayCheck->setChecked(autoplay);
+    autoplayLabel->setBuddy(autoplayCheck);
+    QHBoxLayout* aphbox = new QHBoxLayout;
+    aphbox->addWidget(autoplayLabel);
+    aphbox->addWidget(autoplayCheck);
+
+    mainLayout->addLayout(aphbox);
+
     /* WARNING: labels, keys, buttons in the same order */
     colorLabels << tr("Header color") \
                 << tr("Comment color") \
@@ -102,6 +113,11 @@ QColor EditorPrefDialog::getColor(QString key)
 bool EditorPrefDialog::getHighlight()
 {
     return highlightCheck->isChecked();
+}
+
+bool EditorPrefDialog::getAutoplay()
+{
+    return autoplayCheck->isChecked();
 }
 
 int EditorPrefDialog::getFontRange()

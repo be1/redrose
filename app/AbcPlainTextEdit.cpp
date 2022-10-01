@@ -27,14 +27,16 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     com->setWrapAround(false);
     setCompleter(com);
 
+    Settings settings;
+
     connect(this, &AbcPlainTextEdit::blockCountChanged, this, &AbcPlainTextEdit::updateLineNumberAreaWidth);
     connect(this, &AbcPlainTextEdit::updateRequest, this, &AbcPlainTextEdit::updateLineNumberArea);
     connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkDictionnary);
     connect(this, &AbcPlainTextEdit::modificationChanged, this, &AbcPlainTextEdit::flagModified);
+    if (settings.value(EDITOR_AUTOPLAY).toBool())
+        connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkPlayableNote);
 
     updateLineNumberAreaWidth(0);
-
-    Settings settings;
 
     QVariant fontRange = settings.value(EDITOR_FONT_RANGE);
     int range = fontRange.toInt();
@@ -126,6 +128,23 @@ QString AbcPlainTextEdit::lineUnderCursor() const
     return tc.selectedText();
 }
 
+QString AbcPlainTextEdit::charBeforeCursor() const
+{
+    QTextCursor tc = textCursor();
+    if (!tc.movePosition(QTextCursor::Left))
+        return QString();
+
+    tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+    return tc.selectedText();
+}
+
+bool AbcPlainTextEdit::isPitch(QChar car) const
+{
+    if (car.isLetter())
+        return (car >= 'A' && car <= 'G') || (car >= 'a' && car <= 'g');
+
+    return false;
+}
 
 void AbcPlainTextEdit::checkDictionnary(void) {
     QString line = lineUnderCursor();
@@ -137,6 +156,91 @@ void AbcPlainTextEdit::checkDictionnary(void) {
 
         c->setModel(dictModel);
     }
+}
+
+QString AbcPlainTextEdit::noteUnderCursor() const
+{
+    QString sym = charBeforeCursor();
+    QTextCursor tc = textCursor();
+
+    if (sym.isEmpty())
+        return QString();
+
+    if (!isPitch(sym.at(0)))
+        return QString();
+
+    /* act when it is a pitch */
+
+    if (tc.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2)) {
+        if(tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1)) {
+            QChar first = tc.selectedText().at(0);
+            /* get accidental */
+            if (first == '^' || first == '=' || first == '_') {
+                sym.prepend(first);
+            }
+
+            /* move just after pitch */
+            tc.clearSelection();
+            tc.movePosition(QTextCursor::Right);
+        }
+    }
+
+    /* octavas */
+    while (tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1)) {
+        QString oct = tc.selectedText();
+        QChar last = oct.at(oct.size() -1);
+        if (last != ',' && last != '\'')
+            break;
+
+        sym.append(last);
+    }
+
+    return sym;
+}
+
+void AbcPlainTextEdit::checkPlayableNote()
+{
+    /* check manual selection */
+    if (!textCursor().selectedText().isEmpty())
+        return;
+
+    QString line = lineUnderCursor();
+
+    /* check if nothing under cursor */
+    if (line.isEmpty())
+         return;
+
+    /* check if we are in a comment */
+    if (line.startsWith("%"))
+        return;
+
+    /* check if we are in a header line */
+    if (line.at(0).isLetter()) {
+        if (line.size() > 1)
+            if (line.at(1) == ':')
+                return;
+    }
+
+    /* check if we are in !something! or in "GChord" */
+    QTextCursor tc = textCursor();
+    while (tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
+        /* go until start of line */
+        if (tc.selectedText().at(0) == '\n' || tc.selectedText().at(0) == QChar::ParagraphSeparator)
+            break;
+    }
+    if (tc.selectedText().count('!') % 2)
+        return;
+
+    if (tc.selectedText().count('"') % 2)
+        return;
+
+    /* check if this is a note */
+    QString note = noteUnderCursor();
+    if (note.isEmpty())
+        return;
+
+    //qDebug() << note;
+    emit playableNote(note);
 }
 
 void AbcPlainTextEdit::focusInEvent(QFocusEvent *e)

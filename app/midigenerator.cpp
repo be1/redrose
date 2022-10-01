@@ -72,6 +72,28 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
     }
 }
 
+const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
+{
+    struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.count());
+    if (yy->error) {
+        abc_release_yy(yy);
+        return nullptr;
+    } else {
+        AbcSmf *smf = new AbcSmf(yy, xopt, this);
+        if (!smf) {
+            abc_release_yy(yy);
+            return nullptr;
+        }
+
+        QDataStream* stream = new QDataStream(new QByteArray(), QIODevice::ReadWrite);
+        smf->writeToStream(stream);
+
+        delete smf;
+        abc_release_yy(yy);
+        return stream;
+    }
+}
+
 void MidiGenerator::spawnMidiCompiler(const QString& prog, const QStringList &args, const QDir &wrk, int cont)
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);

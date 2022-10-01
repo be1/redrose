@@ -59,6 +59,9 @@ public:
     bool isSaved();
     void setSaved();
 
+signals:
+    void playableNote(const QString& note);
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void keyPressEvent(QKeyEvent *e) override;
@@ -69,6 +72,7 @@ private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
     void highlightCurrentLine();
     void checkDictionnary();
+    void checkPlayableNote();
     void updateLineNumberArea(const QRect &rect, int dy);
     void insertCompletion(const QString &completion);
 
@@ -81,6 +85,9 @@ private:
     AbcHighlighter *highlighter;
     QString textUnderCursor() const;
     QString lineUnderCursor() const;
+    QString noteUnderCursor() const;
+    QString charBeforeCursor() const;
+    bool isPitch(QChar car) const;
 
     QCompleter *c = nullptr;
     bool saved;

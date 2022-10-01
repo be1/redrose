@@ -18,6 +18,11 @@ public:
      * @param cont play/display flag, unused, forwarded.
      */
     virtual void generate(const QString& input, int xopt, QString output, int cont) = 0;
+    /**
+     * @brief generate the first MIDI key of abcbuf
+     * @param abcbuf the abc score as a string
+     */
+    int genFirstNote(const QString& abcbuf);
 
 signals:
     void generated(bool err, const QString& errstr, int cont);

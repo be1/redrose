@@ -3,6 +3,7 @@
 
 #include "generator.h"
 #include <QObject>
+#include <QByteArray>
 
 class MidiGenerator : public Generator
 {
@@ -19,6 +20,8 @@ public:
      * @param cont Unused, forwarded.
      */
     void generate(const QByteArray& inputbuf, const QString& inpputhint, int xopt, QString output, int cont);
+
+    const QDataStream* generate(const QByteArray& inputbuf, int xopt);
 protected:
     void spawnMidiCompiler(const QString &prog, const QStringList& args, const QDir &wrk, int cont);
 
