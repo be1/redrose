@@ -1,6 +1,5 @@
 #include "ViewVSplitter.h"
 #include <QFileInfo>
-#include <QScrollArea>
 #include <QDir>
 #include <QDebug>
 #include <QPrintDialog>
@@ -23,14 +22,9 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     svgwidget.setPalette(p);
     svgwidget.setAutoFillBackground(true);
     svgwidget.setMinimumSize(630, 891);
-    QSizePolicy pol;
-    pol.setHeightForWidth(true);
-    pol.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
-    svgwidget.setSizePolicy(pol);
 
     /* configure the scroll area */
-    QScrollArea *area = new QScrollArea();
-    area->setWidgetResizable(true);
+    area = new QScrollArea();
     area->setWidget(&svgwidget);
 
     /* configure the pages buttons */
