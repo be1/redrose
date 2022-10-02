@@ -42,24 +42,16 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     /* add all in good order to the splitter */
     addWidget(area);
     addWidget(pagesWidget);
-    addWidget(&logview);
     QList<int> sizes;
     sizes.append(594);
     sizes.append(100);
-    sizes.append(0);
     setSizes(sizes);
     setCollapsible(0, false);
     setCollapsible(1, false);
-    setCollapsible(2, true);
 }
 
 ViewVSplitter::~ViewVSplitter()
 {
-}
-
-LogView *ViewVSplitter::logView()
-{
-    return &logview;
 }
 
 void ViewVSplitter::initBasename(const QString &b, const QString &d)

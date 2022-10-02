@@ -96,8 +96,5 @@ const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
 
 void MidiGenerator::spawnMidiCompiler(const QString& prog, const QStringList &args, const QDir &wrk, int cont)
 {
-    AbcApplication* a = static_cast<AbcApplication*>(qApp);
-    AbcMainWindow *w = a->mainWindow();
-    w->mainHSplitter()->viewWidget()->logView()->clear();
     return spawnProgram(prog, args, AbcProcess::ProcessPlayer, wrk, cont);
 }

@@ -64,6 +64,7 @@ public slots:
 protected slots:
     void onPlayableNote(const QString& note);
     void onCompileFinished(int exitCode, const QString& errstr, int cont);
+    void onGeneratePSFinished(int exitCode, const QString& errstr, int cont);
     void onGenerateMIDIFinished(int exitCode, const QString& errstr, int cont);
     void onSynthInited(bool err);
     void onSynthFinished(bool err);

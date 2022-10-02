@@ -60,7 +60,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 
     connect(this, &EditVBoxLayout::doExportMIDI, this, &EditVBoxLayout::exportMIDI);
 
-    connect(&psgen, &PsGenerator::generated, this, &EditVBoxLayout::onCompileFinished);
+    connect(&psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
     connect(&svggen, &SvgGenerator::generated, this, &EditVBoxLayout::onCompileFinished);
     connect(&midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
 
@@ -434,4 +434,26 @@ void EditVBoxLayout::onCompileFinished(int exitCode, const QString& errstr, int 
     a->mainWindow()->mainHSplitter()->viewWidget()->requestPage(1);
 
     runpushbutton.setEnabled(true);
+}
+
+void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, int cont)
+{
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    if (a->isQuit())
+        return;
+
+    qDebug() << "ps" << exitCode;
+
+    if (exitCode < 0 || exitCode > 1) { /* sometimes, abcm2ps returns 1 even on 'success' */
+        if (cont) {
+            a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
+        } else {
+            QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
+        }
+
+        return;
+    }
+
+    if (a->mainWindow()->statusBar()->currentMessage().isEmpty())
+        a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
 }

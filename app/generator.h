@@ -21,6 +21,7 @@ public:
     /**
      * @brief generate the first MIDI key of abcbuf
      * @param abcbuf the abc score as a string
+     * @attention this function works in foreground and no signel is triggered.
      */
     bool genFirstNote(const QString& abcbuf, int* chan, int* pgm, int* key);
 
@@ -32,11 +33,16 @@ protected:
 
 protected slots:
     void onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus, AbcProcess::ProcessType, int cont);
-    void onProgramOutputText(const QByteArray& text);
-    void onProgramErrorText(const QByteArray& text);
-
 private:
     QList<AbcProcess*> processlist;
+    /**
+     * @brief getError
+     * @param form process output
+     * @param to formatted error line
+     * @return pseudo exitCode
+     * @attention this works only for abc2midi
+     */
+    int getError(const QString& form, QString* to = nullptr);
 };
 
 #endif // GENERATOR_H

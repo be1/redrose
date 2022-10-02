@@ -2,7 +2,6 @@
 #define VIEWVBOXLAYOUT_H
 
 #include "RunPushButton.h"
-#include "LogView.h"
 #include "ScoreSvgWidget.h"
 #include <QSplitter>
 #include <QHBoxLayout>
@@ -17,7 +16,6 @@ public:
     ~ViewVSplitter();
 
     ScoreSvgWidget* svgWidget();
-    LogView *logView();
 
     void initBasename(const QString& b, const QString& d);
     bool requestPage(int page);
@@ -53,7 +51,6 @@ private:
     QPushButton print;
     QPushButton next;
 
-    LogView logview;
     int currentpage = 0;
     int lastpage = 0;
     QString basename;

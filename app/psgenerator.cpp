@@ -48,10 +48,11 @@ void PsGenerator::generate(const QString &input, int xopt, QString output, int c
         free(av[i]);
     }
     free(av);
-    if (ret)
+    if (ret) {
         emit generated(ret, tr("Error during score generation."), cont);
-    else
+    } else {
         emit generated(ret, "", cont);
+    }
 #else
     QFileInfo info(input);
     QDir dir = info.absoluteDir();
@@ -63,8 +64,5 @@ void PsGenerator::generate(const QString &input, int xopt, QString output, int c
 
 void PsGenerator::spawnPsCompiler(const QString &prog, const QStringList& args, const QDir &wrk, int cont)
 {
-    AbcApplication* a = static_cast<AbcApplication*>(qApp);
-    AbcMainWindow* w =  a->mainWindow();
-    w->mainHSplitter()->viewWidget()->logView()->clear();
     return spawnProgram(prog, args, AbcProcess::ProcessCompiler, wrk, cont);
 }
