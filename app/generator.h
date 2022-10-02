@@ -22,7 +22,7 @@ public:
      * @brief generate the first MIDI key of abcbuf
      * @param abcbuf the abc score as a string
      */
-    bool genFirstNote(const QString& abcbuf, int* chan, int* key);
+    bool genFirstNote(const QString& abcbuf, int* chan, int* pgm, int* key);
 
 signals:
     void generated(bool err, const QString& errstr, int cont);

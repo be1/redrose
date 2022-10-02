@@ -88,6 +88,8 @@ private:
     QString noteUnderCursor() const;
     QString charBeforeCursor() const;
     bool isPitch(QChar car) const;
+    QString getCurrentVoiceOrChannel() const;
+    QString getCurrentProgram() const;
 
     QCompleter *c = nullptr;
     bool saved;

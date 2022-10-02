@@ -197,6 +197,34 @@ QString AbcPlainTextEdit::noteUnderCursor() const
 
     return sym;
 }
+QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
+{
+    QTextCursor tc;
+    QTextDocument* doc = document();
+    QTextCursor vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
+    QTextCursor ctc = doc->find("%%MIDI channel ", textCursor(), QTextDocument::FindBackward);
+    if (ctc.position() > vtc.position())
+        tc = ctc;
+    else
+        tc = vtc;
+
+    tc.select(QTextCursor::LineUnderCursor);
+    return tc.selectedText();
+}
+
+QString AbcPlainTextEdit::getCurrentProgram() const
+{
+    QTextCursor tc;
+    QTextDocument* doc = document();
+    QTextCursor vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
+    tc =  doc->find("%%MIDI program ", textCursor(), QTextDocument::FindBackward);
+
+    tc.select(QTextCursor::LineUnderCursor);
+    if (tc.position() > vtc.position())
+        return tc.selectedText();
+
+    return "%%MIDI program 1"; /* default */
+}
 
 void AbcPlainTextEdit::checkPlayableNote()
 {
@@ -239,7 +267,10 @@ void AbcPlainTextEdit::checkPlayableNote()
     if (note.isEmpty())
         return;
 
-    //qDebug() << note;
+    QString voice = getCurrentVoiceOrChannel();
+    QString pgm = getCurrentProgram();
+    note.prepend("\n").prepend(pgm);
+    note.prepend("\n").prepend(voice);
     emit playableNote(note);
 }
 

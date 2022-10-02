@@ -389,7 +389,6 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
 {
     QString abc = constructHeaders();
     abc.append(note);
-    //qDebug() << abc;
 #if 0
     const QDataStream* stream = midigen.generate(abc.toUtf8(), xOfCursor(abcplaintextedit.textCursor()));
     QIODevice* dev = stream->device();
@@ -398,10 +397,9 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
     synth->play(ba);
     delete stream;
 #else
-    int c = -1, k = -1;
-    if (midigen.genFirstNote(abc, &c, &k)) {
-        c = autochan -1;
-        synth->fire(c, k, 80);
+    int c = -1, p = -1, k = -1;
+    if (midigen.genFirstNote(abc, &c, &p, &k)) {
+        synth->fire(c, p, k, 80);
     }
 #endif
 }

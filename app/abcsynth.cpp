@@ -176,9 +176,10 @@ void AbcSynth::play(const QByteArray& ba)
     }
 }
 
-void AbcSynth::fire(int chan, int key, int vel)
+void AbcSynth::fire(int chan, int pgm, int key, int vel)
 {
-    qDebug() << "Firing: " << chan << key << vel;
+    qDebug() << "Firing: " << chan << pgm << key << vel;
+    fluid_synth_program_change(fluid_synth, chan, pgm);
     fluid_synth_noteon(fluid_synth, chan, key, vel);
     QTimer::singleShot(500, [this, chan, key] () { fluid_synth_noteoff(fluid_synth, chan, key); });
 }

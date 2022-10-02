@@ -8,10 +8,8 @@ Generator::Generator(QObject *parent) : QObject(parent)
 {
 }
 
-bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* key)
+bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* key)
 {
-    qDebug() << abcbuf;
-
     QByteArray ba = abcbuf.toUtf8();
     struct abc* abc = abc_parse_buffer(ba.constData(), ba.size());
 
@@ -21,8 +19,8 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* key)
     if (!abc->tunes[0]->count)
         return false;
 
-    /* MIDI channel */
-    int v = -1;
+    /* find MIDI channel and program */
+    int v = -1, p = -1;
     if (abc->tunes[0]->voices[0]->v &&
             QChar::isDigit(abc->tunes[0]->voices[0]->v[0]))
         v = atoi(abc->tunes[0]->voices[0]->v) -1;
@@ -35,7 +33,11 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* key)
         if (sym->kind == ABC_INST) {
             int val;
             if (sscanf(sym->text, "MIDI channel %d", &val)) {
-                v = val -1;
+                v = val -1; /* NOTE: -1 */
+            }
+
+            if (sscanf(sym->text, "MIDI program %d", &val)) {
+                p = val;
             }
         }
 
@@ -48,6 +50,8 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* key)
             *key = sym->ev.key;
         if (chan)
             *chan = v;
+        if (pgm)
+            *pgm = p;
 
         return true;
     }
