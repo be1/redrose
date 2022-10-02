@@ -408,18 +408,15 @@ void EditVBoxLayout::onCompileFinished(int exitCode, const QString& errstr, int 
 
     qDebug() << "compile" << exitCode;
 
-    if (exitCode < 0 || exitCode > 1) { /* sometimes, abcm2ps returns 1 even on 'success' */
+    if (exitCode) {
         if (cont) {
             a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
         } else {
             QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
         }
-
-        return;
-    }
-
-    if (a->mainWindow()->statusBar()->currentMessage().isEmpty())
+    } else {
         a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
+    }
 
     if (!cont) {
         runpushbutton.setEnabled(true);
@@ -444,16 +441,13 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, i
 
     qDebug() << "ps" << exitCode;
 
-    if (exitCode < 0 || exitCode > 1) { /* sometimes, abcm2ps returns 1 even on 'success' */
+    if (exitCode) {
         if (cont) {
             a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
         } else {
             QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
         }
-
-        return;
-    }
-
-    if (a->mainWindow()->statusBar()->currentMessage().isEmpty())
+    } else {
         a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
+    }
 }
