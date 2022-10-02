@@ -21,6 +21,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
       inited(false)
 {
     Settings settings;
+
     QByteArray ba;
     ba = settings.value(DRIVER_KEY).toString().toUtf8();
     drv = (char*) realloc(drv, ba.length() + 1);
@@ -76,7 +77,7 @@ AbcSynth::~AbcSynth()
         waitFinish();
     }
 
-    delete_fluid_player(fluid_player);
+    /* delete_fluid_player(fluid_player); is done by TuneWaiter */
     delete_fluid_audio_driver(fluid_adriver);
     delete_fluid_synth(fluid_synth);
     delete_fluid_settings(fluid_settings);
@@ -114,12 +115,10 @@ void AbcSynth::play(const QString& midifile) {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
 
     if (isPlaying()) {
-            qDebug() << "Synth is playing. Stopping it.";
-            stop();
-            waitFinish();
+        qDebug() << "Synth is playing. Stopping it.";
+        stop();
+        waitFinish();
     }
-
-    delete_fluid_player(fluid_player);
 
     fluid_player = new_fluid_player(fluid_synth);
     waiter = new TuneWaiter(fluid_player, this);
@@ -166,8 +165,6 @@ void AbcSynth::play(const QByteArray& ba)
         waitFinish();
     }
 
-    delete_fluid_player(fluid_player);
-
     fluid_player = new_fluid_player(fluid_synth);
     waiter = new TuneWaiter(fluid_player, this);
 
@@ -179,11 +176,11 @@ void AbcSynth::play(const QByteArray& ba)
     }
 }
 
-void AbcSynth::fire(int key)
+void AbcSynth::fire(int chan, int key, int vel)
 {
-    //qDebug() << "Firing: " << key;
-    fluid_synth_noteon(fluid_synth, 0, key, 80);
-    QTimer::singleShot(500, [this, key] () { fluid_synth_noteoff(fluid_synth, 0, key); });
+    qDebug() << "Firing: " << chan << key << vel;
+    fluid_synth_noteon(fluid_synth, chan, key, vel);
+    QTimer::singleShot(500, [this, chan, key] () { fluid_synth_noteoff(fluid_synth, chan, key); });
 }
 
 void AbcSynth::stop()
@@ -210,9 +207,8 @@ void AbcSynth::waitFinish()
     if (waiter) {
         waiter->wait();
         waiter->deleteLater();
+        waiter = nullptr;
     }
-
-    waiter = nullptr;
 }
 
 void AbcSynth::onPlayFinished(int ret)

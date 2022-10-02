@@ -33,6 +33,10 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     svggen(this),
     midigen(this)
 {
+    Settings settings;
+
+    autochan = settings.value(EDITOR_AUTOPLAY_CHAN).toInt();
+
     QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
 	tempFile.setFileTemplate(t);
     xspinbox.setMinimum(1);
@@ -211,12 +215,10 @@ QString EditVBoxLayout::constructHeaders() {
 
     /* construct headers */
     for (int j = xl;  j < lines.count(); j++) {
-        if (lines.at(j).contains(QRegularExpression("^((%[^\n]*)|([A-Z]:[^\n]+))$"))) {
-            if (lines.at(j).startsWith("%%")) /* ignore MIDI instruction, use basic Piano */
-                continue;
-
+        /* stop at 'V:' but include all other headers and comments above it */
+        if (lines.at(j).contains(QRegularExpression("^((%[^\n]*)|([A-UW-Z]:[^\n]+))$"))) {
             headers += lines.at(j) + "\n";
-        } else
+        } else /* found 'V:' or notes */
             break;
     }
 
@@ -387,6 +389,7 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
 {
     QString abc = constructHeaders();
     abc.append(note);
+    //qDebug() << abc;
 #if 0
     const QDataStream* stream = midigen.generate(abc.toUtf8(), xOfCursor(abcplaintextedit.textCursor()));
     QIODevice* dev = stream->device();
@@ -395,8 +398,11 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
     synth->play(ba);
     delete stream;
 #else
-    int k = midigen.genFirstNote(abc);
-    synth->fire(k);
+    int c = -1, k = -1;
+    if (midigen.genFirstNote(abc, &c, &k)) {
+        c = autochan -1;
+        synth->fire(c, k, 80);
+    }
 #endif
 }
 

@@ -27,7 +27,7 @@ struct abc {
     char* ks; /* current key signature */
     char* ul;  /* current unit length */
     char* mm;  /* current measure metric */
-	int measure_accid['h']; /* 'g' + 1 */
+    int measure_accid['h']; /* 'g' + 1 */
 };
 
 struct abc_header {

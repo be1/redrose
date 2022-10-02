@@ -18,6 +18,7 @@ public:
     QColor getColor(QString key);
     bool getHighlight();
     bool getAutoplay();
+    int getAutoplayChan();
     int getFontRange();
 
 signals:
@@ -36,6 +37,9 @@ private:
 
     QLabel* autoplayLabel;
     QCheckBox* autoplayCheck;
+
+    QLabel* autochanLabel;
+    QSpinBox* autochanSpinBox;
 
     QStringList colorLabels;
     QStringList colorKeys;

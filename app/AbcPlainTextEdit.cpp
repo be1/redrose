@@ -169,7 +169,7 @@ QString AbcPlainTextEdit::noteUnderCursor() const
     if (!isPitch(sym.at(0)))
         return QString();
 
-    /* act when it is a pitch */
+    /* now, it is a pitch */
 
     if (tc.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2)) {
         if(tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1)) {

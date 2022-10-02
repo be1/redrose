@@ -14,6 +14,7 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
 
     mainLayout = new QVBoxLayout;
 
+    /* font magnifier */
     int fontRange = settings.value(EDITOR_FONT_RANGE).toInt();
     fontRangeLabel = new QLabel(tr("Font enlargement"));
     fontRangeSpinBox = new QSpinBox;
@@ -26,6 +27,7 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
 
     mainLayout->addLayout(fshbox);
 
+    /* highlight current line */
     bool highlight = settings.value(EDITOR_HIGHLIGHT).toBool();
     highlightLabel = new QLabel(tr("Highlight current line"));
     highlightCheck = new QCheckBox;
@@ -37,6 +39,7 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
 
     mainLayout->addLayout(hlhbox);
 
+    /* aut play current note on channel N */
     bool autoplay = settings.value(EDITOR_AUTOPLAY).toBool();
     autoplayLabel = new QLabel(tr("Auto play current note"));
     autoplayCheck = new QCheckBox;
@@ -46,8 +49,19 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
     aphbox->addWidget(autoplayLabel);
     aphbox->addWidget(autoplayCheck);
 
+    int autochan = settings.value(EDITOR_AUTOPLAY_CHAN).toInt();
+    autochanLabel = new QLabel(tr("on channel"));
+    autochanSpinBox = new QSpinBox;
+    autochanSpinBox->setMinimum(1);
+    autochanSpinBox->setMaximum(16);
+    autochanSpinBox->setValue(autochan);
+    autochanLabel->setBuddy(autochanSpinBox);
+    aphbox->addWidget(autochanLabel);
+    aphbox->addWidget(autochanSpinBox);
+
     mainLayout->addLayout(aphbox);
 
+    /* syntax highlighting */
     /* WARNING: labels, keys, buttons in the same order */
     colorLabels << tr("Header color") \
                 << tr("Comment color") \
@@ -89,6 +103,7 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
         mainLayout->addLayout(hbox);
     }
 
+    /* OK / Cancel buttons */
     buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
@@ -118,6 +133,11 @@ bool EditorPrefDialog::getHighlight()
 bool EditorPrefDialog::getAutoplay()
 {
     return autoplayCheck->isChecked();
+}
+
+int EditorPrefDialog::getAutoplayChan()
+{
+    return autochanSpinBox->value();
 }
 
 int EditorPrefDialog::getFontRange()

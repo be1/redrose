@@ -8,24 +8,51 @@ Generator::Generator(QObject *parent) : QObject(parent)
 {
 }
 
-int Generator::genFirstNote(const QString &abcbuf)
+bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* key)
 {
+    qDebug() << abcbuf;
+
     QByteArray ba = abcbuf.toUtf8();
     struct abc* abc = abc_parse_buffer(ba.constData(), ba.size());
+
     if (!abc->count)
-        return -1;
+        return false;
+
     if (!abc->tunes[0]->count)
-        return -1;
+        return false;
+
+    /* MIDI channel */
+    int v = -1;
+    if (abc->tunes[0]->voices[0]->v &&
+            QChar::isDigit(abc->tunes[0]->voices[0]->v[0]))
+        v = atoi(abc->tunes[0]->voices[0]->v) -1;
+
     struct abc_symbol* sym = abc->tunes[0]->voices[0]->first;
     if (!sym)
-        return -1;
-    while (sym && sym->kind != ABC_NOTE)
-            sym = sym->next;
+        return false;
 
-    if (sym)
-        return sym->ev.key;
+    while (sym && sym->kind != ABC_NOTE) {
+        if (sym->kind == ABC_INST) {
+            int val;
+            if (sscanf(sym->text, "MIDI channel %d", &val)) {
+                v = val -1;
+            }
+        }
 
-    return -1;
+        sym = sym->next;
+    }
+
+    /* MIDI key */
+    if (sym) {
+        if (key)
+            *key = sym->ev.key;
+        if (chan)
+            *chan = v;
+
+        return true;
+    }
+
+    return false;
 }
 
 void Generator::spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, const QDir& wrk, int cont)

@@ -81,6 +81,7 @@ private:
     QProgressIndicator* progress;
     QString selection;
     int selectionIndex;
+    int autochan;
 
     AbcSynth* synth;
     PsGenerator psgen;
