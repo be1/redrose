@@ -26,8 +26,10 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* ke
         v = atoi(abc->tunes[0]->voices[0]->v) -1;
 
     struct abc_symbol* sym = abc->tunes[0]->voices[0]->first;
-    if (!sym)
+    if (!sym) {
+        abc_release_yy(abc);
         return false;
+    }
 
     while (sym && sym->kind != ABC_NOTE) {
         if (sym->kind == ABC_INST) {
@@ -57,9 +59,11 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* ke
         if (pgm)
             *pgm = p;
 
+        abc_release_yy(abc);
         return true;
     }
 
+    abc_release_yy(abc);
     return false;
 }
 

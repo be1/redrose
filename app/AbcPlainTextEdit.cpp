@@ -199,11 +199,19 @@ QString AbcPlainTextEdit::noteUnderCursor() const
 }
 QString AbcPlainTextEdit::getCurrentKeySignature() const
 {
-    QTextCursor tc;
     QTextDocument* doc = document();
+    QTextCursor tc, vtc;
+
+    vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
     tc = doc->find("K:", textCursor(), QTextDocument::FindBackward);
-    tc.select(QTextCursor::LineUnderCursor);
-    return tc.selectedText();
+
+    /* give KS only if it changed after "V:" */
+    if (tc.position() > vtc.position()) {
+        tc.select(QTextCursor::LineUnderCursor);
+        return tc.selectedText();
+    }
+
+    return QString();
 }
 
 QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
@@ -280,10 +288,14 @@ void AbcPlainTextEdit::checkPlayableNote()
     QString voice = getCurrentVoiceOrChannel();
     QString pgm = getCurrentMIDIComment("program");
     QString trp = getCurrentMIDIComment("transpose");
-    note.prepend("\n").prepend(trp);
-    note.prepend("\n").prepend(pgm);
-    note.prepend("\n").prepend(voice);
-    note.prepend("\n").prepend(keysig);
+    if (!trp.isEmpty())
+        note.prepend("\n").prepend(trp);
+    if (!pgm.isEmpty())
+        note.prepend("\n").prepend(pgm);
+    if (!voice.isEmpty())
+        note.prepend("\n").prepend(voice);
+    if (!keysig.isEmpty())
+        note.prepend("\n").prepend(keysig);
     emit playableNote(note);
 }
 
