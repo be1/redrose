@@ -155,8 +155,6 @@ void ViewVSplitter::printClicked()
             painter.end();
             requestPage(-currentpage +1);
         }
-    } else {
-        qWarning() << "invalid printer object";
     }
 }
 
