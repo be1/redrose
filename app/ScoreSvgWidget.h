@@ -11,7 +11,7 @@ class ScoreSvgWidget : public QSvgWidget
 public:
     ScoreSvgWidget(QWidget *parent = nullptr);
 
-    int heightForWidth(int w) const {
+    int heightForWidth(int w) const override {
         return w * 297 / 210;
     };
 

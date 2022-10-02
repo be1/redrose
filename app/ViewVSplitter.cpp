@@ -52,10 +52,11 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     QList<int> sizes;
     sizes.append(594);
     sizes.append(100);
+    sizes.append(0);
     setSizes(sizes);
     setCollapsible(0, false);
     setCollapsible(1, false);
-    setCollapsible(2, false);
+    setCollapsible(2, true);
 }
 
 ViewVSplitter::~ViewVSplitter()
