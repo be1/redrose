@@ -89,7 +89,7 @@ private:
     QString charBeforeCursor() const;
     bool isPitch(QChar car) const;
     QString getCurrentVoiceOrChannel() const;
-    QString getCurrentProgram() const;
+    QString getCurrentMIDIComment(const QString& com) const;
 
     QCompleter *c = nullptr;
     bool saved;

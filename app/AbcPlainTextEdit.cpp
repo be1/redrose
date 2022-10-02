@@ -212,18 +212,18 @@ QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
     return tc.selectedText();
 }
 
-QString AbcPlainTextEdit::getCurrentProgram() const
+QString AbcPlainTextEdit::getCurrentMIDIComment(const QString& com) const
 {
     QTextCursor tc;
     QTextDocument* doc = document();
     QTextCursor vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
-    tc =  doc->find("%%MIDI program ", textCursor(), QTextDocument::FindBackward);
+    tc =  doc->find(QString("%%MIDI %1 ").arg(com), textCursor(), QTextDocument::FindBackward);
 
     tc.select(QTextCursor::LineUnderCursor);
     if (tc.position() > vtc.position())
         return tc.selectedText();
 
-    return "%%MIDI program 1"; /* default */
+    return ""; /* default */
 }
 
 void AbcPlainTextEdit::checkPlayableNote()
@@ -268,7 +268,9 @@ void AbcPlainTextEdit::checkPlayableNote()
         return;
 
     QString voice = getCurrentVoiceOrChannel();
-    QString pgm = getCurrentProgram();
+    QString pgm = getCurrentMIDIComment("program");
+    QString trp = getCurrentMIDIComment("transpose");
+    note.prepend("\n").prepend(trp);
     note.prepend("\n").prepend(pgm);
     note.prepend("\n").prepend(voice);
     emit playableNote(note);

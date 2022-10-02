@@ -19,8 +19,8 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* ke
     if (!abc->tunes[0]->count)
         return false;
 
-    /* find MIDI channel and program */
-    int v = -1, p = -1;
+    /* find MIDI channel and program... */
+    int v = -1, p = -1, t = 0;
     if (abc->tunes[0]->voices[0]->v &&
             QChar::isDigit(abc->tunes[0]->voices[0]->v[0]))
         v = atoi(abc->tunes[0]->voices[0]->v) -1;
@@ -39,6 +39,10 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* ke
             if (sscanf(sym->text, "MIDI program %d", &val)) {
                 p = val;
             }
+
+            if (sscanf(sym->text, "MIDI transpose %d", &val)) {
+                t = val;
+            }
         }
 
         sym = sym->next;
@@ -47,7 +51,7 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* ke
     /* MIDI key */
     if (sym) {
         if (key)
-            *key = sym->ev.key;
+            *key = sym->ev.key + t;
         if (chan)
             *chan = v;
         if (pgm)
