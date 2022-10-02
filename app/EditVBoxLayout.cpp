@@ -397,7 +397,7 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
     synth->play(ba);
     delete stream;
 #else
-    int c = -1, p = -1, k = -1;
+    int c = -1, p = 0, k = -1;
     if (midigen.genFirstNote(abc, &c, &p, &k)) {
         synth->fire(c, p, k, 80);
     }

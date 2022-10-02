@@ -197,6 +197,15 @@ QString AbcPlainTextEdit::noteUnderCursor() const
 
     return sym;
 }
+QString AbcPlainTextEdit::getCurrentKeySignature() const
+{
+    QTextCursor tc;
+    QTextDocument* doc = document();
+    tc = doc->find("K:", textCursor(), QTextDocument::FindBackward);
+    tc.select(QTextCursor::LineUnderCursor);
+    return tc.selectedText();
+}
+
 QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
 {
     QTextCursor tc;
@@ -267,12 +276,14 @@ void AbcPlainTextEdit::checkPlayableNote()
     if (note.isEmpty())
         return;
 
+    QString keysig = getCurrentKeySignature();
     QString voice = getCurrentVoiceOrChannel();
     QString pgm = getCurrentMIDIComment("program");
     QString trp = getCurrentMIDIComment("transpose");
     note.prepend("\n").prepend(trp);
     note.prepend("\n").prepend(pgm);
     note.prepend("\n").prepend(voice);
+    note.prepend("\n").prepend(keysig);
     emit playableNote(note);
 }
 

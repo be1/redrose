@@ -20,7 +20,7 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* ke
         return false;
 
     /* find MIDI channel and program... */
-    int v = -1, p = -1, t = 0;
+    int v = 0, p = 0, t = 0;
     if (abc->tunes[0]->voices[0]->v &&
             QChar::isDigit(abc->tunes[0]->voices[0]->v[0]))
         v = atoi(abc->tunes[0]->voices[0]->v) -1;

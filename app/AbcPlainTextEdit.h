@@ -88,6 +88,7 @@ private:
     QString noteUnderCursor() const;
     QString charBeforeCursor() const;
     bool isPitch(QChar car) const;
+    QString getCurrentKeySignature() const;
     QString getCurrentVoiceOrChannel() const;
     QString getCurrentMIDIComment(const QString& com) const;
 
