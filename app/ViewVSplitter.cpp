@@ -109,13 +109,16 @@ bool ViewVSplitter::requestPage(int i) {
         return true;
     }
 
+    /* else, empty view */
+    svgWidget()->load(QString());
+    prev.setEnabled(false);
+    next.setEnabled(false);
     return false;
 }
 
 void ViewVSplitter::cleanup()
 {
     svgnames.clear();
-    svgwidget.load(QString());
     initBasename(QString(), QString());
 }
 

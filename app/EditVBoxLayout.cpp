@@ -406,9 +406,12 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
 
 void EditVBoxLayout::onCompileFinished(int exitCode, const QString& errstr, int cont)
 {
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    if (a->isQuit())
+        return;
+
     qDebug() << "compile" << exitCode;
 
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
     if (exitCode < 0 || exitCode > 1) { /* sometimes, abcm2ps returns 1 even on 'success' */
         if (cont) {
             a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));

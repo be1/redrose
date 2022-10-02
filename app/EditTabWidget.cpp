@@ -30,8 +30,17 @@ int EditTabWidget::addTab(EditWidget *swidget)
 
 void EditTabWidget::removeTab(int index)
 {
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    AbcMainWindow* m = a->mainWindow();
+
+    /* clear SVG view */
+    m->mainHSplitter()->viewWidget()->cleanup();
+    m->mainHSplitter()->viewWidget()->svgWidget()->load(QString()); /* the only way to clear view */
+
+    /* stop synthesis from left pane */
     EditWidget *w = qobject_cast<EditWidget*>(widget(index));
     w->editVBoxLayout()->finalize();
+
     QTabWidget::removeTab(index);
     delete w;
 }
@@ -54,7 +63,6 @@ void EditTabWidget::askRemoveTab(int index)
                                                                       tr("Current score not saved!\nClose this score anyway?"))))
         return;
 
-    m->mainHSplitter()->viewWidget()->cleanup();
     removeTab(index);
 }
 

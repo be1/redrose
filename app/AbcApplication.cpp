@@ -11,12 +11,12 @@ AbcApplication::AbcApplication(int& argc, char **argv)
     setOrganizationName(SETTINGS_DOMAIN);
 	setOrganizationDomain("herewe");
     setApplicationName(SETTINGS_APP);
-	setApplicationVersion(VERSION " (" REVISION ")");
+    setApplicationVersion(VERSION " (" REVISION ")");
 
     Settings settings;
     settings.check();
 
-	abcminit();
+    abcminit();
 }
 
 AbcApplication::~AbcApplication()

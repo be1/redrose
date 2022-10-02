@@ -88,7 +88,6 @@ QMessageBox::StandardButton ScoreMenu::gracefulQuit()
         return QMessageBox::StandardButton::No;
 
     return QMessageBox::StandardButton::Yes;
-
 }
 
 void ScoreMenu::onQuitActionTriggered()
