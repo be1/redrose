@@ -39,7 +39,7 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
 
     mainLayout->addLayout(hlhbox);
 
-    /* aut play current note on channel N */
+    /* aut play current note */
     bool autoplay = settings.value(EDITOR_AUTOPLAY).toBool();
     autoplayLabel = new QLabel(tr("Auto play current note"));
     autoplayCheck = new QCheckBox;
@@ -48,16 +48,6 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
     QHBoxLayout* aphbox = new QHBoxLayout;
     aphbox->addWidget(autoplayLabel);
     aphbox->addWidget(autoplayCheck);
-
-    int autochan = settings.value(EDITOR_AUTOPLAY_CHAN).toInt();
-    autochanLabel = new QLabel(tr("on channel"));
-    autochanSpinBox = new QSpinBox;
-    autochanSpinBox->setMinimum(1);
-    autochanSpinBox->setMaximum(16);
-    autochanSpinBox->setValue(autochan);
-    autochanLabel->setBuddy(autochanSpinBox);
-    aphbox->addWidget(autochanLabel);
-    aphbox->addWidget(autochanSpinBox);
 
     mainLayout->addLayout(aphbox);
 
@@ -133,11 +123,6 @@ bool EditorPrefDialog::getHighlight()
 bool EditorPrefDialog::getAutoplay()
 {
     return autoplayCheck->isChecked();
-}
-
-int EditorPrefDialog::getAutoplayChan()
-{
-    return autochanSpinBox->value();
 }
 
 int EditorPrefDialog::getFontRange()

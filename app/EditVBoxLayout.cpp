@@ -33,10 +33,6 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     svggen(this),
     midigen(this)
 {
-    Settings settings;
-
-    autochan = settings.value(EDITOR_AUTOPLAY_CHAN).toInt();
-
     QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
 	tempFile.setFileTemplate(t);
     xspinbox.setMinimum(1);

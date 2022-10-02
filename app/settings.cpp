@@ -13,10 +13,6 @@ void Settings::check()
     if (!autoplay.isValid())
         setValue(EDITOR_AUTOPLAY, false);
 
-    QVariant autochan = value(EDITOR_AUTOPLAY_CHAN);
-    if (!autochan.isValid())
-        setValue(EDITOR_AUTOPLAY_CHAN, 1);
-
     QVariant sfont = value(SOUNDFONT_KEY);
     if (!sfont.isValid())
         setValue(SOUNDFONT_KEY, DEB_SF2_GM);
@@ -80,8 +76,6 @@ void Settings::check()
 void Settings::reset()
 {
     setValue(EDITOR_AUTOPLAY, false);
-
-    setValue(EDITOR_AUTOPLAY_CHAN, 1);
 
     setValue(SOUNDFONT_KEY, DEB_SF2_GM);
 
