@@ -284,18 +284,18 @@ void AbcPlainTextEdit::checkPlayableNote()
     if (note.isEmpty())
         return;
 
-    QString keysig = getCurrentKeySignature();
     QString voice = getCurrentVoiceOrChannel();
+    QString keysig = getCurrentKeySignature();
     QString pgm = getCurrentMIDIComment("program");
     QString trp = getCurrentMIDIComment("transpose");
     if (!trp.isEmpty())
         note.prepend("\n").prepend(trp);
     if (!pgm.isEmpty())
         note.prepend("\n").prepend(pgm);
-    if (!voice.isEmpty())
-        note.prepend("\n").prepend(voice);
     if (!keysig.isEmpty())
         note.prepend("\n").prepend(keysig);
+    if (!voice.isEmpty())
+        note.prepend("\n").prepend(voice);
     emit playableNote(note);
 }
 
