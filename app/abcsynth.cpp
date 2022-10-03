@@ -10,13 +10,12 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
       fluid_settings(nullptr),
       fluid_synth(nullptr),
       fluid_adriver(nullptr),
-      waiter(nullptr),
+      player(nullptr),
       sfloader(nullptr),
       sfid(0),
       id(NULL),
       drv(NULL),
       sf(NULL),
-      mf(NULL),
       inited(false)
 {
     Settings settings;
@@ -70,7 +69,6 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
 AbcSynth::~AbcSynth()
 {
-    /* stop synthesis */
     if (isPlaying()) {
         stop();
         waitFinish();
@@ -82,16 +80,22 @@ AbcSynth::~AbcSynth()
     free(id);
     free(drv);
     free(sf);
-    free(mf);
 }
 
 void AbcSynth::abort()
 {
-   if (sfloader && sfloader->isRunning())
-       sfloader->terminate();
-   if (sfloader)
-       sfloader->deleteLater();
-   sfloader = nullptr;
+    if (isPlaying()) {
+        stop();
+        waitFinish();
+    }
+
+    if (sfloader && sfloader->isRunning())
+        sfloader->terminate();
+
+    if (sfloader)
+        sfloader->deleteLater();
+    sfloader = nullptr;
+    inited = false;
 }
 
 void AbcSynth::onSFontFinished(int fid) {
@@ -118,28 +122,18 @@ void AbcSynth::play(const QString& midifile) {
         waitFinish();
     }
 
-    fluid_player_t* fluid_player = new_fluid_player(fluid_synth);
-    waiter = new PlayerThread(fluid_player, this);
-    connect(waiter, &PlayerThread::playerFinished, this, &AbcSynth::onPlayFinished);
+    player = new PlayerThread(fluid_synth, this);
+    connect(player, &PlayerThread::playerFinished, this, &AbcSynth::onPlayFinished);
 
-    /* midi file can change from tune (xspinbox) index */
-    QByteArray ba;
-    ba = midifile.toUtf8();
-    mf = (char*) realloc(mf, ba.length() + 1);
-    strncpy(mf, ba.constData(), ba.length());
-    mf[ba.length()] = '\0';
-
-    qDebug() << "Loading " << mf;
-
-    if (FLUID_FAILED == fluid_player_add(fluid_player, mf)) {
-        a->mainWindow()->statusBar()->showMessage(tr("Cannot load MIDI file: ") + mf);
-        qWarning() << "Cannot load MIDI file: " << mf;
+    qDebug() << "Loading " << midifile;
+    if (FLUID_FAILED == player->addMIDIFile(midifile)) {
+        a->mainWindow()->statusBar()->showMessage(tr("Cannot load MIDI file: ") + midifile);
+        qWarning() << "Cannot load MIDI file: " << midifile;
     } else {
         qDebug() << "Starting playback with SoundFont " << sf;
-        fluid_player_play(fluid_player);
-        waiter->start();
+        player->start();
 
-        switch (fluid_player_get_status(fluid_player)) {
+        switch (player->status()) {
         case FLUID_PLAYER_READY:
             a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
             break;
@@ -163,14 +157,12 @@ void AbcSynth::play(const QByteArray& ba)
         waitFinish();
     }
 
-    fluid_player_t* fluid_player = new_fluid_player(fluid_synth);
-    waiter = new PlayerThread(fluid_player, this); /* fluid_player is owned by Waiter */
+    player = new PlayerThread(fluid_synth, this);
 
-    if (FLUID_FAILED == fluid_player_add_mem(fluid_player, ba.constData(), ba.size())) {
+    if (FLUID_FAILED == player->addMIDIBuffer(ba)) {
         qWarning() << "Cannot load MIDI buffer." ;
     } else {
-        fluid_player_play(fluid_player);
-        waiter->start();
+        player->start();
     }
 }
 
@@ -184,8 +176,8 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
 
 void AbcSynth::stop()
 {
-   if (waiter && waiter->isRunning())
-       waiter->abort();
+   if (player && player->isRunning())
+       player->abort();
 }
 
 bool AbcSynth::isLoading()
@@ -195,18 +187,18 @@ bool AbcSynth::isLoading()
 
 bool AbcSynth::isPlaying()
 {
-    if (waiter)
-        return waiter->isRunning();
+    if (player)
+        return player->isRunning();
     else
         return false;
 }
 
 void AbcSynth::waitFinish()
 {
-    if (waiter) {
-        waiter->wait();
-        waiter->deleteLater();
-        waiter = nullptr;
+    if (player) {
+        player->wait();
+        player->deleteLater();
+        player = nullptr;
     }
 }
 

@@ -33,14 +33,13 @@ private:
     fluid_settings_t* fluid_settings;
     fluid_synth_t* fluid_synth;
     fluid_audio_driver_t* fluid_adriver;
-    PlayerThread *waiter;
+    PlayerThread *player;
     SFLoader *sfloader;
     QString curSFont;
     int sfid;
     char *id; /* jack identifier */
     char *drv; /* "alsa" or "pulseaudi"o or "jack" */
     char *sf; /* soundfont file name */
-    char *mf; /* current midi file name */
     bool inited;
 };
 
