@@ -10,8 +10,8 @@ class PlayerThread : public QThread
     Q_OBJECT
 public:
     /**
-     * @brief TuneWaiter
-     * @param p fluid_player, Waiter takes ownership.
+     * @brief PlayerThread
+     * @param p fluid_player, PlayerThread takes ownership.
      * @param parent
      */
     explicit PlayerThread(fluid_player_t *p, QObject *parent = nullptr);
