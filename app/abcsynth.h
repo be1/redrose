@@ -32,7 +32,6 @@ private slots:
 private:
     fluid_settings_t* fluid_settings;
     fluid_synth_t* fluid_synth;
-    fluid_player_t* fluid_player;
     fluid_audio_driver_t* fluid_adriver;
     PlayerThread *waiter;
     SFLoader *sfloader;
