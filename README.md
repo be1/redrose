@@ -2,7 +2,6 @@
 ABC music notation integrated environment
 
 ## Dependencies
-Redrose uses third-party software to generate MIDI, AUDIO, SVG and Postscript files.
 - drumstick-file (library and headers)
 - fluidsynth (library and headers)
 - abc2midi (program, optional, not mandatory)
