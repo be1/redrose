@@ -14,9 +14,5 @@ public:
 protected slots:
 void onAboutActionTriggered();
 void onAboutQtActionTriggered();
-
-private:
-    QAction aboutaction;
-    QAction aboutqtaction;
 };
 #endif

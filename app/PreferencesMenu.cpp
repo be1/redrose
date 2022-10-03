@@ -12,30 +12,12 @@ PreferencesMenu::PreferencesMenu(QWidget* parent)
 {
     setTitle(tr("Preferences"));
 
-    playeraction.setText(tr("MIDI Generator"));
-    addAction(&playeraction);
-
-    adriveraction.setText(tr("Audio output driver"));
-    addAction(&adriveraction);
-
-    sfontaction.setText(tr("Audio sound font"));
-    addAction(&sfontaction);
-
-    psaction.setText(tr("Postscript export"));
-    addAction(&psaction);
-
-    editoraction.setText(tr("Editor settings"));
-    addAction(&editoraction);
-
-    resetaction.setText(tr("Reset settings"));
-    addAction(&resetaction);
-
-    connect(&playeraction, &QAction::triggered, this, &PreferencesMenu::onPlayerActionTriggered);
-    connect(&adriveraction, &QAction::triggered, this, &PreferencesMenu::onAdriverActionTriggered);
-    connect(&sfontaction, &QAction::triggered, this, &PreferencesMenu::onSfontActionTriggered);
-    connect(&psaction, &QAction::triggered, this, &PreferencesMenu::onPsActionTriggered);
-    connect(&resetaction, &QAction::triggered, this, &PreferencesMenu::onResetActionTriggered);
-    connect(&editoraction, &QAction::triggered, this, &PreferencesMenu::onEditorActionTriggered);
+    addAction(tr("MIDI Generator"), this, &PreferencesMenu::onPlayerActionTriggered);
+    addAction(tr("Audio output driver"), this, &PreferencesMenu::onAdriverActionTriggered);
+    addAction(tr("Audio sound font"), this, &PreferencesMenu::onSfontActionTriggered);
+    addAction(tr("Postscript export"), this, &PreferencesMenu::onPsActionTriggered);
+    addAction(tr("Editor settings"), this, &PreferencesMenu::onEditorActionTriggered);
+    addAction(tr("Reset settings"), this, &PreferencesMenu::onResetActionTriggered);
 }
 
 PreferencesMenu::~PreferencesMenu()

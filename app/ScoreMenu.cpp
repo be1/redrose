@@ -15,13 +15,8 @@ ScoreMenu::ScoreMenu(QWidget* parent)
 {
     setTitle(tr("Score"));
 
-    newaction.setText(tr("New"));
-    newaction.setShortcut(QKeySequence(QKeySequence::New));
-    addAction(&newaction);
-
-    openaction.setText(tr("Open"));
-    openaction.setShortcut(QKeySequence(QKeySequence::Open));
-    addAction(&openaction);
+    addAction(tr("New"), this, SLOT(onNewActionTriggered()), QKeySequence::New);
+    addAction(tr("Open"), this, SLOT(onOpenActionTriggered()), QKeySequence::Open);
 
     for (int i = 0; i < MaxRecentFiles; ++i) {
         recentFileActs[i] = new QAction(this);
@@ -35,35 +30,12 @@ ScoreMenu::ScoreMenu(QWidget* parent)
 
     updateRecentFileActions();
 
-    saveaction.setText(tr("Save"));
-    saveaction.setShortcut(QKeySequence(QKeySequence::Save));
-    addAction(&saveaction);
-
-    saveasaction.setText(tr("Save as"));
-    addAction(&saveasaction);
-
-    exportaction.setText(tr("Export to MIDI"));
-    addAction(&exportaction);
-
-    exppsaction.setText(tr("Export to Postscript"));
-    addAction(&exppsaction);
-
-    closeaction.setText(tr("Close"));
-    closeaction.setShortcut(QKeySequence(QKeySequence::Close));
-    addAction(&closeaction);
-
-    quitaction.setText(tr("Quit"));
-    quitaction.setShortcut(QKeySequence(QKeySequence::Quit));
-	addAction(&quitaction);
-
-	connect(&quitaction, SIGNAL(triggered()), this, SLOT(onQuitActionTriggered()));
-    connect(&openaction, SIGNAL(triggered()), this, SLOT(onOpenActionTriggered()));
-    connect(&saveaction, SIGNAL(triggered()), this, SLOT(onSaveActionTriggered()));
-    connect(&saveasaction, SIGNAL(triggered()), this, SLOT(onSaveAsActionTriggered()));
-    connect(&closeaction, SIGNAL(triggered()), this, SLOT(onCloseActionTriggered()));
-    connect(&newaction, SIGNAL(triggered()), this, SLOT(onNewActionTriggered()));
-    connect(&exportaction, SIGNAL(triggered()), this, SLOT(onExportActionTriggered()));
-    connect(&exppsaction, SIGNAL(triggered()), this, SLOT(onExportPsActionTriggered()));
+    addAction(tr("Save"), this, SLOT(onSaveActionTriggered()), QKeySequence::Save);
+    addAction(tr("Save as"), this, SLOT(onSaveAsActionTriggered()), QKeySequence::SaveAs);
+    addAction(tr("Export to MIDI"), this, SLOT(onExportActionTriggered()));
+    addAction(tr("Export to Postscript"), this, SLOT(onExportPsActionTriggered()));
+    addAction(tr("Close"), this, SLOT(onCloseActionTriggered()), QKeySequence::Close);
+    addAction(tr("Quit"), this, SLOT(onQuitActionTriggered()), QKeySequence::Quit);
 }
 
 ScoreMenu::~ScoreMenu()

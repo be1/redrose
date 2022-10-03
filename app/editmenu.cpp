@@ -24,7 +24,7 @@ AbcPlainTextEdit* EditMenu::getCurrentEditor()
     QWidget* cw = a->mainWindow()->mainHSplitter()->editTabWidget()->currentWidget();
 
     if (cw)
-        return qobject_cast<EditWidget*>(cw)->editVBoxLayout()->abcPlainTextEdit();
+        return static_cast<EditWidget*>(cw)->editVBoxLayout()->abcPlainTextEdit();
 
     return nullptr;
 }
@@ -66,7 +66,7 @@ void EditMenu::onFindBackwardActivated()
         m_text = QInputDialog::getText(editor, tr("Find backward"), tr("Text:"));
 
     if (m_text.isEmpty())
-            return;
+        return;
 
     editor->find(m_text, QTextDocument::FindBackward);
 }

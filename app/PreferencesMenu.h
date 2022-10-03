@@ -19,13 +19,5 @@ protected slots:
     void onPsActionTriggered();
     void onResetActionTriggered();
     void onEditorActionTriggered();
-
-private:
-    QAction playeraction;
-    QAction adriveraction;
-    QAction resetaction;
-    QAction sfontaction;
-    QAction psaction;
-    QAction editoraction;
 };
 #endif

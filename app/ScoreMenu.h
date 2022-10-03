@@ -36,13 +36,6 @@ private:
 
     enum { MaxRecentFiles = 5 };
     QAction *recentFileActs[MaxRecentFiles];
-
-    QAction saveaction;
-    QAction saveasaction;
-    QAction exportaction;
-    QAction exppsaction;
-    QAction closeaction;
-    QAction quitaction;
 };
 
 #define NEW_TEMPLATE "X:1\nT:Melody from «Le lac des cygnes»\nC:Piotr Ilitch Tchaïkovski\nM:C\nL:1/4\nK:Amin\n!mf!ABcd|e3c|e3A|cAFc|A4-|AdcB|e3c|e3A|cAFc|A4|]"
