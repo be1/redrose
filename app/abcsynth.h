@@ -4,7 +4,7 @@
 #include <QString>
 #include <QObject>
 #include "sfloader.h"
-#include "TuneWaiter.h"
+#include "PlayerThread.h"
 
 class AbcSynth: public QObject
 {
@@ -34,7 +34,7 @@ private:
     fluid_synth_t* fluid_synth;
     fluid_player_t* fluid_player;
     fluid_audio_driver_t* fluid_adriver;
-    TuneWaiter *waiter;
+    PlayerThread *waiter;
     SFLoader *sfloader;
     QString curSFont;
     int sfid;

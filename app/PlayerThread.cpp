@@ -1,13 +1,19 @@
-#include "TuneWaiter.h"
+#include "PlayerThread.h"
 
-TuneWaiter::TuneWaiter(fluid_player_t* p, QObject *parent)
+PlayerThread::PlayerThread(fluid_player_t* p, QObject *parent)
     : QThread(parent)
     , player(p)
 {
 
 }
 
-void TuneWaiter::run()
+void PlayerThread::abort()
+{
+    if (player)
+        fluid_player_stop(player);
+}
+
+void PlayerThread::run()
 {
     int ret = 0;
     if (player)

@@ -9,7 +9,6 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     : QObject(parent),
       fluid_settings(nullptr),
       fluid_synth(nullptr),
-      fluid_player(nullptr),
       fluid_adriver(nullptr),
       waiter(nullptr),
       sfloader(nullptr),
@@ -77,7 +76,6 @@ AbcSynth::~AbcSynth()
         waitFinish();
     }
 
-    /* delete_fluid_player(fluid_player); is done by TuneWaiter */
     delete_fluid_audio_driver(fluid_adriver);
     delete_fluid_synth(fluid_synth);
     delete_fluid_settings(fluid_settings);
@@ -120,9 +118,9 @@ void AbcSynth::play(const QString& midifile) {
         waitFinish();
     }
 
-    fluid_player = new_fluid_player(fluid_synth);
-    waiter = new TuneWaiter(fluid_player, this);
-    connect(waiter, &TuneWaiter::playerFinished, this, &AbcSynth::onPlayFinished);
+    fluid_player_t* fluid_player = new_fluid_player(fluid_synth);
+    waiter = new PlayerThread(fluid_player, this);
+    connect(waiter, &PlayerThread::playerFinished, this, &AbcSynth::onPlayFinished);
 
     /* midi file can change from tune (xspinbox) index */
     QByteArray ba;
@@ -165,8 +163,8 @@ void AbcSynth::play(const QByteArray& ba)
         waitFinish();
     }
 
-    fluid_player = new_fluid_player(fluid_synth);
-    waiter = new TuneWaiter(fluid_player, this);
+    fluid_player_t* fluid_player = new_fluid_player(fluid_synth);
+    waiter = new PlayerThread(fluid_player, this); /* fluid_player is owned by Waiter */
 
     if (FLUID_FAILED == fluid_player_add_mem(fluid_player, ba.constData(), ba.size())) {
         qWarning() << "Cannot load MIDI buffer." ;
@@ -187,7 +185,7 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
 void AbcSynth::stop()
 {
    if (waiter && waiter->isRunning())
-       fluid_player_stop(fluid_player);
+       waiter->abort();
 }
 
 bool AbcSynth::isLoading()
