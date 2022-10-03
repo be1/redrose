@@ -25,9 +25,9 @@ void PsGenerator::generate(const QString &input, int xopt, QString output, int c
     }
 
     if (param.toString() == TUNES_ALL) {
-        argv << "-N1" << "-O" << output << input;
+        argv << "-q" << "-N1" << "-O" << output << input;
     } else {
-        argv << "-N1" << "-e" << QString::number(xopt) << "-O" << output << input;
+        argv << "-q" << "-N1" << "-e" << QString::number(xopt) << "-O" << output << input;
     }
 
 #ifdef USE_LIBABCM2PS

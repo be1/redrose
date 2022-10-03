@@ -23,6 +23,7 @@ void SvgGenerator::generate(const QString &input, int xopt, QString output, int 
     QStringList argv = program.split(" ");
     program = argv.at(0);
 
+    argv << "-q"; /* quiet mode */
     argv << "-v"; /* SVG output*/
     argv << "-e" << QString::number(xopt); /* one tune to consider */
     argv << "-N1"; /* numbering pages on the up-left */
