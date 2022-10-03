@@ -10,6 +10,7 @@ class PlayerThread : public QThread
     Q_OBJECT
 public:
     explicit PlayerThread(fluid_synth_t* synth, QObject *parent = nullptr);
+    ~PlayerThread();
     void abort();
     int status();
     int addMIDIFile(const QString& filename);

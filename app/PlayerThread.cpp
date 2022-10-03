@@ -6,6 +6,11 @@ PlayerThread::PlayerThread(fluid_synth_t* synth, QObject *parent)
     fluid_player = new_fluid_player(synth);
 }
 
+PlayerThread::~PlayerThread()
+{
+    abort();
+}
+
 void PlayerThread::abort()
 {
     if (fluid_player)
