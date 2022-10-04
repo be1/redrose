@@ -38,7 +38,8 @@ void EditMenu::onFindActivated()
     if (m_text.isEmpty())
         return;
 
-    editor->find(m_text);
+    if(!editor->find(m_text, QTextDocument::FindCaseSensitively))
+        editor->find(m_text, QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
 }
 
 void EditMenu::onFindForwardActivated()
@@ -53,7 +54,7 @@ void EditMenu::onFindForwardActivated()
     if (m_text.isEmpty())
         return;
 
-    editor->find(m_text);
+    editor->find(m_text, QTextDocument::FindCaseSensitively);
 }
 
 void EditMenu::onFindBackwardActivated()
@@ -68,6 +69,6 @@ void EditMenu::onFindBackwardActivated()
     if (m_text.isEmpty())
         return;
 
-    editor->find(m_text, QTextDocument::FindBackward);
+    editor->find(m_text, QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
 }
 

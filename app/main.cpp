@@ -17,7 +17,7 @@
 
 #ifdef EBUG
 void handler(int sig) {
-  int fd = open("/tmp/redrose.trace", O_CREAT|O_WRONLY|O_TRUNC);
+  int fd = open("/tmp/redrose.trace", O_CREAT|O_RDWR|O_TRUNC, S_IRUSR|S_IWUSR);
   void *array[10];
   size_t size;
 
