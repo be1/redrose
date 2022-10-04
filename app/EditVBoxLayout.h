@@ -67,7 +67,7 @@ protected slots:
     void onGeneratePSFinished(int exitCode, const QString& errstr, int cont);
     void onGenerateMIDIFinished(int exitCode, const QString& errstr, int cont);
     void onSynthInited(bool err);
-    void onSynthFinished(bool err);
+    void onSynthFinished(int ret);
 
 private:
 	AbcPlainTextEdit abcplaintextedit;

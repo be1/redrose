@@ -308,14 +308,13 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
     }
 }
 
-void EditVBoxLayout::onSynthFinished(bool err)
+void EditVBoxLayout::onSynthFinished(int ret)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
-    if (err) {
-        a->mainWindow()->statusBar()->showMessage(tr("Error during synthesis."));
-    } else {
+    if (ret)
+        a->mainWindow()->statusBar()->showMessage(tr("Synthesis error."));
+    else
         a->mainWindow()->statusBar()->showMessage(tr("Synthesis finished."));
-    }
 
     int x = xspinbox.value();
     QString midi (tempFile.fileName());

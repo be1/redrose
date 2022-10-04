@@ -26,7 +26,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     strncpy(drv, ba.constData(), ba.length());
     drv[ba.length()] = '\0';
 
-    qDebug() << name << drv;
+    //qDebug() << name << drv;
     fluid_settings = new_fluid_settings();
     fluid_settings_setstr(fluid_settings, "audio.driver", drv);
 
@@ -123,7 +123,7 @@ void AbcSynth::play(const QString& midifile) {
     }
 
     player = new PlayerThread(fluid_synth, this);
-    connect(player, &PlayerThread::playerFinished, this, &AbcSynth::onPlayFinished);
+    connect(player, &PlayerThread::finished, this, &AbcSynth::onPlayFinished);
 
     qDebug() << "Loading " << midifile;
     if (FLUID_FAILED == player->addMIDIFile(midifile)) {
@@ -202,15 +202,11 @@ void AbcSynth::waitFinish()
     }
 }
 
-void AbcSynth::onPlayFinished(int ret)
+void AbcSynth::onPlayFinished()
 {
-    /* purge waiter */
+    int ret = player->status();
+    /* purge player */
     waitFinish();
 
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
-    if (ret == FLUID_FAILED)
-        a->mainWindow()->statusBar()->showMessage(tr("Synthesis error."));
-    else
-        a->mainWindow()->statusBar()->showMessage(tr("Synthesis done."));
     emit synthFinished(ret);
 }

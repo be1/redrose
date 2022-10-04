@@ -1,7 +1,8 @@
 #include "PlayerThread.h"
 
 PlayerThread::PlayerThread(fluid_synth_t* synth, QObject *parent)
-    : QThread(parent)
+    : QThread(parent),
+      ret(0)
 {
     fluid_player = new_fluid_player(synth);
 }
@@ -21,7 +22,7 @@ int PlayerThread::status()
 {
     if (fluid_player)
         return fluid_player_get_status(fluid_player);
-    return 0;
+    return ret;
 }
 
 int PlayerThread::addMIDIFile(const QString &filename)
@@ -40,13 +41,11 @@ int PlayerThread::addMIDIBuffer(const QByteArray &buf)
 
 void PlayerThread::run()
 {
-    int ret = 0;
+    ret = 0;
     if (fluid_player) {
         fluid_player_play(fluid_player);
         ret = fluid_player_join(fluid_player);
         delete_fluid_player(fluid_player);
         fluid_player = nullptr;
     }
-
-    emit playerFinished(ret);
 }

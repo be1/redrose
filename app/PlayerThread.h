@@ -16,14 +16,12 @@ public:
     int addMIDIFile(const QString& filename);
     int addMIDIBuffer(const QByteArray& buf);
 
-signals:
-    void playerFinished(int code);
-
 protected:
     void run() override;
 
 private:
     fluid_player_t *fluid_player = nullptr;
+    int ret;
 };
 
 #endif // PLAYERTHREAD_H

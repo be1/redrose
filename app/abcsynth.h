@@ -23,11 +23,11 @@ public:
 
 signals:
     void initFinished(bool err);
-    void synthFinished(bool err);
+    void synthFinished(int ret);
 
 private slots:
     void onSFontFinished(int fid);
-    void onPlayFinished(int ret);
+    void onPlayFinished();
 
 private:
     fluid_settings_t* fluid_settings;
