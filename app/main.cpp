@@ -18,11 +18,11 @@
 #ifdef EBUG
 void handler(int sig) {
   int fd = open("/tmp/redrose.trace", O_CREAT|O_RDWR|O_TRUNC, S_IRUSR|S_IWUSR);
-  void *array[10];
+  void *array[30];
   size_t size;
 
   // get void*'s for all entries on the stack
-  size = backtrace(array, 10);
+  size = backtrace(array, 30);
 
   // print out all the frames to stderr
   fprintf(stderr, "Error: signal %d: see /tmp/redrose.trace\n", sig);
