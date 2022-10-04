@@ -34,7 +34,10 @@ void EditMenu::onFindActivated()
     if (!editor)
         return;
 
-    m_text = QInputDialog::getText(editor, tr("Find ..."), tr("Text:"));
+    if (!editor->textCursor().selectedText().isEmpty())
+        m_text = editor->textCursor().selectedText();
+
+    m_text = QInputDialog::getText(editor, tr("Find ..."), tr("Text:"), QLineEdit::Normal, m_text);
     if (m_text.isEmpty())
         return;
 
@@ -49,7 +52,10 @@ void EditMenu::onFindForwardActivated()
         return;
 
     if (m_text.isEmpty())
-        m_text = QInputDialog::getText(editor, tr("Find forward"), tr("Text:"));
+        m_text = editor->textCursor().selectedText();
+
+    if (m_text.isEmpty())
+            m_text = QInputDialog::getText(editor, tr("Find forward"), tr("Text:"));
 
     if (m_text.isEmpty())
         return;
@@ -64,7 +70,10 @@ void EditMenu::onFindBackwardActivated()
         return;
 
     if (m_text.isEmpty())
-        m_text = QInputDialog::getText(editor, tr("Find backward"), tr("Text:"));
+        m_text = editor->textCursor().selectedText();
+
+    if (m_text.isEmpty())
+            m_text = QInputDialog::getText(editor, tr("Find backward"), tr("Text:"));
 
     if (m_text.isEmpty())
         return;
