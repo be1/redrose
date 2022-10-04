@@ -62,7 +62,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     sf[ba.length()] = '\0';
 
     sfloader = new SFLoader(fluid_synth, sf, this);
-    connect(sfloader, &SFLoader::sfloadFinished, this, &AbcSynth::onSFontFinished);
+    connect(sfloader, &SFLoader::finished, this, &AbcSynth::onSFontFinished);
     a->mainWindow()->statusBar()->showMessage(tr("Loading sound font: ") + sf);
     sfloader->start();
 }
@@ -98,16 +98,19 @@ void AbcSynth::abort()
     inited = false;
 }
 
-void AbcSynth::onSFontFinished(int fid) {
-    inited = true;
+void AbcSynth::onSFontFinished() {
+    SFLoader* sfl = static_cast<SFLoader*>(sender());
+    int fid = sfl->sfid();
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
 
     if (fid == FLUID_FAILED) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load sound font: ") + sf);
+        inited = false;
         emit initFinished(true);
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("Sound font loaded."));
         sfid = fid;
+        inited = true;
         emit initFinished(false);
     }
 }
@@ -204,7 +207,8 @@ void AbcSynth::waitFinish()
 
 void AbcSynth::onPlayFinished()
 {
-    int ret = player->status();
+    PlayerThread* pt = static_cast<PlayerThread*>(sender());
+    int ret = pt->status();
     /* purge player */
     waitFinish();
 

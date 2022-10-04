@@ -26,7 +26,7 @@ signals:
     void synthFinished(int ret);
 
 private slots:
-    void onSFontFinished(int fid);
+    void onSFontFinished();
     void onPlayFinished();
 
 private:
