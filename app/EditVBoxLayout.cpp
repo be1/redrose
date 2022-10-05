@@ -20,12 +20,6 @@
 
 EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 	: QVBoxLayout(parent),
-	abcplaintextedit(parent),
-	playpushbutton(parent),
-	runpushbutton(parent),
-	hboxlayout(parent),
-	xspinbox(parent),
-	xlabel(parent),
     fileName(fileName),
     progress(nullptr),
     synth(nullptr),
@@ -54,8 +48,8 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 
     connect(&abcplaintextedit, &QPlainTextEdit::selectionChanged, this, &EditVBoxLayout::onSelectionChanged);
     connect(&abcplaintextedit, &AbcPlainTextEdit::playableNote, this, &EditVBoxLayout::onPlayableNote);
-    connect(&xspinbox, SIGNAL(valueChanged(int)), this, SLOT(onXChanged(int)));
-	connect(&playpushbutton, SIGNAL(clicked()), this, SLOT(onPlayClicked()));
+    connect(&xspinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &EditVBoxLayout::onXChanged);
+    connect(&playpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onPlayClicked);
 	connect(&runpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onRunClicked);
 
     connect(this, &EditVBoxLayout::doExportMIDI, this, &EditVBoxLayout::exportMIDI);

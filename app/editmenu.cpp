@@ -8,9 +8,9 @@ EditMenu::EditMenu(QWidget* parent)
 {
     setTitle(tr("Edit"));
 
-    addAction(tr("Find ..."), this, SLOT(onFindActivated()), QKeySequence::Find);
-    addAction(tr("Find forward"), this, SLOT(onFindForwardActivated()), QKeySequence::FindNext);
-    addAction(tr("Find backward"), this, SLOT(onFindBackwardActivated()), QKeySequence::FindPrevious);
+    addAction(tr("Find ..."), this, &EditMenu::onFindActivated, QKeySequence::Find);
+    addAction(tr("Find forward"), this, &EditMenu::onFindForwardActivated, QKeySequence::FindNext);
+    addAction(tr("Find backward"), this, &EditMenu::onFindBackwardActivated, QKeySequence::FindPrevious);
 }
 
 EditMenu::~EditMenu()

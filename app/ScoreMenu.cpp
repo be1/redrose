@@ -15,8 +15,8 @@ ScoreMenu::ScoreMenu(QWidget* parent)
 {
     setTitle(tr("Score"));
 
-    addAction(tr("New"), this, SLOT(onNewActionTriggered()), QKeySequence::New);
-    addAction(tr("Open"), this, SLOT(onOpenActionTriggered()), QKeySequence::Open);
+    addAction(tr("New"), this, &ScoreMenu::onNewActionTriggered, QKeySequence::New);
+    addAction(tr("Open"), this, &ScoreMenu::onOpenActionTriggered, QKeySequence::Open);
 
     for (int i = 0; i < MaxRecentFiles; ++i) {
         recentFileActs[i] = new QAction(this);
@@ -30,12 +30,12 @@ ScoreMenu::ScoreMenu(QWidget* parent)
 
     updateRecentFileActions();
 
-    addAction(tr("Save"), this, SLOT(onSaveActionTriggered()), QKeySequence::Save);
-    addAction(tr("Save as"), this, SLOT(onSaveAsActionTriggered()), QKeySequence::SaveAs);
-    addAction(tr("Export to MIDI"), this, SLOT(onExportActionTriggered()));
-    addAction(tr("Export to Postscript"), this, SLOT(onExportPsActionTriggered()));
-    addAction(tr("Close"), this, SLOT(onCloseActionTriggered()), QKeySequence::Close);
-    addAction(tr("Quit"), this, SLOT(onQuitActionTriggered()), QKeySequence::Quit);
+    addAction(tr("Save"), this, &ScoreMenu::onSaveActionTriggered, QKeySequence::Save);
+    addAction(tr("Save as"), this, &ScoreMenu::onSaveAsActionTriggered, QKeySequence::SaveAs);
+    addAction(tr("Export to MIDI"), this, &ScoreMenu::onExportActionTriggered);
+    addAction(tr("Export to Postscript"), this, &ScoreMenu::onExportPsActionTriggered);
+    addAction(tr("Close"), this, &ScoreMenu::onCloseActionTriggered, QKeySequence::Close);
+    addAction(tr("Quit"), this, &ScoreMenu::onQuitActionTriggered, QKeySequence::Quit);
 }
 
 ScoreMenu::~ScoreMenu()
