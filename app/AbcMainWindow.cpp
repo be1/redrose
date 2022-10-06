@@ -1,5 +1,4 @@
 #include "AbcMainWindow.h"
-#include <QMessageBox>
 #include "AbcApplication.h"
 
 AbcMainWindow::AbcMainWindow(QWidget* parent)
@@ -7,7 +6,6 @@ AbcMainWindow::AbcMainWindow(QWidget* parent)
 {
 	setWindowTitle(tr("Redrose"));
     menuBar()->addMenu(&scoremenu);
-    menuBar()->addMenu(&editmenu);
 	menuBar()->addMenu(&preferencesmenu);
     menuBar()->addMenu(&helpmenu);
     setCentralWidget(&mainhsplitter);

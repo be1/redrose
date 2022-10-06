@@ -3,7 +3,6 @@
 
 #include "HelpMenu.h"
 #include "PreferencesMenu.h"
-#include "editmenu.h"
 #include "ScoreMenu.h"
 #include "MainHSplitter.h"
 #include <QStatusBar>
@@ -29,7 +28,6 @@ protected:
 
 private:
     ScoreMenu scoremenu;
-    EditMenu editmenu;
 	PreferencesMenu preferencesmenu;
     HelpMenu helpmenu;
     MainHSplitter mainhsplitter;
