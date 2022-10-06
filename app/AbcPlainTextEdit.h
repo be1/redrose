@@ -100,6 +100,7 @@ private:
     QAction* findaction;
     QAction* findnextaction;
     QAction* findprevaction;
+
     QCompleter *c = nullptr;
     bool saved;
 };

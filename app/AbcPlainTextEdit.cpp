@@ -68,7 +68,6 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     findprevaction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(findprevaction, &QAction::triggered, this, &AbcPlainTextEdit::onFindBackwardActivated);
     addAction(findprevaction);
-
 }
 
 AbcPlainTextEdit::~AbcPlainTextEdit()
@@ -187,8 +186,6 @@ void AbcPlainTextEdit::onFindBackwardActivated()
 
     find(m_find, QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
 }
-
-
 
 QString AbcPlainTextEdit::textUnderCursor() const
 {
