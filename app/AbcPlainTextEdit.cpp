@@ -151,7 +151,7 @@ void AbcPlainTextEdit::onFindActivated()
     if (!textCursor().selectedText().isEmpty())
         m_find = textCursor().selectedText();
 
-    m_find = QInputDialog::getText(this, tr("Find ..."), tr("Text:"), QLineEdit::Normal, m_find);
+    m_find = QInputDialog::getText(this, tr("Find..."), tr("Text:"), QLineEdit::Normal, m_find);
     if (m_find.isEmpty())
         return;
 

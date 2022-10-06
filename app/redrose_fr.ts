@@ -4,9 +4,37 @@
 <context>
     <name>AbcMainWindow</name>
     <message>
-        <location filename="AbcMainWindow.cpp" line="8"/>
+        <location filename="AbcMainWindow.cpp" line="7"/>
         <source>Redrose</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>AbcPlainTextEdit</name>
+    <message>
+        <location filename="AbcPlainTextEdit.cpp" line="54"/>
+        <location filename="AbcPlainTextEdit.cpp" line="154"/>
+        <source>Find...</source>
+        <translation>Rechercher...</translation>
+    </message>
+    <message>
+        <location filename="AbcPlainTextEdit.cpp" line="60"/>
+        <location filename="AbcPlainTextEdit.cpp" line="168"/>
+        <source>Find forward</source>
+        <translation>Rechercher en avant</translation>
+    </message>
+    <message>
+        <location filename="AbcPlainTextEdit.cpp" line="66"/>
+        <location filename="AbcPlainTextEdit.cpp" line="182"/>
+        <source>Find backward</source>
+        <translation>Rechercher en arrière</translation>
+    </message>
+    <message>
+        <location filename="AbcPlainTextEdit.cpp" line="154"/>
+        <location filename="AbcPlainTextEdit.cpp" line="168"/>
+        <location filename="AbcPlainTextEdit.cpp" line="182"/>
+        <source>Text:</source>
+        <translation>Texte :</translation>
     </message>
 </context>
 <context>
@@ -22,73 +50,34 @@
         <translation>Chargement de la fonte sonore : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="106"/>
+        <location filename="abcsynth.cpp" line="107"/>
         <source>Cannot load sound font: </source>
         <translation>Impossible de charger la fonte sonore : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="109"/>
+        <location filename="abcsynth.cpp" line="111"/>
         <source>Sound font loaded.</source>
         <translation>Fonte sonore chargée.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="130"/>
+        <location filename="abcsynth.cpp" line="133"/>
         <source>Cannot load MIDI file: </source>
         <translation>Impossible de charger le fichier MIDI : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="138"/>
+        <location filename="abcsynth.cpp" line="141"/>
         <source>Starting synthesis...</source>
         <translation>Démarrage de la synthèse...</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="141"/>
+        <location filename="abcsynth.cpp" line="144"/>
         <source>Synthesis playing...</source>
         <translation>Synthèse en cours...</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="144"/>
-        <location filename="abcsynth.cpp" line="214"/>
+        <location filename="abcsynth.cpp" line="147"/>
         <source>Synthesis done.</source>
         <translation>Synthèse terminiée.</translation>
-    </message>
-    <message>
-        <location filename="abcsynth.cpp" line="212"/>
-        <source>Synthesis error.</source>
-        <translation>Erreur durant la synthèse sonore.</translation>
-    </message>
-</context>
-<context>
-    <name>EditMenu</name>
-    <message>
-        <location filename="editmenu.cpp" line="9"/>
-        <source>Edit</source>
-        <translation>Édition</translation>
-    </message>
-    <message>
-        <location filename="editmenu.cpp" line="11"/>
-        <location filename="editmenu.cpp" line="37"/>
-        <source>Find ...</source>
-        <translation>Rechercher ...</translation>
-    </message>
-    <message>
-        <location filename="editmenu.cpp" line="12"/>
-        <location filename="editmenu.cpp" line="51"/>
-        <source>Find forward</source>
-        <translation>Rechercher en avant</translation>
-    </message>
-    <message>
-        <location filename="editmenu.cpp" line="13"/>
-        <location filename="editmenu.cpp" line="66"/>
-        <source>Find backward</source>
-        <translation>Rechercher en arrière</translation>
-    </message>
-    <message>
-        <location filename="editmenu.cpp" line="37"/>
-        <location filename="editmenu.cpp" line="51"/>
-        <location filename="editmenu.cpp" line="66"/>
-        <source>Text:</source>
-        <translation>Texte :</translation>
     </message>
 </context>
 <context>
@@ -109,77 +98,77 @@ Fermer cette partition quand-même ?</translation>
 <context>
     <name>EditVBoxLayout</name>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="39"/>
+        <location filename="EditVBoxLayout.cpp" line="33"/>
         <source>X:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="101"/>
+        <location filename="EditVBoxLayout.cpp" line="95"/>
         <source>Cannot load sound font.</source>
         <translation>Impossible de charger la fonte sonore.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="180"/>
+        <location filename="EditVBoxLayout.cpp" line="174"/>
         <source>Generating MIDI for playing.</source>
         <translation>Génération du MIDI pour jouer.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="189"/>
+        <location filename="EditVBoxLayout.cpp" line="183"/>
         <source>Stopping synthesis...</source>
         <translation>Arrêt de la synthèse...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="174"/>
+        <location filename="EditVBoxLayout.cpp" line="168"/>
         <source>Please wait...</source>
         <translation>Veuillez patienter...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="270"/>
+        <location filename="EditVBoxLayout.cpp" line="264"/>
         <source>Exporting score...</source>
         <translation>Export de la partition...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="286"/>
+        <location filename="EditVBoxLayout.cpp" line="280"/>
         <source>Error during MIDI generation.</source>
         <translation>Erreur pendant la génération du MIDI.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="289"/>
-        <location filename="EditVBoxLayout.cpp" line="291"/>
-        <location filename="EditVBoxLayout.cpp" line="415"/>
-        <location filename="EditVBoxLayout.cpp" line="448"/>
+        <location filename="EditVBoxLayout.cpp" line="283"/>
+        <location filename="EditVBoxLayout.cpp" line="285"/>
+        <location filename="EditVBoxLayout.cpp" line="408"/>
+        <location filename="EditVBoxLayout.cpp" line="441"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="291"/>
+        <location filename="EditVBoxLayout.cpp" line="285"/>
         <source>Parse error in selected notes.</source>
         <translation>Erreur d&apos;analyse dans les notes sélectionnées.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="298"/>
+        <location filename="EditVBoxLayout.cpp" line="292"/>
         <source>MIDI generation finished.</source>
         <translation>Génération du MIDI terminée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="315"/>
-        <source>Error during synthesis.</source>
-        <translation>Erreur pendant la synthèse.</translation>
+        <location filename="EditVBoxLayout.cpp" line="309"/>
+        <source>Synthesis error.</source>
+        <translation>Erreur durant la synthèse sonore.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="317"/>
+        <location filename="EditVBoxLayout.cpp" line="311"/>
         <source>Synthesis finished.</source>
         <translation>Synthèse terminée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="413"/>
-        <location filename="EditVBoxLayout.cpp" line="446"/>
+        <location filename="EditVBoxLayout.cpp" line="406"/>
+        <location filename="EditVBoxLayout.cpp" line="439"/>
         <source>Error during score generation.</source>
         <translation>Erreur pendant la génératin de la partition.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="418"/>
-        <location filename="EditVBoxLayout.cpp" line="451"/>
+        <location filename="EditVBoxLayout.cpp" line="411"/>
+        <location filename="EditVBoxLayout.cpp" line="444"/>
         <source>Score generated.</source>
         <translation>Partition générée.</translation>
     </message>
