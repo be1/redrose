@@ -807,7 +807,7 @@ void abc_tie_append(struct abc* yy, const char* yytext)
     new->kind = ABC_TIE;
     new->text = strdup(yytext);
     if (new->prev)
-        new->prev->in_tie = 1;
+        new->prev->will_tie = 1;
 }
 
 void abc_slur_append(struct abc* yy, const char* yytext)
@@ -1035,7 +1035,7 @@ int abc_has_pair(struct abc_symbol* s, int chord) {
 }
 
 int abc_has_tie(struct abc_symbol* s, int chord) {
-    if (s->in_tie)
+    if (s->will_tie)
         return 1;
 
     while (s->next) {
@@ -1404,7 +1404,6 @@ struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
 struct abc_untie_ctx {
     long tick_num, tick_den; /* absolute ticks */
     int nup_p, nup_q, nup_r; /* n-uplets */
-    int in_tie;              /* global tie state */
     int in_chord;            /* chord state */
     int in_grace;            /* grace state */
     long grace_num, grace_den;
@@ -1654,12 +1653,18 @@ struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t)
                                     ctx.prev_chord = 1;
                                 }
 
-                                if (ctx.ties_len == 0 && (!s->next || (s->next && s->next->kind != ABC_TIE))) {
+                                if (ctx.ties_len == 0 && (!s->next || s->next->kind != ABC_TIE)) {
+                                    /* end of tied chord or not tied new chord */
                                     new = abc_dup_symbol(s);
                                 }
-                                else if (s->text[0] == ']' && (!s->next || (s->next && s->next->kind == ABC_NOTE))) {
-                                    /* chord is tying and folowwed by a single note */
-                                    new = abc_dup_symbol(s);
+                                else if (s->text[0] == ']') {
+                                        if ((!s->next ||
+                                             (s->will_tie && s->next->next &&
+                                              (s->next->next->kind == ABC_NOTE ||
+                                               (s->next->next->kind == ABC_BAR &&
+                                                s->next->next->next && s->next->next->next->kind == ABC_NOTE)))))
+                                            /* chord is tying and folowwed by a single note */
+                                            new = abc_dup_symbol(s);
                                 }
                                 else if (s->text[0] == '[' && voice->last && voice->last->kind == ABC_NOTE && !ctx.prev_chord) {
                                     /* prev note tied to chord: insert '[' symbol before last accepted note */

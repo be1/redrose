@@ -70,7 +70,7 @@ struct abc_symbol {
     struct abc_event ev;
 
 	int in_alt;
-	int in_tie;
+    int will_tie;
     int in_chord;
 
 	struct abc_symbol* next;
