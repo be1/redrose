@@ -945,6 +945,17 @@ struct abc_header* abc_find_header(const struct abc_tune* t, char h) {
     return header;
 }
 
+/* find previous (including last) symbol that is a note or chord */
+struct abc_symbol* abc_prev_note_or_chord(struct abc_symbol* s) {
+    while (s) {
+        if (s->kind == ABC_CHORD || s->kind == ABC_NOTE)
+            return s;
+        s = s->prev;
+    }
+
+    return s;
+}
+
 /* find next symbol that is a note or chord */
 struct abc_symbol* abc_next_note_or_chord(struct abc_symbol* s) {
     while (s->next) {
@@ -1681,7 +1692,7 @@ struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t)
                                         /* and chord was not tied previously */
                                         new = abc_dup_symbol(s);
                                 }
-                                else if (s->text[0] == '[' && voice->last && voice->last->kind == ABC_NOTE && !ctx.prev_chord) {
+                                else if (s->text[0] == '[' && abc_prev_note_or_chord(voice->last)->kind == ABC_NOTE && !ctx.prev_chord) {
                                     /* prev note tied to chord: insert '[' symbol before last accepted note */
                                     struct abc_symbol* p = voice->last;
                                     while (p->kind != ABC_NOTE)
