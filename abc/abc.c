@@ -945,6 +945,17 @@ struct abc_header* abc_find_header(const struct abc_tune* t, char h) {
     return header;
 }
 
+/* find next symbol that is a note or chord */
+struct abc_symbol* abc_next_note_or_chord(struct abc_symbol* s) {
+    while (s->next) {
+        s = s->next;
+        if (s->kind == ABC_CHORD || s->kind == ABC_NOTE)
+            return s;
+    }
+
+    return s;
+}
+
 /* rewind and return the first symbol just after start repeat */
 struct abc_symbol* abc_find_start_repeat(struct abc_symbol* s) {
     while (s->prev) {
@@ -1659,9 +1670,12 @@ struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t)
                                     /* end of tied chord or not tied new chord */
                                     new = abc_dup_symbol(s);
                                 }
-                                else if (s->text[0] == ']' && s->will_tie) {
-                                    /* chord is tying and folowwed by a single note */
-                                    new = abc_dup_symbol(s);
+                                else if (s->text[0] == ']' && s->will_tie && abc_next_note_or_chord(s)->kind == ABC_NOTE) {
+                                    /* chord is tying and folowed by a single note and we were not tied */
+                                    struct abc_symbol* p = abc_chord_rewind(s->prev);
+                                    if (!p ->prev ||  p->prev->kind != ABC_TIE)
+                                        /* and chord was not tied previously */
+                                        new = abc_dup_symbol(s);
                                 }
                                 else if (s->text[0] == '[' && voice->last && voice->last->kind == ABC_NOTE && !ctx.prev_chord) {
                                     /* prev note tied to chord: insert '[' symbol before last accepted note */
@@ -1722,7 +1736,7 @@ struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t)
                           break;
 
             default: {
-                         /* and ABC_BAR */
+                         /* and ABC_BAR and ABC_SPACE */
                          new = abc_dup_symbol(s);
                      }
         }
