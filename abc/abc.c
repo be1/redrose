@@ -1397,7 +1397,7 @@ struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                            }
                            break;
             default: {
-                         /* and ABC_BAR */
+                         /* and ABC_BAR and ABC_SPACE */
                          struct abc_symbol* new = NULL;
                          new = abc_dup_symbol(s);
                          abc_voice_append_symbol(voice, new);
@@ -1573,6 +1573,10 @@ void update_next_ties(struct abc_untie_ctx* ctx, struct abc_symbol* s, struct ab
 void build_ties(struct abc_untie_ctx* ctx, struct abc_voice* voice, int prev_chord) {
     ctx->ties_len = 0;
     struct abc_symbol* p = voice->last;
+
+    /* there can have spaces or bars when untying (pass 2) */
+    while (p && (p->kind != ABC_CHORD && p->kind != ABC_NOTE))
+        p = p->prev;
 
     /* there can be a note, or a chord just before the tie */
     if (p && (p->kind == ABC_CHORD || prev_chord)) {
