@@ -1653,18 +1653,15 @@ struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t)
                                     ctx.prev_chord = 1;
                                 }
 
-                                if (ctx.ties_len == 0 && (!s->next || s->next->kind != ABC_TIE)) {
+                                /* when ctx.ties_len > 0, the ']' symbol is not used, because the next one will be */
+
+                                if (ctx.ties_len == 0 && !s->will_tie) {
                                     /* end of tied chord or not tied new chord */
                                     new = abc_dup_symbol(s);
                                 }
-                                else if (s->text[0] == ']') {
-                                        if ((!s->next ||
-                                             (s->will_tie && s->next->next &&
-                                              (s->next->next->kind == ABC_NOTE ||
-                                               (s->next->next->kind == ABC_BAR &&
-                                                s->next->next->next && s->next->next->next->kind == ABC_NOTE)))))
-                                            /* chord is tying and folowwed by a single note */
-                                            new = abc_dup_symbol(s);
+                                else if (s->text[0] == ']' && s->will_tie) {
+                                    /* chord is tying and folowwed by a single note */
+                                    new = abc_dup_symbol(s);
                                 }
                                 else if (s->text[0] == '[' && voice->last && voice->last->kind == ABC_NOTE && !ctx.prev_chord) {
                                     /* prev note tied to chord: insert '[' symbol before last accepted note */
