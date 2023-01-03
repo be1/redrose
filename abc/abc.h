@@ -147,6 +147,8 @@ struct abc_tune* abc_find_tune(struct abc* yy, int x);
 
 struct abc_header* abc_find_header(const struct abc_tune* t, char h);
 
+int abc_prev_is_tie(struct abc_symbol *s);
+
 struct abc_symbol* abc_prev_note_or_chord(struct abc_symbol* s);
 
 struct abc_symbol* abc_next_note_or_chord(struct abc_symbol* s);

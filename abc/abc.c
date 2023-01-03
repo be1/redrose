@@ -945,6 +945,20 @@ struct abc_header* abc_find_header(const struct abc_tune* t, char h) {
     return header;
 }
 
+/* find previous symbol that is a tie */
+int abc_prev_is_tie(struct abc_symbol *s) {
+    while (s->prev) {
+        s = s->prev;
+
+        if (s->kind == ABC_TIE)
+            return 1;
+        if (s->kind == ABC_NOTE || s->kind == ABC_CHORD)
+            return 0;
+    }
+
+    return 0;
+}
+
 /* find previous (including last) symbol that is a note or chord */
 struct abc_symbol* abc_prev_note_or_chord(struct abc_symbol* s) {
     while (s) {
@@ -1589,9 +1603,10 @@ void build_ties(struct abc_untie_ctx* ctx, struct abc_voice* voice, int prev_cho
     while (p && (p->kind != ABC_CHORD && p->kind != ABC_NOTE))
         p = p->prev;
 
-    /* there can be a note, or a chord just before the tie */
+    /* there can be a chord just before the tie */
     if (p && (p->kind == ABC_CHORD || prev_chord)) {
         p = abc_chord_rewind(p->prev);
+        /* go to note */
         p = p->next;
     }
 
@@ -1688,7 +1703,7 @@ struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t)
                                 else if (s->text[0] == ']' && s->will_tie && abc_next_note_or_chord(s)->kind == ABC_NOTE) {
                                     /* chord is tying and folowed by a single note and we were not tied */
                                     struct abc_symbol* p = abc_chord_rewind(s->prev);
-                                    if (!p ->prev ||  p->prev->kind != ABC_TIE)
+                                    if (!abc_prev_is_tie(p))
                                         /* and chord was not tied previously */
                                         new = abc_dup_symbol(s);
                                 }
