@@ -8,7 +8,7 @@ int main() {
 	/* read stdin */
 	while (EOF != (c = getc(stdin))) {
 		count++;
-		buf = realloc(buf, count);
+		buf = (char*) realloc(buf, count);
 		buf[count -1] = c;
 	}
 	
@@ -37,7 +37,7 @@ int main() {
 			printf("tune %d, voice %s\n", t->x, v->v);
 			struct abc_symbol* s;
 			for (s = v->first; s; s = s->next) {
-				printf("%d: %d %d:%d -> %d/%d ", s->kind, s->ev.key, s->ev.start_num, s->ev.start_den, s->dur_num, s->dur_den);
+				printf("kind %d: key %d, start %ld/%ld -> duration %ld/%ld ", s->kind, s->ev.key, s->ev.start_num, s->ev.start_den, s->dur_num, s->dur_den);
 				if (s->text) puts(s->text);
 				if (s->lyr) puts(s->lyr);
 			}

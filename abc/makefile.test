@@ -1,5 +1,5 @@
 abcparse: libabc.a main.o
-	$(CC) -g main.o -lm  -L. -labc -o $@
+	$(CC) -g main.o -L. -labc -lm -o $@
 
 %.o: %.c
 	$(CC) -g -c $<

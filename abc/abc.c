@@ -3,7 +3,7 @@
 #include <stdlib.h>	/* atoi, qsort */
 #include <stdio.h>	/* asprintf */
 #include <string.h>
-#include <math.h>
+#include <math.h>   /* pow */
 #include "abc.h"
 #include "parser.h"
 
