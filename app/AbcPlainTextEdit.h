@@ -68,6 +68,7 @@ protected:
     void focusInEvent(QFocusEvent *e) override;
     void flagModified(bool enable);
     virtual void contextMenuEvent(QContextMenuEvent *e) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
 
 private slots:
     void updateLineNumberAreaWidth(int newBlockCount);
@@ -87,11 +88,13 @@ private:
 
     QWidget *lineNumberArea;
     AbcHighlighter *highlighter;
+    QString playableNoteUnderCusror();
     QString textUnderCursor() const;
     QString lineUnderCursor() const;
     QString noteUnderCursor() const;
     QString charBeforeCursor() const;
     bool isPitch(QChar car) const;
+    bool isAccid(QChar car) const;
     QString getCurrentKeySignature() const;
     QString getCurrentVoiceOrChannel() const;
     QString getCurrentMIDIComment(const QString& com) const;

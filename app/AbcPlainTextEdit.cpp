@@ -115,6 +115,39 @@ void AbcPlainTextEdit::contextMenuEvent(QContextMenuEvent *e)
     delete menu;
 }
 
+void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
+{
+    /* note appears if cursor is just after the pitch */
+    QString note = playableNoteUnderCusror();
+    if (note.isEmpty())
+        return QPlainTextEdit::mouseDoubleClickEvent(e);
+
+    /* select left part */
+    QTextCursor tc = textCursor();
+    tc.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2);
+    tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
+    /* check accidental */
+    if (!isAccid(tc.selectedText().at(0))) {
+        tc.clearSelection();
+    }
+
+    /* select pitch */
+    tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+
+    /* select right part */
+    while (tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1)) {
+        QString oct = tc.selectedText();
+        QChar last = oct.at(oct.size() -1);
+        if (last != ',' && last != '\'') {
+            tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
+            break;
+        }
+    }
+
+    setTextCursor(tc);
+    e->accept();
+}
+
 bool AbcPlainTextEdit::isSaved()
 {
     return this->saved;
@@ -219,6 +252,11 @@ bool AbcPlainTextEdit::isPitch(QChar car) const
     return false;
 }
 
+bool AbcPlainTextEdit::isAccid(QChar car) const
+{
+    return car == '^' || car == '=' || car == '_';
+}
+
 void AbcPlainTextEdit::checkDictionnary(void) {
     QString line = lineUnderCursor();
     if (c && (c->model() == dictModel) &&
@@ -248,7 +286,7 @@ QString AbcPlainTextEdit::noteUnderCursor() const
         if(tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1)) {
             QChar first = tc.selectedText().at(0);
             /* get accidental */
-            if (first == '^' || first == '=' || first == '_') {
+            if (isAccid(first)) {
                 sym.prepend(first);
             }
 
@@ -316,27 +354,27 @@ QString AbcPlainTextEdit::getCurrentMIDIComment(const QString& com) const
     return ""; /* default */
 }
 
-void AbcPlainTextEdit::checkPlayableNote()
+QString AbcPlainTextEdit::playableNoteUnderCusror()
 {
     /* check manual selection */
     if (!textCursor().selectedText().isEmpty())
-        return;
+        return QString();
 
     QString line = lineUnderCursor();
 
     /* check if nothing under cursor */
     if (line.isEmpty())
-         return;
+         return QString();
 
     /* check if we are in a comment */
     if (line.startsWith("%"))
-        return;
+        return QString();
 
     /* check if we are in a header line */
     if (line.at(0).isLetter()) {
         if (line.size() > 1)
             if (line.at(1) == ':')
-                return;
+                return QString();
     }
 
     /* check if we are in !something! or in "GChord" */
@@ -347,15 +385,15 @@ void AbcPlainTextEdit::checkPlayableNote()
             break;
     }
     if (tc.selectedText().count('!') % 2)
-        return;
+        return QString();
 
     if (tc.selectedText().count('"') % 2)
-        return;
+        return QString();
 
     /* check if this is a note */
     QString note = noteUnderCursor();
     if (note.isEmpty())
-        return;
+        return QString();
 
     QString voice = getCurrentVoiceOrChannel();
     QString keysig = getCurrentKeySignature();
@@ -369,6 +407,16 @@ void AbcPlainTextEdit::checkPlayableNote()
         note.prepend("\n").prepend(keysig);
     if (!voice.isEmpty())
         note.prepend("\n").prepend(voice);
+
+    return note;
+}
+
+void AbcPlainTextEdit::checkPlayableNote()
+{
+    QString note = playableNoteUnderCusror();
+    if (note.isEmpty())
+        return;
+
     emit playableNote(note);
 }
 
