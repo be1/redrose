@@ -282,17 +282,32 @@ QString AbcPlainTextEdit::noteUnderCursor() const
 
     /* now, it is a pitch */
 
-    if (tc.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2)) {
-        if(tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1)) {
-            QChar first = tc.selectedText().at(0);
+    /* find measure accidentals for this pitch */
+    QTextCursor bar = textCursor();
+    bar.movePosition(QTextCursor::Right);
+
+    while (bar.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2)) {
+        bar.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
+
+        qDebug() << bar.selectedText();
+        /* run until beginning of measure */
+        if (bar.selectedText().at(0) == '|' || bar.selectedText().at(0) == '\n' || bar.selectedText().at(0) == QChar::ParagraphSeparator)
+            break;
+
+        /* find same pitch (+/- octavas) */
+        if (bar.selectedText().at(0).toUpper() == sym.at(0).toUpper()) {
+            bar.clearSelection();
+            bar.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2);
+            bar.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
+
             /* get accidental */
-            if (isAccid(first)) {
-                sym.prepend(first);
+            if (isAccid(bar.selectedText().at(0))) {
+                sym.prepend(bar.selectedText().at(0));
+                break;
             }
 
-            /* move just after pitch */
-            tc.clearSelection();
-            tc.movePosition(QTextCursor::Right);
+            bar.clearSelection();
+            bar.movePosition(QTextCursor::Right);
         }
     }
 
@@ -308,6 +323,7 @@ QString AbcPlainTextEdit::noteUnderCursor() const
 
     return sym;
 }
+
 QString AbcPlainTextEdit::getCurrentKeySignature() const
 {
     QTextDocument* doc = document();
