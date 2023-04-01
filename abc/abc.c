@@ -1619,6 +1619,50 @@ void build_ties(struct abc_untie_ctx* ctx, struct abc_voice* voice, int prev_cho
     }
 }
 
+/* replace [ace]- by [a-c-e-] using will_tie flag */
+struct abc_voice* abc_pass2_0_untie_fix_voice(struct abc_voice* v)
+{
+    struct abc_voice* output = calloc(1, sizeof (struct abc_voice));
+    output->v = strdup(v->v);
+
+    struct abc_symbol* s = v->first;
+
+    while (s) {
+        struct abc_symbol* n = NULL;
+
+        switch (s->kind) {
+        case ABC_CHORD:
+            if (s->will_tie) {
+                struct abc_symbol* p = output->last;
+                while (p && p->kind != ABC_CHORD) {
+                    if (p->kind == ABC_NOTE) {
+                        p->will_tie = 1;
+                    }
+
+                    p = p->prev;
+                }
+
+                s->will_tie = 0;
+            }
+
+            n = abc_dup_symbol(s);
+            break;
+        case ABC_TIE:
+            break;
+        default:
+            n = abc_dup_symbol(s);
+            break;
+        }
+
+        if (n) {
+            abc_voice_append_symbol(output, n);
+        }
+    }
+
+    return output;
+}
+
+/* process will_tie flags and lengthen notes */
 struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t) {
     struct abc_untie_ctx ctx;
     memset(&ctx, 0, sizeof (ctx));
