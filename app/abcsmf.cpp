@@ -140,10 +140,12 @@ void AbcSmf::onSMFWriteTrack(int track) {
     writeKeySignature(0, mks, mode);
 
     struct abc_voice* f = abc_pass1_unfold_voice(t->voices[track]);
-    struct abc_voice* u = abc_pass2_untie_voice(f, t);
+    struct abc_voice* u = abc_pass2_0_untie_fix_voice(f);
     abc_release_voice(f);
-    struct abc_voice* v = abc_pass3_ungroup_voice(u);
+    struct abc_voice* u1 = abc_pass2_1_untie_voice(u, t);
     abc_release_voice(u);
+    struct abc_voice* v = abc_pass3_ungroup_voice(u1);
+    abc_release_voice(u1);
 
     struct abc_symbol* s = v->first;
 

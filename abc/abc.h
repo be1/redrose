@@ -183,7 +183,7 @@ struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v);
 
 struct abc_voice* abc_pass2_0_untie_fix_voice(struct abc_voice* v);
 
-struct abc_voice* abc_pass2_untie_voice(struct abc_voice* v, struct abc_tune* t);
+struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, struct abc_tune* t);
 
 struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v);
 
