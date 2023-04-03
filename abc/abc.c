@@ -1564,10 +1564,9 @@ static struct abc_symbol* abc_untie_voice_lengthen_tied_chord(struct abc_untie_c
             n->dur_num *= ctx->nup_q;
             n->dur_den *= ctx->nup_p;
         }
+
         abc_frac_add(&n->ev.start_num, &n->ev.start_den, ctx->tick_num, ctx->tick_den);
-#if 0
-        abc_voice_append_symbol(voice, n);
-#else
+
         /* insert the note just before the last ']' */
         struct abc_symbol* p = abc_prev_note_or_chord(voice->last);
         if (p->kind == ABC_CHORD)
@@ -1578,7 +1577,6 @@ static struct abc_symbol* abc_untie_voice_lengthen_tied_chord(struct abc_untie_c
             n->next->prev = n;
         p->next = n;
         n->prev = p;
-#endif
 
         /* we use the first note of this chord to add to chord duration! */
         if (ctx->chord_num == 0) {
@@ -1763,22 +1761,11 @@ struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, struct abc_tune* 
                                     if (ctx.nup_r)
                                         ctx.nup_r--;
 
-#if 0
-                                    struct abc_symbol* next_kind = abc_next_note_or_chord(s);
-                                    if (ctx.ties_len && next_kind && next_kind->kind == ABC_CHORD) {
-                                        /* don't close chord on output if it is tied to the next chord */
-                                        new = NULL;
-                                    } else {
-                                        /* if it is not tied, or tied to a single note, close it (cuz no remaining ']') */
-                                        new = abc_dup_symbol(s);
-                                    }
-#else
                                     if (ctx.ties_ready) {
                                         new = NULL;
                                     } else {
                                         new = abc_dup_symbol(s);
                                     }
-#endif
 
                                     ctx.prev_chord = 1;
                                     ctx.ties_ready = ctx.ties_len;

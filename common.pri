@@ -1,4 +1,4 @@
-VERSION = 0.2.9
+VERSION = 0.2.10
 REVISION = $$system(git describe --long --tags 2>/dev/null || echo "stable")
 CONFIG(release, debug|release) {
     DEFINES += QT_NO_DEBUG_OUTPUT _FORTIFY_SOURCE=2
