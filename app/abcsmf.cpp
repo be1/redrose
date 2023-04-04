@@ -52,7 +52,7 @@ AbcSmf::AbcSmf(struct abc* yy, int x, QObject *parent) : drumstick::File::QSmf(p
         tempo = 120;
 
     setDivision(DPQN);
-    setTextCodec(QTextCodec::codecForName("UTF-8"));
+    //setTextCodec(QTextCodec::codecForName("UTF-8"));
     setFileFormat(1);
     setTracks(t->count);
 
@@ -71,7 +71,7 @@ AbcSmf::AbcSmf(struct abc* yy, int x, QObject *parent) : drumstick::File::QSmf(p
 }
 
 void AbcSmf::manageDecoration(struct abc_symbol* s) {
-    if (!strcmp(s->text, "pppp")) mark_dyn = cur_dyn = 30;
+    if (!strcmp(s->text, "pppp")) mark_dyn = cur_dyn = 20;
     else if (!strcmp(s->text, "ppp")) mark_dyn = cur_dyn = 30;
     else if (!strcmp(s->text, "pp")) mark_dyn = cur_dyn = 45;
     else if (!strcmp(s->text, "p")) mark_dyn = cur_dyn = 60;
@@ -79,7 +79,7 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, "mf")) mark_dyn = cur_dyn = 90;
     else if (!strcmp(s->text, "f")) mark_dyn = cur_dyn = 105;
     else if (!strcmp(s->text, "ff")) mark_dyn = cur_dyn = 120;
-    else if (!strcmp(s->text, "fff")) mark_dyn = cur_dyn = 127;
+    else if (!strcmp(s->text, "fff")) mark_dyn = cur_dyn = 124;
     else if (!strcmp(s->text, "ffff")) mark_dyn = cur_dyn = 127;
     else if (!strcmp(s->text, "sfz")) mark_dyn = cur_dyn = 100;
     else if (!strcmp(s->text, ".")) shorten = 2;
@@ -139,13 +139,8 @@ void AbcSmf::onSMFWriteTrack(int track) {
     writeBpmTempo(0, tempo);
     writeKeySignature(0, mks, mode);
 
-    struct abc_voice* f = abc_pass1_unfold_voice(t->voices[track]);
-    struct abc_voice* u = abc_pass2_0_untie_fix_voice(f);
-    abc_release_voice(f);
-    struct abc_voice* u1 = abc_pass2_1_untie_voice(u, t);
-    abc_release_voice(u);
-    struct abc_voice* v = abc_pass3_ungroup_voice(u1);
-    abc_release_voice(u1);
+    /* transform voice nr 'track' from tune 't' into MIDI-aware voice 'v' */
+    struct abc_voice* v = abc_make_events_for_voice(t, track);
 
     struct abc_symbol* s = v->first;
 

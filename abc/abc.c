@@ -425,6 +425,19 @@ int smf_key_signature(const char* text, int* mode) {
     return 0;
 }
 
+struct abc_symbol* abc_chord_rewind(struct abc_symbol* s) {
+    while (s) {
+        if (s->kind == ABC_CHORD && s->text[0] == ']')
+            return NULL;
+
+        if ((s->kind == ABC_CHORD) && (s->text[0] == '['))
+            return s;
+        s = s->prev;
+    }
+
+    return NULL;
+}
+
 void abc_tune_append(struct abc* yy, const char* yytext)
 {
     struct abc_tune* new = calloc(1, sizeof (struct abc_tune));
@@ -917,7 +930,7 @@ struct abc* abc_parse_buffer(const char* buffer, int size) {
     return yy;
 }
 
-struct abc_tune* abc_find_tune(struct abc* yy, int x) {
+struct abc_tune* abc_find_tune(const struct abc *yy, int x) {
     struct abc_tune* t = NULL;
     for (int i = 0; i < yy->count; i++) {
         if (yy->tunes[i]->x == x) {
@@ -1120,49 +1133,49 @@ double abc_apply_divide(const char* div) {
     return (double) num / (double) den;
 }
 
-int abc_unit_per_measure(const char* l, const char* m) {
-    if (!l)
-        l = "1/8";
-    if (!m)
-        m = "4/4";
+int abc_unit_per_measure(const char* lh_text, const char* mh_text) {
+    if (!lh_text)
+        lh_text = "1/8";
+    if (!mh_text)
+        mh_text = "4/4";
 
     int ln, ld, mn, md;
-    if (2 == sscanf(l, "%d/%d", &ln, &ld)) {;}
+    if (2 == sscanf(lh_text, "%d/%d", &ln, &ld)) {;}
     else { ln = 1; ld = 8; }
 
-    if (2 == sscanf(m, "%d/%d", &mn, &md)) {;}
+    if (2 == sscanf(mh_text, "%d/%d", &mn, &md)) {;}
     else { mn = 4; md = 4; }
 
     return (ld * mn) / (md * ln);
 }
 
 /* tempo in quarter note per minute */
-long abc_tempo(const char* t) {
+long abc_tempo(const char* th_text) {
     long tempo = 120;
-    if (t) {
+    if (th_text) {
         int q = 0;
         int num, den;
-        if (3 == sscanf(t, "%d/%d=%d", &num, &den, &q))
+        if (3 == sscanf(th_text, "%d/%d=%d", &num, &den, &q))
             tempo = (q * 4 * num) / den;
-        else if (1 == sscanf(t, "%d", &q))
+        else if (1 == sscanf(th_text, "%d", &q))
             tempo = q;
-        else if (!strncasecmp(t, "\"Largo\"", 5))
+        else if (!strncasecmp(th_text, "\"Largo\"", 5))
             tempo = 40;
-        else if (!strncasecmp(t, "\"Larghetto\"", 9))
+        else if (!strncasecmp(th_text, "\"Larghetto\"", 9))
             tempo = 60;
-        else if (!strncasecmp(t, "\"Lento\"", 5))
+        else if (!strncasecmp(th_text, "\"Lento\"", 5))
             tempo = 50;
-        else if (!strncasecmp(t, "\"Adagio\"", 6))
+        else if (!strncasecmp(th_text, "\"Adagio\"", 6))
             tempo = 60;
-        else if (!strncasecmp(t, "\"Andante\"", 7))
+        else if (!strncasecmp(th_text, "\"Andante\"", 7))
             tempo = 80;
-        else if (!strncasecmp(t, "\"Moderato\"", 8))
+        else if (!strncasecmp(th_text, "\"Moderato\"", 8))
             tempo = 90;
-        else if (!strncasecmp(t, "\"Allegro\"", 7))
+        else if (!strncasecmp(th_text, "\"Allegro\"", 7))
             tempo = 120;
-        else if (!strncasecmp(t, "\"Presto\"", 6))
+        else if (!strncasecmp(th_text, "\"Presto\"", 6))
             tempo = 140;
-        else if (!strncasecmp(t, "\"Vivace\"", 6))
+        else if (!strncasecmp(th_text, "\"Vivace\"", 6))
             tempo = 160;
         else
             tempo = 120;
@@ -1199,7 +1212,7 @@ void abc_compute_pqr(int* p, int* q, int* r, const char* m) {
     }
 }
 
-struct abc_symbol* abc_dup_symbol(struct abc_symbol* from) {
+static struct abc_symbol* abc_dup_symbol(const struct abc_symbol* from) {
     struct abc_symbol* to = calloc(1, sizeof (struct abc_symbol));
     to = memcpy(to, from, sizeof (*from));
     to->prev = NULL;
@@ -1280,7 +1293,7 @@ static int event_cmp(const void* a, const void* b) {
     return  0;
 }
 
-struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
+static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
     int in_chord = 0;
 
     /* use absolute ticks */
@@ -1585,10 +1598,12 @@ static struct abc_symbol* abc_untie_voice_lengthen_tied_chord(struct abc_untie_c
 
         return n;
     }
+
+    return s;
 }
 
 /* replace [ace]- by [a-c-e-] using will_tie flag */
-struct abc_voice* abc_pass2_0_untie_fix_voice(struct abc_voice* v)
+static struct abc_voice* abc_pass2_0_untie_fix_voice(struct abc_voice* v)
 {
     struct abc_voice* output = calloc(1, sizeof (struct abc_voice));
     output->v = strdup(v->v);
@@ -1660,7 +1675,7 @@ void update_ties_for_note(struct abc_untie_ctx* ctx, struct abc_symbol* note, in
 }
 
 /* process will_tie flags and lengthen notes */
-struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, struct abc_tune* t) {
+static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const struct abc_tune* t) {
     struct abc_untie_ctx ctx;
     memset(&ctx, 0, sizeof (ctx));
     ctx.tick_den = 1;
@@ -1732,7 +1747,7 @@ struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, struct abc_tune* 
                                     } else if (ctx.ties_ready && !ctx.prev_chord) {
                                         /* prev note tied to chord: insert '[' symbol before last accepted note */
                                         struct abc_symbol* p = voice->last;
-                                        while (p->kind != ABC_NOTE)
+                                        while (p && p->kind != ABC_NOTE)
                                             p = p->prev;
 
                                         new = abc_dup_symbol(s);
@@ -1834,18 +1849,11 @@ struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, struct abc_tune* 
         fprintf(stderr, "\n");
 #endif
     }
-#if 0
-    struct abc_symbol* y = voice->first;
-    while (y) {
-        fprintf(stderr, "%s: %ld/%ld-%ld/%ld\n", y->text, y->ev.start_num, y->ev.start_den, y->dur_num, y->dur_den);
-        y = y->next;
-    }
-    exit(0);
-#endif
+
     return voice;
 }
 
-struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
+static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
     int pass = 1;
     struct abc_symbol* cur_repeat = NULL;
 
@@ -1922,19 +1930,6 @@ struct abc_symbol* abc_chord_first_note(struct abc_symbol* s) {
     return NULL;
 }
 
-struct abc_symbol* abc_chord_rewind(struct abc_symbol* s) {
-    while (s) {
-        if (s->kind == ABC_CHORD && s->text[0] == ']')
-            return NULL;
-
-        if ((s->kind == ABC_CHORD) && (s->text[0] == '['))
-            return s;
-        s = s->prev;
-    }
-
-    return NULL;
-}
-
 struct abc_symbol* abc_chord_forward(struct abc_symbol* s) {
     while (s) {
         if ((s->kind == ABC_CHORD) && (s->text[0] == ']'))
@@ -1963,4 +1958,17 @@ void abc_release_voice(struct abc_voice* v) {
 
     free(v->v);
     free(v);
+}
+
+struct abc_voice* abc_make_events_for_voice(const struct abc_tune *t, int voice)
+{
+    struct abc_voice* unfolded = abc_pass1_unfold_voice(t->voices[voice]);
+    struct abc_voice* tiefixed = abc_pass2_0_untie_fix_voice(unfolded);
+    abc_release_voice(unfolded);
+    struct abc_voice* tieapplied = abc_pass2_1_untie_voice(tiefixed, t);
+    abc_release_voice(tiefixed);
+    struct abc_voice* v = abc_pass3_ungroup_voice(tieapplied);
+    abc_release_voice(tieapplied);
+
+    return v;
 }
