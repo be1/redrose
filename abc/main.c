@@ -28,13 +28,7 @@ int main() {
 
 		printf("title: %s\n", h? h->text: "");
 		for (int j = 0; j < t->count; j++) {
-			struct abc_voice* u = abc_pass1_unfold_voice(t->voices[j]);
-			struct abc_voice* u2 = abc_pass2_0_untie_fix_voice(u);
-			abc_release_voice(u);
-			struct abc_voice* u3 = abc_pass2_1_untie_voice(u2, t);
-			abc_release_voice(u2);
-			struct abc_voice* v = abc_pass3_ungroup_voice(u3);
-			abc_release_voice(u3);
+			struct abc_voice* v = abc_make_events_for_voice(t, j);
 			//struct abc_voice* v = t->voices[j];
 			printf("tune %d, voice %s\n", t->x, v->v);
 			struct abc_symbol* s;
