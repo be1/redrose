@@ -284,12 +284,8 @@ QString AbcPlainTextEdit::noteUnderCursor() const
 
     /* find measure accidentals for this pitch */
     QTextCursor bar = textCursor();
-    bar.movePosition(QTextCursor::Right);
 
-    while (bar.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2)) {
-        bar.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
-
-        qDebug() << bar.selectedText();
+    while (bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
         /* run until beginning of measure */
         if (bar.selectedText().at(0) == '|' || bar.selectedText().at(0) == '\n' || bar.selectedText().at(0) == QChar::ParagraphSeparator)
             break;
@@ -297,17 +293,16 @@ QString AbcPlainTextEdit::noteUnderCursor() const
         /* find same pitch (+/- octavas) */
         if (bar.selectedText().at(0).toUpper() == sym.at(0).toUpper()) {
             bar.clearSelection();
-            bar.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2);
-            bar.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
+            bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
 
             /* get accidental */
             if (isAccid(bar.selectedText().at(0))) {
                 sym.prepend(bar.selectedText().at(0));
                 break;
+            } else {
+                bar.clearSelection();
+                bar.movePosition(QTextCursor::Right);
             }
-
-            bar.clearSelection();
-            bar.movePosition(QTextCursor::Right);
         }
     }
 
