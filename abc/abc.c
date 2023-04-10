@@ -1539,7 +1539,7 @@ static void abc_untie_voice_lengthen_tied_note(struct abc_untie_ctx* ctx, struct
     }
 }
 
-static struct abc_symbol* abc_untie_voice_lengthen_tied_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s, struct abc_voice* voice) {
+static int  abc_untie_voice_lengthen_tied_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
     int found = 0;
     for (int i = 0; i < ctx->ties_len; i++) {
         struct abc_symbol* p = ctx->ties[i];
@@ -1565,42 +1565,41 @@ static struct abc_symbol* abc_untie_voice_lengthen_tied_chord(struct abc_untie_c
         }
     }
 
-    if (found)
-        return s;
+    return found;
+}
 
-    if (s->kind == ABC_NOTE && !found) {
-        /* this note has to be created (no previous tie found) */
-        struct abc_symbol* n = abc_dup_symbol(s);
-        n->dur_num *= ctx->l_mul;
-        n->dur_den *= ctx->l_div;
-        if (ctx->nup_r) {
-            n->dur_num *= ctx->nup_q;
-            n->dur_den *= ctx->nup_p;
-        }
 
-        abc_frac_add(&n->ev.start_num, &n->ev.start_den, ctx->tick_num, ctx->tick_den);
-
-        /* insert the note just before the last ']' */
-        struct abc_symbol* p = abc_prev_note_or_chord(voice->last);
-        if (p->kind == ABC_CHORD)
-            p = p->prev;
-
-        n->next = p->next;
-        if (n->next)
-            n->next->prev = n;
-        p->next = n;
-        n->prev = p;
-
-        /* we use the first note of this chord to add to chord duration! */
-        if (ctx->chord_num == 0) {
-            abc_frac_add(&ctx->chord_num, &ctx->chord_den, n->dur_num, n->dur_den);
-        }
-
-        return n;
+static struct abc_symbol* abc_untie_voice_add_note_to_tied_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s, struct abc_voice* voice) {
+    /* this note has to be created (no previous tie found) */
+    struct abc_symbol* n = abc_dup_symbol(s);
+    n->dur_num *= ctx->l_mul;
+    n->dur_den *= ctx->l_div;
+    if (ctx->nup_r) {
+        n->dur_num *= ctx->nup_q;
+        n->dur_den *= ctx->nup_p;
     }
 
-    return s;
+    abc_frac_add(&n->ev.start_num, &n->ev.start_den, ctx->tick_num, ctx->tick_den);
+
+    /* insert the note just before the last ']' */
+    struct abc_symbol* p = abc_prev_note_or_chord(voice->last);
+    if (p->kind == ABC_CHORD)
+        p = p->prev;
+
+    n->next = p->next;
+    if (n->next)
+        n->next->prev = n;
+    p->next = n;
+    n->prev = p;
+
+    /* we use the first note of this chord to add to chord duration! */
+    if (ctx->chord_num == 0) {
+        abc_frac_add(&ctx->chord_num, &ctx->chord_den, n->dur_num, n->dur_den);
+    }
+
+    return n;
 }
+
 
 /* replace [ace]- by [a-c-e-] using will_tie flag */
 static struct abc_voice* abc_pass2_0_untie_fix_voice(struct abc_voice* v)
@@ -1790,28 +1789,48 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
 
             case ABC_NOTE: {
                                 if (ctx.ties_ready) {
+                                    /* we've got ties to lengthen */
                                     if (ctx.in_chord) {
-                                        struct abc_symbol* n = abc_untie_voice_lengthen_tied_chord(&ctx, s, voice);
-
-                                        update_ties_for_note(&ctx, n, n->will_tie);
+                                        /* we are in a tied chord */
+                                        int found = abc_untie_voice_lengthen_tied_chord(&ctx, s);
+                                        if (!found) {
+                                            /* note not found, add a new one */
+                                            struct abc_symbol* n = abc_untie_voice_add_note_to_tied_chord(&ctx, s, voice);
+                                            update_ties_for_note(&ctx, n, n->will_tie);
+                                        } else if (!s->will_tie) {
+                                            /* remove possible end of tie */
+                                            update_ties_for_note(&ctx, s, 0);
+                                        }
                                     } else if (ctx.prev_chord) {
-                                        /* lengthen previous chord */
-                                        struct abc_symbol* n = abc_untie_voice_lengthen_tied_chord(&ctx, s, voice);
-                                        abc_frac_add(&ctx.tick_num, &ctx.tick_den, ctx.chord_num, ctx.chord_den);
-                                        ctx.chord_num = 0, ctx.chord_den = 1;
-                                        if (ctx.nup_r)
-                                            ctx.nup_r--;
+                                        /* lengthen previous chord with this single note */
+                                        int found = abc_untie_voice_lengthen_tied_chord(&ctx, s);
+                                        if (found) {
+                                            abc_frac_add(&ctx.tick_num, &ctx.tick_den, ctx.chord_num, ctx.chord_den);
+                                            ctx.chord_num = 0, ctx.chord_den = 1;
+                                            if (ctx.nup_r)
+                                                ctx.nup_r--;
 
-                                        update_ties_for_note(&ctx, n, n->will_tie);
-                                        ctx.ties_ready = ctx.ties_len;
+                                            if (!s->will_tie) {
+                                                update_ties_for_note(&ctx, s, 0);
+                                            }
+                                            ctx.ties_ready = ctx.ties_len;
+                                        } else {
+                                            /* bad tie from chord to single new note, ignore it */
+                                            ctx.ties_ready = ctx.ties_len = 0;
+
+                                            new = abc_untie_voice_produce_single_note(&ctx, s);
+                                            ctx.prev_chord = 0;
+
+                                            update_ties_for_note(&ctx, new, new->will_tie);
+                                            ctx.ties_ready = ctx.ties_len;
+                                        }
                                     } else {
+                                        /* single tied note */
                                         abc_untie_voice_lengthen_tied_note(&ctx, s);
 
                                         update_ties_for_note(&ctx, s, s->will_tie);
                                         ctx.ties_ready = ctx.ties_len;
                                     }
-
-
                                 } else {
                                     if (ctx.in_chord) {
                                         new = abc_untie_voice_produce_single_chord(&ctx, s);
@@ -1824,9 +1843,7 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                         update_ties_for_note(&ctx, new, new->will_tie);
                                         ctx.ties_ready = ctx.ties_len;
                                     }
-
                                 }
-
                             }
                             break;
             default: {
