@@ -615,6 +615,72 @@ void abc_note_append(struct abc* yy, const char* yytext)
     }
 }
 
+void abc_chordpunct_set(struct abc* yy, const char* yytext)
+{
+    int count = strlen(yytext);
+
+    struct abc_tune* tune = yy->tunes[yy->count-1];
+    struct abc_voice* voice = tune->voices[tune->count-1];
+
+    if (yytext[0] == '>') {
+        struct abc_symbol* s = voice->last;
+
+        while (s->kind != ABC_NOTE)
+            s = s->prev;
+
+        /* shorten right chord */
+        while (s->kind == ABC_NOTE) {
+            s->dur_den *= pow(2, count);
+            s = s->prev;
+        }
+
+        while (s->kind != ABC_NOTE)
+            s = s->prev;
+
+        /* lengthen left chord */
+        while (s->kind == ABC_NOTE) {
+            int c = count;
+            int num, den;
+            num = s->dur_num;
+            den = s->dur_den;
+            while (c) {
+                abc_frac_add(&s->dur_num, &s->dur_den, num, den * pow(2, c));
+                c--;
+            }
+
+            s = s->prev;
+        }
+    } else if (yytext[0] == '<') {
+        struct abc_symbol* s = voice->last;
+
+        while (s->kind != ABC_NOTE)
+            s = s->prev;
+
+        /* lengthen right chord */
+        while (s->kind == ABC_NOTE) {
+            int c = count;
+            int num, den;
+            num = s->dur_num;
+            den = s->dur_den;
+            while (c) {
+                abc_frac_add(&s->dur_num, &s->dur_den, num, den * pow(2, c));
+                c--;
+            }
+
+            s = s->prev;
+        }
+
+        while (s->kind != ABC_NOTE)
+            s = s->prev;
+
+        /* shorten left chord */
+        while (s->kind == ABC_NOTE) {
+            s->dur_den *= pow(2, count);
+            s = s->prev;
+        }
+    }
+}
+
 void abc_notepunct_set(struct abc* yy, const char* yytext)
 {
     int count = strlen(yytext);

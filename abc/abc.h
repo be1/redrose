@@ -100,6 +100,8 @@ void abc_note_append(struct abc* yy, const char* yytext);
 
 void abc_frac_add(long* num, long* den, long from_num, long from_den);
 
+void abc_chordpunct_set(struct abc* yy, const char* yytext);
+
 void abc_notepunct_set(struct abc* yy, const char* yytext);
 
 void abc_grace_append(struct abc* yy, const char* yytext);

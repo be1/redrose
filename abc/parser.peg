@@ -87,6 +87,7 @@ Fragment <- _ / "y"
 	/ '"' Gchord '"'
 	/ "!" ExDecoration "!"
 	/ Decoration
+	/ ChordPunct
 	/ Chord Tie*
 	/ Grace
 	/ "(" Nuplet
@@ -113,6 +114,8 @@ Comment <- "%" !"%" (!EOL .)*
 Vheader <- "V:" Vvalue
 
 Vvalue <- < (!EOL .)+ > { abc_voice_append(auxil, $0); }
+
+ChordPunct <- Chord Tie* _* < (">" / "<")+ > _* Chord Tie* { abc_chordpunct_set(auxil, $1); }
 
 NotePunct <- NoteConstruct _* < (">" / "<")+ > _* NoteConstruct { abc_notepunct_set(auxil, $1); }
 
