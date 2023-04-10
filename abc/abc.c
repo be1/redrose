@@ -629,8 +629,10 @@ void abc_chordpunct_set(struct abc* yy, const char* yytext)
             s = s->prev;
 
         /* shorten right chord */
-        while (s->kind == ABC_NOTE) {
-            s->dur_den *= pow(2, count);
+        while (s->kind != ABC_CHORD) {
+            if (s->kind == ABC_NOTE)
+                s->dur_den *= pow(2, count);
+
             s = s->prev;
         }
 
@@ -638,14 +640,16 @@ void abc_chordpunct_set(struct abc* yy, const char* yytext)
             s = s->prev;
 
         /* lengthen left chord */
-        while (s->kind == ABC_NOTE) {
-            int c = count;
-            int num, den;
-            num = s->dur_num;
-            den = s->dur_den;
-            while (c) {
-                abc_frac_add(&s->dur_num, &s->dur_den, num, den * pow(2, c));
-                c--;
+        while (s->kind != ABC_CHORD) {
+            if (s->kind == ABC_NOTE) {
+                int c = count;
+                int num, den;
+                num = s->dur_num;
+                den = s->dur_den;
+                while (c) {
+                    abc_frac_add(&s->dur_num, &s->dur_den, num, den * pow(2, c));
+                    c--;
+                }
             }
 
             s = s->prev;
@@ -657,14 +661,16 @@ void abc_chordpunct_set(struct abc* yy, const char* yytext)
             s = s->prev;
 
         /* lengthen right chord */
-        while (s->kind == ABC_NOTE) {
-            int c = count;
-            int num, den;
-            num = s->dur_num;
-            den = s->dur_den;
-            while (c) {
-                abc_frac_add(&s->dur_num, &s->dur_den, num, den * pow(2, c));
-                c--;
+        while (s->kind != ABC_CHORD) {
+            if (s->kind == ABC_NOTE) {
+                int c = count;
+                int num, den;
+                num = s->dur_num;
+                den = s->dur_den;
+                while (c) {
+                    abc_frac_add(&s->dur_num, &s->dur_den, num, den * pow(2, c));
+                    c--;
+                }
             }
 
             s = s->prev;
@@ -674,8 +680,10 @@ void abc_chordpunct_set(struct abc* yy, const char* yytext)
             s = s->prev;
 
         /* shorten left chord */
-        while (s->kind == ABC_NOTE) {
-            s->dur_den *= pow(2, count);
+        while (s->kind != ABC_CHORD) {
+            if (s->kind == ABC_NOTE)
+                s->dur_den *= pow(2, count);
+
             s = s->prev;
         }
     }
