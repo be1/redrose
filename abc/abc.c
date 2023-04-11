@@ -1938,12 +1938,17 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                         ctx.nextchord[ctx.nextchord_len++] = s;
 
                                         /* single tied note */
-                                        if (!abc_untie_voice_lengthen_tied_note(&ctx, s)) {
+                                        if (abc_untie_voice_lengthen_tied_note(&ctx, s)) {
+                                            update_ties_for_note(&ctx, s, s->will_tie);
+                                        } else {
+                                            /* bad tie */
                                             fix_dangling_ties(&ctx);
-                                            ctx.ties_len = 0;
+                                            ctx.ties_ready = ctx.ties_len = 0;
+
+                                            new = abc_untie_voice_produce_single_note(&ctx, s);
+                                            update_ties_for_note(&ctx, new, new->will_tie);
                                         }
 
-                                        update_ties_for_note(&ctx, s, s->will_tie);
                                         ctx.ties_ready = ctx.ties_len;
                                     }
                                 } else {
