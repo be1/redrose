@@ -1539,6 +1539,9 @@ struct abc_untie_ctx {
     int ties_len;
     int ties_ready;
 
+    struct abc_symbol* nextchord[32];
+    int nextchord_len;
+
     int prev_chord;
 };
 
@@ -1589,7 +1592,7 @@ static struct abc_symbol* abc_untie_voice_produce_single_chord(struct abc_untie_
     return new;
 }
 
-static void abc_untie_voice_lengthen_tied_note(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
+static int abc_untie_voice_lengthen_tied_note(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
     struct abc_symbol* p = NULL;
     for (int i = 0; i < ctx->ties_len; i++) {
         /* compare MIDI pitch, not text (which could differ with alteration text) */
@@ -1610,7 +1613,12 @@ static void abc_untie_voice_lengthen_tied_note(struct abc_untie_ctx* ctx, struct
     if (p && p->kind == ABC_NOTE) {
         abc_frac_add(&p->dur_num, &p->dur_den, nup_num, nup_den);
         abc_frac_add(&ctx->tick_num, &ctx->tick_den, nup_num, nup_den);
+
+        return 1;
     }
+
+    /* bad tie */
+    return 0;
 }
 
 static int  abc_untie_voice_lengthen_tied_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
@@ -1747,6 +1755,22 @@ void update_ties_for_note(struct abc_untie_ctx* ctx, struct abc_symbol* note, in
     }
 }
 
+static void fix_dangling_ties(struct abc_untie_ctx* ctx) {
+    for (int i = 0; i < ctx->ties_len; i++) {
+        int found = 0;
+        for (int j = 0; j < ctx->nextchord_len; j++) {
+            if (ctx->ties[i]->ev.key == ctx->nextchord[j]->ev.key) {
+                found = 1;
+                break;
+            }
+        }
+
+        if (!found) {
+            update_ties_for_note(ctx, ctx->ties[i], 0);
+        }
+    }
+}
+
 /* process will_tie flags and lengthen notes */
 static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const struct abc_tune* t) {
     struct abc_untie_ctx ctx;
@@ -1814,6 +1838,8 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                 if (s->text[0] == '[') {
                                     ctx.in_chord = 1;
 
+                                    ctx.nextchord_len = 0;
+
                                     if (ctx.ties_ready && ctx.prev_chord) {
                                         /* prev chord will be lenghtened */
                                         new = NULL;
@@ -1850,6 +1876,7 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                         ctx.nup_r--;
 
                                     if (ctx.ties_ready) {
+                                        fix_dangling_ties(&ctx);
                                         new = NULL;
                                     } else {
                                         new = abc_dup_symbol(s);
@@ -1865,6 +1892,8 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                 if (ctx.ties_ready) {
                                     /* we've got ties to lengthen */
                                     if (ctx.in_chord) {
+                                        ctx.nextchord[ctx.nextchord_len++] = s;
+
                                         /* we are in a tied chord */
                                         int found = abc_untie_voice_lengthen_tied_chord(&ctx, s);
                                         if (!found) {
@@ -1872,10 +1901,13 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                             struct abc_symbol* n = abc_untie_voice_add_note_to_tied_chord(&ctx, s, voice);
                                             update_ties_for_note(&ctx, n, n->will_tie);
                                         } else if (!s->will_tie) {
-                                            /* remove possible end of tie */
+                                            /* possible end of tie */
                                             update_ties_for_note(&ctx, s, 0);
                                         }
                                     } else if (ctx.prev_chord) {
+                                        ctx.nextchord_len = 0;
+                                        ctx.nextchord[ctx.nextchord_len++] = s;
+
                                         /* lengthen previous chord with this single note */
                                         int found = abc_untie_voice_lengthen_tied_chord(&ctx, s);
                                         if (found) {
@@ -1884,12 +1916,15 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                             if (ctx.nup_r)
                                                 ctx.nup_r--;
 
+                                            fix_dangling_ties(&ctx);
+
                                             if (!s->will_tie) {
                                                 update_ties_for_note(&ctx, s, 0);
                                             }
                                             ctx.ties_ready = ctx.ties_len;
                                         } else {
                                             /* bad tie from chord to single new note, ignore it */
+                                            fix_dangling_ties(&ctx);
                                             ctx.ties_ready = ctx.ties_len = 0;
 
                                             new = abc_untie_voice_produce_single_note(&ctx, s);
@@ -1899,8 +1934,14 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                             ctx.ties_ready = ctx.ties_len;
                                         }
                                     } else {
+                                        ctx.nextchord_len = 0;
+                                        ctx.nextchord[ctx.nextchord_len++] = s;
+
                                         /* single tied note */
-                                        abc_untie_voice_lengthen_tied_note(&ctx, s);
+                                        if (!abc_untie_voice_lengthen_tied_note(&ctx, s)) {
+                                            fix_dangling_ties(&ctx);
+                                            ctx.ties_len = 0;
+                                        }
 
                                         update_ties_for_note(&ctx, s, s->will_tie);
                                         ctx.ties_ready = ctx.ties_len;
