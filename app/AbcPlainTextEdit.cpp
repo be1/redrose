@@ -290,16 +290,24 @@ QString AbcPlainTextEdit::noteUnderCursor() const
         if (bar.selectedText().at(0) == '|' || bar.selectedText().at(0) == '\n' || bar.selectedText().at(0) == QChar::ParagraphSeparator)
             break;
 
-        /* find same pitch (+/- octavas) */
+        /* find same pitch in previous notes (+/- octavas) */
         if (bar.selectedText().at(0).toUpper() == sym.at(0).toUpper()) {
             bar.clearSelection();
             bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
 
-            /* get accidental */
-            if (isAccid(bar.selectedText().at(0))) {
+            bool found = false;
+            /* get accidentals */
+            while (isAccid(bar.selectedText().at(0))) {
+                found = true;
                 sym.prepend(bar.selectedText().at(0));
+                bar.clearSelection();
+                bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+            }
+
+            if (found)
+                /* parsing finished */
                 break;
-            } else {
+            else {
                 bar.clearSelection();
                 bar.movePosition(QTextCursor::Right);
             }
