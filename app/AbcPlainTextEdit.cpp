@@ -244,6 +244,11 @@ QString AbcPlainTextEdit::charBeforeCursor() const
     return tc.selectedText();
 }
 
+bool AbcPlainTextEdit::isRest(QChar car) const
+{
+    return car == 'z' || car == 'Z';
+}
+
 bool AbcPlainTextEdit::isPitch(QChar car) const
 {
     if (car.isLetter())
@@ -277,8 +282,11 @@ QString AbcPlainTextEdit::noteUnderCursor() const
     if (sym.isEmpty())
         return QString();
 
-    if (!isPitch(sym.at(0)))
+    if (!isPitch(sym.at(0)) && !isRest(sym.at(0)))
         return QString();
+
+    if (isRest(sym.at(0)))
+        return sym;
 
     /* now, it is a pitch */
 

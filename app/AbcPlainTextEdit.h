@@ -93,6 +93,7 @@ private:
     QString lineUnderCursor() const;
     QString noteUnderCursor() const;
     QString charBeforeCursor() const;
+    bool isRest(QChar car) const;
     bool isPitch(QChar car) const;
     bool isAccid(QChar car) const;
     QString getCurrentKeySignature() const;
