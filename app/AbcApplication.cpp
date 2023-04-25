@@ -9,7 +9,7 @@ AbcApplication::AbcApplication(int& argc, char **argv)
 	: QApplication(argc, argv)
 {
     setOrganizationName(SETTINGS_DOMAIN);
-	setOrganizationDomain("herewe");
+	//setOrganizationDomain("herewe");
     setApplicationName(SETTINGS_APP);
     setApplicationVersion(VERSION " (" REVISION ")");
 
