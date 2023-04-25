@@ -812,7 +812,6 @@ void abc_duration_num_set(struct abc* yy, const char* yytext)
     int oldnum = voice->last->dur_num; /* must be at least 1 */
 
     voice->last->dur_num = num * oldnum;
-    voice->last->dur_den = 1;
 }
 
 void abc_duration_den_set(struct abc* yy, const char* yytext)
