@@ -802,16 +802,59 @@ int abc_chord_parse_den(const char* chord)
     return 1;
 }
 
-void abc_duration_num_set(struct abc* yy, const char* yytext)
+void abc_duration_chord_num_set(struct abc* yy, const char* yytext)
 {
     int num = atoi(yytext);
 
     struct abc_tune* tune = yy->tunes[yy->count-1];
     struct abc_voice* voice = tune->voices[tune->count-1];
 
-    int oldnum = voice->last->dur_num; /* must be at least 1 */
+    struct abc_symbol* c = voice->last; /* must be ']' */
+    do {
+        if (c->kind == ABC_NOTE) {
+            int oldnum = c->dur_num; /* must be at least 1 */
+            c->dur_num = num ? num * oldnum : oldnum;
+        }
 
-    voice->last->dur_num = num * oldnum;
+        c = c->prev;
+    } while (c->kind != ABC_CHORD);
+}
+
+void abc_duration_chord_den_set(struct abc* yy, const char* yytext)
+{
+    struct abc_tune* tune = yy->tunes[yy->count-1];
+    struct abc_voice* voice = tune->voices[tune->count-1];
+
+    struct abc_symbol* c = voice->last; /* must be ']' */
+
+    if (yytext[0] == '/') {
+        do {
+            if (c->kind == ABC_NOTE) {
+
+                /* divide by 2 as many as '/' */
+                voice->last->dur_den *= pow(2, strlen(yytext));
+            }
+
+            c = c->prev;
+        } while (c->kind != ABC_CHORD);
+    } else {
+        do {
+            if (c->kind == ABC_NOTE) {
+                c->dur_den *= atoi(yytext);
+            }
+
+            c = c->prev;
+        } while (c->kind != ABC_CHORD);
+    }
+}
+
+void abc_duration_num_set(struct abc* yy, const char* yytext)
+{
+
+    struct abc_tune* tune = yy->tunes[yy->count-1];
+    struct abc_voice* voice = tune->voices[tune->count-1];
+
+    voice->last->dur_num *= atoi(yytext);
 }
 
 void abc_duration_den_set(struct abc* yy, const char* yytext)
@@ -821,9 +864,9 @@ void abc_duration_den_set(struct abc* yy, const char* yytext)
 
     if (yytext[0] == '/')
         /* divide by 2 as many as '/' */
-        voice->last->dur_den = pow(2, strlen(yytext));
+        voice->last->dur_den *= pow(2, strlen(yytext));
     else
-        voice->last->dur_den = atoi(yytext);
+        voice->last->dur_den *= atoi(yytext);
 }
 
 int abc_is_endbar(const struct abc_symbol* s) {

@@ -118,6 +118,10 @@ struct abc_symbol* abc_chord_rewind(struct abc_symbol* s);
 /* go to the ']' symbol of a chord */
 struct abc_symbol* abc_chord_forward(struct abc_symbol* s);
 
+void abc_duration_chord_num_set(struct abc* yy, const char* yytext);
+
+void abc_duration_chord_den_set(struct abc* yy, const char* yytext);
+
 void abc_duration_num_set(struct abc* yy, const char* yytext);
 
 void abc_duration_den_set(struct abc* yy, const char* yytext);
