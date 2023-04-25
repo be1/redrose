@@ -809,7 +809,9 @@ void abc_duration_num_set(struct abc* yy, const char* yytext)
     struct abc_tune* tune = yy->tunes[yy->count-1];
     struct abc_voice* voice = tune->voices[tune->count-1];
 
-    voice->last->dur_num = num? num: 1;
+    int oldnum = voice->last->dur_num; /* must be at least 1 */
+
+    voice->last->dur_num = num * oldnum;
     voice->last->dur_den = 1;
 }
 
