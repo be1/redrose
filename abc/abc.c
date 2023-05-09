@@ -854,7 +854,8 @@ void abc_duration_num_set(struct abc* yy, const char* yytext)
     struct abc_tune* tune = yy->tunes[yy->count-1];
     struct abc_voice* voice = tune->voices[tune->count-1];
 
-    voice->last->dur_num *= atoi(yytext);
+    if (yytext[0] != '/')
+        voice->last->dur_num *= atoi(yytext);
 }
 
 void abc_duration_den_set(struct abc* yy, const char* yytext)
