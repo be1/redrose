@@ -602,7 +602,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
 
     noteFormat.setFontWeight(QFont::Bold);
     noteFormat.setForeground(qApp->palette().color(QPalette::Text));
-    rule.pattern = QRegularExpression(QStringLiteral("[_=^]*[A-HZa-hz][,']*/*[1-9]*"));
+    rule.pattern = QRegularExpression(QStringLiteral("[_=^]*[A-HZa-hz][,']*[0-9]*/*[1-9]*"));
     rule.format = noteFormat;
     highlightingRules.append(rule);
 
