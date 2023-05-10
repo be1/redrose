@@ -804,7 +804,8 @@ int abc_chord_parse_den(const char* chord)
 
 void abc_duration_chord_num_set(struct abc* yy, const char* yytext)
 {
-    int num = atoi(yytext);
+    if (yytext[0] == '/')
+        return;
 
     struct abc_tune* tune = yy->tunes[yy->count-1];
     struct abc_voice* voice = tune->voices[tune->count-1];
@@ -812,8 +813,7 @@ void abc_duration_chord_num_set(struct abc* yy, const char* yytext)
     struct abc_symbol* c = voice->last; /* must be ']' */
     do {
         if (c->kind == ABC_NOTE) {
-            int oldnum = c->dur_num; /* must be at least 1 */
-            c->dur_num = num ? num * oldnum : oldnum;
+            c->dur_num *= atoi(yytext);
         }
 
         c = c->prev;
@@ -832,7 +832,7 @@ void abc_duration_chord_den_set(struct abc* yy, const char* yytext)
             if (c->kind == ABC_NOTE) {
 
                 /* divide by 2 as many as '/' */
-                voice->last->dur_den *= pow(2, strlen(yytext));
+                c->dur_den *= pow(2, strlen(yytext));
             }
 
             c = c->prev;
@@ -850,7 +850,6 @@ void abc_duration_chord_den_set(struct abc* yy, const char* yytext)
 
 void abc_duration_num_set(struct abc* yy, const char* yytext)
 {
-
     struct abc_tune* tune = yy->tunes[yy->count-1];
     struct abc_voice* voice = tune->voices[tune->count-1];
 

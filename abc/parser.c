@@ -2163,7 +2163,7 @@ static void pcc_action_ChordDuration_2(pcc_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _3 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[2])
 #define _3s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[2]->range.start))
 #define _3e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[2]->range.end))
-    abc_duration_chord_num_set(auxil, _3);
+    abc_duration_chord_num_set(auxil, _0);
 #undef _3e
 #undef _3s
 #undef _3
@@ -2183,7 +2183,7 @@ static void pcc_action_ChordDuration_3(pcc_context_t *__pcc_ctx, pcc_thunk_t *__
 #define _4 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[3])
 #define _4s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[3]->range.start))
 #define _4e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[3]->range.end))
-    abc_duration_chord_den_set(auxil, _4);
+    abc_duration_chord_den_set(auxil, _0);
 #undef _4e
 #undef _4s
 #undef _4
@@ -2249,7 +2249,7 @@ static void pcc_action_NoteDuration_2(pcc_context_t *__pcc_ctx, pcc_thunk_t *__p
 #define _3 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[2])
 #define _3s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[2]->range.start))
 #define _3e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[2]->range.end))
-    abc_duration_num_set(auxil, _3);
+    abc_duration_num_set(auxil, _0);
 #undef _3e
 #undef _3s
 #undef _3
@@ -2269,7 +2269,7 @@ static void pcc_action_NoteDuration_3(pcc_context_t *__pcc_ctx, pcc_thunk_t *__p
 #define _4 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[3])
 #define _4s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[3]->range.start))
 #define _4e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[3]->range.end))
-    abc_duration_den_set(auxil, _4);
+    abc_duration_den_set(auxil, _0);
 #undef _4e
 #undef _4s
 #undef _4
@@ -4039,83 +4039,79 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Fragment(pcc_context_t *ctx) {
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Chord, &chunk->thunks, NULL)) goto L0014;
         {
-            int i;
-            for (i = 0;; i++) {
-                const size_t p = ctx->cur;
-                const size_t n = chunk->thunks.len;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0015;
-                if (ctx->cur == p) break;
-                continue;
-            L0015:;
-                ctx->cur = p;
-                pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-                break;
-            }
+            const size_t p = ctx->cur;
+            const size_t n = chunk->thunks.len;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0015;
+            goto L0016;
+        L0015:;
+            ctx->cur = p;
+            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+        L0016:;
         }
         goto L0001;
     L0014:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Grace, &chunk->thunks, NULL)) goto L0016;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Grace, &chunk->thunks, NULL)) goto L0017;
         goto L0001;
-    L0016:;
+    L0017:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         if (
             pcc_refill_buffer(ctx, 1) < 1 ||
             ctx->buffer.buf[ctx->cur] != '('
-        ) goto L0017;
+        ) goto L0018;
         ctx->cur++;
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Nuplet, &chunk->thunks, NULL)) goto L0017;
-        goto L0001;
-    L0017:;
-        ctx->cur = p;
-        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_SlurStart, &chunk->thunks, NULL)) goto L0018;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Nuplet, &chunk->thunks, NULL)) goto L0018;
         goto L0001;
     L0018:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_SlurEnd, &chunk->thunks, NULL)) goto L0019;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_SlurStart, &chunk->thunks, NULL)) goto L0019;
         goto L0001;
     L0019:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Bar, &chunk->thunks, NULL)) goto L0020;
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_SimpleAlter, &chunk->thunks, NULL)) goto L0020;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_SlurEnd, &chunk->thunks, NULL)) goto L0020;
         goto L0001;
     L0020:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Bar, &chunk->thunks, NULL)) goto L0021;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_SimpleAlter, &chunk->thunks, NULL)) goto L0021;
         goto L0001;
     L0021:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Alternative, &chunk->thunks, NULL)) goto L0022;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Bar, &chunk->thunks, NULL)) goto L0022;
         goto L0001;
     L0022:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineCont, &chunk->thunks, NULL)) goto L0023;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Alternative, &chunk->thunks, NULL)) goto L0023;
         goto L0001;
     L0023:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineBreak, &chunk->thunks, NULL)) goto L0024;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineCont, &chunk->thunks, NULL)) goto L0024;
         goto L0001;
     L0024:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineBreak, &chunk->thunks, NULL)) goto L0025;
+        goto L0001;
+    L0025:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         if (
             pcc_refill_buffer(ctx, 2) < 2 ||
             (ctx->buffer.buf + ctx->cur)[0] != 'w' ||
             (ctx->buffer.buf + ctx->cur)[1] != ':'
-        ) goto L0025;
+        ) goto L0026;
         ctx->cur += 2;
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Lyrics, &chunk->thunks, NULL)) goto L0025;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Lyrics, &chunk->thunks, NULL)) goto L0026;
         goto L0001;
-    L0025:;
+    L0026:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         goto L0000;
@@ -4760,28 +4756,24 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_ChordPunct(pcc_context_t *ctx) {
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Chord, &chunk->thunks, NULL)) goto L0000;
     {
-        int i;
-        for (i = 0;; i++) {
-            const size_t p = ctx->cur;
-            const size_t n = chunk->thunks.len;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0001;
-            if (ctx->cur == p) break;
-            continue;
-        L0001:;
-            ctx->cur = p;
-            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-            break;
-        }
+        const size_t p = ctx->cur;
+        const size_t n = chunk->thunks.len;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0001;
+        goto L0002;
+    L0001:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+    L0002:;
     }
     {
         int i;
         for (i = 0;; i++) {
             const size_t p = ctx->cur;
             const size_t n = chunk->thunks.len;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule__, &chunk->thunks, NULL)) goto L0002;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule__, &chunk->thunks, NULL)) goto L0003;
             if (ctx->cur == p) break;
             continue;
-        L0002:;
+        L0003:;
             ctx->cur = p;
             pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
             break;
@@ -4803,27 +4795,27 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_ChordPunct(pcc_context_t *ctx) {
                     if (
                         pcc_refill_buffer(ctx, 1) < 1 ||
                         ctx->buffer.buf[ctx->cur] != '>'
-                    ) goto L0005;
+                    ) goto L0006;
                     ctx->cur++;
-                    goto L0004;
-                L0005:;
+                    goto L0005;
+                L0006:;
                     ctx->cur = p;
                     pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
                     if (
                         pcc_refill_buffer(ctx, 1) < 1 ||
                         ctx->buffer.buf[ctx->cur] != '<'
-                    ) goto L0006;
+                    ) goto L0007;
                     ctx->cur++;
-                    goto L0004;
-                L0006:;
+                    goto L0005;
+                L0007:;
                     ctx->cur = p;
                     pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-                    goto L0003;
-                L0004:;
+                    goto L0004;
+                L0005:;
                 }
                 if (ctx->cur == p) break;
                 continue;
-            L0003:;
+            L0004:;
                 ctx->cur = p;
                 pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
                 break;
@@ -4843,22 +4835,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_ChordPunct(pcc_context_t *ctx) {
         for (i = 0;; i++) {
             const size_t p = ctx->cur;
             const size_t n = chunk->thunks.len;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule__, &chunk->thunks, NULL)) goto L0007;
-            if (ctx->cur == p) break;
-            continue;
-        L0007:;
-            ctx->cur = p;
-            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-            break;
-        }
-    }
-    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Chord, &chunk->thunks, NULL)) goto L0000;
-    {
-        int i;
-        for (i = 0;; i++) {
-            const size_t p = ctx->cur;
-            const size_t n = chunk->thunks.len;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0008;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule__, &chunk->thunks, NULL)) goto L0008;
             if (ctx->cur == p) break;
             continue;
         L0008:;
@@ -4866,6 +4843,17 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_ChordPunct(pcc_context_t *ctx) {
             pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
             break;
         }
+    }
+    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Chord, &chunk->thunks, NULL)) goto L0000;
+    {
+        const size_t p = ctx->cur;
+        const size_t n = chunk->thunks.len;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0009;
+        goto L0010;
+    L0009:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+    L0010:;
     }
     {
         pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_ChordPunct_0, 0, 1);
@@ -4998,32 +4986,24 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_NoteConstruct(pcc_context_t *ctx) {
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Note, &chunk->thunks, NULL)) goto L0000;
     {
-        int i;
-        for (i = 0;; i++) {
-            const size_t p = ctx->cur;
-            const size_t n = chunk->thunks.len;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_NoteDuration, &chunk->thunks, NULL)) goto L0001;
-            if (ctx->cur == p) break;
-            continue;
-        L0001:;
-            ctx->cur = p;
-            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-            break;
-        }
+        const size_t p = ctx->cur;
+        const size_t n = chunk->thunks.len;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_NoteDuration, &chunk->thunks, NULL)) goto L0001;
+        goto L0002;
+    L0001:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+    L0002:;
     }
     {
-        int i;
-        for (i = 0;; i++) {
-            const size_t p = ctx->cur;
-            const size_t n = chunk->thunks.len;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0002;
-            if (ctx->cur == p) break;
-            continue;
-        L0002:;
-            ctx->cur = p;
-            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-            break;
-        }
+        const size_t p = ctx->cur;
+        const size_t n = chunk->thunks.len;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0003;
+        goto L0004;
+    L0003:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+    L0004:;
     }
     ctx->level--;
     PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "NoteConstruct", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));
@@ -5359,18 +5339,14 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Chord(pcc_context_t *ctx) {
         pcc_thunk_array__add(ctx->auxil, &chunk->thunks, thunk);
     }
     {
-        int i;
-        for (i = 0;; i++) {
-            const size_t p = ctx->cur;
-            const size_t n = chunk->thunks.len;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_ChordDuration, &chunk->thunks, NULL)) goto L0002;
-            if (ctx->cur == p) break;
-            continue;
-        L0002:;
-            ctx->cur = p;
-            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-            break;
-        }
+        const size_t p = ctx->cur;
+        const size_t n = chunk->thunks.len;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_ChordDuration, &chunk->thunks, NULL)) goto L0002;
+        goto L0003;
+    L0002:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+    L0003:;
     }
     ctx->level--;
     PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Chord", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));
@@ -6252,15 +6228,15 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_ChordDuration(pcc_context_t *ctx) {
                     break;
                 }
             }
+            if (
+                pcc_refill_buffer(ctx, 1) < 1 ||
+                ctx->buffer.buf[ctx->cur] != '/'
+            ) goto L0002;
+            ctx->cur++;
             q = ctx->cur;
             chunk->capts.buf[0].range.start = p;
             chunk->capts.buf[0].range.end = q;
         }
-        if (
-            pcc_refill_buffer(ctx, 1) < 1 ||
-            ctx->buffer.buf[ctx->cur] != '/'
-        ) goto L0002;
-        ctx->cur++;
         {
             pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_ChordDuration_0, 0, 4);
             thunk->data.leaf.capts.buf[0] = &(chunk->capts.buf[0]);
@@ -6456,15 +6432,15 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_NoteDuration(pcc_context_t *ctx) {
                     break;
                 }
             }
+            if (
+                pcc_refill_buffer(ctx, 1) < 1 ||
+                ctx->buffer.buf[ctx->cur] != '/'
+            ) goto L0002;
+            ctx->cur++;
             q = ctx->cur;
             chunk->capts.buf[0].range.start = p;
             chunk->capts.buf[0].range.end = q;
         }
-        if (
-            pcc_refill_buffer(ctx, 1) < 1 ||
-            ctx->buffer.buf[ctx->cur] != '/'
-        ) goto L0002;
-        ctx->cur++;
         {
             pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_NoteDuration_0, 0, 4);
             thunk->data.leaf.capts.buf[0] = &(chunk->capts.buf[0]);

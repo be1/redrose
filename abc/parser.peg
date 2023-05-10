@@ -88,7 +88,7 @@ Fragment <- _ / "y"
 	/ "!" ExDecoration "!"
 	/ Decoration
 	/ ChordPunct
-	/ Chord Tie*
+	/ Chord Tie?
 	/ Grace
 	/ "(" Nuplet
 	/ SlurStart
@@ -115,11 +115,11 @@ Vheader <- "V:" Vvalue
 
 Vvalue <- < (!EOL .)+ > { abc_voice_append(auxil, $0); }
 
-ChordPunct <- Chord Tie* _* < (">" / "<")+ > _* Chord Tie* { abc_chordpunct_set(auxil, $1); }
+ChordPunct <- Chord Tie? _* < (">" / "<")+ > _* Chord Tie? { abc_chordpunct_set(auxil, $1); }
 
 NotePunct <- NoteConstruct _* < (">" / "<")+ > _* NoteConstruct { abc_notepunct_set(auxil, $1); }
 
-NoteConstruct <- Note NoteDuration* Tie*
+NoteConstruct <- Note NoteDuration? Tie?
 
 Instruction <- < !"%" (!EOL .)* > { abc_instruction_append(auxil, $0); }
 
@@ -129,7 +129,7 @@ Tie <- < "-" > { abc_tie_append(auxil, $0); }
 
 Grace <- < "{/" / "{" > { abc_grace_append(auxil, $0); } NoteConstruct+ < "}" > { abc_grace_append(auxil, $2); }
 
-Chord <- < "[" > { abc_chord_append(auxil, $0); } NoteConstruct+ < "]" > { abc_chord_append(auxil, $2); } ChordDuration*
+Chord <- < "[" > { abc_chord_append(auxil, $0); } NoteConstruct+ < "]" > { abc_chord_append(auxil, $2); } ChordDuration?
 
 _ <- < [ \t] > { abc_space_append(auxil, $0); }
 
@@ -156,13 +156,13 @@ Alternative <- < "["[1-9]+([-,][1-9]+)* > { abc_alt_append(auxil, $0); }
 
 Bar <- < "["?[:|\]]+ > { abc_bar_append(auxil, $0); }
 
-ChordDuration <- < [0-9]* > "/" { abc_duration_chord_num_set(auxil, $0); } < [1-9][0-9]* > { abc_duration_chord_den_set(auxil, $2); }
-	/ < [0-9]+ > { abc_duration_chord_num_set(auxil, $3); }
-	/ < "/"+ > { abc_duration_chord_den_set(auxil, $4); }
+ChordDuration <- < [0-9]*"/" > { abc_duration_chord_num_set(auxil, $0); } < [1-9][0-9]* > { abc_duration_chord_den_set(auxil, $2); }
+	/ < [0-9]+ > { abc_duration_chord_num_set(auxil, $0); }
+	/ < "/"+ > { abc_duration_chord_den_set(auxil, $0); }
 
-NoteDuration <- < [0-9]* > "/" { abc_duration_num_set(auxil, $0); } < [1-9][0-9]* > { abc_duration_den_set(auxil, $2); }
-	/ < [0-9]+ > { abc_duration_num_set(auxil, $3); }
-	/ < "/"+ > { abc_duration_den_set(auxil, $4); }
+NoteDuration <- < [0-9]*"/" > { abc_duration_num_set(auxil, $0); } < [1-9][0-9]* > { abc_duration_den_set(auxil, $2); }
+	/ < [0-9]+ > { abc_duration_num_set(auxil, $0); }
+	/ < "/"+ > { abc_duration_den_set(auxil, $0); }
 
 Note <- < [_=^]*[A-Ga-gZz][,']* > { abc_note_append(auxil, $0); }
 
