@@ -48,6 +48,10 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     setSizes(sizes);
     setCollapsible(0, false);
     setCollapsible(1, false);
+
+    prev.setEnabled(false);
+    print.setEnabled(false);
+    next.setEnabled(false);
 }
 
 ViewVSplitter::~ViewVSplitter()
@@ -56,7 +60,7 @@ ViewVSplitter::~ViewVSplitter()
 
 void ViewVSplitter::initBasename(const QString &b, const QString &d)
 {
-    qDebug() << "check" << b;
+    qDebug() << __func__ << b;
     basename = b;
     basedir = d;
     currentpage = 0;
@@ -74,7 +78,6 @@ void ViewVSplitter::initBasename(const QString &b, const QString &d)
 }
 
 bool ViewVSplitter::requestPage(int i) {
-    qDebug() << "requesting page" << i;
     int page = i + currentpage;
     if (page > 0 && page <= lastpage) {
         currentpage = page;
@@ -83,6 +86,7 @@ bool ViewVSplitter::requestPage(int i) {
         temp += nnn;
         temp += ".svg";
         svgWidget()->load(temp);
+        print.setEnabled(true);
 
         if (page > 1)
             prev.setEnabled(true);
@@ -99,6 +103,7 @@ bool ViewVSplitter::requestPage(int i) {
     /* else, empty view */
     svgWidget()->load(QString());
     prev.setEnabled(false);
+    print.setEnabled(false);
     next.setEnabled(false);
     return false;
 }
@@ -107,6 +112,9 @@ void ViewVSplitter::cleanup()
 {
     svgnames.clear();
     initBasename(QString(), QString());
+    prev.setEnabled(false);
+    print.setEnabled(false);
+    next.setEnabled(false);
 }
 
 ScoreSvgWidget *ViewVSplitter::svgWidget()
