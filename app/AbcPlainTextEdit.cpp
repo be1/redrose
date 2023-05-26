@@ -15,7 +15,8 @@
 
 AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     : QPlainTextEdit(parent),
-      saved(false)
+      saved(false),
+      autoplay(false)
 {
     lineNumberArea = new LineNumberArea(this);
     highlighter = new AbcHighlighter(this->document());
@@ -35,8 +36,10 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     connect(this, &AbcPlainTextEdit::updateRequest, this, &AbcPlainTextEdit::updateLineNumberArea);
     connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkDictionnary);
     connect(this, &AbcPlainTextEdit::modificationChanged, this, &AbcPlainTextEdit::flagModified);
-    if (settings.value(EDITOR_AUTOPLAY).toBool())
+    if (settings.value(EDITOR_AUTOPLAY).toBool()) {
+        autoplay = true;
         connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkPlayableNote);
+    }
 
     updateLineNumberAreaWidth(0);
 
@@ -118,7 +121,7 @@ void AbcPlainTextEdit::contextMenuEvent(QContextMenuEvent *e)
 void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
 {
     /* note appears if cursor is just after the pitch */
-    QString note = playableNoteUnderCusror();
+    QString note = playableNoteUnderCusror(textCursor());
     if (note.isEmpty())
         return QPlainTextEdit::mouseDoubleClickEvent(e);
 
@@ -234,9 +237,8 @@ QString AbcPlainTextEdit::lineUnderCursor() const
     return tc.selectedText();
 }
 
-QString AbcPlainTextEdit::charBeforeCursor() const
+QString AbcPlainTextEdit::charBeforeCursor(QTextCursor tc) const
 {
-    QTextCursor tc = textCursor();
     if (!tc.movePosition(QTextCursor::Left))
         return QString();
 
@@ -251,10 +253,7 @@ bool AbcPlainTextEdit::isRest(QChar car) const
 
 bool AbcPlainTextEdit::isPitch(QChar car) const
 {
-    if (car.isLetter())
-        return (car >= 'A' && car <= 'G') || (car >= 'a' && car <= 'g');
-
-    return false;
+    return (car >= 'A' && car <= 'G') || (car >= 'a' && car <= 'g');
 }
 
 bool AbcPlainTextEdit::isAccid(QChar car) const
@@ -274,10 +273,9 @@ void AbcPlainTextEdit::checkDictionnary(void) {
     }
 }
 
-QString AbcPlainTextEdit::noteUnderCursor() const
+QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
 {
-    QString sym = charBeforeCursor();
-    QTextCursor tc = textCursor();
+    QString sym = charBeforeCursor(tc);
 
     if (sym.isEmpty())
         return QString();
@@ -381,10 +379,10 @@ QString AbcPlainTextEdit::getCurrentMIDIComment(const QString& com) const
     return ""; /* default */
 }
 
-QString AbcPlainTextEdit::playableNoteUnderCusror()
+QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
 {
     /* check manual selection */
-    if (!textCursor().selectedText().isEmpty())
+    if (!tc.selectedText().isEmpty())
         return QString();
 
     QString line = lineUnderCursor();
@@ -405,20 +403,20 @@ QString AbcPlainTextEdit::playableNoteUnderCusror()
     }
 
     /* check if we are in !something! or in "GChord" */
-    QTextCursor tc = textCursor();
-    while (tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
+    QTextCursor check = textCursor();
+    while (check.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
         /* go until start of line */
-        if (tc.selectedText().at(0) == '\n' || tc.selectedText().at(0) == QChar::ParagraphSeparator)
+        if (check.selectedText().at(0) == '\n' || check.selectedText().at(0) == QChar::ParagraphSeparator)
             break;
     }
-    if (tc.selectedText().count('!') % 2)
+    if (check.selectedText().count('!') % 2)
         return QString();
 
-    if (tc.selectedText().count('"') % 2)
+    if (check.selectedText().count('"') % 2)
         return QString();
 
     /* check if this is a note */
-    QString note = noteUnderCursor();
+    QString note = noteUnderCursor(tc);
     if (note.isEmpty())
         return QString();
 
@@ -440,7 +438,7 @@ QString AbcPlainTextEdit::playableNoteUnderCusror()
 
 void AbcPlainTextEdit::checkPlayableNote()
 {
-    QString note = playableNoteUnderCusror();
+    QString note = playableNoteUnderCusror(textCursor());
     if (note.isEmpty())
         return;
 
@@ -456,6 +454,25 @@ void AbcPlainTextEdit::focusInEvent(QFocusEvent *e)
 
 void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
 {
+    if (autoplay && (e->key() == ',' || e->key() == '\'')) {
+        QPlainTextEdit::keyPressEvent(e);
+
+        QTextCursor tc = textCursor();
+        QChar c = charBeforeCursor(tc).at(0);
+        while (c == ',' || c == '\'') {
+            if (!tc.movePosition(QTextCursor::MoveOperation::Left))
+                break;
+
+            c = charBeforeCursor(tc).at(0);
+        }
+
+        QString note = playableNoteUnderCusror(tc);
+        if (!note.isEmpty())
+            emit playableNote(note);
+
+        return;
+    }
+
     if (c && c->popup()->isVisible()) {
         // The following keys are forwarded by the completer to the widget
        switch (e->key()) {
@@ -504,7 +521,7 @@ void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
     QRect cr = cursorRect();
     cr.setWidth(c->popup()->sizeHintForColumn(0)
                 + c->popup()->verticalScrollBar()->sizeHint().width());
-    c->complete(cr); // popup it up!
+    c->complete(cr); // pop it up!
 }
 
 int AbcPlainTextEdit::lineNumberAreaWidth()
