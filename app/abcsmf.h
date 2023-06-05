@@ -18,7 +18,7 @@ private slots:
 private:
 #define DPQN 960
 #define DYN_DEFAULT 80
-#define SHORTEN_DEFAULT 10
+#define SHORTEN_DEFAULT 10 /* shorten of a 1/10 of a unit */
 #define EXPRESSION_DEFAULT 0
 
     void manageDecoration(struct abc_symbol* s);

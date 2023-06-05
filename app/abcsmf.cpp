@@ -124,6 +124,7 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
             small = (delta_tick > small) ? small : delta_tick;
             writeMidiEvent(delta_tick - (small / shorten), noteon, chan, s->ev.key + transpose, 0x00); /* note off */
             last_tick -= (small / shorten);
+            /* reset after singlenote decorations */
             shorten = in_slur;
         }
     }
@@ -133,6 +134,7 @@ void AbcSmf::onSMFWriteTempoTrack(void) {
 }
 
 void AbcSmf::onSMFWriteTrack(int track) {
+    int sluring = 0;
     int chan = track;
     long mspqn = 60000 / tempo;
     writeTempo(0, mspqn);
@@ -155,7 +157,7 @@ void AbcSmf::onSMFWriteTrack(int track) {
     grace_mod = 1.0; /* duration modified for graces */
     expr = EXPRESSION_DEFAULT;
     in_slur = SHORTEN_DEFAULT;
-    shorten = in_slur; /* dur will be shortened of 10% of a unit */
+    shorten = in_slur; /* dur will be shortened of 1/10 of a unit */
 
     writeMetaEvent(0, 0x03, QString(v->v)); /* textual voice name */
 
@@ -200,9 +202,14 @@ void AbcSmf::onSMFWriteTrack(int track) {
         }
         case ABC_SLUR: {
             if (strchr(s->text, '(')) {
-                in_slur = 100;
+                sluring++;
+                shorten = in_slur = 100;
             } else {
-                in_slur = SHORTEN_DEFAULT;
+                if (sluring < 2)
+                    shorten =  in_slur = SHORTEN_DEFAULT;
+
+                if (sluring > 0)
+                    sluring--;
             }
             break;
         }
