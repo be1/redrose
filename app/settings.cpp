@@ -9,6 +9,14 @@ Settings::Settings(QObject* parent)
 
 void Settings::check()
 {
+    QVariant velocity = value(PLAYER_VELOCITY);
+    if (!velocity.isValid())
+        setValue(PLAYER_VELOCITY, 80);
+
+    QVariant duration = value(PLAYER_DURATION);
+    if (!duration.isValid() || duration.toInt() <= 0)
+        setValue(PLAYER_DURATION, 10);
+
     QVariant autoplay = value(EDITOR_AUTOPLAY);
     if (!autoplay.isValid())
         setValue(EDITOR_AUTOPLAY, false);
@@ -75,6 +83,10 @@ void Settings::check()
 
 void Settings::reset()
 {
+    setValue(PLAYER_VELOCITY, 80);
+
+    setValue(PLAYER_DURATION, 10);
+
     setValue(EDITOR_AUTOPLAY, false);
 
     setValue(SOUNDFONT_KEY, DEB_SF2_GM);

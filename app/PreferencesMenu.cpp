@@ -5,16 +5,16 @@
 #include <QFileDialog>
 #include "AbcApplication.h"
 #include "editorprefdialog.h"
+#include "playerprefdialog.h"
 #include "settings.h"
+#include "config.h"
 
 PreferencesMenu::PreferencesMenu(QWidget* parent)
     : QMenu(parent)
 {
     setTitle(tr("Preferences"));
 
-    addAction(tr("MIDI Generator"), this, &PreferencesMenu::onPlayerActionTriggered);
-    addAction(tr("Audio output driver"), this, &PreferencesMenu::onAdriverActionTriggered);
-    addAction(tr("Audio sound font"), this, &PreferencesMenu::onSfontActionTriggered);
+    addAction(tr("Player settings"), this, &PreferencesMenu::onPlayerActionTriggered);
     addAction(tr("Postscript export"), this, &PreferencesMenu::onPsActionTriggered);
     addAction(tr("Editor settings"), this, &PreferencesMenu::onEditorActionTriggered);
     addAction(tr("Reset settings"), this, &PreferencesMenu::onResetActionTriggered);
@@ -24,78 +24,23 @@ PreferencesMenu::~PreferencesMenu()
 {
 }
 
-void PreferencesMenu::onAdriverActionTriggered()
-{
-    Settings settings;
-    QVariant driver = settings.value(DRIVER_KEY);
-
-    AbcApplication* a = static_cast<AbcApplication*>(qApp);
-
-    QStringList items;
-    if (!driver.isNull()) {
-        items << driver.toString();
-    }
-
-    items << DRIVER_ALSA << DRIVER_PULSEAUDIO << DRIVER_JACK << DRIVER_PORTAUDIO;
-    items.removeDuplicates();
-
-    bool ok;
-    QString drv;
-    drv = QInputDialog::getItem(a->mainWindow(), tr("Audio driver preference"), tr("Audio driver:"), items, 0, false, &ok);
-
-    if (!ok)
-        return;
-
-    settings.setValue(DRIVER_KEY, drv);
-    settings.sync();
-}
-
 void PreferencesMenu::onPlayerActionTriggered()
 {
-    Settings settings;
-    QVariant player = settings.value(PLAYER_KEY);
-
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    PlayerPrefDialog* dialog = new PlayerPrefDialog(a->mainWindow());
 
-    QStringList items;
-    if (!player.isNull()) {
-        items << player.toString();
+    if (QDialog::Accepted == dialog->exec()) {
+        Settings settings;
+
+        settings.setValue(PLAYER_KEY, dialog->getPlayer());
+        settings.setValue(DRIVER_KEY, dialog->getDriver());
+        settings.setValue(SOUNDFONT_KEY, dialog->getSoundfont());
+        settings.setValue(PLAYER_DURATION, dialog->getDuration());
+        settings.setValue(PLAYER_VELOCITY, dialog->getVelocity());
+        settings.sync();
     }
 
-    items << ABC2MIDI << LIBABC2SMF;
-    items.removeDuplicates();
-
-    bool ok;
-    QString command;
-    command = QInputDialog::getItem(a->mainWindow(), tr("MIDI Generator preference"), tr("MIDI generator:"), items, 0, true, &ok);
-
-    if (!ok)
-        return;
-
-    settings.setValue(PLAYER_KEY, command);
-    settings.sync();
-}
-
-void PreferencesMenu::onSfontActionTriggered()
-{
-    Settings settings;
-    QVariant soundfont = settings.value(SOUNDFONT_KEY);
-
-    AbcApplication* a = static_cast<AbcApplication*>(qApp);
-
-    QString sf;
-    if (!soundfont.isNull()) {
-        QFileInfo info(soundfont.toString());
-        sf = QFileDialog::getOpenFileName(a->mainWindow(), tr("Audio sound font preference"), info.absolutePath(), tr("Soundfont (*.sf[23])"));
-    } else {
-        sf = QFileDialog::getOpenFileName(a->mainWindow(), tr("Audio sound font preference"), QDir::homePath(), tr("Soundfont (*.sf[23])"));
-    }
-
-    if (sf.isNull())
-        return;
-
-    settings.setValue(SOUNDFONT_KEY, sf);
-    settings.sync();
+    delete dialog;
 }
 
 void PreferencesMenu::onPsActionTriggered()

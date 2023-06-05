@@ -14,6 +14,9 @@
 #define ABC2MIDI \"/usr/bin/abc2midi\"
 #define LIBABC2SMF \"internal\"
 
+#define PLAYER_VELOCITY \"ABC/player/default_velocity\"
+#define PLAYER_DURATION \"ABC/player/default_duration\"
+
 #define PSTUNES_KEY \"ABC/pstunes\"
 #define TUNES_ALL \"all\"
 #define TUNES_SELECTED \"selected\"

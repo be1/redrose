@@ -1,11 +1,12 @@
 #include <QDebug>
 #include <QMessageBox>
-#include "AbcApplication.h"
+#include <QRegularExpression>
 #include "midigenerator.h"
 #include "generator.h"
 #include "settings.h"
 #include "../abc/abc.h"
 #include "abcsmf.h"
+#include "config.h"
 
 MidiGenerator::MidiGenerator(QObject* parent)
     : Generator(parent)
@@ -13,7 +14,7 @@ MidiGenerator::MidiGenerator(QObject* parent)
 
 }
 
-void MidiGenerator::generate(const QString &input, int xopt, QString output, int cont)
+void MidiGenerator::generate(const QString &inputpath, int xopt, QString outputpath, int cont)
 {
     Settings settings;
     QVariant player = settings.value(PLAYER_KEY);
@@ -27,24 +28,33 @@ void MidiGenerator::generate(const QString &input, int xopt, QString output, int
         return;
     }
 
-    if (output.isEmpty()) {
-        output = input;
-        output.replace(QRegularExpression("\\.abc$"), QString::number(xopt) + ".mid");
+    if (outputpath.isEmpty()) {
+        outputpath = inputpath;
+        outputpath.replace(QRegularExpression("\\.abc$"), QString::number(xopt) + ".mid");
     }
 
     argv.removeAt(0);
-    argv << input;
+    argv << inputpath;
     argv << QString::number(xopt);
     argv << "-v";
-    argv << "-o" << output;
-    QFileInfo info(input);
+    argv << "-o" << outputpath;
+    QFileInfo info(inputpath);
     QDir dir = info.absoluteDir();
 
     spawnMidiCompiler(program, argv, dir, cont);
 }
 
-void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhint, int xopt, QString output, int cont)
+void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhint, int xopt, QString outputpath, int cont)
 {
+    Settings settings;
+    QVariant vel = settings.value(PLAYER_VELOCITY);
+    QVariant dur = settings.value(PLAYER_DURATION);
+
+    if (!vel.isValid())
+        vel = 80;
+    if (!dur.isValid())
+        dur = 10;
+
     QString errstr;
     struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.count());
     if (yy->error) {
@@ -52,19 +62,19 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
         emit generated(1, errstr, cont);
         abc_release_yy(yy);
     } else {
-        AbcSmf *smf = new AbcSmf(yy, xopt, this);
+        AbcSmf *smf = new AbcSmf(yy, vel.toInt(), dur.toInt(), xopt, this);
         if (!smf) {
                 emit generated(1, tr("Out of memory"), cont);
                 abc_release_yy(yy);
                 return;
         }
 
-        if (output.isEmpty()) {
-                output = inputhint;
-                output.replace(QRegularExpression("\\.abc$"), QString::number(xopt) + ".mid");
+        if (outputpath.isEmpty()) {
+                outputpath = inputhint;
+                outputpath.replace(QRegularExpression("\\.abc$"), QString::number(xopt) + ".mid");
         }
 
-        smf->writeToFile(output);
+        smf->writeToFile(outputpath);
 
         delete smf;
         emit generated(0, "", cont);
@@ -79,7 +89,7 @@ const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
         abc_release_yy(yy);
         return nullptr;
     } else {
-        AbcSmf *smf = new AbcSmf(yy, xopt, this);
+        AbcSmf *smf = new AbcSmf(yy, 80, 10, xopt, this);
         if (!smf) {
             abc_release_yy(yy);
             return nullptr;

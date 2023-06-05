@@ -22,6 +22,7 @@ SOURCES = ScoreMenu.cpp PreferencesMenu.cpp HelpMenu.cpp AbcPlainTextEdit.cpp Pl
 	editorprefdialog.cpp \
 	generator.cpp \
 	midigenerator.cpp \
+	playerprefdialog.cpp \
 	psgenerator.cpp \
 	settings.cpp \
 	sfloader.cpp \
@@ -40,6 +41,7 @@ HEADERS = ScoreMenu.h PreferencesMenu.h HelpMenu.h AbcPlainTextEdit.h PlayPushBu
 	editorprefdialog.h \
 	generator.h \
 	midigenerator.h \
+	playerprefdialog.h \
 	psgenerator.h \
 	settings.h \
 	sfloader.h \

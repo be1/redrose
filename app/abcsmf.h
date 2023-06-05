@@ -9,7 +9,7 @@ class AbcSmf : public drumstick::File::QSmf
 {
     Q_OBJECT
 public:
-    explicit AbcSmf(struct abc* yy, int x = 1, QObject *parent = nullptr);
+    explicit AbcSmf(struct abc* yy, int vel, int short_den, int x = 1, QObject *parent = nullptr);
 
 private slots:
     void onSMFWriteTempoTrack(void);
@@ -17,8 +17,6 @@ private slots:
 
 private:
 #define DPQN 960
-#define DYN_DEFAULT 80
-#define SHORTEN_DEFAULT 10 /* shorten of a 1/10 of a unit */
 #define EXPRESSION_DEFAULT 0
 
     void manageDecoration(struct abc_symbol* s);
@@ -57,6 +55,8 @@ private:
     char program;
     char control;
     int transpose;
+    int default_velocity;
+    int default_shorten;
 };
 
 #endif // ABCSMF_H

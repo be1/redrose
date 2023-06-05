@@ -10,7 +10,7 @@ class MidiGenerator : public Generator
     Q_OBJECT
 public:
     MidiGenerator(QObject* parent = nullptr);
-    void generate(const QString& input, int xopt, QString output, int cont) override;
+    void generate(const QString& inputpath, int xopt, QString outputpath, int cont) override;
     /**
      * @brief generate.
      * @param inputbuf Input buffer.
@@ -19,7 +19,7 @@ public:
      * @param output Output filename.
      * @param cont Unused, forwarded.
      */
-    void generate(const QByteArray& inputbuf, const QString& inpputhint, int xopt, QString output, int cont);
+    void generate(const QByteArray& inputbuf, const QString& inpputhint, int xopt, QString outputpath, int cont);
 
     const QDataStream* generate(const QByteArray& inputbuf, int xopt);
 protected:

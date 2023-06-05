@@ -3,7 +3,7 @@
 #include <drumstick/qsmf.h>
 #include "abcsmf.h"
 
-AbcSmf::AbcSmf(struct abc* yy, int x, QObject *parent) : drumstick::File::QSmf(parent),
+AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) : drumstick::File::QSmf(parent),
         yy(yy),
         x(x),
         t(nullptr),
@@ -16,15 +16,17 @@ AbcSmf::AbcSmf(struct abc* yy, int x, QObject *parent) : drumstick::File::QSmf(p
         expr(EXPRESSION_DEFAULT),
         last_tick(0),
         dur(0),
-        in_slur(SHORTEN_DEFAULT),
+        in_slur(short_den),
         in_cresc(0),
-        mark_dyn(DYN_DEFAULT),
-        cur_dyn(DYN_DEFAULT),
+        mark_dyn(vel),
+        cur_dyn(vel),
         grace_tick(0),
         noteon(0x90),
         program(0xc0),
         control(0xb0),
-        transpose(0)
+        transpose(0),
+        default_velocity(vel),
+        default_shorten(short_den)
 {
     connect(this, &QSmf::signalSMFWriteTempoTrack, this, &AbcSmf::onSMFWriteTempoTrack);
     connect(this, &QSmf::signalSMFWriteTrack, this, &AbcSmf::onSMFWriteTrack);
@@ -150,13 +152,13 @@ void AbcSmf::onSMFWriteTrack(int track) {
     transpose = 0;
 
     in_cresc = 0;
-    mark_dyn = DYN_DEFAULT;
+    mark_dyn = default_velocity;
     cur_dyn = mark_dyn; /* current dynamic in the tune */
     grace_tick = 0; /* grace group duration */
 
     grace_mod = 1.0; /* duration modified for graces */
     expr = EXPRESSION_DEFAULT;
-    in_slur = SHORTEN_DEFAULT;
+    in_slur = default_shorten;
     shorten = in_slur; /* dur will be shortened of 1/10 of a unit */
 
     writeMetaEvent(0, 0x03, QString(v->v)); /* textual voice name */
@@ -206,7 +208,7 @@ void AbcSmf::onSMFWriteTrack(int track) {
                 shorten = in_slur = 100;
             } else {
                 if (sluring < 2)
-                    shorten =  in_slur = SHORTEN_DEFAULT;
+                    shorten =  in_slur = default_shorten;
 
                 if (sluring > 0)
                     sluring--;
