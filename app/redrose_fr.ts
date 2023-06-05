@@ -12,27 +12,27 @@
 <context>
     <name>AbcPlainTextEdit</name>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="54"/>
-        <location filename="AbcPlainTextEdit.cpp" line="154"/>
+        <location filename="AbcPlainTextEdit.cpp" line="57"/>
+        <location filename="AbcPlainTextEdit.cpp" line="190"/>
         <source>Find...</source>
         <translation>Rechercher...</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="60"/>
-        <location filename="AbcPlainTextEdit.cpp" line="168"/>
+        <location filename="AbcPlainTextEdit.cpp" line="63"/>
+        <location filename="AbcPlainTextEdit.cpp" line="204"/>
         <source>Find forward</source>
         <translation>Rechercher en avant</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="66"/>
-        <location filename="AbcPlainTextEdit.cpp" line="182"/>
+        <location filename="AbcPlainTextEdit.cpp" line="69"/>
+        <location filename="AbcPlainTextEdit.cpp" line="218"/>
         <source>Find backward</source>
         <translation>Rechercher en arrière</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="154"/>
-        <location filename="AbcPlainTextEdit.cpp" line="168"/>
-        <location filename="AbcPlainTextEdit.cpp" line="182"/>
+        <location filename="AbcPlainTextEdit.cpp" line="190"/>
+        <location filename="AbcPlainTextEdit.cpp" line="204"/>
+        <location filename="AbcPlainTextEdit.cpp" line="218"/>
         <source>Text:</source>
         <translation>Texte :</translation>
     </message>
@@ -269,22 +269,22 @@ Redrose version </source>
 <context>
     <name>MidiGenerator</name>
     <message>
-        <location filename="midigenerator.cpp" line="26"/>
+        <location filename="midigenerator.cpp" line="27"/>
         <source>Program not found: </source>
         <translation>Programme non trouvé : </translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="51"/>
+        <location filename="midigenerator.cpp" line="61"/>
         <source>Parse error line: </source>
         <translation>Erreur d&apos;analyse ligne : </translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="51"/>
+        <location filename="midigenerator.cpp" line="61"/>
         <source>, char: </source>
         <translation>, caractère : </translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="57"/>
+        <location filename="midigenerator.cpp" line="67"/>
         <source>Out of memory</source>
         <translation>Pas assez de mémoire</translation>
     </message>
@@ -304,26 +304,62 @@ Redrose version </source>
     </message>
 </context>
 <context>
-    <name>PreferencesMenu</name>
+    <name>PlayerPrefDialog</name>
     <message>
-        <location filename="PreferencesMenu.cpp" line="13"/>
-        <source>Preferences</source>
-        <translation>Préférences</translation>
+        <location filename="playerprefdialog.cpp" line="13"/>
+        <source>Player settings</source>
+        <translation>Préférences du lecteur</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="15"/>
-        <source>MIDI Generator</source>
+        <location filename="playerprefdialog.cpp" line="20"/>
+        <source>MIDI generator</source>
         <translation>Générateur MIDI</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="16"/>
-        <source>Audio output driver</source>
-        <translation>Pilote de sortie audio</translation>
+        <location filename="playerprefdialog.cpp" line="43"/>
+        <source>Default MIDI velocity</source>
+        <translation>Vélocité MIDI par défaut</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="17"/>
+        <location filename="playerprefdialog.cpp" line="63"/>
+        <source>Default Relative Note duration</source>
+        <translation>Durée relative de note par défaut</translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="81"/>
+        <source>Audio driver</source>
+        <translation>Pilote audio</translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="102"/>
         <source>Audio sound font</source>
         <translation>Fonte sonore</translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="105"/>
+        <source>Choose file</source>
+        <translation>Choisir un fichier</translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="157"/>
+        <location filename="playerprefdialog.cpp" line="159"/>
+        <source>Audio sound font selection</source>
+        <oldsource>Audio sound font preference</oldsource>
+        <translation>Sélection de la fonte sonore</translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="157"/>
+        <location filename="playerprefdialog.cpp" line="159"/>
+        <source>Soundfont (*.sf[23])</source>
+        <translation>Fonte sonore (*.sf[23])</translation>
+    </message>
+</context>
+<context>
+    <name>PreferencesMenu</name>
+    <message>
+        <location filename="PreferencesMenu.cpp" line="15"/>
+        <source>Preferences</source>
+        <translation>Préférences</translation>
     </message>
     <message>
         <location filename="PreferencesMenu.cpp" line="18"/>
@@ -341,54 +377,27 @@ Redrose version </source>
         <translation>Remettre à zéro</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="44"/>
-        <source>Audio driver preference</source>
-        <translation>Préférence de pilote audio</translation>
+        <location filename="PreferencesMenu.cpp" line="17"/>
+        <source>Player settings</source>
+        <translation>Préférences du lecteur</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="44"/>
-        <source>Audio driver:</source>
-        <translation>Pilote audio :</translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="70"/>
-        <source>MIDI Generator preference</source>
-        <translation>Préférence du générateur MIDI</translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="70"/>
-        <source>MIDI generator:</source>
-        <translation>Générateur MIDI :</translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="89"/>
-        <location filename="PreferencesMenu.cpp" line="91"/>
-        <source>Audio sound font preference</source>
-        <translation>Préférence de la fonte sonore</translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="89"/>
-        <location filename="PreferencesMenu.cpp" line="91"/>
-        <source>Soundfont (*.sf[23])</source>
-        <translation>Fonte sonore (*.sf[23])</translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="118"/>
+        <location filename="PreferencesMenu.cpp" line="63"/>
         <source>Postscript export preference</source>
         <translation>Préférence d&apos;export Postscript</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="118"/>
+        <location filename="PreferencesMenu.cpp" line="63"/>
         <source>Tunes:</source>
         <translation>Morceaux :</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="132"/>
+        <location filename="PreferencesMenu.cpp" line="77"/>
         <source>Reset prefrences?</source>
         <translation>Remettre les préférences à zéro ?</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="132"/>
+        <location filename="PreferencesMenu.cpp" line="77"/>
         <source>Do you really want to reset preferences?</source>
         <translation>Voulez-vous vraiment remettre les préférences d&apos;origine ?</translation>
     </message>

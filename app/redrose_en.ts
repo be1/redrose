@@ -12,34 +12,27 @@
 <context>
     <name>AbcPlainTextEdit</name>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="54"/>
-        <location filename="AbcPlainTextEdit.cpp" line="154"/>
+        <location filename="AbcPlainTextEdit.cpp" line="57"/>
+        <location filename="AbcPlainTextEdit.cpp" line="190"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="60"/>
-        <location filename="AbcPlainTextEdit.cpp" line="168"/>
+        <location filename="AbcPlainTextEdit.cpp" line="63"/>
+        <location filename="AbcPlainTextEdit.cpp" line="204"/>
         <source>Find forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="66"/>
-        <location filename="AbcPlainTextEdit.cpp" line="182"/>
+        <location filename="AbcPlainTextEdit.cpp" line="69"/>
+        <location filename="AbcPlainTextEdit.cpp" line="218"/>
         <source>Find backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="54"/>
-        <location filename="AbcPlainTextEdit.cpp" line="154"/>
-        <source>Find...</source>
-        <oldsource>Find ...</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="AbcPlainTextEdit.cpp" line="154"/>
-        <location filename="AbcPlainTextEdit.cpp" line="168"/>
-        <location filename="AbcPlainTextEdit.cpp" line="182"/>
+        <location filename="AbcPlainTextEdit.cpp" line="190"/>
+        <location filename="AbcPlainTextEdit.cpp" line="204"/>
+        <location filename="AbcPlainTextEdit.cpp" line="218"/>
         <source>Text:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -275,22 +268,22 @@ Redrose version </source>
 <context>
     <name>MidiGenerator</name>
     <message>
-        <location filename="midigenerator.cpp" line="26"/>
+        <location filename="midigenerator.cpp" line="27"/>
         <source>Program not found: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="51"/>
+        <location filename="midigenerator.cpp" line="61"/>
         <source>Parse error line: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="51"/>
+        <location filename="midigenerator.cpp" line="61"/>
         <source>, char: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="57"/>
+        <location filename="midigenerator.cpp" line="67"/>
         <source>Out of memory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -310,25 +303,61 @@ Redrose version </source>
     </message>
 </context>
 <context>
+    <name>PlayerPrefDialog</name>
+    <message>
+        <location filename="playerprefdialog.cpp" line="13"/>
+        <source>Player settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="20"/>
+        <source>MIDI generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="43"/>
+        <source>Default MIDI velocity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="63"/>
+        <source>Default Relative Note duration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="81"/>
+        <source>Audio driver</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="102"/>
+        <source>Audio sound font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="105"/>
+        <source>Choose file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="157"/>
+        <location filename="playerprefdialog.cpp" line="159"/>
+        <source>Audio sound font selection</source>
+        <oldsource>Audio sound font preference</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="157"/>
+        <location filename="playerprefdialog.cpp" line="159"/>
+        <source>Soundfont (*.sf[23])</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PreferencesMenu</name>
     <message>
-        <location filename="PreferencesMenu.cpp" line="13"/>
-        <source>Preferences</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="PreferencesMenu.cpp" line="15"/>
-        <source>MIDI Generator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="16"/>
-        <source>Audio output driver</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="17"/>
-        <source>Audio sound font</source>
+        <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -347,54 +376,27 @@ Redrose version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="44"/>
-        <source>Audio driver preference</source>
+        <location filename="PreferencesMenu.cpp" line="17"/>
+        <source>Player settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="44"/>
-        <source>Audio driver:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="70"/>
-        <source>MIDI Generator preference</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="70"/>
-        <source>MIDI generator:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="89"/>
-        <location filename="PreferencesMenu.cpp" line="91"/>
-        <source>Audio sound font preference</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="89"/>
-        <location filename="PreferencesMenu.cpp" line="91"/>
-        <source>Soundfont (*.sf[23])</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="118"/>
+        <location filename="PreferencesMenu.cpp" line="63"/>
         <source>Postscript export preference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="118"/>
+        <location filename="PreferencesMenu.cpp" line="63"/>
         <source>Tunes:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="132"/>
+        <location filename="PreferencesMenu.cpp" line="77"/>
         <source>Reset prefrences?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="132"/>
+        <location filename="PreferencesMenu.cpp" line="77"/>
         <source>Do you really want to reset preferences?</source>
         <translation type="unfinished"></translation>
     </message>

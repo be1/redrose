@@ -17,7 +17,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
 
     /* MIDI generator (aka. player) */
     QVariant player = settings.value(PLAYER_KEY);
-    playerLabel = new QLabel("MIDI generator");
+    playerLabel = new QLabel(tr("MIDI generator"));
     playerComboBox = new QComboBox;
     playerComboBox->setEditable(true);
 
@@ -78,7 +78,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
 
     /* driver */
     QVariant driver = settings.value(DRIVER_KEY);
-    driverLabel = new QLabel("Audio driver");
+    driverLabel = new QLabel(tr("Audio driver"));
     driverComboBox = new QComboBox;
 
     QStringList ditems;
@@ -154,9 +154,9 @@ void PlayerPrefDialog::onSoundfontButtonClicked()
     QString sf;
     if (!path.isNull()) {
         QFileInfo info(path);
-        sf = QFileDialog::getOpenFileName(a->mainWindow(), tr("Audio sound font preference"), info.absolutePath(), tr("Soundfont (*.sf[23])"));
+        sf = QFileDialog::getOpenFileName(a->mainWindow(), tr("Audio sound font selection"), info.absolutePath(), tr("Soundfont (*.sf[23])"));
     } else {
-        sf = QFileDialog::getOpenFileName(a->mainWindow(), tr("Audio sound font preference"), QDir::homePath(), tr("Soundfont (*.sf[23])"));
+        sf = QFileDialog::getOpenFileName(a->mainWindow(), tr("Audio sound font selection"), QDir::homePath(), tr("Soundfont (*.sf[23])"));
     }
 
     if (sf.isNull())
