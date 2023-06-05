@@ -101,10 +101,13 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
     QVariant font = settings.value(SOUNDFONT_KEY);
     soundfontLabel = new QLabel(tr("Audio sound font"));
 
-    if (font.isNull())
-        font.setValue(tr("Choose file"));
+    QString text = tr("Choose file");
+    if (!font.isNull()) {
+        text = font.toString();
+        soundfont = text;
+    }
 
-    soundfontButton = new QPushButton(font.toString());
+    soundfontButton = new QPushButton(text);
     connect(soundfontButton, &QPushButton::clicked, this, &PlayerPrefDialog::onSoundfontButtonClicked);
     soundfontLabel->setBuddy(soundfontButton);
     QHBoxLayout* sfhbox = new QHBoxLayout;
@@ -133,7 +136,7 @@ QString PlayerPrefDialog::getDriver()
 
 QString PlayerPrefDialog::getSoundfont()
 {
-    return soundfontButton->text();
+    return soundfont;
 }
 
 int PlayerPrefDialog::getVelocity()
@@ -150,10 +153,9 @@ void PlayerPrefDialog::onSoundfontButtonClicked()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
 
-    QString path = soundfontButton->text();
     QString sf;
-    if (!path.isNull()) {
-        QFileInfo info(path);
+    if (!soundfont.isNull()) {
+        QFileInfo info(soundfont);
         sf = QFileDialog::getOpenFileName(a->mainWindow(), tr("Audio sound font selection"), info.absolutePath(), tr("Soundfont (*.sf[23])"));
     } else {
         sf = QFileDialog::getOpenFileName(a->mainWindow(), tr("Audio sound font selection"), QDir::homePath(), tr("Soundfont (*.sf[23])"));
@@ -162,6 +164,7 @@ void PlayerPrefDialog::onSoundfontButtonClicked()
     if (sf.isNull())
         return;
 
+    soundfont = sf;
     soundfontButton->setText(sf);
 }
 

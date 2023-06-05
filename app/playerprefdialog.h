@@ -36,6 +36,7 @@ private:
 
     QLabel* soundfontLabel;
     QPushButton* soundfontButton;
+    QString soundfont;
 
     QLabel* defaultVelocityLabel;
     QSpinBox* defaultVelocitySpinBox;
