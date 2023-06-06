@@ -9,7 +9,7 @@ EditTabWidget::EditTabWidget(QWidget* parent)
 {
     setTabsClosable(true);
     connect(this, &QTabWidget::tabCloseRequested, this, &EditTabWidget::askRemoveTab);
-    connect(this, &QTabWidget::currentChanged, this, &EditTabWidget::onCurrentChanged);
+    connect(this, &QTabWidget::currentChanged, this, &EditTabWidget::onCurrentTabChanged);
 }
 
 EditTabWidget::~EditTabWidget()
@@ -24,6 +24,8 @@ int EditTabWidget::addTab(EditWidget *swidget)
     QFileInfo info(*(swidget->fileName()));
     int ret = QTabWidget::addTab(swidget, info.baseName());
     setCurrentWidget(swidget);
+    connect(swidget->editVBoxLayout()->abcPlainTextEdit(), &QPlainTextEdit::modificationChanged,
+            this, &EditTabWidget::onCurrentTextModified);
     qDebug() << "addTab: " << (*swidget->fileName());
     return ret;
 }
@@ -66,7 +68,7 @@ void EditTabWidget::askRemoveTab(int index)
     removeTab(index);
 }
 
-void EditTabWidget::onCurrentChanged(int index)
+void EditTabWidget::onCurrentTabChanged(int index)
 {
     if (index < 0)
         return;
@@ -74,4 +76,20 @@ void EditTabWidget::onCurrentChanged(int index)
     EditWidget* w = qobject_cast<EditWidget*>(widget(index));
     qDebug() << "currentTab: " << index << (*w->fileName()) << index;
     w->editVBoxLayout()->onRunClicked();
+}
+
+void EditTabWidget::onCurrentTextModified(bool modified)
+{
+    int ci = currentIndex();
+    QString text = tabText(ci);
+
+    if (modified) {
+        if (!text.endsWith('*'))
+            setTabText(ci, text + "*");
+    } else {
+        if (text.endsWith("*")) {
+            text.chop(1);
+            setTabText(ci, text);
+        }
+    }
 }

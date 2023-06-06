@@ -20,6 +20,7 @@ public:
     void askRemoveTab(int index);
 
 protected slots:
-    void onCurrentChanged(int index);
+    void onCurrentTabChanged(int index);
+    void onCurrentTextModified(bool modified);
 };
 #endif
