@@ -70,6 +70,8 @@ Oheader <- "A:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'A'); }
 	/ "S:" < (!EOL .)+ > { abc_header_append(auxil, $16, 'S'); }
 	/ "T:" < (!EOL .)+ > { abc_header_append(auxil, $17, 'T'); }
 	/ "U:" < (!EOL .)+ > { abc_header_append(auxil, $18, 'U'); }
+	/ "W:" < (!EOL .)+ > { abc_header_append(auxil, $19, 'W'); }
+	/ "Z:" < (!EOL .)+ > { abc_header_append(auxil, $20, 'Z'); }
     / VoiceDef #ignore
 
 VoiceDef <- "V:" (!EOL .)+
