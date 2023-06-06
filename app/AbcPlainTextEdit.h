@@ -84,6 +84,7 @@ private slots:
 private:
     QAbstractItemModel *modelFromFile(const QString &fileName);
     QAbstractItemModel *dictModel; /* normal dictionnary */
+    QAbstractItemModel *psModel;   /* Rendering dictionnary */
     QAbstractItemModel *gmModel;   /* General MIDI dictionary */
 
     QWidget *lineNumberArea;

@@ -9,7 +9,7 @@ PKGCONFIG += fluidsynth drumstick-file
 DEFINES += USE_LIBABCM2PS
 TARGET = redrose
 RESOURCES += resources.qrc
-DISTFILES +=  dict.txt config.h.in
+DISTFILES +=  dict.txt ps.txt gm.txt config.h.in
 SOURCES = ScoreMenu.cpp PreferencesMenu.cpp HelpMenu.cpp AbcPlainTextEdit.cpp PlayPushButton.cpp EditVBoxLayout.cpp EditWidget.cpp EditTabWidget.cpp RunPushButton.cpp AbcMainWindow.cpp AbcApplication.cpp main.cpp \
 	AbcProcess.cpp \
 	AbcTemporaryFile.cpp \

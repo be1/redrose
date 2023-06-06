@@ -1,6 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
    <file>dict.txt</file>
+   <file>ps.txt</file>
    <file>gm.txt</file>
 </qresource>
 </RCC>

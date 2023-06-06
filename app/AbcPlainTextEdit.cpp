@@ -21,6 +21,7 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     lineNumberArea = new LineNumberArea(this);
     highlighter = new AbcHighlighter(this->document());
     dictModel = modelFromFile(":dict.txt");
+    psModel = modelFromFile(":ps.txt");
     gmModel = modelFromFile(":gm.txt");
 
     QCompleter *com = new QCompleter(this);
@@ -76,6 +77,7 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
 AbcPlainTextEdit::~AbcPlainTextEdit()
 {
     delete dictModel;
+    delete psModel;
     delete gmModel;
 }
 
@@ -263,12 +265,13 @@ bool AbcPlainTextEdit::isAccid(QChar car) const
 
 void AbcPlainTextEdit::checkDictionnary(void) {
     QString line = lineUnderCursor();
-    if (c && (c->model() == dictModel) &&
+    if (c && (c->model() != gmModel) &&
             (line.startsWith("%%MIDI program") || line.startsWith("%%MIDI bassprog") || line.startsWith("%%MIDI chordprog"))) {
-
         c->setModel(gmModel);
-    } else if (c && (c->model() == gmModel)) {
-
+    } else if (c && (c->model() != psModel) &&
+               (line.startsWith("%%"))) {
+        c->setModel(psModel);
+    } else if (c && (c->model() != dictModel)) {
         c->setModel(dictModel);
     }
 }
