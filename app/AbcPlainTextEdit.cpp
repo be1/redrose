@@ -13,7 +13,7 @@
 #include "config.h"
 #include "settings.h"
 
-const QString AbcPlainTextEdit::delimiter = "!%~@#$^&*()_+{}|:\"<>?,./;'[]\\-=";
+const QString AbcPlainTextEdit::delimiter = " !%~@#$^&*()_+{}|:\"<>?,./;'[]\\-=";
 
 AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     : QPlainTextEdit(parent),
