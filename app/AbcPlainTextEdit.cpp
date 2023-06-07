@@ -13,6 +13,8 @@
 #include "config.h"
 #include "settings.h"
 
+const QString AbcPlainTextEdit::delimiter = "!%~@#$^&*()_+{}|:\"<>?,./;'[]\\-=";
+
 AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     : QPlainTextEdit(parent),
       saved(false),
@@ -177,7 +179,12 @@ void AbcPlainTextEdit::insertCompletion(const QString &completion)
     tc.insertText(completion.right(extra));
 #else
     /* this for contains mode */
-    tc.select(QTextCursor::WordUnderCursor);
+    while (tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
+        if (delimiter.contains(tc.selectedText().left(1))) {
+            tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+            break;
+        }
+    }
     tc.removeSelectedText();
     tc.insertText(completion);
 #endif
@@ -245,6 +252,19 @@ QString AbcPlainTextEdit::charBeforeCursor(QTextCursor tc) const
         return QString();
 
     tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+    return tc.selectedText();
+}
+
+QString AbcPlainTextEdit::wordBeforeCursor(QTextCursor tc) const
+{
+    /* start of word delimiter */
+    while (tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
+        if (delimiter.contains(tc.selectedText().left(1))) {
+            tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+            break;
+        }
+    }
+
     return tc.selectedText();
 }
 
@@ -457,6 +477,7 @@ void AbcPlainTextEdit::focusInEvent(QFocusEvent *e)
 
 void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
 {
+    /* bad hack to play octavied input note */
     if (autoplay && (e->key() == ',' || e->key() == '\'')) {
         QPlainTextEdit::keyPressEvent(e);
 
@@ -476,6 +497,7 @@ void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
         return;
     }
 
+    /* completions stuff */
     if (c && c->popup()->isVisible()) {
         // The following keys are forwarded by the completer to the widget
        switch (e->key()) {
@@ -503,15 +525,14 @@ void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
     if (!c || (ctrlOrShift && e->text().isEmpty()))
         return;
 
-    static QString eow("!%~@#$^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
     const bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
-    QString completionPrefix = textUnderCursor();
+    QString completionPrefix = wordBeforeCursor(textCursor());
 
     /* no shortcut pressed, or a modifier-only key is pressed,
      * or the word typed is too short, or it is a complete word:
      * then unshow popup if needed and return */
     if (!isShortcut && (hasModifier || e->text().isEmpty() || completionPrefix.length() < 2
-                      || eow.contains(e->text().right(1)))) {
+                      || delimiter.contains(e->text().right(1)))) {
         c->popup()->hide();
         return;
     }

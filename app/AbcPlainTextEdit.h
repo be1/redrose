@@ -86,6 +86,7 @@ private:
     QAbstractItemModel *dictModel; /* normal dictionnary */
     QAbstractItemModel *psModel;   /* Rendering dictionnary */
     QAbstractItemModel *gmModel;   /* General MIDI dictionary */
+    static const QString delimiter;
 
     QWidget *lineNumberArea;
     AbcHighlighter *highlighter;
@@ -94,6 +95,7 @@ private:
     QString lineUnderCursor() const;
     QString noteUnderCursor(QTextCursor tc) const;
     QString charBeforeCursor(QTextCursor tc) const;
+    QString wordBeforeCursor(QTextCursor tc) const;
     bool isRest(QChar car) const;
     bool isPitch(QChar car) const;
     bool isAccid(QChar car) const;
