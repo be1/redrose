@@ -133,13 +133,14 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
 }
 
 void AbcSmf::onSMFWriteTempoTrack(void) {
+    qDebug() << "tempo track?";
 }
 
 void AbcSmf::onSMFWriteTrack(int track) {
     int sluring = 0;
     int chan = track;
-    long mspqn = 60000 / tempo;
-    writeTempo(0, mspqn);
+    //long mspqn = 60000 / tempo;
+    //writeTempo(0, mspqn);
     writeBpmTempo(0, tempo);
     writeKeySignature(0, mks, mode);
 
