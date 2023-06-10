@@ -86,7 +86,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
         ditems << driver.toString();
     }
 
-    ditems << DRIVER_ALSA << DRIVER_PULSEAUDIO << DRIVER_JACK << DRIVER_PORTAUDIO;
+    ditems << DRIVER_ALSA << DRIVER_OSS << DRIVER_PULSEAUDIO << DRIVER_JACK;
     ditems.removeDuplicates();
 
     driverComboBox->addItems(ditems);

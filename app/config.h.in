@@ -29,7 +29,7 @@
 #define DRIVER_ALSA	\"alsa\"
 #define DRIVER_PULSEAUDIO	\"pulseaudio\"
 #define DRIVER_JACK	\"jack\"
-#define DRIVER_PORTAUDIO	\"portaudio\"
+#define DRIVER_OSS	\"oss\"
 
 #define EDITOR_FONT_RANGE \"ABC/editor/font_range\"
 #define EDITOR_HIGHLIGHT \"ABC/editor/highlight\"
