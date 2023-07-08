@@ -179,8 +179,9 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
 
 void AbcSynth::stop()
 {
-   if (player && player->isRunning())
-       player->abort();
+    fluid_synth_all_notes_off(fluid_synth, -1);
+    if (player && player->isRunning())
+        player->abort();
 }
 
 bool AbcSynth::isLoading()
