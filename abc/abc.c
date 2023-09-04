@@ -979,6 +979,7 @@ void abc_change_append(struct abc* yy, const char* yytext)
     new->text = strdup(yytext);
     new->ev.start_den = 1;
     if (new->text[0] == 'K') {
+    free (cur_voice->ks);
         cur_voice->ks = strdup(&new->text[2]);
         new->ev.type = EV_KEYSIG;
         int mode;
@@ -989,11 +990,13 @@ void abc_change_append(struct abc* yy, const char* yytext)
         new->ev.value = abc_tempo(&new->text[2]);
     } else if (new->text[0] == 'M') {
         new->ev.type = EV_METRIC;
+        free (cur_voice->mm);
         cur_voice->mm = strdup(&new->text[2]);
         if (2 != sscanf(cur_voice->mm, "%d/%d", &new->ev.key, &new->ev.value))
             new->ev.key = 4, new->ev.value = 4;
     } else if (new->text[0] == 'L') {
         new->ev.type = EV_UNIT;
+        free (cur_voice->ul);
         cur_voice->ul = strdup(&new->text[2]);
         if (2 != sscanf(cur_voice->ul, "%d/%d", &new->ev.key, &new->ev.value))
             new->ev.key = 1, new->ev.value = 8;
