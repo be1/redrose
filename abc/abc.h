@@ -24,10 +24,9 @@ struct abc {
 	int error;
 	int error_line;
 	int error_char;
-    char* ks; /* current key signature */
-    char* ul;  /* current unit length */
-    char* mm;  /* current measure metric */
-    int measure_accid['h']; /* 'g' + 1 */
+    char* ks; /* first key signature */
+    char* ul;  /* first unit length */
+    char* mm;  /* first measure metric */
 };
 
 struct abc_header {
@@ -47,7 +46,11 @@ struct abc_voice {
 	char* v;
 	struct abc_symbol* first;
 	struct abc_symbol* last;
-	int in_alt;
+    int in_alt;
+    int measure_accid['h']; /* 'g' + 1 */
+    char* ks; /* current key signature */
+    char* ul;  /* current unit length */
+    char* mm;  /* current measure metric */
 };
 
 enum abc_event_type { EV_NOTE, EV_KEYSIG, EV_TEMPO, EV_METRIC, EV_UNIT };

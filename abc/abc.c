@@ -477,6 +477,9 @@ void abc_voice_append(struct abc* yy, const char* yytext)
 {
     struct abc_voice* new = calloc(1, sizeof (struct abc_voice));
     new->v = strdup(yytext);
+    new->ks = strdup(yy->ks);
+    new->ul = strdup(yy->ul);
+    new->mm = strdup(yy->mm);
 
     struct abc_tune* tune = yy->tunes[yy->count-1];
     tune->voices = realloc(tune->voices, sizeof (struct abc_voice*) * (tune->count + 1));
@@ -603,15 +606,18 @@ void abc_space_append(struct abc* yy, const char* yytext)
 void abc_note_append(struct abc* yy, const char* yytext)
 {
     struct abc_symbol* new = abc_new_symbol(yy);
+    struct abc_tune* cur_tune = yy->tunes[yy->count-1];
+    struct abc_voice* cur_voice = cur_tune->voices[cur_tune->count-1];
 
     new->kind = ABC_NOTE;
     new->dur_num = 1;
     new->dur_den = 1;
     new->text = strdup(yytext);
-    new->ev.key = note2key(yy->ks, new->text, yy->measure_accid);
+
+    new->ev.key = note2key(cur_voice->ks, new->text, cur_voice->measure_accid);
     if (new->text[0] == 'Z') {
         /* fix numerator */
-        new->dur_num = abc_unit_per_measure(yy->ul, yy->mm);
+        new->dur_num = abc_unit_per_measure(cur_voice->ul, cur_voice->mm);
     }
 }
 
@@ -884,9 +890,12 @@ int abc_is_repeat(const struct abc_symbol* s) {
 void abc_bar_append(struct abc* yy, const char* yytext)
 {
     struct abc_symbol* new = abc_new_symbol(yy);
+    struct abc_tune* cur_tune = yy->tunes[yy->count-1];
+    struct abc_voice* cur_voice = cur_tune->voices[cur_tune->count-1];
+
     new->kind = ABC_BAR;
     new->text = strdup(yytext);
-    memset(yy->measure_accid, 0, sizeof(yy->measure_accid));
+    memset(cur_voice->measure_accid, 0, sizeof(cur_voice->measure_accid));
 
     struct abc_tune* t = yy->tunes[yy->count-1];
     struct abc_voice* v = t->voices[t->count-1];
@@ -963,27 +972,30 @@ void abc_delete_symbols(struct abc_symbol* s) {
 void abc_change_append(struct abc* yy, const char* yytext)
 {
     struct abc_symbol* new = abc_new_symbol(yy);
+    struct abc_tune* cur_tune = yy->tunes[yy->count-1];
+    struct abc_voice* cur_voice = cur_tune->voices[cur_tune->count-1];
+
     new->kind = ABC_CHANGE;
     new->text = strdup(yytext);
     new->ev.start_den = 1;
     if (new->text[0] == 'K') {
-        yy->ks = &new->text[2];
+        cur_voice->ks = strdup(&new->text[2]);
         new->ev.type = EV_KEYSIG;
         int mode;
-        new->ev.key = smf_key_signature(yy->ks, &mode);
+        new->ev.key = smf_key_signature(cur_voice->ks, &mode);
         new->ev.value = mode;
     } else if (new->text[0] == 'Q') {
         new->ev.type = EV_TEMPO;
         new->ev.value = abc_tempo(&new->text[2]);
     } else if (new->text[0] == 'M') {
         new->ev.type = EV_METRIC;
-        yy->mm = &new->text[2];
-        if (2 != sscanf(yy->mm, "%d/%d", &new->ev.key, &new->ev.value))
+        cur_voice->mm = strdup(&new->text[2]);
+        if (2 != sscanf(cur_voice->mm, "%d/%d", &new->ev.key, &new->ev.value))
             new->ev.key = 4, new->ev.value = 4;
     } else if (new->text[0] == 'L') {
         new->ev.type = EV_UNIT;
-        yy->ul = &new->text[2];
-        if (2 != sscanf(yy->ul, "%d/%d", &new->ev.key, &new->ev.value))
+        cur_voice->ul = strdup(&new->text[2]);
+        if (2 != sscanf(cur_voice->ul, "%d/%d", &new->ev.key, &new->ev.value))
             new->ev.key = 1, new->ev.value = 8;
     }
 }
@@ -2138,6 +2150,9 @@ void abc_release_voice(struct abc_voice* v) {
     }
 
     free(v->v);
+    free(v->ks);
+    free(v->ul);
+    free(v->mm);
     free(v);
 }
 
