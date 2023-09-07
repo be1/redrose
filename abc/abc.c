@@ -321,6 +321,8 @@ unsigned char pitch_diff_0x3c(const char* ks, int note) {
     return _pitch_diff_CMaj_0x3c[note];
 }
 
+#define ACCID_NATURAL 0xff
+
 /* converts a note text to a MIDI key */
 unsigned char note2key(const char* keysig, const char* note, int* measure_accid) {
     int octava = 0;
@@ -330,8 +332,6 @@ unsigned char note2key(const char* keysig, const char* note, int* measure_accid)
         else if (*c == '\'')
             octava++;
     }
-
-#define ACCID_NATURAL 0xff
 
     int accid = 0;
     for (const char* c = note; *c && !isalpha(*c); c++) {
@@ -350,19 +350,26 @@ unsigned char note2key(const char* keysig, const char* note, int* measure_accid)
 
     if ((*c >= 'A' && *c <= 'G') || (*c >= 'a' && *c <= 'g')) {
         if (accid) {
+            /* FIXME: don't set accid if it is redundnat with keysig */
             measure_accid[(int)tolower(*c)] = accid;
             measure_accid[(int)toupper(*c)] = accid;
         }
 
-        if (accid == ACCID_NATURAL)
+        if (accid == ACCID_NATURAL) {
             pitch = pitch_diff_0x3c("Cmaj", *c) + 0 + (octava * 12);
-        else if (!accid) {
-            if (measure_accid[(int)*c] == ACCID_NATURAL)
+        } else if (!accid) { /* no explicit acid */
+            /* test if measure_accid was set */
+            if (measure_accid[(int)*c] == ACCID_NATURAL) {
                 pitch = pitch_diff_0x3c("Cmaj", *c) + 0 + (octava * 12);
-            else
-                pitch = pitch_diff_0x3c(keysig, *c) + measure_accid[(int)*c] + (octava * 12);
-        } else
+            } else if (measure_accid[(int)*c] != 0) {
+                pitch = pitch_diff_0x3c("Cmaj", *c) + measure_accid[(int)*c] + (octava * 12);
+            } else {
+                /* no explicit accid, and no measure_accid: use keysig accids */
+                pitch = pitch_diff_0x3c(keysig, *c) + (octava * 12);
+            }
+        } else {
             pitch = pitch_diff_0x3c("Cmaj", *c) + accid + (octava * 12);
+        }
 
         pitch += 0x3c; /* MIDI key for C */
     }
