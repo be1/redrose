@@ -174,12 +174,13 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
     //qDebug() << "Firing: " << chan << pgm << key << vel;
     fluid_synth_program_change(fluid_synth, chan, pgm);
     fluid_synth_noteon(fluid_synth, chan, key, vel);
-    QTimer::singleShot(500, [this, chan, key] () { fluid_synth_noteoff(fluid_synth, chan, key); });
+    QTimer::singleShot(500, this, [this, chan, key] () { fluid_synth_noteoff(fluid_synth, chan, key); });
 }
 
 void AbcSynth::stop()
 {
     fluid_synth_all_notes_off(fluid_synth, -1);
+    fluid_synth_all_sounds_off(fluid_synth, -1);
     if (player && player->isRunning())
         player->abort();
 }
