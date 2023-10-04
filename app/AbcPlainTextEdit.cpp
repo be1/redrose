@@ -124,32 +124,20 @@ void AbcPlainTextEdit::contextMenuEvent(QContextMenuEvent *e)
 
 void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
 {
-    /* note appears if cursor is just after the pitch */
     QString note = playableNoteUnderCusror(textCursor());
     if (note.isEmpty())
         return QPlainTextEdit::mouseDoubleClickEvent(e);
 
-    /* select left part */
+    QTextDocument* doc = document();
     QTextCursor tc = textCursor();
-    tc.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2);
-    tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1);
-    /* check accidental */
-    if (!isAccid(tc.selectedText().at(0))) {
-        tc.clearSelection();
-    }
 
-    /* select pitch */
-    tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+    /* select left part: star of measure */
+    QTextCursor lbar = doc->find(QRegularExpression(QStringLiteral("(\\||^)")), tc, QTextDocument::FindBackward);
+    tc.setPosition(lbar.position());
 
-    /* select right part */
-    while (tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, 1)) {
-        QString oct = tc.selectedText();
-        QChar last = oct.at(oct.size() -1);
-        if (last != ',' && last != '\'') {
-            tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
-            break;
-        }
-    }
+    /* select right part: until end of measure */
+    QTextCursor rbar = doc->find(QRegularExpression(QStringLiteral("(\\||$)")), tc);
+    tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, rbar.position() - tc.position());
 
     setTextCursor(tc);
     e->accept();
@@ -637,7 +625,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
     QColor color = settings.value(EDITOR_BAR_COLOR).toString();
     barFormat.setFontWeight(QFont::Bold);
     barFormat.setForeground(color);
-    rule.pattern = QRegularExpression(QStringLiteral("(::|[:\\|\\[]?\\|[:\\|\\]]?)"));
+    rule.pattern = QRegularExpression(QStringLiteral("(:\\|*:|[:\\|\\[]?\\|[:\\|\\]]?)"));
     rule.format = barFormat;
     highlightingRules.append(rule);
 
