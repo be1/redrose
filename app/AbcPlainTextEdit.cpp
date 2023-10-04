@@ -135,6 +135,9 @@ void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
     QTextCursor rbar = doc->find(QRegularExpression(QStringLiteral("(\\||$)")), tc);
     tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, rbar.position() - tc.position());
 
+    if (tc.selectedText().isEmpty())
+        return QPlainTextEdit::mouseDoubleClickEvent(e);
+
     setTextCursor(tc);
     e->accept();
 }
