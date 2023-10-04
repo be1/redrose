@@ -124,14 +124,10 @@ void AbcPlainTextEdit::contextMenuEvent(QContextMenuEvent *e)
 
 void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
 {
-    QString note = playableNoteUnderCusror(textCursor());
-    if (note.isEmpty())
-        return QPlainTextEdit::mouseDoubleClickEvent(e);
-
     QTextDocument* doc = document();
     QTextCursor tc = textCursor();
 
-    /* select left part: star of measure */
+    /* postion at start of measure */
     QTextCursor lbar = doc->find(QRegularExpression(QStringLiteral("(\\||^)")), tc, QTextDocument::FindBackward);
     tc.setPosition(lbar.position());
 
