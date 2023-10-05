@@ -67,7 +67,7 @@ protected slots:
     void onGeneratePSFinished(int exitCode, const QString& errstr, int cont);
     void onGenerateMIDIFinished(int exitCode, const QString& errstr, int cont);
     void onSynthInited(bool err);
-    void onSynthFinished(int ret);
+    void onSynthFinished(bool err);
 
 private:
 	AbcPlainTextEdit abcplaintextedit;
@@ -87,5 +87,6 @@ private:
     PsGenerator psgen;
     SvgGenerator svggen;
     MidiGenerator midigen;
+    static const QRegularExpression m_abcext;
 };
 #endif

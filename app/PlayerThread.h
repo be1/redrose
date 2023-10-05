@@ -12,7 +12,7 @@ public:
     explicit PlayerThread(fluid_synth_t* synth, QObject *parent = nullptr);
     ~PlayerThread();
     void abort();
-    int status();
+    bool err();
     int addMIDIFile(const QString& filename);
     int addMIDIBuffer(const QByteArray& buf);
 
@@ -21,7 +21,7 @@ protected:
 
 private:
     fluid_player_t *fluid_player = nullptr;
-    int ret;
+    bool m_err;
 };
 
 #endif // PLAYERTHREAD_H

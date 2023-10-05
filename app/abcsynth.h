@@ -33,7 +33,7 @@ private:
     fluid_settings_t* fluid_settings;
     fluid_synth_t* fluid_synth;
     fluid_audio_driver_t* fluid_adriver;
-    PlayerThread *player;
+    PlayerThread *player_thread;
     SFLoader *sfloader;
     QString curSFont;
     int sfid;

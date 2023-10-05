@@ -18,6 +18,8 @@
 #include "../abcm2ps/abcm2ps.h"
 #endif
 
+const QRegularExpression EditVBoxLayout::m_abcext(QStringLiteral("\\.abc$"));
+
 EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 	: QVBoxLayout(parent),
     fileName(fileName),
@@ -99,7 +101,7 @@ void EditVBoxLayout::removeMIDIFile() {
     /* cleanup files manually */
     QString temp(tempFile.fileName());
     qDebug() << "cleaning MIDI for" << temp;
-    temp.replace(QRegularExpression("\\.abc$"), QString::number(xspinbox.value())  + ".mid");
+    temp.replace(m_abcext, QString::number(xspinbox.value())  + ".mid");
     if (QFileInfo::exists(temp))
         QFile::remove(temp);
 }
@@ -109,7 +111,7 @@ void EditVBoxLayout::removeSvgFiles() {
     qDebug() << "cleaning SVG for" << temp;
     for (int i = 1; i < 999; i++) {
         temp = tempFile.fileName();
-        temp.replace(QRegularExpression("\\.abc$"), QString::asprintf("%03d.svg", i));
+        temp.replace(m_abcext, QString::asprintf("%03d.svg", i));
         if (!QFileInfo::exists(temp))
             break;
         QFile::remove(temp);
@@ -197,7 +199,7 @@ QString EditVBoxLayout::constructHeaders() {
     for (int l = 0; l < lines.count() && i < selectionIndex; l++) {
         i += lines.at(l).count() +1; /* count \n */
         if (lines.at(l).startsWith("X:")) {
-            xspinbox.setValue(lines.at(l).right(1).toInt());
+            xspinbox.setValue(lines.at(l).rightRef(1).toInt());
             xl = l;
             /* don't break on first X: continue until selectionIndex */
         }
@@ -246,7 +248,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
 
         if (filename.isEmpty()) {
             filename = tempFile.fileName();
-            filename.replace(QRegularExpression("\\.abc$"), QString::number(xspinbox.value()) + ".mid");
+            filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
         }
 
         midigen.generate(ba, tempFile.fileName(), xspinbox.value(), filename, cont);
@@ -296,23 +298,23 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
 
             /* midi file can change from tune (xspinbox) index */
             QString midifile(tempFile.fileName());
-            midifile.replace(QRegularExpression("\\.abc$"), QString::number(xspinbox.value())  + ".mid");
+            midifile.replace(m_abcext, QString::number(xspinbox.value())  + ".mid");
             synth->play(midifile);
         }
     }
 }
 
-void EditVBoxLayout::onSynthFinished(int ret)
+void EditVBoxLayout::onSynthFinished(bool err)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
-    if (ret)
+    if (err)
         a->mainWindow()->statusBar()->showMessage(tr("Synthesis error."));
     else
         a->mainWindow()->statusBar()->showMessage(tr("Synthesis finished."));
 
     int x = xspinbox.value();
     QString midi (tempFile.fileName());
-    midi.replace(QRegularExpression("\\.abc$"), QString::number(x) + ".mid");
+    midi.replace(m_abcext, QString::number(x) + ".mid");
     QFile::remove(midi);
 
     playpushbutton.flip();
@@ -322,6 +324,7 @@ void EditVBoxLayout::onSynthFinished(int ret)
 void EditVBoxLayout::onRunClicked()
 {
     runpushbutton.setEnabled(false);
+
     /* do not disable/enable xspinbox because Play manages it for audio rendering! */
 
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
@@ -352,7 +355,7 @@ int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
     for (int l = 0; l < lines.count() && i < index; l++) {
         i += lines.at(l).count() +1; /* count \n */
         if (lines.at(l).startsWith("X:")) {
-            x = lines.at(l).right(1).toInt();
+            x = lines.at(l).rightRef(1).toInt();
         }
     }
 

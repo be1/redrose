@@ -2,7 +2,7 @@
 
 PlayerThread::PlayerThread(fluid_synth_t* synth, QObject *parent)
     : QThread(parent),
-      ret(0)
+      m_err(false)
 {
     fluid_player = new_fluid_player(synth);
 }
@@ -10,28 +10,24 @@ PlayerThread::PlayerThread(fluid_synth_t* synth, QObject *parent)
 PlayerThread::~PlayerThread()
 {
     abort();
+    delete_fluid_player(fluid_player);
 }
 
 void PlayerThread::abort()
 {
-    if (fluid_player)
+    if (fluid_player && fluid_player_get_status(fluid_player) == FLUID_PLAYER_PLAYING)
         fluid_player_stop(fluid_player);
 }
 
-int PlayerThread::status()
+bool PlayerThread::err()
 {
-    if (fluid_player)
-        return fluid_player_get_status(fluid_player);
-    return ret;
+    return m_err;
 }
 
 int PlayerThread::addMIDIFile(const QString &filename)
 {
     QByteArray ba = filename.toUtf8();
-    char f[ba.size() + 1];
-    memcpy(f, ba.constData(), ba.size());
-    f[ba.size()] = '\0';
-    return fluid_player_add(fluid_player, f);
+    return fluid_player_add(fluid_player, ba.constData());
 }
 
 int PlayerThread::addMIDIBuffer(const QByteArray &buf)
@@ -41,11 +37,9 @@ int PlayerThread::addMIDIBuffer(const QByteArray &buf)
 
 void PlayerThread::run()
 {
-    ret = 0;
+    m_err = 0;
     if (fluid_player) {
         fluid_player_play(fluid_player);
-        ret = fluid_player_join(fluid_player);
-        delete_fluid_player(fluid_player);
-        fluid_player = nullptr;
+        m_err = fluid_player_join(fluid_player);
     }
 }
