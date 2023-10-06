@@ -12,14 +12,15 @@ class AbcSynth: public QObject
 public:
     explicit AbcSynth(const QString& name, QObject* parent = nullptr);
     ~AbcSynth();
-    void abort(void);
+    void abortPlay(void);
+    void abortSFLoad(void);
     void play(const QString& midifile);
     void play(const QByteArray& ba);
     void fire(int chan, int pgm, int key, int vel);
     void stop(void);
     bool isLoading(void);
     bool isPlaying(void);
-    void waitFinish(void);
+    void waitPlayer(void);
 
 signals:
     void initFinished(bool err);

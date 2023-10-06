@@ -69,11 +69,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 
 EditVBoxLayout::~EditVBoxLayout()
 {
-    /* stop synthesis */
-    if (synth && synth->isPlaying()) {
-        synth->stop();
-        synth->waitFinish();
-    }
+    finalize();
 
     delete synth;
 
@@ -148,9 +144,9 @@ void EditVBoxLayout::cleanupProcesses()
 void EditVBoxLayout::cleanupThreads()
 {
     if (synth->isLoading())
-        synth->abort();
+        synth->abortSFLoad();
     else if (synth->isPlaying())
-        synth->stop();
+        synth->abortPlay();
 }
 
 void EditVBoxLayout::onXChanged(int value)
@@ -294,7 +290,7 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
         a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
         if (cont) {
             if (synth->isPlaying())
-                synth->waitFinish();
+                synth->waitPlayer();
 
             /* midi file can change from tune (xspinbox) index */
             QString midifile(tempFile.fileName());

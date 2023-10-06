@@ -9,11 +9,11 @@ PlayerThread::PlayerThread(fluid_synth_t* synth, QObject *parent)
 
 PlayerThread::~PlayerThread()
 {
-    abort();
+    stop();
     delete_fluid_player(fluid_player);
 }
 
-void PlayerThread::abort()
+void PlayerThread::stop()
 {
     if (fluid_player && fluid_player_get_status(fluid_player) == FLUID_PLAYER_PLAYING)
         fluid_player_stop(fluid_player);
@@ -37,9 +37,9 @@ int PlayerThread::addMIDIBuffer(const QByteArray &buf)
 
 void PlayerThread::run()
 {
-    m_err = 0;
+    m_err = false;
     if (fluid_player) {
-        fluid_player_play(fluid_player);
-        m_err = fluid_player_join(fluid_player);
+        m_err = fluid_player_play(fluid_player);
+        fluid_player_join(fluid_player);
     }
 }

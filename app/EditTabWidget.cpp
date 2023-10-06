@@ -39,10 +39,7 @@ void EditTabWidget::removeTab(int index)
     m->mainHSplitter()->viewWidget()->cleanup();
     m->mainHSplitter()->viewWidget()->svgWidget()->load(QString()); /* the only way to clear view */
 
-    /* stop synthesis from left pane */
     EditWidget *w = qobject_cast<EditWidget*>(widget(index));
-    w->editVBoxLayout()->finalize();
-
     QTabWidget::removeTab(index);
     delete w;
 }

@@ -69,11 +69,10 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
 AbcSynth::~AbcSynth()
 {
-    if (isPlaying()) {
-        stop();
-        waitFinish();
-    }
+    abortPlay();
+    abortSFLoad();
 
+    delete sfloader;
     delete player_thread;
     delete_fluid_audio_driver(fluid_adriver);
     delete_fluid_synth(fluid_synth);
@@ -83,19 +82,22 @@ AbcSynth::~AbcSynth()
     free(sf);
 }
 
-void AbcSynth::abort()
+void AbcSynth::abortPlay()
 {
     if (isPlaying()) {
+        disconnect(player_thread, &PlayerThread::finished, this, &AbcSynth::onPlayFinished);
         stop();
-        waitFinish();
+        player_thread->wait();
+    }
+}
+
+void AbcSynth::abortSFLoad()
+{
+    if (sfloader && sfloader->isRunning()) {
+        disconnect(sfloader, &SFLoader::finished, this, &AbcSynth::onSFontFinished);
+        sfloader->wait();
     }
 
-    if (sfloader && sfloader->isRunning())
-        sfloader->terminate();
-
-    if (sfloader)
-        sfloader->deleteLater();
-    sfloader = nullptr;
     inited = false;
 }
 
@@ -114,6 +116,9 @@ void AbcSynth::onSFontFinished() {
         inited = true;
         emit initFinished(false);
     }
+
+    delete sfloader;
+    sfloader = nullptr;
 }
 
 
@@ -175,7 +180,7 @@ void AbcSynth::stop()
     fluid_synth_all_notes_off(fluid_synth, -1);
     fluid_synth_all_sounds_off(fluid_synth, -1);
     if (player_thread && player_thread->isRunning())
-        player_thread->abort();
+        player_thread->stop();
 }
 
 bool AbcSynth::isLoading()
@@ -191,7 +196,7 @@ bool AbcSynth::isPlaying()
         return false;
 }
 
-void AbcSynth::waitFinish()
+void AbcSynth::waitPlayer()
 {
     if (player_thread) {
         player_thread->wait();
@@ -204,7 +209,6 @@ void AbcSynth::onPlayFinished()
 
     PlayerThread* pt = static_cast<PlayerThread*>(sender());
     bool err = pt->err();
-    waitFinish();
 
     pt->deleteLater();
     emit synthFinished(err);
