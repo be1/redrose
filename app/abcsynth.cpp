@@ -106,16 +106,18 @@ void AbcSynth::monitorPlayback()
             break;
         case FLUID_PLAYER_DONE:
         default:
-            mon->stop();
-            m_secs = 1;
             /* cleanup and trigger synthFinished */
             stop();
+            mon->stop();
             a->mainWindow()->statusBar()->showMessage(tr("Done."));
+            emit synthFinished(m_err);
             break;
         }
     } else {
+        /* stopped before ending: player has been freed and nulled */
         mon->stop();
-        m_secs = 1;
+        a->mainWindow()->statusBar()->showMessage(tr("Done."));
+        emit synthFinished(m_err);
     }
 }
 
@@ -208,6 +210,7 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
 
 void AbcSynth::stop()
 {
+    m_secs = 1;
     fluid_synth_all_notes_off(fluid_synth, -1);
     if (fluid_player) {
         fluid_player_stop(fluid_player);
@@ -215,7 +218,6 @@ void AbcSynth::stop()
         fluid_synth_all_sounds_off(fluid_synth, -1);
         delete_fluid_player(fluid_player);
         fluid_player = NULL;
-        emit synthFinished(m_err);
     }
 }
 
