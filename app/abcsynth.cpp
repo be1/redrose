@@ -127,7 +127,11 @@ void AbcSynth::play(const QString& midifile) {
 
     if (isPlaying()) {
         qDebug() << "Synth is playing. Stopping it.";
+        disconnect(player_thread, &QThread::finished, this, &AbcSynth::onPlayFinished);
         stop();
+        waitPlayer();
+        delete player_thread;
+        player_thread = nullptr;
     }
 
     player_thread = new PlayerThread(fluid_synth, this);
@@ -179,8 +183,15 @@ void AbcSynth::stop()
 {
     fluid_synth_all_notes_off(fluid_synth, -1);
     fluid_synth_all_sounds_off(fluid_synth, -1);
-    if (player_thread && player_thread->isRunning())
+    if (player_thread && player_thread->isRunning()) {
+        disconnect(player_thread, &QThread::finished, this, &AbcSynth::onPlayFinished);
         player_thread->stop();
+        waitPlayer();
+        bool err = player_thread->err();
+        delete player_thread;
+        player_thread = nullptr;
+        emit synthFinished(err);
+    }
 }
 
 bool AbcSynth::isLoading()
@@ -205,11 +216,8 @@ void AbcSynth::waitPlayer()
 
 void AbcSynth::onPlayFinished()
 {
+    bool err = player_thread->err();
+    delete player_thread;
     player_thread = nullptr;
-
-    PlayerThread* pt = static_cast<PlayerThread*>(sender());
-    bool err = pt->err();
-
-    pt->deleteLater();
     emit synthFinished(err);
 }
