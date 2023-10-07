@@ -20,7 +20,8 @@ protected:
     void run() override;
 
 private:
-    fluid_player_t *fluid_player = nullptr;
+    fluid_player_t *fluid_player;
+    fluid_synth_t *fluid_synth;
     bool m_err;
 };
 
