@@ -10,13 +10,15 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
       fluid_settings(nullptr),
       fluid_synth(nullptr),
       fluid_adriver(nullptr),
-      player_thread(nullptr),
+      fluid_player(nullptr),
       sfloader(nullptr),
       sfid(0),
       id(NULL),
       drv(NULL),
       sf(NULL),
-      inited(false)
+      inited(false),
+      m_err(false),
+      m_secs(1)
 {
     Settings settings;
 
@@ -65,6 +67,9 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     connect(sfloader, &SFLoader::finished, this, &AbcSynth::onSFontFinished);
     a->mainWindow()->statusBar()->showMessage(tr("Loading sound font: ") + sf);
     sfloader->start();
+
+    playback_monitor.setInterval(1000);
+    connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
 }
 
 AbcSynth::~AbcSynth()
@@ -73,13 +78,45 @@ AbcSynth::~AbcSynth()
     abortSFLoad();
 
     delete sfloader;
-    delete player_thread;
     delete_fluid_audio_driver(fluid_adriver);
+    delete_fluid_player(fluid_player);
     delete_fluid_synth(fluid_synth);
     delete_fluid_settings(fluid_settings);
     free(id);
     free(drv);
     free(sf);
+}
+
+void AbcSynth::monitorPlayback()
+{
+    QTimer* mon = qobject_cast<QTimer*>(sender());
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+
+    if (fluid_player) {
+        switch (fluid_player_get_status(fluid_player)) {
+        case FLUID_PLAYER_READY:
+            a->mainWindow()->statusBar()->showMessage(tr("Ready."));
+            break;
+        case FLUID_PLAYER_PLAYING:
+            a->mainWindow()->statusBar()->showMessage(tr("Playing ") + QString::number(m_secs) + "s.");
+            m_secs++;
+            break;
+        case FLUID_PLAYER_STOPPING:
+            a->mainWindow()->statusBar()->showMessage(tr("Stopping."));
+            break;
+        case FLUID_PLAYER_DONE:
+        default:
+            mon->stop();
+            m_secs = 1;
+            /* cleanup and trigger synthFinished */
+            stop();
+            a->mainWindow()->statusBar()->showMessage(tr("Done."));
+            break;
+        }
+    } else {
+        mon->stop();
+        m_secs = 1;
+    }
 }
 
 void AbcSynth::abortPlay()
@@ -128,11 +165,10 @@ void AbcSynth::play(const QString& midifile) {
         stop();
     }
 
-    player_thread = new PlayerThread(fluid_synth, this);
-    connect(player_thread, &PlayerThread::finished, this, &AbcSynth::onPlayFinished);
+    fluid_player = new_fluid_player(fluid_synth);
 
     qDebug() << "Loading " << midifile;
-    if (FLUID_FAILED == player_thread->addMIDIFile(midifile)) {
+    if (FLUID_FAILED == fluid_player_add(fluid_player, midifile.toUtf8().constData())) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load MIDI file: ") + midifile);
         qWarning() << "Cannot load MIDI file: " << midifile;
     } else {
@@ -140,11 +176,8 @@ void AbcSynth::play(const QString& midifile) {
 
         a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
 
-        player_thread->start();
-
-        if (player_thread->err()) {
-            a->mainWindow()->statusBar()->showMessage(tr("Synthesis error."));
-        }
+        m_err = fluid_player_play(fluid_player);
+        playback_monitor.start();
     }
 }
 
@@ -155,13 +188,13 @@ void AbcSynth::play(const QByteArray& ba)
         stop();
     }
 
-    player_thread = new PlayerThread(fluid_synth, this);
-    connect(player_thread, &PlayerThread::finished, this, &AbcSynth::onPlayFinished);
+    fluid_player = new_fluid_player(fluid_synth);
 
-    if (FLUID_FAILED == player_thread->addMIDIBuffer(ba)) {
+    if (FLUID_FAILED == fluid_player_add_mem(fluid_player, ba.constData(), ba.size())) {
         qWarning() << "Cannot load MIDI buffer." ;
     } else {
-        player_thread->start();
+        m_err = fluid_player_play(fluid_player);
+        playback_monitor.start();
     }
 }
 
@@ -176,14 +209,13 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
 void AbcSynth::stop()
 {
     fluid_synth_all_notes_off(fluid_synth, -1);
-    if (player_thread && player_thread->isRunning()) {
-        disconnect(player_thread, &QThread::finished, this, &AbcSynth::onPlayFinished);
-        player_thread->stop();
-        player_thread->wait();
-        bool err = player_thread->err();
-        delete player_thread;
-        player_thread = nullptr;
-        emit synthFinished(err);
+    if (fluid_player) {
+        fluid_player_stop(fluid_player);
+        fluid_player_join(fluid_player);
+        fluid_synth_all_sounds_off(fluid_synth, -1);
+        delete_fluid_player(fluid_player);
+        fluid_player = NULL;
+        emit synthFinished(m_err);
     }
 }
 
@@ -194,16 +226,8 @@ bool AbcSynth::isLoading()
 
 bool AbcSynth::isPlaying()
 {
-    if (player_thread)
-        return player_thread->isRunning();
+    if (fluid_player)
+        return fluid_player_get_status(fluid_player) == FLUID_PLAYER_PLAYING;
     else
         return false;
-}
-
-void AbcSynth::onPlayFinished()
-{
-    bool err = player_thread->err();
-    delete player_thread;
-    player_thread = nullptr;
-    emit synthFinished(err);
 }

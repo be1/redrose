@@ -14,7 +14,6 @@ SOURCES = ScoreMenu.cpp PreferencesMenu.cpp HelpMenu.cpp AbcPlainTextEdit.cpp Pl
 	AbcProcess.cpp \
 	AbcTemporaryFile.cpp \
 	MainHSplitter.cpp \
-	PlayerThread.cpp \
 	ScoreSvgWidget.cpp \
 	ViewVSplitter.cpp \
 	abcsmf.cpp \
@@ -32,7 +31,6 @@ HEADERS = ScoreMenu.h PreferencesMenu.h HelpMenu.h AbcPlainTextEdit.h PlayPushBu
 	AbcProcess.h \
 	AbcTemporaryFile.h \
 	MainHSplitter.h \
-	PlayerThread.h \
 	ScoreSvgWidget.h \
 	ViewVSplitter.h \
 	abcsmf.h \
