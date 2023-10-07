@@ -1,4 +1,5 @@
 #include "PlayerThread.h"
+#include <QDebug>
 
 PlayerThread::PlayerThread(fluid_synth_t* synth, QObject *parent)
     : QThread(parent),
@@ -18,8 +19,7 @@ PlayerThread::~PlayerThread()
 
 void PlayerThread::stop()
 {
-    if (fluid_player_get_status(fluid_player) == FLUID_PLAYER_PLAYING)
-        fluid_player_stop(fluid_player);
+    fluid_player_stop(fluid_player);
 }
 
 bool PlayerThread::err()
