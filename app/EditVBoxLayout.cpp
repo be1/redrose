@@ -290,7 +290,7 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
         a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
         if (cont) {
             if (synth->isPlaying())
-                synth->waitPlayer();
+                synth->stop();
 
             /* midi file can change from tune (xspinbox) index */
             QString midifile(tempFile.fileName());

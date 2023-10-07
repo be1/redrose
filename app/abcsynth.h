@@ -17,10 +17,9 @@ public:
     void play(const QString& midifile);
     void play(const QByteArray& ba);
     void fire(int chan, int pgm, int key, int vel);
-    void stop(void);
+    void stop(void); /* synchronous */
     bool isLoading(void);
     bool isPlaying(void);
-    void waitPlayer(void);
 
 signals:
     void initFinished(bool err);

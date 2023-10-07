@@ -176,11 +176,10 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
 void AbcSynth::stop()
 {
     fluid_synth_all_notes_off(fluid_synth, -1);
-    fluid_synth_all_sounds_off(fluid_synth, -1);
     if (player_thread && player_thread->isRunning()) {
         disconnect(player_thread, &QThread::finished, this, &AbcSynth::onPlayFinished);
         player_thread->stop();
-        waitPlayer();
+        player_thread->wait();
         bool err = player_thread->err();
         delete player_thread;
         player_thread = nullptr;
@@ -199,13 +198,6 @@ bool AbcSynth::isPlaying()
         return player_thread->isRunning();
     else
         return false;
-}
-
-void AbcSynth::waitPlayer()
-{
-    if (player_thread) {
-        player_thread->wait();
-    }
 }
 
 void AbcSynth::onPlayFinished()
