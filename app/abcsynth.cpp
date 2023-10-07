@@ -85,9 +85,7 @@ AbcSynth::~AbcSynth()
 void AbcSynth::abortPlay()
 {
     if (isPlaying()) {
-        disconnect(player_thread, &PlayerThread::finished, this, &AbcSynth::onPlayFinished);
         stop();
-        player_thread->wait();
     }
 }
 
@@ -127,11 +125,7 @@ void AbcSynth::play(const QString& midifile) {
 
     if (isPlaying()) {
         qDebug() << "Synth is playing. Stopping it.";
-        disconnect(player_thread, &QThread::finished, this, &AbcSynth::onPlayFinished);
         stop();
-        waitPlayer();
-        delete player_thread;
-        player_thread = nullptr;
     }
 
     player_thread = new PlayerThread(fluid_synth, this);
