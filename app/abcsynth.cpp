@@ -215,7 +215,6 @@ void AbcSynth::stop()
     if (fluid_player) {
         fluid_player_stop(fluid_player);
         fluid_player_join(fluid_player);
-        fluid_synth_all_sounds_off(fluid_synth, -1);
         delete_fluid_player(fluid_player);
         fluid_player = NULL;
     }
