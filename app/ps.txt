@@ -1,7 +1,7 @@
-MIDI bassprog
-MIDI chordprog
-MIDI program
-MIDI nobeataccent
+bassprog
+chordprog
+program
+nobeataccents
 annotationfont
 composerfont
 footerfont
