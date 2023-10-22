@@ -95,7 +95,6 @@ void AbcPlainTextEdit::setCompleter(QCompleter *completer)
 
     c->setWidget(this);
     c->setCompletionMode(QCompleter::PopupCompletion);
-    c->setCaseSensitivity(Qt::CaseSensitive);
     c->setFilterMode(Qt::MatchContains);
     QObject::connect(c, QOverload<const QString &>::of(&QCompleter::activated),
                      this, &AbcPlainTextEdit::insertCompletion);

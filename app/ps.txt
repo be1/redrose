@@ -1,8 +1,6 @@
+annotationfont
 bassprog
 chordprog
-program
-nobeataccents
-annotationfont
 composerfont
 footerfont
 gchordfont
@@ -81,11 +79,13 @@ hyphencont
 infoline
 linebreak
 musiconly
+nobeataccents
 oneperpage
 partsbox
 postscript
 printparts
 printtempo
+program
 sep
 shiftunison
 squarebreve
