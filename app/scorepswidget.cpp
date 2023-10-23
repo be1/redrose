@@ -48,7 +48,6 @@ void ScorePsWidget::refresh()
 
     int w, h;
     spectre_page_get_size(m_current_page, &w, &h);
-    //spectre_render_context_set_page_size(m_render_context, width(), height());
     spectre_render_context_set_scale(m_render_context, (double) width() / (double) w, (double) height() / (double) h);
     spectre_page_render(m_current_page, m_render_context, &m_page_data, &m_row_length);
 
@@ -112,11 +111,10 @@ void ScorePsWidget::printPage(int index, QPainter* painter)
     unsigned char* page_data = nullptr;
     int row_length;
 
-    spectre_page_get_size(page, &w, &h);
     pwidth = painter->device()->width();
     pheight = painter->device()->height();
-    //spectre_render_context_set_resolution(context, painter->device()->logicalDpiX(), painter->device()->logicalDpiY());
-    //spectre_render_context_set_page_size(m_render_context, pwidth, pheight);
+
+    spectre_page_get_size(page, &w, &h);
     spectre_render_context_set_scale(context, (double) pwidth / (double) w, (double) pheight / (double) h);
     spectre_page_render(page, context, &page_data, &row_length);
 

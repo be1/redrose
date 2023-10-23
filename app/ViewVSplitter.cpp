@@ -113,7 +113,9 @@ void ViewVSplitter::prevPageClicked()
 
 void ViewVSplitter::printClicked()
 {
-    QPrinter printer;
+    QPrinter printer(QPrinter::PrinterResolution);
+    /* FIXME: HighResolution (1200 DPI) leads to freeze in main thread */
+    printer.setResolution(300.); /* 300 DPI is enough */
     printer.setCreator("Redrose");
     printer.setDocName("abc_score");
     printer.setPageOrientation(QPageLayout::Portrait);
@@ -126,9 +128,33 @@ void ViewVSplitter::printClicked()
                 return;
             }
 
-            for (int i = 0; i <= lastpage -1; i++) {
-                pswidget.printPage(i, &painter);
-                if (i < lastpage - 1) {
+            QPrinter::PrintRange range = printer.printRange();
+            QList<int> pages;
+            switch (range) {
+            case QPrinter::AllPages:
+                for (int i = 0; i < lastpage; i++) {
+                    pages.append(i);
+                }
+                break;
+            case QPrinter::Selection:
+                /* FIXME */
+                qDebug() << printer.printerSelectionOption();
+                break;
+            case QPrinter::PageRange:
+                for (int i = printer.fromPage() -1; i < printer.toPage(); i++) {
+                    pages.append(i);
+                }
+                break;
+            case QPrinter::CurrentPage:
+                pages.append(currentpage -1);
+                break;
+            default:
+                break;
+            }
+
+            for (auto p : pages) {
+                pswidget.printPage(p, &painter);
+                if (p < pages.size() - 1) {
                     printer.newPage();
                 }
             }
