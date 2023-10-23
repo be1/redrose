@@ -2,7 +2,9 @@
 #include <QDebug>
 #include "config.h"
 #include "settings.h"
+#ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
+#endif
 #include "settings.h"
 
 AbcApplication::AbcApplication(int& argc, char **argv)
@@ -16,7 +18,9 @@ AbcApplication::AbcApplication(int& argc, char **argv)
     Settings settings;
     settings.check();
 
+#ifdef USE_LIBABCM2PS
     abcminit();
+#endif
 }
 
 AbcApplication::~AbcApplication()
