@@ -34,16 +34,21 @@ protected:
 
 protected slots:
     void onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus, AbcProcess::ProcessType, int cont);
+    /**
+     * @brief onProgramError slot on program not found or bad binary
+     * @param err the QProcess error number
+     */
+    void onProgramError(QProcess::ProcessError err);
 private:
     QList<AbcProcess*> processlist;
     /**
-     * @brief getError
+     * @brief getGenerationError formats the error string of generator error text
      * @param form process output
      * @param to formatted error line
      * @return pseudo exitCode
      * @attention this works only for abc2midi
      */
-    int getError(const QString& form, QString* to = nullptr);
+    int getGenerationError(const QString& form, QString* to = nullptr);
 };
 
 #endif // GENERATOR_H
