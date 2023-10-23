@@ -23,7 +23,7 @@ void PsGenerator::generate(const QString &input, int xopt, QString output, int c
 
     if (output.isEmpty()) {
         output = input;
-        output.replace(QRegularExpression("\\.abc$"), ".ps");
+        output.replace(m_abcext, ".ps");
     }
 
     if (param.toString() == TUNES_ALL) {

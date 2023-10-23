@@ -4,6 +4,8 @@
 #include "../abc/abc.h"
 #include <QDebug>
 
+const QRegularExpression Generator::m_abcext("\\.abc$");
+
 Generator::Generator(QObject *parent) : QObject(parent)
 {
 }

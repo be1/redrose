@@ -17,7 +17,7 @@ public:
 
     ScorePsWidget* psWidget();
 
-    void initBasename(const QString& b, const QString& d);
+    void initBasename(const QString& orig, const QString& tmpbase, const QString& tmpdir);
     bool requestPage(int page);
     void cleanup();
 
@@ -53,8 +53,8 @@ private:
 
     int currentpage = 0;
     int lastpage = 0;
+    QString origname;
     QString basename;
     QString basedir;
-    QStringList psnames;
 };
 #endif

@@ -57,13 +57,14 @@ ViewVSplitter::~ViewVSplitter()
 {
 }
 
-void ViewVSplitter::initBasename(const QString &b, const QString &d)
+void ViewVSplitter::initBasename(const QString &orig, const QString &tmpbase, const QString &tmpdir)
 {
-    qDebug() << __func__ << b;
-    basename = b;
-    basedir = d;
+    qDebug() << __func__ << tmpbase;
+    origname = orig;
+    basename = tmpbase;
+    basedir = tmpdir;
     currentpage = 0; /* invalidate */
-    psWidget()->load(d + QDir::separator() + b + ".ps");
+    psWidget()->load(tmpdir + QDir::separator() + tmpbase + ".ps");
     lastpage = psWidget()->getNumberOfPages();
 }
 
@@ -114,10 +115,10 @@ void ViewVSplitter::prevPageClicked()
 void ViewVSplitter::printClicked()
 {
     QPrinter printer(QPrinter::PrinterResolution);
-    /* FIXME: HighResolution (1200 DPI) leads to freeze in main thread */
+    /* FIXME: HighResolution (1200 DPI) freezes in main thread */
     printer.setResolution(300.); /* 300 DPI is enough */
     printer.setCreator("Redrose");
-    printer.setDocName("abc_score");
+    printer.setDocName(origname);
     printer.setPageOrientation(QPageLayout::Portrait);
     QPrintDialog dialog(&printer, this);
     if (dialog.exec() == QDialog::Accepted) {

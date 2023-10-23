@@ -386,39 +386,6 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
 #endif
 }
 
-void EditVBoxLayout::onCompileFinished(int exitCode, const QString& errstr, int cont)
-{
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
-    if (a->isQuit())
-        return;
-
-    qDebug() << "compile" << exitCode;
-
-    if (exitCode) {
-        if (cont) {
-            a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
-        } else {
-            QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
-        }
-    } else {
-        a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
-    }
-
-    if (!cont) {
-        runpushbutton.setEnabled(true);
-        return;
-    }
-
-    QFileInfo info(tempFile);
-    QString b(info.baseName());
-    QString d = info.dir().absolutePath();
-    a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
-    a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(b, d);
-    a->mainWindow()->mainHSplitter()->viewWidget()->requestPage(1);
-
-    runpushbutton.setEnabled(true);
-}
-
 void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, int cont)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
@@ -447,7 +414,7 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, i
     QString b(info.baseName());
     QString d = info.dir().absolutePath();
     a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
-    a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(b, d);
+    a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(fileName, b, d);
     a->mainWindow()->mainHSplitter()->viewWidget()->requestPage(1);
 
     runpushbutton.setEnabled(true);

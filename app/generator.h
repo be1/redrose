@@ -30,6 +30,7 @@ signals:
 
 protected:
     void spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, const QDir& wrk, int cont);
+    static const QRegularExpression m_abcext;
 
 protected slots:
     void onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus, AbcProcess::ProcessType, int cont);

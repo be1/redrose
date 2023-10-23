@@ -36,7 +36,6 @@ private:
     SpectreRenderContext* m_render_context = nullptr;
     unsigned char* m_page_data = nullptr;
     int m_row_length = 0;
-    QImage* m_image = nullptr;
 };
 
 #endif // SCOREPSWIDGET_H

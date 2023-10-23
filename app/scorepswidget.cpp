@@ -32,9 +32,6 @@ ScorePsWidget::~ScorePsWidget()
 
 void ScorePsWidget::cleanup()
 {
-    delete m_image;
-    m_image = nullptr;
-
     free(m_page_data);
     m_page_data = nullptr;
 }
@@ -51,8 +48,8 @@ void ScorePsWidget::refresh()
     spectre_render_context_set_scale(m_render_context, (double) width() / (double) w, (double) height() / (double) h);
     spectre_page_render(m_current_page, m_render_context, &m_page_data, &m_row_length);
 
-    m_image = new QImage(m_page_data, width(), height(), m_row_length, QImage::Format_RGB32);
-    setPixmap(QPixmap::fromImage(*m_image));
+    QImage image(m_page_data, width(), height(), m_row_length, QImage::Format_RGB32);
+    setPixmap(QPixmap::fromImage(image));
 }
 
 void ScorePsWidget::load(const QString &filename)
