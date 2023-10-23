@@ -11,4 +11,4 @@ CONFIG(debug, debug|release) {
 isEmpty(PREFIX): PREFIX = /usr/local
 isEmpty(BINDIR): BINDIR = $$PREFIX/bin
 isEmpty(DATADIR): DATADIR = $$PREFIX/share
-ABCM2PSDIR = $$DATADIR/redrose/abcm2ps
+#ABCM2PSDIR = $$DATADIR/redrose/abcm2ps

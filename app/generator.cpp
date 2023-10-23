@@ -110,7 +110,7 @@ int Generator::getError(const QString& from, QString* to)
     end = from.indexOf('\n', beg);
     if (to) {
         to->clear();
-        to->append(from.mid(beg, end - beg));
+        to->append(from.midRef(beg, end - beg));
     }
 
     return ret;

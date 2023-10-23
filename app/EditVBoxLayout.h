@@ -8,7 +8,6 @@
 #include "AbcTemporaryFile.h"
 #include "abcsynth.h"
 #include "psgenerator.h"
-#include "svggenerator.h"
 #include "midigenerator.h"
 #include "QProgressIndicator.h"
 #include <QVBoxLayout>
@@ -48,7 +47,7 @@ signals:
 
 protected:
     void spawnProgram(const QString& prog, const QStringList &args, AbcProcess::ProcessType which, const QDir &wrk, int cont);
-    void removeSvgFiles();
+    void removePsFile();
     void removeMIDIFile();
     int xOfCursor(const QTextCursor& c);
     void cleanupProcesses();
@@ -58,7 +57,7 @@ protected:
 public slots:
     void onXChanged(int value);
     void onPlayClicked(); /* midi */
-    void onRunClicked(); /* svg */
+    void onRunClicked(); /* ps */
     void onSelectionChanged();
 
 protected slots:
@@ -85,7 +84,6 @@ private:
 
     AbcSynth* synth;
     PsGenerator psgen;
-    SvgGenerator svggen;
     MidiGenerator midigen;
     static const QRegularExpression m_abcext;
 };

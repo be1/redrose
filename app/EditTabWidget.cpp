@@ -37,7 +37,7 @@ void EditTabWidget::removeTab(int index)
 
     /* clear SVG view */
     m->mainHSplitter()->viewWidget()->cleanup();
-    m->mainHSplitter()->viewWidget()->svgWidget()->load(QString()); /* the only way to clear view */
+    m->mainHSplitter()->viewWidget()->psWidget()->load(QString()); /* the only way to clear view */
 
     EditWidget *w = qobject_cast<EditWidget*>(widget(index));
     QTabWidget::removeTab(index);
