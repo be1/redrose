@@ -160,8 +160,6 @@ void ViewVSplitter::printClicked()
                 }
             }
             painter.end();
-            /* return to current page */
-            pswidget.displayPage(currentpage -1);
         }
     }
 }

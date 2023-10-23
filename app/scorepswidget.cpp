@@ -45,6 +45,7 @@ void ScorePsWidget::refresh()
 
     int w, h;
     spectre_page_get_size(m_current_page, &w, &h);
+    //spectre_render_context_set_resolution(m_render_context, logicalDpiX(), logicalDpiY());
     spectre_render_context_set_scale(m_render_context, (double) width() / (double) w, (double) height() / (double) h);
     spectre_page_render(m_current_page, m_render_context, &m_page_data, &m_row_length);
 

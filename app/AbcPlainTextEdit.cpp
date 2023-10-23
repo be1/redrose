@@ -308,7 +308,10 @@ QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
         /* find same pitch in previous notes (+/- octavas) */
         if (bar.selectedText().at(0).toUpper() == sym.at(0).toUpper()) {
             bar.clearSelection();
-            bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+            if (!bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
+                /* start of buffer: no left move */
+                break;
+            }
 
             bool found = false;
             /* get accidentals */
@@ -316,7 +319,10 @@ QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
                 found = true;
                 sym.prepend(bar.selectedText().at(0));
                 bar.clearSelection();
-                bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+                if(!bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
+                    /* start of buffer: no left move */
+                    break;
+                }
             }
 
             if (found)
