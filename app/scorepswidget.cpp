@@ -1,6 +1,7 @@
 #include <libspectre/spectre-document.h>
 #include "scorepswidget.h"
 #include <QPainter>
+#include <QFileInfo>
 #include <QDebug>
 
 ScorePsWidget::ScorePsWidget(QWidget *parent):
@@ -64,7 +65,12 @@ void ScorePsWidget::load(const QString &filename)
         return;
     }
 
+    QFileInfo info(filename);
+    if (!info.exists())
+        return;
+
     m_document = spectre_document_new();
+
     spectre_document_load(m_document, filename.toLocal8Bit().constData());
 
     if (spectre_document_status(m_document) != SPECTRE_STATUS_SUCCESS) {
