@@ -351,16 +351,26 @@ QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
 QString AbcPlainTextEdit::getLastKeySignatureChange() const
 {
     QTextDocument* doc = document();
-    QTextCursor tc, vtc;
+    QTextCursor tc, vtc, ktc;
 
     vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
-    tc = doc->find("[K:", textCursor(), QTextDocument::FindBackward);
 
+    /* search inline change */
+    tc = doc->find("[K:", textCursor(), QTextDocument::FindBackward);
     /* give KS only if it changed after "V:" */
     if (tc.position() > vtc.position()) {
         tc.movePosition(QTextCursor::Right);
         tc.select(QTextCursor::WordUnderCursor);
         return "[K:" + tc.selectedText() + "]";
+    }
+
+    /* search also for non-inline change */
+    tc = doc->find(QRegularExpression("^K:"), textCursor(), QTextDocument::FindBackward);
+    ktc = doc->find(QRegularExpression("^K:"), ktc, QTextDocument::FindBackward);
+    /* we must avoid initial KS */
+    if (tc.position() > ktc.position() && ktc.position() >= vtc.position()) {
+        tc.select(QTextCursor::LineUnderCursor);
+        return tc.selectedText();
     }
 
     return QString();

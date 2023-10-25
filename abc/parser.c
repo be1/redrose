@@ -4356,12 +4356,19 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_KeySig(pcc_context_t *ctx) {
                 const size_t p = ctx->cur;
                 const size_t n = chunk->thunks.len;
                 {
+                    const size_t p = ctx->cur;
+                    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0002;
+                    ctx->cur = p;
+                    goto L0001;
+                L0002:;
+                    ctx->cur = p;
+                }
+                {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
                     if (n == 0) goto L0001;
                     if (
-                        u == 0x00005d ||
-                        u == 0x000024
+                        u == 0x00005d
                     ) goto L0001;
                     ctx->cur += n;
                 }
@@ -4422,12 +4429,19 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Unit(pcc_context_t *ctx) {
                 const size_t p = ctx->cur;
                 const size_t n = chunk->thunks.len;
                 {
+                    const size_t p = ctx->cur;
+                    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0002;
+                    ctx->cur = p;
+                    goto L0001;
+                L0002:;
+                    ctx->cur = p;
+                }
+                {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
                     if (n == 0) goto L0001;
                     if (
-                        u == 0x00005d ||
-                        u == 0x000024
+                        u == 0x00005d
                     ) goto L0001;
                     ctx->cur += n;
                 }
@@ -4488,12 +4502,19 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_TimeSig(pcc_context_t *ctx) {
                 const size_t p = ctx->cur;
                 const size_t n = chunk->thunks.len;
                 {
+                    const size_t p = ctx->cur;
+                    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0002;
+                    ctx->cur = p;
+                    goto L0001;
+                L0002:;
+                    ctx->cur = p;
+                }
+                {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
                     if (n == 0) goto L0001;
                     if (
-                        u == 0x00005d ||
-                        u == 0x000024
+                        u == 0x00005d
                     ) goto L0001;
                     ctx->cur += n;
                 }
@@ -4554,12 +4575,19 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Tempo(pcc_context_t *ctx) {
                 const size_t p = ctx->cur;
                 const size_t n = chunk->thunks.len;
                 {
+                    const size_t p = ctx->cur;
+                    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0002;
+                    ctx->cur = p;
+                    goto L0001;
+                L0002:;
+                    ctx->cur = p;
+                }
+                {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
                     if (n == 0) goto L0001;
                     if (
-                        u == 0x00005d ||
-                        u == 0x000024
+                        u == 0x00005d
                     ) goto L0001;
                     ctx->cur += n;
                 }
