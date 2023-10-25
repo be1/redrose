@@ -121,6 +121,25 @@ signed char _pitch_diff_BMaj_0x3c['h'] = {
     ['g'] = 8 + 12
 };
 
+signed char _pitch_diff_CFlatMaj_0x3c['h'] = {
+	/* CFlatMaj */
+    ['A'] = 8,
+    ['B'] = 10,
+    ['C'] = -1,
+    ['D'] = 1,
+    ['E'] = 3,
+    ['F'] = 4,
+    ['G'] = 6,
+
+    ['a'] = 8 + 12,
+    ['b'] = 10 + 12,
+    ['c'] = -1 + 12,
+    ['d'] = 1 + 12,
+    ['e'] = 3 + 12,
+    ['f'] = 4 + 12,
+    ['g'] = 6 + 12
+};
+
 signed char _pitch_diff_FSharpMaj_0x3c['h'] = {
     /* FSharpMaj */
     ['A'] = 10,
@@ -292,6 +311,9 @@ unsigned char pitch_diff_0x3c(const char* ks, int note) {
 
     if (!strcasecmp(ks, "B") || !strcasecmp(ks, "Bmaj") || !strcasecmp(ks, "G#min"))
         return _pitch_diff_BMaj_0x3c[note];
+
+    if (!strcasecmp(ks, "Cb") || !strcasecmp(ks, "Cbmaj") || !strcasecmp(ks, "Abmin"))
+        return _pitch_diff_CFlatMaj_0x3c[note];
 
     if (!strcasecmp(ks, "F#") || !strcasecmp(ks, "F#maj") || !strcasecmp(ks, "D#min"))
         return _pitch_diff_FSharpMaj_0x3c[note];
@@ -1056,7 +1078,10 @@ struct abc* abc_parse_buffer(const char* buffer, int size) {
     pcc_context_t *ctx = pcc_create(yy);
 
     while (pcc_parse(ctx, NULL)) {
-        if (yy->error){
+        if (yy->error) {
+#ifdef EBUG
+            fprintf(stderr, "abc parse error line:char %d:%d\n", yy->error_line, yy->error_char);
+#endif
 #if 0
             FILE* out = fopen("out.abc", "w");
             fprintf(out, "%.*s", yy->buffer->count, yy->buffer->buf);

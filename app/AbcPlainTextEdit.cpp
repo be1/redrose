@@ -166,7 +166,7 @@ void AbcPlainTextEdit::insertCompletion(const QString &completion)
 #else
     /* this for contains mode */
     while (tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
-        if (delimiter.contains(tc.selectedText().left(1))) {
+        if (delimiter.contains(tc.selectedText().at(0))) {
             tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
             break;
         }
@@ -245,7 +245,7 @@ QString AbcPlainTextEdit::wordBeforeCursor(QTextCursor tc) const
 {
     /* start of word delimiter */
     while (tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
-        if (delimiter.contains(tc.selectedText().left(1))) {
+        if (delimiter.contains(tc.selectedText().at(0))) {
             tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
             break;
         }
@@ -429,6 +429,8 @@ QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
 
     if (check.selectedText().count('"') % 2)
         return QString();
+
+    /* FIXME check if we are in a InlineChange or a chord */
 
     /* check if this is a note */
     QString note = noteUnderCursor(tc);
