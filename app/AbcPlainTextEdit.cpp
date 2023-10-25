@@ -368,7 +368,7 @@ QString AbcPlainTextEdit::getLastKeySignatureChange() const
     tc = doc->find(QRegularExpression("^K:"), textCursor(), QTextDocument::FindBackward);
     ktc = doc->find(QRegularExpression("^K:"), ktc, QTextDocument::FindBackward);
     /* we must avoid initial KS */
-    if (tc.position() > ktc.position() && ktc.position() >= vtc.position()) {
+    if (tc.position() > ktc.position()) {
         tc.select(QTextCursor::LineUnderCursor);
         return tc.selectedText();
     }
