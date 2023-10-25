@@ -115,7 +115,7 @@ void ViewVSplitter::prevPageClicked()
 void ViewVSplitter::printClicked()
 {
     QPrinter printer(QPrinter::PrinterResolution);
-    /* FIXME: HighResolution (1200 DPI) freezes in main thread */
+    /* FIXME: HighResolution (1200 DPI) freeze main thread */
     printer.setResolution(300.); /* 300 DPI is enough */
     printer.setCreator("Redrose");
     printer.setDocName(origname);

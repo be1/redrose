@@ -484,9 +484,9 @@ void abc_voice_append(struct abc* yy, const char* yytext)
 {
     struct abc_voice* new = calloc(1, sizeof (struct abc_voice));
     new->v = strdup(yytext);
-    new->ks = strdup(yy->ks);
-    new->ul = strdup(yy->ul);
-    new->mm = strdup(yy->mm);
+    new->ks = yy->ks ? strdup(yy->ks) : NULL;
+    new->ul = yy->ul ? strdup(yy->ul) : NULL;
+    new->mm = yy->mm ? strdup(yy->mm) : NULL;
 
     struct abc_tune* tune = yy->tunes[yy->count-1];
     tune->voices = realloc(tune->voices, sizeof (struct abc_voice*) * (tune->count + 1));
