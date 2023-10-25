@@ -451,17 +451,25 @@ QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
     int colon = 0;
     int bracket = 0;
     while (check.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
+        if (check.selectedText().at(0) == ']') {
+            bracket = 0;
+            break;
+        }
+
         if (check.selectedText().at(0) == ':') {
             colon = check.position();
         }
+
         if (check.selectedText().at(0) == '[') {
             bracket = check.position();
             break;
         }
+
         if (check.selectedText().at(0) == '\n' || check.selectedText().at(0) == QChar::ParagraphSeparator) {
             break;
         }
     }
+
     if (colon && bracket && colon > bracket) {
         /* [Inline:Change]  */
          return QString();
