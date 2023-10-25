@@ -986,7 +986,7 @@ void abc_change_append(struct abc* yy, const char* yytext)
     new->text = strdup(yytext);
     new->ev.start_den = 1;
     if (new->text[0] == 'K') {
-    free (cur_voice->ks);
+        free (cur_voice->ks);
         cur_voice->ks = strdup(&new->text[2]);
         new->ev.type = EV_KEYSIG;
         int mode;
