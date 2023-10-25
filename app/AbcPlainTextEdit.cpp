@@ -348,18 +348,19 @@ QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
     return sym;
 }
 
-QString AbcPlainTextEdit::getCurrentKeySignature() const
+QString AbcPlainTextEdit::getLastKeySignatureChange() const
 {
     QTextDocument* doc = document();
     QTextCursor tc, vtc;
 
     vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
-    tc = doc->find("K:", textCursor(), QTextDocument::FindBackward);
+    tc = doc->find("[K:", textCursor(), QTextDocument::FindBackward);
 
     /* give KS only if it changed after "V:" */
     if (tc.position() > vtc.position()) {
-        tc.select(QTextCursor::LineUnderCursor);
-        return tc.selectedText();
+        tc.movePosition(QTextCursor::Right);
+        tc.select(QTextCursor::WordUnderCursor);
+        return "[K:" + tc.selectedText() + "]";
     }
 
     return QString();
@@ -376,8 +377,13 @@ QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
     else
         tc = vtc;
 
-    tc.select(QTextCursor::LineUnderCursor);
-    return tc.selectedText();
+    /* check if tc was valid */
+    if (tc.position() > 0) {
+        tc.select(QTextCursor::LineUnderCursor);
+        return tc.selectedText();
+    } else {
+        return "V:1";
+    }
 }
 
 QString AbcPlainTextEdit::getCurrentMIDIComment(const QString& com) const
@@ -438,7 +444,7 @@ QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
         return QString();
 
     QString voice = getCurrentVoiceOrChannel();
-    QString keysig = getCurrentKeySignature();
+    QString keysig = getLastKeySignatureChange();
     QString pgm = getCurrentMIDIComment("program");
     QString trp = getCurrentMIDIComment("transpose");
     if (!trp.isEmpty())
