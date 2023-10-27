@@ -17,6 +17,7 @@ Note that you *must* install **abcm2ps** binary for Redrose to display a view of
 ```
 sudo apt install libdrumstick-dev
 sudo apt install libspectre-dev
+sudo apt install libfluidsynth-dev
 sudo apt install abcm2ps
 sudo apt install abcmidi
 git clone https://github.com/be1/redrose.git
