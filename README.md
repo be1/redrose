@@ -34,8 +34,8 @@ $ make
 Launch `redrose` by clicking on the red rose icon, click on Score->New and type some ABC music in the editor, press `Play` button: you're done!
 
 ## Bugs
-- Probably lots of!
-- sometimes crash on pressing Stop button while playing music
+- sometimes crash on pressing `Stop` button while playing music.
+- internal parser is weak, you can use abcmidi instead.
 
 ## Thanks
 - Thanks to JF Moine for his free software `abcm2ps`
