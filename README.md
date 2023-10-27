@@ -15,6 +15,7 @@ Note that you *must* install **abcm2ps** binary for Redrose to display a view of
 
 ## Setting up
 ```
+sudo apt install qtbase5-dev
 sudo apt install libdrumstick-dev
 sudo apt install libspectre-dev
 sudo apt install libfluidsynth-dev
