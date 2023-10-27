@@ -2,7 +2,7 @@
 #define VIEWVBOXLAYOUT_H
 
 #include "RunPushButton.h"
-#include "ScoreSvgWidget.h"
+#include "scorepswidget.h"
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QScrollArea>
@@ -15,9 +15,9 @@ public:
     ViewVSplitter(QWidget* parent = nullptr);
     ~ViewVSplitter();
 
-    ScoreSvgWidget* svgWidget();
+    ScorePsWidget* psWidget();
 
-    void initBasename(const QString& b, const QString& d);
+    void initBasename(const QString& orig, const QString& tmpbase, const QString& tmpdir);
     bool requestPage(int page);
     void cleanup();
 
@@ -45,7 +45,7 @@ protected slots:
 
 private:
     QScrollArea *area;
-    ScoreSvgWidget svgwidget;
+    ScorePsWidget pswidget;
     QHBoxLayout pageslayout;
     QPushButton prev;
     QPushButton print;
@@ -53,8 +53,8 @@ private:
 
     int currentpage = 0;
     int lastpage = 0;
+    QString origname;
     QString basename;
     QString basedir;
-    QStringList svgnames;
 };
 #endif

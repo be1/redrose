@@ -211,8 +211,8 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
 void AbcSynth::stop()
 {
     m_secs = 1;
-    fluid_synth_all_notes_off(fluid_synth, -1);
     if (fluid_player) {
+        fluid_synth_all_notes_off(fluid_synth, -1);
         fluid_player_stop(fluid_player);
         fluid_player_join(fluid_player);
         delete_fluid_player(fluid_player);

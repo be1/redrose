@@ -99,7 +99,7 @@ private:
     bool isRest(QChar car) const;
     bool isPitch(QChar car) const;
     bool isAccid(QChar car) const;
-    QString getCurrentKeySignature() const;
+    QString getLastKeySignatureChange() const;
     QString getCurrentVoiceOrChannel() const;
     QString getCurrentMIDIComment(const QString& com) const;
 

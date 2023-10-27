@@ -1,7 +1,9 @@
 #include <QDebug>
 #include "psgenerator.h"
 #include "config.h"
+#ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
+#endif
 #include "AbcApplication.h"
 #include "AbcProcess.h"
 #include "settings.h"
@@ -21,7 +23,7 @@ void PsGenerator::generate(const QString &input, int xopt, QString output, int c
 
     if (output.isEmpty()) {
         output = input;
-        output.replace(QRegularExpression("\\.abc$"), ".ps");
+        output.replace(m_abcext, ".ps");
     }
 
     if (param.toString() == TUNES_ALL) {

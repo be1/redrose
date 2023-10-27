@@ -105,10 +105,10 @@ Fragment <- _ / "y"
 InlineChange <- "[" Change "]"
 Change <- KeySig / Unit / TimeSig / Tempo
 
-KeySig <- < "K:" (!EOL !"]".)+ > { abc_change_append(auxil, $1); }
-Unit <- < "L:" (!EOL !"]" .)+ > { abc_change_append(auxil, $1); }
-TimeSig <- < "M:" (!EOL !"]" .)+ > { abc_change_append(auxil, $1); }
-Tempo <- < "Q:" (!EOL !"]" .)+ > { abc_change_append(auxil, $1); }
+KeySig <- < "K:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
+Unit <- < "L:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
+TimeSig <- < "M:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
+Tempo <- < "Q:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 
 Comment <- "%" !"%" (!EOL .)*
 	/ "%" "%" ![A-Z] (!EOL .)*

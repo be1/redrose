@@ -1,12 +1,9 @@
 include(../common.pri)
-QT += core widgets gui svg printsupport
-equals(QT_MAJOR_VERSION, 6) {
-    QT += svgwidgets core5compat
-}
+QT += core widgets gui printsupport
 TEMPLATE = app
 CONFIG += link_pkgconfig
-PKGCONFIG += fluidsynth drumstick-file
-DEFINES += USE_LIBABCM2PS
+PKGCONFIG += fluidsynth drumstick-file libspectre
+#DEFINES += USE_LIBABCM2PS
 TARGET = redrose
 RESOURCES += resources.qrc
 DISTFILES +=  dict.txt ps.txt gm.txt config.h.in
@@ -14,7 +11,6 @@ SOURCES = ScoreMenu.cpp PreferencesMenu.cpp HelpMenu.cpp AbcPlainTextEdit.cpp Pl
 	AbcProcess.cpp \
 	AbcTemporaryFile.cpp \
 	MainHSplitter.cpp \
-	ScoreSvgWidget.cpp \
 	ViewVSplitter.cpp \
 	abcsmf.cpp \
 	abcsynth.cpp \
@@ -23,15 +19,14 @@ SOURCES = ScoreMenu.cpp PreferencesMenu.cpp HelpMenu.cpp AbcPlainTextEdit.cpp Pl
 	midigenerator.cpp \
 	playerprefdialog.cpp \
 	psgenerator.cpp \
+	scorepswidget.cpp \
 	settings.cpp \
 	sfloader.cpp \
-	QProgressIndicator.cpp \
-	svggenerator.cpp
+	QProgressIndicator.cpp
 HEADERS = ScoreMenu.h PreferencesMenu.h HelpMenu.h AbcPlainTextEdit.h PlayPushButton.h EditVBoxLayout.h EditWidget.h EditTabWidget.h RunPushButton.h AbcMainWindow.h AbcApplication.h \
 	AbcProcess.h \
 	AbcTemporaryFile.h \
 	MainHSplitter.h \
-	ScoreSvgWidget.h \
 	ViewVSplitter.h \
 	abcsmf.h \
 	abcsynth.h \
@@ -41,10 +36,10 @@ HEADERS = ScoreMenu.h PreferencesMenu.h HelpMenu.h AbcPlainTextEdit.h PlayPushBu
 	midigenerator.h \
 	playerprefdialog.h \
 	psgenerator.h \
+	scorepswidget.h \
 	settings.h \
 	sfloader.h \
-	QProgressIndicator.h \
-	svggenerator.h
+	QProgressIndicator.h
 config.input = config.h.in
 config.output = config.h
 QMAKE_SUBSTITUTES += config

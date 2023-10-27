@@ -10,6 +10,8 @@
 #include <QStandardPaths>
 #include <QDebug>
 
+const QRegularExpression ScoreMenu::m_abcext("\\.abc$");
+
 ScoreMenu::ScoreMenu(QWidget* parent)
 	: QMenu(parent)
 {
@@ -77,8 +79,8 @@ void ScoreMenu::onOpenActionTriggered()
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
 
-    QString  home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString fileName = QFileDialog::getOpenFileName(w, tr("Open ABC score"), home, tr("ABC score (*.abc)"));
+    //QString  home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString fileName = QFileDialog::getOpenFileName(w, tr("Open ABC score"), QString(), tr("ABC score (*.abc)"));
 
     /* user cancelled */
     if (fileName.isEmpty())
@@ -235,7 +237,7 @@ void ScoreMenu::onExportActionTriggered()
 
     EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
     QString exp = *ew->fileName();
-    exp.replace(QRegularExpression("\\.abc$"), ".mid");
+    exp.replace(m_abcext, ".mid");
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export MIDI file"), exp, tr("MIDI file (*.mid)"));
     if (fileName.isEmpty())
         return; /* cancelled */
@@ -254,7 +256,7 @@ void ScoreMenu::onExportPsActionTriggered()
 
     EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
     QString exp = *ew->fileName();
-    exp.replace(QRegularExpression("\\.abc$"), ".ps");
+    exp.replace(m_abcext, ".ps");
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export Postscript file"), exp, tr("Postscript file (*.ps)"));
     if (fileName.isEmpty())
         return; /* cancelled */

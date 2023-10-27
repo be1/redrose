@@ -2405,8 +2405,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_TuneBook(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "TuneBook", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
@@ -2510,8 +2508,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Tune(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Tune", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Xheader, &chunk->thunks, NULL)) goto L0000;
     {
         int i;
@@ -2570,8 +2566,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Header(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Header", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
@@ -2603,8 +2597,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Xheader(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Xheader", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     if (
         pcc_refill_buffer(ctx, 2) < 2 ||
         (ctx->buffer.buf + ctx->cur)[0] != 'X' ||
@@ -2628,7 +2620,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Xvalue(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Xvalue", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -2690,7 +2681,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Kheader(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Kheader", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     if (
         pcc_refill_buffer(ctx, 2) < 2 ||
@@ -2761,7 +2751,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Oheader(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Oheader", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 20);
     {
         const size_t p = ctx->cur;
@@ -3949,8 +3938,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_VoiceDef(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "VoiceDef", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     if (
         pcc_refill_buffer(ctx, 2) < 2 ||
         (ctx->buffer.buf + ctx->cur)[0] != 'V' ||
@@ -4006,8 +3993,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Score(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Score", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
@@ -4095,8 +4080,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Fragment(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Fragment", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
@@ -4288,8 +4271,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_InlineChange(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "InlineChange", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     if (
         pcc_refill_buffer(ctx, 1) < 1 ||
         ctx->buffer.buf[ctx->cur] != '['
@@ -4316,8 +4297,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Change(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Change", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
@@ -4359,7 +4338,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_KeySig(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "KeySig", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -4386,21 +4364,12 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_KeySig(pcc_context_t *ctx) {
                     ctx->cur = p;
                 }
                 {
-                    const size_t p = ctx->cur;
-                    if (
-                        pcc_refill_buffer(ctx, 1) < 1 ||
-                        ctx->buffer.buf[ctx->cur] != ']'
-                    ) goto L0003;
-                    ctx->cur++;
-                    ctx->cur = p;
-                    goto L0001;
-                L0003:;
-                    ctx->cur = p;
-                }
-                {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
                     if (n == 0) goto L0001;
+                    if (
+                        u == 0x00005d
+                    ) goto L0001;
                     ctx->cur += n;
                 }
                 if (ctx->cur == p) break;
@@ -4442,7 +4411,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Unit(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Unit", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -4469,21 +4437,12 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Unit(pcc_context_t *ctx) {
                     ctx->cur = p;
                 }
                 {
-                    const size_t p = ctx->cur;
-                    if (
-                        pcc_refill_buffer(ctx, 1) < 1 ||
-                        ctx->buffer.buf[ctx->cur] != ']'
-                    ) goto L0003;
-                    ctx->cur++;
-                    ctx->cur = p;
-                    goto L0001;
-                L0003:;
-                    ctx->cur = p;
-                }
-                {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
                     if (n == 0) goto L0001;
+                    if (
+                        u == 0x00005d
+                    ) goto L0001;
                     ctx->cur += n;
                 }
                 if (ctx->cur == p) break;
@@ -4525,7 +4484,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_TimeSig(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "TimeSig", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -4552,21 +4510,12 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_TimeSig(pcc_context_t *ctx) {
                     ctx->cur = p;
                 }
                 {
-                    const size_t p = ctx->cur;
-                    if (
-                        pcc_refill_buffer(ctx, 1) < 1 ||
-                        ctx->buffer.buf[ctx->cur] != ']'
-                    ) goto L0003;
-                    ctx->cur++;
-                    ctx->cur = p;
-                    goto L0001;
-                L0003:;
-                    ctx->cur = p;
-                }
-                {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
                     if (n == 0) goto L0001;
+                    if (
+                        u == 0x00005d
+                    ) goto L0001;
                     ctx->cur += n;
                 }
                 if (ctx->cur == p) break;
@@ -4608,7 +4557,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Tempo(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Tempo", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -4635,21 +4583,12 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Tempo(pcc_context_t *ctx) {
                     ctx->cur = p;
                 }
                 {
-                    const size_t p = ctx->cur;
-                    if (
-                        pcc_refill_buffer(ctx, 1) < 1 ||
-                        ctx->buffer.buf[ctx->cur] != ']'
-                    ) goto L0003;
-                    ctx->cur++;
-                    ctx->cur = p;
-                    goto L0001;
-                L0003:;
-                    ctx->cur = p;
-                }
-                {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
                     if (n == 0) goto L0001;
+                    if (
+                        u == 0x00005d
+                    ) goto L0001;
                     ctx->cur += n;
                 }
                 if (ctx->cur == p) break;
@@ -4691,8 +4630,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Comment(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Comment", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
@@ -4819,8 +4756,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Vheader(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Vheader", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     if (
         pcc_refill_buffer(ctx, 2) < 2 ||
         (ctx->buffer.buf + ctx->cur)[0] != 'V' ||
@@ -4843,7 +4778,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Vvalue(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Vvalue", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -4908,7 +4842,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_ChordPunct(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "ChordPunct", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Chord, &chunk->thunks, NULL)) goto L0000;
     {
@@ -5033,7 +4966,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_NotePunct(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "NotePunct", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     if (!pcc_apply_rule(ctx, pcc_evaluate_rule_NoteConstruct, &chunk->thunks, NULL)) goto L0000;
     {
@@ -5138,8 +5070,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_NoteConstruct(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "NoteConstruct", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Note, &chunk->thunks, NULL)) goto L0000;
     {
         const size_t p = ctx->cur;
@@ -5176,7 +5106,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Instruction(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Instruction", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -5246,7 +5175,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Lyrics(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Lyrics", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -5299,7 +5227,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Tie(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Tie", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -5335,7 +5262,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Grace(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Grace", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 2);
     {
         const size_t p = ctx->cur;
@@ -5432,7 +5358,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Chord(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Chord", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 2);
     {
         const size_t p = ctx->cur;
@@ -5519,7 +5444,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule__(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "_", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -5560,7 +5484,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Decoration(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Decoration", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -5696,7 +5619,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_ExDecoration(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "ExDecoration", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -5757,7 +5679,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Nuplet(pcc_context_t *ctx) {
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Nuplet", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
     pcc_value_table__resize(ctx->auxil, &chunk->values, 3);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     pcc_value_table__clear(ctx->auxil, &chunk->values);
     {
         const size_t p = ctx->cur;
@@ -5855,7 +5776,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Digits(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Digits", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -5915,7 +5835,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Gchord(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Gchord", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -5977,7 +5896,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_SlurStart(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "SlurStart", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -6013,7 +5931,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_SlurEnd(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "SlurEnd", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -6049,7 +5966,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_SimpleAlter(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "SimpleAlter", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -6161,7 +6077,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Alternative(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Alternative", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -6278,7 +6193,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Bar(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Bar", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -6354,7 +6268,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_ChordDuration(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "ChordDuration", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 4);
     {
         const size_t p = ctx->cur;
@@ -6558,7 +6471,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_NoteDuration(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "NoteDuration", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 4);
     {
         const size_t p = ctx->cur;
@@ -6762,7 +6674,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Note(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Note", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
     pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
     {
         const size_t p = ctx->cur;
@@ -6852,8 +6763,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_EOL(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "EOL", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
@@ -6903,8 +6812,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineCont(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "LineCont", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     if (
         pcc_refill_buffer(ctx, 1) < 1 ||
         ctx->buffer.buf[ctx->cur] != '\\'
@@ -6940,8 +6847,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineBreak(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "LineBreak", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
@@ -6997,8 +6902,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_EOF(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "EOF", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_value_table__resize(ctx->auxil, &chunk->values, 0);
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 0);
     {
         const size_t p = ctx->cur;
         {

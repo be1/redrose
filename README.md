@@ -1,13 +1,14 @@
 # Redrose
-ABC music notation integrated environment
+ABC music notation integrated environment, _ps_ flavour.
 
 ## Dependencies
 - drumstick-file (library and headers)
 - fluidsynth (library and headers)
-- abc2midi (program, optional, not mandatory)
+- libspectre (library and headers)
+- abcm2ps (program)
+- abc2midi (program, optional)
 
-Note that Redrose uses a *modified* version of the open source abcm2ps code, maintained in a specific submodule.
-Original `abcm2ps` code is Copyright © 2014-2016 Jean-Francois Moine.
+Note that you must install abcm2ps binary for this _ps_ flavour of Redrose to display a view of the score.
 
 ## Screenshot
 ![Redrose dark theme screenshot](http://brouits.free.fr/redrose/redrose.png)
@@ -15,11 +16,7 @@ Original `abcm2ps` code is Copyright © 2014-2016 Jean-Francois Moine.
 ## Setting up
 ```
 git clone https://github.com/be1/redrose.git
-cd abcm2ps
-git submodule init
-git submodule update
-git checkout lib
-cd ..
+git checkout ps
 ```
 ## Building
 Just a matter of:
@@ -36,9 +33,10 @@ Launch `redrose` by clicking on the red rose icon, click on Score->New and type 
 Probably lots of!
 
 ## Colophon
-This project is based on previously QAbc experimental `fluid` branch.
+First, this project was based on previously QAbc experimental `fluid` branch.
+Then this _ps_ flavour replaces SVG rendering by Postscript rendering.
 
 ## Thanks
-- abcm2ps original code is from JF Moine, thanks to him for setting this as free software.
-- QProgressIndicator is from Morgan Leborgne, thanks to him for this free piece of software. https://github.com/mojocorp/QProgressIndicator
+- Thanks to JF Moine for his free software `abcm2ps`
+- Thanks to Morgan Leborgne for his QProgressIndicator free widget. https://github.com/mojocorp/QProgressIndicator
 

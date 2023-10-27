@@ -30,7 +30,7 @@ void MidiGenerator::generate(const QString &inputpath, int xopt, QString outputp
 
     if (outputpath.isEmpty()) {
         outputpath = inputpath;
-        outputpath.replace(QRegularExpression("\\.abc$"), QString::number(xopt) + ".mid");
+        outputpath.replace(m_abcext, QString::number(xopt) + ".mid");
     }
 
     argv.removeAt(0);
@@ -71,7 +71,7 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
 
         if (outputpath.isEmpty()) {
                 outputpath = inputhint;
-                outputpath.replace(QRegularExpression("\\.abc$"), QString::number(xopt) + ".mid");
+                outputpath.replace(m_abcext, QString::number(xopt) + ".mid");
         }
 
         smf->writeToFile(outputpath);

@@ -4,6 +4,8 @@
 #include "../abc/abc.h"
 #include <QDebug>
 
+const QRegularExpression Generator::m_abcext("\\.abc$");
+
 Generator::Generator(QObject *parent) : QObject(parent)
 {
 }
@@ -72,6 +74,7 @@ void Generator::spawnProgram(const QString& prog, const QStringList& args, AbcPr
     AbcProcess *process = new AbcProcess(which, this, cont);
     process->setWorkingDirectory(wrk.absolutePath());
     connect(process, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, int>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
+    connect(process, &AbcProcess::errorOccurred, this, &Generator::onProgramError);
     processlist.append(process);
     qDebug() << prog << args;
     process->start(prog, args);
@@ -89,7 +92,7 @@ void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus,
                 && proc->exitStatus() == exitStatus
                 && proc->which() == which) {
             output = QString::fromUtf8(*(proc->log()));
-            exitCode = getError(output, &formatted);
+            exitCode = getGenerationError(output, &formatted);
             disconnect(proc, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, int>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
             delete proc;
             processlist.removeAt(i);
@@ -99,7 +102,16 @@ void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus,
     emit generated(exitCode != 0, formatted, cont);
 }
 
-int Generator::getError(const QString& from, QString* to)
+void Generator::onProgramError(QProcess::ProcessError err)
+{
+    AbcProcess* p = qobject_cast<AbcProcess*>(sender());
+    qWarning() << p->program() << p->errorString();
+    if (err == QProcess::FailedToStart) {
+        emit generated(1, p->program() + ": " + p->errorString(), 0);
+    }
+}
+
+int Generator::getGenerationError(const QString& from, QString* to)
 {
     int ret = 0;
     if (from.contains("Error"))
@@ -110,7 +122,7 @@ int Generator::getError(const QString& from, QString* to)
     end = from.indexOf('\n', beg);
     if (to) {
         to->clear();
-        to->append(from.mid(beg, end - beg));
+        to->append(from.midRef(beg, end - beg));
     }
 
     return ret;

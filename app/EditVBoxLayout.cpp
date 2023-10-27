@@ -26,7 +26,6 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     progress(nullptr),
     synth(nullptr),
     psgen(this),
-    svggen(this),
     midigen(this)
 {
     QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
@@ -57,7 +56,6 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     connect(this, &EditVBoxLayout::doExportMIDI, this, &EditVBoxLayout::exportMIDI);
 
     connect(&psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
-    connect(&svggen, &SvgGenerator::generated, this, &EditVBoxLayout::onCompileFinished);
     connect(&midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
 
     QFileInfo info(fileName);
@@ -74,7 +72,7 @@ EditVBoxLayout::~EditVBoxLayout()
     delete synth;
 
     removeMIDIFile();
-    removeSvgFiles();
+    removePsFile();
 }
 
 void EditVBoxLayout::finalize()
@@ -100,18 +98,6 @@ void EditVBoxLayout::removeMIDIFile() {
     temp.replace(m_abcext, QString::number(xspinbox.value())  + ".mid");
     if (QFileInfo::exists(temp))
         QFile::remove(temp);
-}
-
-void EditVBoxLayout::removeSvgFiles() {
-    QString temp(tempFile.fileName());
-    qDebug() << "cleaning SVG for" << temp;
-    for (int i = 1; i < 999; i++) {
-        temp = tempFile.fileName();
-        temp.replace(m_abcext, QString::asprintf("%03d.svg", i));
-        if (!QFileInfo::exists(temp))
-            break;
-        QFile::remove(temp);
-    }
 }
 
 AbcPlainTextEdit *EditVBoxLayout::abcPlainTextEdit()
@@ -253,6 +239,16 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     }
 }
 
+void EditVBoxLayout::removePsFile()
+{
+    /* cleanup files manually */
+    QString temp(tempFile.fileName());
+    qDebug() << "cleaning Ps for" << temp;
+    temp.replace(m_abcext, ".ps");
+    if (QFileInfo::exists(temp))
+        QFile::remove(temp);
+}
+
 void EditVBoxLayout::exportPostscript(QString filename)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
@@ -327,9 +323,7 @@ void EditVBoxLayout::onRunClicked()
     if (a->isQuit())
         return;
 
-    /* as we do not know the number of previous pages (it could be more or less)
-     * we have to remove bruteforcely them */
-    removeSvgFiles();
+    removePsFile();
 
     //if (a->mainWindow()->statusBar()->currentMessage().isEmpty())
     //    a->mainWindow()->statusBar()->showMessage(tr("Generating score..."));
@@ -337,7 +331,7 @@ void EditVBoxLayout::onRunClicked()
     tempFile.open();
     tempFile.write(tosave.toUtf8());
     tempFile.close();
-    svggen.generate(tempFile.fileName(), xspinbox.value(), QString(), 1);
+    psgen.generate(tempFile.fileName(), xspinbox.value(), QString(), 1);
 }
 
 int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
@@ -392,39 +386,6 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
 #endif
 }
 
-void EditVBoxLayout::onCompileFinished(int exitCode, const QString& errstr, int cont)
-{
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
-    if (a->isQuit())
-        return;
-
-    qDebug() << "compile" << exitCode;
-
-    if (exitCode) {
-        if (cont) {
-            a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
-        } else {
-            QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
-        }
-    } else {
-        a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
-    }
-
-    if (!cont) {
-        runpushbutton.setEnabled(true);
-        return;
-    }
-
-    QFileInfo info(tempFile);
-    QString b(info.baseName());
-    QString d = info.dir().absolutePath();
-    a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
-    a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(b, d);
-    a->mainWindow()->mainHSplitter()->viewWidget()->requestPage(1);
-
-    runpushbutton.setEnabled(true);
-}
-
 void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, int cont)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
@@ -442,4 +403,19 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, i
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
     }
+
+    if (!cont) {
+        runpushbutton.setEnabled(true);
+        return;
+    }
+
+    /* continuation: display ps */
+    QFileInfo info(tempFile);
+    QString b(info.baseName());
+    QString d = info.dir().absolutePath();
+    a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
+    a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(fileName, b, d);
+    a->mainWindow()->mainHSplitter()->viewWidget()->requestPage(1);
+
+    runpushbutton.setEnabled(true);
 }

@@ -6,7 +6,6 @@
 #include <QPrinter>
 #include <QPrinterInfo>
 #include <QPainter>
-#include <QSvgRenderer>
 
 ViewVSplitter::ViewVSplitter(QWidget* parent)
     : QSplitter(parent)
@@ -17,15 +16,15 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     setOrientation(Qt::Vertical);
 
     /* configure the svg score */
-    QPalette p = svgwidget.palette();
-    p.setColor(svgwidget.backgroundRole(), Qt::white);
-    svgwidget.setPalette(p);
-    svgwidget.setAutoFillBackground(true);
-    svgwidget.setMinimumSize(630, 891);
+    QPalette p = pswidget.palette();
+    p.setColor(pswidget.backgroundRole(), Qt::white);
+    pswidget.setPalette(p);
+    pswidget.setAutoFillBackground(true);
+    pswidget.setMinimumSize(630, 891);
 
     /* configure the scroll area */
     area = new QScrollArea();
-    area->setWidget(&svgwidget);
+    area->setWidget(&pswidget);
 
     /* configure the pages buttons */
     QWidget *pagesWidget = new QWidget(this);
@@ -58,34 +57,24 @@ ViewVSplitter::~ViewVSplitter()
 {
 }
 
-void ViewVSplitter::initBasename(const QString &b, const QString &d)
+void ViewVSplitter::initBasename(const QString &orig, const QString &tmpbase, const QString &tmpdir)
 {
-    qDebug() << __func__ << b;
-    basename = b;
-    basedir = d;
-    currentpage = 0;
-    for (int i = 1; i <= 999; i++) {
-        QString nnn = QString::asprintf("%03d", i);
-        QString temp(d + QDir::separator() + b);
-        temp += nnn;
-        temp += ".svg";
-        if (!QFile::exists(temp)) {
-            lastpage = i - 1;
-            break;
-        }
-        svgnames.append(temp);
-    }
+    qDebug() << __func__ << tmpbase;
+    origname = orig;
+    basename = tmpbase;
+    basedir = tmpdir;
+    currentpage = 0; /* invalidate */
+    psWidget()->load(tmpdir + QDir::separator() + tmpbase + ".ps");
+    lastpage = psWidget()->getNumberOfPages();
 }
 
 bool ViewVSplitter::requestPage(int i) {
     int page = i + currentpage;
+    qDebug() << __func__ << page;
+
     if (page > 0 && page <= lastpage) {
         currentpage = page;
-        QString nnn = QString::asprintf("%03d", page);
-        QString temp(basedir + QDir::separator() + basename);
-        temp += nnn;
-        temp += ".svg";
-        svgWidget()->load(temp);
+        psWidget()->displayPage(page -1);
         print.setEnabled(true);
 
         if (page > 1)
@@ -101,25 +90,21 @@ bool ViewVSplitter::requestPage(int i) {
     }
 
     /* else, empty view */
-    svgWidget()->load(QString());
-    prev.setEnabled(false);
-    print.setEnabled(false);
-    next.setEnabled(false);
+    cleanup();
     return false;
 }
 
 void ViewVSplitter::cleanup()
 {
-    svgnames.clear();
-    initBasename(QString(), QString());
+    pswidget.displayPage(-1);
     prev.setEnabled(false);
     print.setEnabled(false);
     next.setEnabled(false);
 }
 
-ScoreSvgWidget *ViewVSplitter::svgWidget()
+ScorePsWidget *ViewVSplitter::psWidget()
 {
-    return &svgwidget;
+    return &pswidget;
 }
 
 void ViewVSplitter::prevPageClicked()
@@ -129,9 +114,11 @@ void ViewVSplitter::prevPageClicked()
 
 void ViewVSplitter::printClicked()
 {
-    QPrinter printer;
+    QPrinter printer(QPrinter::PrinterResolution);
+    /* FIXME: HighResolution (1200 DPI) freeze main thread */
+    printer.setResolution(300.); /* 300 DPI is enough */
     printer.setCreator("Redrose");
-    printer.setDocName("abc_score");
+    printer.setDocName(origname);
     printer.setPageOrientation(QPageLayout::Portrait);
     QPrintDialog dialog(&printer, this);
     if (dialog.exec() == QDialog::Accepted) {
@@ -142,16 +129,37 @@ void ViewVSplitter::printClicked()
                 return;
             }
 
-            requestPage(-currentpage +1);
-            for (int i = 0; i < svgnames.length(); i++) {
-                svgwidget.renderer()->render(&painter);
-                if (i < svgnames.length() - 1) {
-                    requestPage(1);
+            QPrinter::PrintRange range = printer.printRange();
+            QList<int> pages;
+            switch (range) {
+            case QPrinter::AllPages:
+                for (int i = 0; i < lastpage; i++) {
+                    pages.append(i);
+                }
+                break;
+            case QPrinter::Selection:
+                /* FIXME */
+                qDebug() << printer.printerSelectionOption();
+                break;
+            case QPrinter::PageRange:
+                for (int i = printer.fromPage() -1; i < printer.toPage(); i++) {
+                    pages.append(i);
+                }
+                break;
+            case QPrinter::CurrentPage:
+                pages.append(currentpage -1);
+                break;
+            default:
+                break;
+            }
+
+            for (auto p : pages) {
+                pswidget.printPage(p, &painter);
+                if (p < pages.size() - 1) {
                     printer.newPage();
                 }
             }
             painter.end();
-            requestPage(-currentpage +1);
         }
     }
 }

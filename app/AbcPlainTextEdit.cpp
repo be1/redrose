@@ -166,7 +166,7 @@ void AbcPlainTextEdit::insertCompletion(const QString &completion)
 #else
     /* this for contains mode */
     while (tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
-        if (delimiter.contains(tc.selectedText().left(1))) {
+        if (delimiter.contains(tc.selectedText().at(0))) {
             tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
             break;
         }
@@ -245,7 +245,7 @@ QString AbcPlainTextEdit::wordBeforeCursor(QTextCursor tc) const
 {
     /* start of word delimiter */
     while (tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor)) {
-        if (delimiter.contains(tc.selectedText().left(1))) {
+        if (delimiter.contains(tc.selectedText().at(0))) {
             tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
             break;
         }
@@ -308,7 +308,10 @@ QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
         /* find same pitch in previous notes (+/- octavas) */
         if (bar.selectedText().at(0).toUpper() == sym.at(0).toUpper()) {
             bar.clearSelection();
-            bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+            if (!bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
+                /* start of buffer: no left move */
+                break;
+            }
 
             bool found = false;
             /* get accidentals */
@@ -316,7 +319,10 @@ QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
                 found = true;
                 sym.prepend(bar.selectedText().at(0));
                 bar.clearSelection();
-                bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+                if(!bar.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
+                    /* start of buffer: no left move */
+                    break;
+                }
             }
 
             if (found)
@@ -342,16 +348,27 @@ QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
     return sym;
 }
 
-QString AbcPlainTextEdit::getCurrentKeySignature() const
+QString AbcPlainTextEdit::getLastKeySignatureChange() const
 {
     QTextDocument* doc = document();
-    QTextCursor tc, vtc;
+    QTextCursor tc, vtc, ktc;
 
     vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
-    tc = doc->find("K:", textCursor(), QTextDocument::FindBackward);
 
+    /* search inline change */
+    tc = doc->find("[K:", textCursor(), QTextDocument::FindBackward);
     /* give KS only if it changed after "V:" */
     if (tc.position() > vtc.position()) {
+        tc.movePosition(QTextCursor::Right);
+        tc.select(QTextCursor::WordUnderCursor);
+        return "[K:" + tc.selectedText() + "]";
+    }
+
+    /* search also for non-inline change */
+    tc = doc->find(QRegularExpression("^K:"), textCursor(), QTextDocument::FindBackward);
+    ktc = doc->find(QRegularExpression("^K:"), ktc, QTextDocument::FindBackward);
+    /* we must avoid initial KS */
+    if (tc.position() > ktc.position()) {
         tc.select(QTextCursor::LineUnderCursor);
         return tc.selectedText();
     }
@@ -370,8 +387,13 @@ QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
     else
         tc = vtc;
 
-    tc.select(QTextCursor::LineUnderCursor);
-    return tc.selectedText();
+    /* check if tc was valid */
+    if (tc.position() > 0) {
+        tc.select(QTextCursor::LineUnderCursor);
+        return tc.selectedText();
+    } else {
+        return "V:1";
+    }
 }
 
 QString AbcPlainTextEdit::getCurrentMIDIComment(const QString& com) const
@@ -424,13 +446,42 @@ QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
     if (check.selectedText().count('"') % 2)
         return QString();
 
+    /* check if we are in a InlineChange or a chord */
+    check = textCursor();
+    int colon = 0;
+    int bracket = 0;
+    while (check.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1)) {
+        if (check.selectedText().at(0) == ']') {
+            bracket = 0;
+            break;
+        }
+
+        if (check.selectedText().at(0) == ':') {
+            colon = check.position();
+        }
+
+        if (check.selectedText().at(0) == '[') {
+            bracket = check.position();
+            break;
+        }
+
+        if (check.selectedText().at(0) == '\n' || check.selectedText().at(0) == QChar::ParagraphSeparator) {
+            break;
+        }
+    }
+
+    if (colon && bracket && colon > bracket) {
+        /* [Inline:Change]  */
+         return QString();
+    }
+
     /* check if this is a note */
     QString note = noteUnderCursor(tc);
     if (note.isEmpty())
         return QString();
 
     QString voice = getCurrentVoiceOrChannel();
-    QString keysig = getCurrentKeySignature();
+    QString keysig = getLastKeySignatureChange();
     QString pgm = getCurrentMIDIComment("program");
     QString trp = getCurrentMIDIComment("transpose");
     if (!trp.isEmpty())
@@ -679,7 +730,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
         QStringLiteral("^N:[^\n]+"), QStringLiteral("^O:[^\n]+"), QStringLiteral("^P:[^\n]+"),
         QStringLiteral("^Q:[^\n]+"), QStringLiteral("^R:[^\n]+"), QStringLiteral("^S:[^\n]+"),
         QStringLiteral("^T:[^\n]+"), QStringLiteral("^V:[^\n]+"), QStringLiteral("^W:[^\n]+"),
-        QStringLiteral("^X:[^\n]+"), QStringLiteral("^Z:[^\n]+")
+        QStringLiteral("^X:[^\n]+"), QStringLiteral("^Z:[^\n]+"), QStringLiteral("\\[[KMQ]:[^\\]]+\\]")
     };
 
     for (const QString &pattern : keywordPatterns) {
