@@ -64,7 +64,7 @@ void Settings::check()
 
     color = value(EDITOR_EXTRAINSTR_COLOR);
     if (!color.isValid())
-        setValue(EDITOR_EXTRAINSTR_COLOR, "blue");
+        setValue(EDITOR_EXTRAINSTR_COLOR, "royalblue");
 
     color = value(EDITOR_GCHORD_COLOR);
     if (!color.isValid())
@@ -110,7 +110,7 @@ void Settings::reset()
 
     setValue(EDITOR_DECORATION_COLOR, "orange");
 
-    setValue(EDITOR_EXTRAINSTR_COLOR, "blue");
+    setValue(EDITOR_EXTRAINSTR_COLOR, "royalblue");
 
     setValue(EDITOR_GCHORD_COLOR, "green");
 
