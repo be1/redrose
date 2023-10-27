@@ -6,8 +6,20 @@
 
 const QRegularExpression Generator::m_abcext("\\.abc$");
 
-Generator::Generator(QObject *parent) : QObject(parent)
+Generator::Generator(const QString &outfile, QObject *parent) :
+    QObject(parent),
+    outfile(outfile)
 {
+}
+
+const QString &Generator::outFile()
+{
+    return outfile;
+}
+
+void Generator::setOutFile(const QString &outfile)
+{
+    this->outfile = outfile;
 }
 
 bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* key)
@@ -69,18 +81,18 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* ke
     return false;
 }
 
-void Generator::spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, const QDir& wrk, int cont)
+void Generator::spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, const QDir& wrk, AbcProcess::Continuation cont)
 {
     AbcProcess *process = new AbcProcess(which, this, cont);
     process->setWorkingDirectory(wrk.absolutePath());
-    connect(process, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, int>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
+    connect(process, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, AbcProcess::Continuation>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
     connect(process, &AbcProcess::errorOccurred, this, &Generator::onProgramError);
     processlist.append(process);
     qDebug() << prog << args;
     process->start(prog, args);
 }
 
-void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus, AbcProcess::ProcessType which, int cont)
+void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus, AbcProcess::ProcessType which, AbcProcess::Continuation cont)
 {
     /* delete garbage */
     QString output;
@@ -93,7 +105,7 @@ void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus,
                 && proc->which() == which) {
             output = QString::fromUtf8(*(proc->log()));
             exitCode = getGenerationError(output, &formatted);
-            disconnect(proc, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, int>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
+            disconnect(proc, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, AbcProcess::Continuation>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
             delete proc;
             processlist.removeAt(i);
         }
@@ -107,7 +119,7 @@ void Generator::onProgramError(QProcess::ProcessError err)
     AbcProcess* p = qobject_cast<AbcProcess*>(sender());
     qWarning() << p->program() << p->errorString();
     if (err == QProcess::FailedToStart) {
-        emit generated(1, p->program() + ": " + p->errorString(), 0);
+        emit generated(1, p->program() + ": " + p->errorString(), AbcProcess::ContinuationNone);
     }
 }
 

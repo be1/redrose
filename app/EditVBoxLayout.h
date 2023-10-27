@@ -16,6 +16,7 @@
 #include <QDir>
 #include <QTemporaryFile>
 #include <QThread>
+#include <libspectre/spectre-document.h>
 
 class EditVBoxLayout: public QVBoxLayout
 {
@@ -35,7 +36,8 @@ public:
      * @brief exportPostscript
      * @param filename Output file path. Can be empty (has defaults).
      */
-    void exportPostscript(QString filename);
+    void exportPS(QString filename);
+    void exportPDF(QString filename);
     /**
      * @brief exportMIDI
      * @param filename Output file path. Can be emtpy (has defaults).
@@ -46,8 +48,8 @@ signals:
     void doExportMIDI(const QString& outfilename);
 
 protected:
-    void spawnProgram(const QString& prog, const QStringList &args, AbcProcess::ProcessType which, const QDir &wrk, int cont);
-    void removePsFile();
+    void spawnProgram(const QString& prog, const QStringList &args, AbcProcess::ProcessType which, const QDir &wrk, enum AbcProcess::Continuation cont);
+    void removePSFile();
     void removeMIDIFile();
     int xOfCursor(const QTextCursor& c);
     void cleanupProcesses();
@@ -57,15 +59,17 @@ protected:
 public slots:
     void onXChanged(int value);
     void onPlayClicked(); /* midi */
-    void onRunClicked(); /* ps */
+    void onDisplayClicked(); /* ps */
     void onSelectionChanged();
 
 protected slots:
     void onPlayableNote(const QString& note);
-    void onGeneratePSFinished(int exitCode, const QString& errstr, int cont);
-    void onGenerateMIDIFinished(int exitCode, const QString& errstr, int cont);
+    void onGeneratePSFinished(int exitCode, const QString& errstr, enum AbcProcess::Continuation cont);
+    void onGenerateMIDIFinished(int exitCode, const QString& errstr, enum AbcProcess::Continuation cont);
     void onSynthInited(bool err);
     void onSynthFinished(bool err);
+    void saveToPDF(const QString& outfile);
+    void popupWarning(const QString& title, const QString& text);
 
 private:
 	AbcPlainTextEdit abcplaintextedit;
@@ -74,7 +78,8 @@ private:
     QHBoxLayout hboxlayout;
     QSpinBox xspinbox;
     QLabel xlabel;
-    QString fileName;
+    QString fileName; /* original abc file name */
+    QString pdfFileName; /* needed for PDF export */
     AbcTemporaryFile tempFile;
     QList<AbcProcess*> processlist;
     QProgressIndicator* progress;
@@ -82,8 +87,10 @@ private:
     int selectionIndex;
 
     AbcSynth* synth;
-    PsGenerator psgen;
-    MidiGenerator midigen;
+    PsGenerator* psgen;
+    MidiGenerator* midigen;
+    MidiGenerator autoplayer;
+    SpectreDocument* spectre = nullptr;
     static const QRegularExpression m_abcext;
 };
 #endif

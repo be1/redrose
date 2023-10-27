@@ -21,12 +21,12 @@
 const QRegularExpression EditVBoxLayout::m_abcext(QStringLiteral("\\.abc$"));
 
 EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
-	: QVBoxLayout(parent),
-    fileName(fileName),
-    progress(nullptr),
-    synth(nullptr),
-    psgen(this),
-    midigen(this)
+    : QVBoxLayout(parent),
+      fileName(fileName),
+      progress(nullptr),
+      synth(nullptr),
+      psgen(nullptr),
+      midigen(nullptr)
 {
     QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
 	tempFile.setFileTemplate(t);
@@ -51,12 +51,9 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     connect(&abcplaintextedit, &AbcPlainTextEdit::playableNote, this, &EditVBoxLayout::onPlayableNote);
     connect(&xspinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &EditVBoxLayout::onXChanged);
     connect(&playpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onPlayClicked);
-	connect(&runpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onRunClicked);
+    connect(&runpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onDisplayClicked);
 
     connect(this, &EditVBoxLayout::doExportMIDI, this, &EditVBoxLayout::exportMIDI);
-
-    connect(&psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
-    connect(&midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
 
     QFileInfo info(fileName);
     synth = new AbcSynth(info.baseName(), this);
@@ -72,7 +69,7 @@ EditVBoxLayout::~EditVBoxLayout()
     delete synth;
 
     removeMIDIFile();
-    removePsFile();
+    removePSFile();
 }
 
 void EditVBoxLayout::finalize()
@@ -138,7 +135,7 @@ void EditVBoxLayout::cleanupThreads()
 void EditVBoxLayout::onXChanged(int value)
 {
     qDebug() << value;
-    onRunClicked();
+    onDisplayClicked();
 }
 
 void EditVBoxLayout::onPlayClicked()
@@ -215,11 +212,11 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     tempFile.write(tosave.toUtf8());
     tempFile.close();
 
-    int cont;
+    AbcProcess::Continuation cont;
     if (filename.isEmpty()) {
-        cont = 1; /* continue to playback */
+        cont = AbcProcess::ContinuationRender; /* continue to playback */
     } else {
-        cont = 0; /* will not play, it's just an export */
+        cont = AbcProcess::ContinuationNone; /* will not play, it's just an export */
     }
 
     Settings settings;
@@ -233,13 +230,15 @@ void EditVBoxLayout::exportMIDI(QString filename) {
             filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
         }
 
-        midigen.generate(ba, tempFile.fileName(), xspinbox.value(), filename, cont);
+        midigen = new MidiGenerator(filename, this);
+        connect(midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
+        midigen->generate(ba, tempFile.fileName(), xspinbox.value(), cont);
     } else {
-        midigen.generate(tempFile.fileName(), xspinbox.value(), filename, cont);
+        midigen->generate(tempFile.fileName(), xspinbox.value(), cont);
     }
 }
 
-void EditVBoxLayout::removePsFile()
+void EditVBoxLayout::removePSFile()
 {
     /* cleanup files manually */
     QString temp(tempFile.fileName());
@@ -249,7 +248,7 @@ void EditVBoxLayout::removePsFile()
         QFile::remove(temp);
 }
 
-void EditVBoxLayout::exportPostscript(QString filename)
+void EditVBoxLayout::exportPS(QString filename)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
@@ -260,10 +259,30 @@ void EditVBoxLayout::exportPostscript(QString filename)
     tempFile.open();
     tempFile.write(tosave.toUtf8());
     tempFile.close();
-    psgen.generate(tempFile.fileName(), xspinbox.value(), filename, 0);
+    psgen = new PsGenerator(filename, this);
+    connect(psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
+    psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::Continuation::ContinuationNone);
 }
 
-void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr, int cont)
+void EditVBoxLayout::exportPDF(QString filename)
+{
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    if (a->isQuit())
+        return;
+
+    a->mainWindow()->statusBar()->showMessage(tr("Exporting score..."));
+    QString tosave = abcPlainTextEdit()->toPlainText();
+    tempFile.open();
+    tempFile.write(tosave.toUtf8());
+    tempFile.close();
+    pdfFileName = filename;
+    /* we will generate a _temporary_ PS file */
+    psgen = new PsGenerator(QString(), this);
+    connect(psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
+    psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::Continuation::ContinuationConvert);
+}
+
+void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr, AbcProcess::Continuation cont)
 {
     playpushbutton.setEnabled(true);
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
@@ -278,13 +297,13 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
         else
             QMessageBox::warning(a->mainWindow(), tr("Error"), tr("Parse error in selected notes."));
 
-        if (cont) {
+        if (cont == AbcProcess::ContinuationRender) {
             playpushbutton.flip();
             xspinbox.setEnabled(true);
         }
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
-        if (cont) {
+        if (cont == AbcProcess::ContinuationRender) {
             if (synth->isPlaying())
                 synth->stop();
 
@@ -294,6 +313,8 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             synth->play(midifile);
         }
     }
+
+    delete midigen;
 }
 
 void EditVBoxLayout::onSynthFinished(bool err)
@@ -313,7 +334,43 @@ void EditVBoxLayout::onSynthFinished(bool err)
     xspinbox.setEnabled(true);
 }
 
-void EditVBoxLayout::onRunClicked()
+void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    QMessageBox::warning(a->mainWindow(), title, text);
+}
+
+void EditVBoxLayout::saveToPDF(const QString &outfile)
+{
+    QFileInfo info(psgen->outFile());
+    if (!info.exists()) {
+        popupWarning(tr("Error"), tr("Could not find PS score"));
+        return;
+    }
+
+    spectre = spectre_document_new();
+
+    spectre_document_load(spectre, psgen->outFile().toLocal8Bit().constData());
+
+    if (spectre_document_status(spectre) != SPECTRE_STATUS_SUCCESS) {
+        popupWarning(tr("Error"), tr("Could not load PS score"));
+        //qWarning() << spectre_status_to_string(spectre_document_status(spectre));
+        spectre_document_free(spectre);
+        return;
+    }
+
+    spectre_document_save_to_pdf(spectre, outfile.toLocal8Bit().constData());
+
+    if (spectre_document_status(spectre) != SPECTRE_STATUS_SUCCESS) {
+        popupWarning(tr("Error"), tr("Could not save to PDF"));
+        //qWarning() << spectre_status_to_string(spectre_document_status(spectre));
+        spectre_document_free(spectre);
+        return;
+    }
+
+    spectre_document_free(spectre);
+}
+
+void EditVBoxLayout::onDisplayClicked()
 {
     runpushbutton.setEnabled(false);
 
@@ -323,7 +380,7 @@ void EditVBoxLayout::onRunClicked()
     if (a->isQuit())
         return;
 
-    removePsFile();
+    removePSFile();
 
     //if (a->mainWindow()->statusBar()->currentMessage().isEmpty())
     //    a->mainWindow()->statusBar()->showMessage(tr("Generating score..."));
@@ -331,7 +388,9 @@ void EditVBoxLayout::onRunClicked()
     tempFile.open();
     tempFile.write(tosave.toUtf8());
     tempFile.close();
-    psgen.generate(tempFile.fileName(), xspinbox.value(), QString(), 1);
+    psgen = new PsGenerator(QString(), this);
+    connect(psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
+    psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::ContinuationRender);
 }
 
 int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
@@ -380,13 +439,13 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
     delete stream;
 #else
     int c = -1, p = 0, k = -1;
-    if (midigen.genFirstNote(abc, &c, &p, &k)) {
+    if (autoplayer.genFirstNote(abc, &c, &p, &k)) {
         synth->fire(c, p, k, 80);
     }
 #endif
 }
 
-void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, int cont)
+void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, AbcProcess::Continuation cont)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
@@ -395,7 +454,7 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, i
     qDebug() << "ps" << exitCode;
 
     if (exitCode) {
-        if (cont) {
+        if (cont == AbcProcess::ContinuationRender) {
             a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
         } else {
             QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
@@ -404,18 +463,23 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, i
         a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
     }
 
-    if (!cont) {
+    if (cont == AbcProcess::ContinuationNone) {
         runpushbutton.setEnabled(true);
         return;
+    } else if (cont == AbcProcess::ContinuationRender) {
+        /* continuation: display PS */
+        QFileInfo info(tempFile);
+        QString b(info.baseName());
+        QString d = info.dir().absolutePath();
+        a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
+        a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(fileName, b, d);
+        a->mainWindow()->mainHSplitter()->viewWidget()->requestPage(1);
+
+    } else if (cont == AbcProcess::ContinuationConvert) /* PDF Export */ {
+        /* continuation: convert to PDF */
+        saveToPDF(pdfFileName);
     }
 
-    /* continuation: display ps */
-    QFileInfo info(tempFile);
-    QString b(info.baseName());
-    QString d = info.dir().absolutePath();
-    a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
-    a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(fileName, b, d);
-    a->mainWindow()->mainHSplitter()->viewWidget()->requestPage(1);
-
+    delete psgen;
     runpushbutton.setEnabled(true);
 }

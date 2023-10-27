@@ -72,7 +72,7 @@ void EditTabWidget::onCurrentTabChanged(int index)
 
     EditWidget* w = qobject_cast<EditWidget*>(widget(index));
     qDebug() << "currentTab: " << index << (*w->fileName()) << index;
-    w->editVBoxLayout()->onRunClicked();
+    w->editVBoxLayout()->onDisplayClicked();
 }
 
 void EditTabWidget::onCurrentTextModified(bool modified)

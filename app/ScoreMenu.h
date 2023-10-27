@@ -27,13 +27,11 @@ protected slots:
     void onSaveAsActionTriggered();
     void onExportActionTriggered();
     void onExportPsActionTriggered();
+    void onExportPdfActionTriggered();
     void onCloseActionTriggered();
     void onNewActionTriggered();
 
 private:
-    QAction newaction;
-    QAction openaction;
-
     enum { MaxRecentFiles = 5 };
     QAction *recentFileActs[MaxRecentFiles];
 

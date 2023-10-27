@@ -9,8 +9,8 @@ class MidiGenerator : public Generator
 {
     Q_OBJECT
 public:
-    MidiGenerator(QObject* parent = nullptr);
-    void generate(const QString& inputpath, int xopt, QString outputpath, int cont) override;
+    explicit MidiGenerator(const QString &outfile = "", QObject* parent = nullptr);
+    void generate(const QString& inputpath, int xopt, AbcProcess::Continuation cont) override;
     /**
      * @brief generate.
      * @param inputbuf Input buffer.
@@ -19,11 +19,13 @@ public:
      * @param output Output filename.
      * @param cont Unused, forwarded.
      */
-    void generate(const QByteArray& inputbuf, const QString& inpputhint, int xopt, QString outputpath, int cont);
+    void generate(const QByteArray& inputbuf, const QString& inpputhint, int xopt, AbcProcess::Continuation cont);
 
+    /* DON't USE THIS: */
     const QDataStream* generate(const QByteArray& inputbuf, int xopt);
+
 protected:
-    void spawnMidiCompiler(const QString &prog, const QStringList& args, const QDir &wrk, int cont);
+    void spawnMidiCompiler(const QString &prog, const QStringList& args, const QDir &wrk, AbcProcess::Continuation cont);
 
 };
 

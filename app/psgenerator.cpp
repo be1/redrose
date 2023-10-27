@@ -8,12 +8,12 @@
 #include "AbcProcess.h"
 #include "settings.h"
 
-PsGenerator::PsGenerator(QObject* parent)
-    : Generator(parent)
+PsGenerator::PsGenerator(const QString& outfile, QObject* parent)
+    : Generator(outfile, parent)
 {
 }
 
-void PsGenerator::generate(const QString &input, int xopt, QString output, int cont)
+void PsGenerator::generate(const QString &input, int xopt, AbcProcess::Continuation cont)
 {
     Settings settings;
     QVariant param = settings.value(PSTUNES_KEY);
@@ -21,15 +21,16 @@ void PsGenerator::generate(const QString &input, int xopt, QString output, int c
     QString program("abcm2ps");
     QStringList argv = program.split(" ");
 
-    if (output.isEmpty()) {
-        output = input;
-        output.replace(m_abcext, ".ps");
+    if (outFile().isEmpty()) {
+        QString path = input;
+        path.replace(m_abcext, ".ps");
+        setOutFile(path);
     }
 
     if (param.toString() == TUNES_ALL) {
-        argv << "-q" << "-N1" << "-O" << output << input;
+        argv << "-q" << "-N1" << "-O" << outFile() << input;
     } else {
-        argv << "-q" << "-N1" << "-e" << QString::number(xopt) << "-O" << output << input;
+        argv << "-q" << "-N1" << "-e" << QString::number(xopt) << "-O" << outFile() << input;
     }
 
 #ifdef USE_LIBABCM2PS
@@ -64,7 +65,7 @@ void PsGenerator::generate(const QString &input, int xopt, QString output, int c
 }
 
 
-void PsGenerator::spawnPsCompiler(const QString &prog, const QStringList& args, const QDir &wrk, int cont)
+void PsGenerator::spawnPsCompiler(const QString &prog, const QStringList& args, const QDir &wrk, AbcProcess::Continuation cont)
 {
     return spawnProgram(prog, args, AbcProcess::ProcessCompiler, wrk, cont);
 }

@@ -36,6 +36,7 @@ ScoreMenu::ScoreMenu(QWidget* parent)
     addAction(tr("Save as"), this, &ScoreMenu::onSaveAsActionTriggered, QKeySequence::SaveAs);
     addAction(tr("Export to MIDI"), this, &ScoreMenu::onExportActionTriggered);
     addAction(tr("Export to Postscript"), this, &ScoreMenu::onExportPsActionTriggered);
+    //addAction(tr("Export to PDF"), this, &ScoreMenu::onExportPdfActionTriggered); FIXME libspectre export fails.
     addAction(tr("Close"), this, &ScoreMenu::onCloseActionTriggered, QKeySequence::Close);
     addAction(tr("Quit"), this, &ScoreMenu::onQuitActionTriggered, QKeySequence::Quit);
 }
@@ -236,6 +237,12 @@ void ScoreMenu::onExportActionTriggered()
         return;
 
     EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
+#if 0
+    if (!ew->editVBoxLayout()->abcPlainTextEdit()->isSaved()) {
+        QMessageBox::warning(w, tr("Warning"), tr("Please save score before to export."));
+        return;
+    }
+#endif
     QString exp = *ew->fileName();
     exp.replace(m_abcext, ".mid");
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export MIDI file"), exp, tr("MIDI file (*.mid)"));
@@ -255,13 +262,44 @@ void ScoreMenu::onExportPsActionTriggered()
         return;
 
     EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
+#if 0
+    if (!ew->editVBoxLayout()->abcPlainTextEdit()->isSaved()) {
+        QMessageBox::warning(w, tr("Warning"), tr("Please save score before to export."));
+        return;
+    }
+#endif
     QString exp = *ew->fileName();
     exp.replace(m_abcext, ".ps");
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export Postscript file"), exp, tr("Postscript file (*.ps)"));
     if (fileName.isEmpty())
         return; /* cancelled */
 
-    ew->editVBoxLayout()->exportPostscript(fileName);
+    ew->editVBoxLayout()->exportPS(fileName);
+}
+
+void ScoreMenu::onExportPdfActionTriggered()
+{
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    AbcMainWindow* w = a->mainWindow();
+    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
+    int cur = edittabs->currentIndex();
+    if (cur < 0)
+        return;
+
+    EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
+#if 0
+    if (!ew->editVBoxLayout()->abcPlainTextEdit()->isSaved()) {
+        QMessageBox::warning(w, tr("Warning"), tr("Please save score before to export."));
+        return;
+    }
+#endif
+    QString exp = *ew->fileName();
+    exp.replace(m_abcext, ".pdf");
+    QString fileName = QFileDialog::getSaveFileName(w, tr("Export PDF file"), exp, tr("PDF file (*.pdf)"));
+    if (fileName.isEmpty())
+        return; /* cancelled */
+
+    ew->editVBoxLayout()->exportPDF(fileName);
 }
 
 void ScoreMenu::onCloseActionTriggered()

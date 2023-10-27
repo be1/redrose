@@ -8,13 +8,13 @@
 #include "abcsmf.h"
 #include "config.h"
 
-MidiGenerator::MidiGenerator(QObject* parent)
-    : Generator(parent)
+MidiGenerator::MidiGenerator(const QString& outfile, QObject* parent)
+    : Generator(outfile, parent)
 {
 
 }
 
-void MidiGenerator::generate(const QString &inputpath, int xopt, QString outputpath, int cont)
+void MidiGenerator::generate(const QString &inputpath, int xopt, AbcProcess::Continuation cont)
 {
     Settings settings;
     QVariant player = settings.value(PLAYER_KEY);
@@ -28,23 +28,24 @@ void MidiGenerator::generate(const QString &inputpath, int xopt, QString outputp
         return;
     }
 
-    if (outputpath.isEmpty()) {
-        outputpath = inputpath;
-        outputpath.replace(m_abcext, QString::number(xopt) + ".mid");
+    if (outFile().isEmpty()) {
+        QString path = inputpath;
+        path.replace(m_abcext, QString::number(xopt) + ".mid");
+        setOutFile(path);
     }
 
     argv.removeAt(0);
     argv << inputpath;
     argv << QString::number(xopt);
     argv << "-v";
-    argv << "-o" << outputpath;
+    argv << "-o" << outFile();
     QFileInfo info(inputpath);
     QDir dir = info.absoluteDir();
 
     spawnMidiCompiler(program, argv, dir, cont);
 }
 
-void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhint, int xopt, QString outputpath, int cont)
+void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhint, int xopt, AbcProcess::Continuation cont)
 {
     Settings settings;
     QVariant vel = settings.value(PLAYER_VELOCITY);
@@ -69,12 +70,13 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
                 return;
         }
 
-        if (outputpath.isEmpty()) {
-                outputpath = inputhint;
-                outputpath.replace(m_abcext, QString::number(xopt) + ".mid");
+        if (outFile().isEmpty()) {
+            QString path = inputhint;
+            path.replace(m_abcext, QString::number(xopt) + ".mid");
+            setOutFile(path);
         }
 
-        smf->writeToFile(outputpath);
+        smf->writeToFile(outFile());
 
         delete smf;
         emit generated(0, "", cont);
@@ -104,7 +106,7 @@ const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
     }
 }
 
-void MidiGenerator::spawnMidiCompiler(const QString& prog, const QStringList &args, const QDir &wrk, int cont)
+void MidiGenerator::spawnMidiCompiler(const QString& prog, const QStringList &args, const QDir &wrk, AbcProcess::Continuation cont)
 {
     return spawnProgram(prog, args, AbcProcess::ProcessPlayer, wrk, cont);
 }
