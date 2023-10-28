@@ -10,6 +10,7 @@ class AbcSmf : public drumstick::File::QSmf
     Q_OBJECT
 public:
     explicit AbcSmf(struct abc* yy, int vel, int short_den, int x = 1, QObject *parent = nullptr);
+    void reset();
 
 private slots:
     void onSMFWriteTempoTrack(void);
@@ -28,35 +29,35 @@ private:
     void writeLyric(const char* l);
     void feedPitchDiff(void);
 
-    struct abc* yy; /* takes ownership of yy */
-    int x;
-    struct abc_tune* t;     /* tune selected by X */
-    char* ks;               /* tune's kh->text */
-    int mks;                /* MIDI smf key signature */
-    int mode;               /* MIDI smf mode (maj/min) */
+    struct abc* m_yy; /* takes ownership of yy */
+    int m_x;
+    struct abc_tune* m_tune; /* tune selected by X */
+    char* m_keysig;          /* tune's kh->text */
+    int m_midi_keysig;       /* MIDI smf key signature */
+    int m_midi_mode;         /* MIDI smf mode (maj/min) */
 
-    const char* l; /* L header text */
-    const char* m; /* M header text */
-    long tpu;      /* ticks per unit */
-    long upm;      /* units per measure */
-    long tempo;    /* quarter per minute */
+    const char* m_unit_length; /* L header text */
+    const char* m_metric;      /* M header text */
+    long m_tick_per_unit;      /* ticks per unit */
+    long m_unit_per_measure;      /* units per measure */
+    long m_tempo;    /* quarter per minute */
 
-    int expr;      /* expression */
-    long last_tick;
-    long dur;      /* note duration */
-    int in_slur;
-    int shorten;
-    double grace_mod; /* duration modified for grace notes */
-    int in_cresc;
-    unsigned char mark_dyn;
-    unsigned char cur_dyn;
-    long grace_tick; /* ticks elapsed by a grace group */
-    char noteon;
-    char program;
-    char control;
-    int transpose;
-    int default_velocity;
-    int default_shorten;
+    int m_expression;      /* expression */
+    long m_last_tick;
+    long m_note_dur;      /* note duration */
+    int m_in_slur;
+    int m_shorten;
+    double m_grace_mod; /* duration modified for grace notes */
+    int m_in_cresc;
+    unsigned char m_mark_dyn;
+    unsigned char m_cur_dyn;
+    long m_grace_tick; /* ticks elapsed by a grace group */
+    char m_noteon;
+    char m_program;
+    char m_control;
+    int m_transpose;
+    int m_default_velocity;
+    int m_default_shorten;
 };
 
 #endif // ABCSMF_H

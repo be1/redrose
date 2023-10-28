@@ -4,100 +4,106 @@
 #include "abcsmf.h"
 
 AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) : drumstick::File::QSmf(parent),
-        yy(yy),
-        x(x),
-        t(nullptr),
-        ks(nullptr),
-        l(nullptr),
-        m(nullptr),
-        tpu(0),
-        upm(0),
-        tempo(0),
-        expr(EXPRESSION_DEFAULT),
-        last_tick(0),
-        dur(0),
-        in_slur(short_den),
-        in_cresc(0),
-        mark_dyn(vel),
-        cur_dyn(vel),
-        grace_tick(0),
-        noteon(0x90),
-        program(0xc0),
-        control(0xb0),
-        transpose(0),
-        default_velocity(vel),
-        default_shorten(short_den)
+        m_yy(yy),
+        m_x(x),
+        m_tune(nullptr),
+        m_keysig(nullptr),
+        m_unit_length(nullptr),
+        m_metric(nullptr),
+        m_tick_per_unit(0),
+        m_unit_per_measure(0),
+        m_tempo(0),
+        m_expression(EXPRESSION_DEFAULT),
+        m_last_tick(0),
+        m_note_dur(0),
+        m_in_slur(short_den),
+        m_in_cresc(0),
+        m_mark_dyn(vel),
+        m_cur_dyn(vel),
+        m_grace_tick(0),
+        m_noteon(0x90),
+        m_program(0xc0),
+        m_control(0xb0),
+        m_transpose(0),
+        m_default_velocity(vel),
+        m_default_shorten(short_den)
 {
     connect(this, &QSmf::signalSMFWriteTempoTrack, this, &AbcSmf::onSMFWriteTempoTrack);
     connect(this, &QSmf::signalSMFWriteTrack, this, &AbcSmf::onSMFWriteTrack);
 
-    t = abc_find_tune(yy, x);
-    if (!t)
+    m_tune = abc_find_tune(yy, x);
+    if (!m_tune)
         return;
-
-    struct abc_header* lh = abc_find_header(t, 'L');
-    if (lh)
-        l = lh->text;
-    else
-        l = "1/8";
-    struct abc_header* mh = abc_find_header(t, 'M');
-    if (mh)
-        m = mh->text;
-    else
-        m = "4/4";
-
-    upm = abc_unit_per_measure(l, m);
-    struct abc_header* qh = abc_find_header(t, 'Q');
-    if (qh)
-        tempo = abc_tempo(qh->text);
-    else
-        tempo = 120;
 
     setDivision(DPQN);
     //setTextCodec(QTextCodec::codecForName("UTF-8"));
     setFileFormat(1);
-    setTracks(t->count);
+    setTracks(m_tune->count);
+}
+
+void AbcSmf::reset() {
+    m_tune = abc_find_tune(m_yy, m_x);
+    if (!m_tune)
+        return;
+
+    struct abc_header* lh = abc_find_header(m_tune, 'L');
+    if (lh)
+        m_unit_length = lh->text;
+    else
+        m_unit_length = "1/8";
+    struct abc_header* mh = abc_find_header(m_tune, 'M');
+    if (mh)
+        m_metric = mh->text;
+    else
+        m_metric = "4/4";
+
+    m_unit_per_measure = abc_unit_per_measure(m_unit_length, m_metric);
+    struct abc_header* qh = abc_find_header(m_tune, 'Q');
+    if (qh)
+        m_tempo = abc_tempo(qh->text);
+    else
+        m_tempo = 120;
 
     long num = 1, den = 8;
-    getNumDen(l, &num, &den);
+    getNumDen(m_unit_length, &num, &den);
 
-    tpu = (num * 4 * DPQN) / (den);
+    m_tick_per_unit = (num * 4 * DPQN) / (den);
 
-    struct abc_header* kh = abc_find_header(t, 'K');
+    struct abc_header* kh = abc_find_header(m_tune, 'K');
     if (!kh) {
-        ks = nullptr, mode = 0;
+        m_keysig = nullptr, m_midi_mode = 0;
     } else {
-        ks = kh->text;
-        mks = getSMFKeySignature(ks, &mode);
+        m_keysig = kh->text;
+        m_midi_keysig = getSMFKeySignature(m_keysig, &m_midi_mode);
     }
 }
 
 void AbcSmf::manageDecoration(struct abc_symbol* s) {
-    if (!strcmp(s->text, "pppp")) mark_dyn = cur_dyn = 20;
-    else if (!strcmp(s->text, "ppp")) mark_dyn = cur_dyn = 30;
-    else if (!strcmp(s->text, "pp")) mark_dyn = cur_dyn = 45;
-    else if (!strcmp(s->text, "p")) mark_dyn = cur_dyn = 60;
-    else if (!strcmp(s->text, "mp")) mark_dyn = cur_dyn = 75;
-    else if (!strcmp(s->text, "mf")) mark_dyn = cur_dyn = 90;
-    else if (!strcmp(s->text, "f")) mark_dyn = cur_dyn = 105;
-    else if (!strcmp(s->text, "ff")) mark_dyn = cur_dyn = 120;
-    else if (!strcmp(s->text, "fff")) mark_dyn = cur_dyn = 124;
-    else if (!strcmp(s->text, "ffff")) mark_dyn = cur_dyn = 127;
-    else if (!strcmp(s->text, "sfz")) mark_dyn = cur_dyn = 100;
-    else if (!strcmp(s->text, ".")) shorten = 2;
-    else if (!strcmp(s->text, "H")) shorten = 100;
-    else if (!strcmp(s->text, "tenuto")) shorten = 100;
-    else if (!strcmp(s->text, "L")) expr = 127;
-    else if (!strcmp(s->text, "accent")) expr = 127;
-    else if (!strcmp(s->text, "emphasis")) expr = 127;
-    else if (!strcmp(s->text, "crescendo(")) in_cresc = 1;
-    else if (!strcmp(s->text, "<(")) in_cresc = 1;
-    else if (!strcmp(s->text, "crescendo)")) in_cresc = 0;
-    else if (!strcmp(s->text, "<)")) in_cresc = 0;
-    else if (!strcmp(s->text, "diminuendo(")) in_cresc = -1;
-    else if (!strcmp(s->text, ">(")) in_cresc = -1;
-    else if (!strcmp(s->text, "diminuendo)")) in_cresc = 0;
-    else if (!strcmp(s->text, ">)")) in_cresc = 0;
+    if (!strcmp(s->text, "pppp")) m_mark_dyn = m_cur_dyn = 20;
+    else if (!strcmp(s->text, "ppp")) m_mark_dyn = m_cur_dyn = 30;
+    else if (!strcmp(s->text, "pp")) m_mark_dyn = m_cur_dyn = 45;
+    else if (!strcmp(s->text, "p")) m_mark_dyn = m_cur_dyn = 60;
+    else if (!strcmp(s->text, "mp")) m_mark_dyn = m_cur_dyn = 75;
+    else if (!strcmp(s->text, "mf")) m_mark_dyn = m_cur_dyn = 90;
+    else if (!strcmp(s->text, "f")) m_mark_dyn = m_cur_dyn = 105;
+    else if (!strcmp(s->text, "ff")) m_mark_dyn = m_cur_dyn = 120;
+    else if (!strcmp(s->text, "fff")) m_mark_dyn = m_cur_dyn = 124;
+    else if (!strcmp(s->text, "ffff")) m_mark_dyn = m_cur_dyn = 127;
+    else if (!strcmp(s->text, "sfz")) m_mark_dyn = m_cur_dyn = 100;
+    else if (!strcmp(s->text, ".")) m_shorten = 2;
+    else if (!strcmp(s->text, "H")) m_shorten = 100;
+    else if (!strcmp(s->text, "tenuto")) m_shorten = 100;
+    else if (!strcmp(s->text, "L")) m_expression = 127;
+    else if (!strcmp(s->text, "accent")) m_expression = 127;
+    else if (!strcmp(s->text, "emphasis")) m_expression = 127;
+    else if (!strcmp(s->text, "crescendo(")) m_in_cresc = 1;
+    else if (!strcmp(s->text, "<(")) m_in_cresc = 1;
+    else if (!strcmp(s->text, "crescendo)")) m_in_cresc = 0;
+    else if (!strcmp(s->text, "<)")) m_in_cresc = 0;
+    else if (!strcmp(s->text, "diminuendo(")) m_in_cresc = -1;
+    else if (!strcmp(s->text, ">(")) m_in_cresc = -1;
+    else if (!strcmp(s->text, "diminuendo)")) m_in_cresc = 0;
+    else if (!strcmp(s->text, ">)")) m_in_cresc = 0;
 }
 
 void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
@@ -106,8 +112,8 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
     if (s->text[0] == 'Z' || s->text[0] == 'z') {
         /* no event */
     } else {
-        delta_tick = (tpu * s->ev.start_num / s->ev.start_den) - last_tick;
-        last_tick += delta_tick;
+        delta_tick = (m_tick_per_unit * s->ev.start_num / s->ev.start_den) - m_last_tick;
+        m_last_tick += delta_tick;
 
         /* modify cur_dyn from context */
         setDynamic(delta_tick);
@@ -120,14 +126,14 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
 
 
         if (s->ev.value) {
-            writeMidiEvent(delta_tick, noteon, chan, s->ev.key + transpose, cur_dyn * s->ev.value);
+            writeMidiEvent(delta_tick, m_noteon, chan, s->ev.key + m_transpose, m_cur_dyn * s->ev.value);
         } else {
-            long small = tpu * upm / 8;
+            long small = m_tick_per_unit * m_unit_per_measure / 8;
             small = (delta_tick > small) ? small : delta_tick;
-            writeMidiEvent(delta_tick - (small / shorten), noteon, chan, s->ev.key + transpose, 0x00); /* note off */
-            last_tick -= (small / shorten);
+            writeMidiEvent(delta_tick - (small / m_shorten), m_noteon, chan, s->ev.key + m_transpose, 0x00); /* note off */
+            m_last_tick -= (small / m_shorten);
             /* reset after singlenote decorations */
-            shorten = in_slur;
+            m_shorten = m_in_slur;
         }
     }
 }
@@ -137,30 +143,31 @@ void AbcSmf::onSMFWriteTempoTrack(void) {
 }
 
 void AbcSmf::onSMFWriteTrack(int track) {
+    reset();
     int sluring = 0;
     int chan = track;
     //long mspqn = 60000 / tempo;
     //writeTempo(0, mspqn);
-    writeBpmTempo(0, tempo);
-    writeKeySignature(0, mks, mode);
+    writeBpmTempo(0, m_tempo);
+    writeKeySignature(0, m_midi_keysig, m_midi_mode);
 
     /* transform voice nr 'track' from tune 't' into MIDI-aware voice 'v' */
-    struct abc_voice* v = abc_make_events_for_voice(t, track);
+    struct abc_voice* v = abc_make_events_for_voice(m_tune, track);
 
     struct abc_symbol* s = v->first;
 
-    last_tick = 0;
-    transpose = 0;
+    m_last_tick = 0;
+    m_transpose = 0;
 
-    in_cresc = 0;
-    mark_dyn = default_velocity;
-    cur_dyn = mark_dyn; /* current dynamic in the tune */
-    grace_tick = 0; /* grace group duration */
+    m_in_cresc = 0;
+    m_mark_dyn = m_default_velocity;
+    m_cur_dyn = m_mark_dyn; /* current dynamic in the tune */
+    m_grace_tick = 0; /* grace group duration */
 
-    grace_mod = 1.0; /* duration modified for graces */
-    expr = EXPRESSION_DEFAULT;
-    in_slur = default_shorten;
-    shorten = in_slur; /* dur will be shortened of 1/10 of a unit */
+    m_grace_mod = 1.0; /* duration modified for graces */
+    m_expression = EXPRESSION_DEFAULT;
+    m_in_slur = m_default_shorten;
+    m_shorten = m_in_slur; /* dur will be shortened of 1/10 of a unit */
 
     writeMetaEvent(0, 0x03, QString(v->v)); /* textual voice name */
 
@@ -180,18 +187,18 @@ void AbcSmf::onSMFWriteTrack(int track) {
             if (s->ev.type == EV_KEYSIG) {
                 writeKeySignature(0, s->ev.key, s->ev.value);
             } else if (s->ev.type == EV_TEMPO) {
-                tempo = s->ev.value;
+                m_tempo = s->ev.value;
                 //long mspqn = 60000 / tempo;
                 //writeTempo(0, mspqn);
-                writeBpmTempo(0, tempo);
+                writeBpmTempo(0, m_tempo);
             } else if (s->ev.type == EV_METRIC) {
-                m = &s->text[2];
-                upm = abc_unit_per_measure(l, m);
+                m_metric = &s->text[2];
+                m_unit_per_measure = abc_unit_per_measure(m_unit_length, m_metric);
             } else if (s->ev.type == EV_UNIT) {
-                l = &s->text[2];
+                m_unit_length = &s->text[2];
                 /* 'key' = numerator, 'value' = denominator */
-                tpu = (s->ev.key * 4 * DPQN) / (s->ev.value);
-                upm = abc_unit_per_measure(l, m);
+                m_tick_per_unit = (s->ev.key * 4 * DPQN) / (s->ev.value);
+                m_unit_per_measure = abc_unit_per_measure(m_unit_length, m_metric);
             }
             break;
         }
@@ -206,10 +213,10 @@ void AbcSmf::onSMFWriteTrack(int track) {
         case ABC_SLUR: {
             if (strchr(s->text, '(')) {
                 sluring++;
-                shorten = in_slur = 100;
+                m_shorten = m_in_slur = 100;
             } else {
                 if (sluring < 2)
-                    shorten =  in_slur = default_shorten;
+                    m_shorten =  m_in_slur = m_default_shorten;
 
                 if (sluring > 0)
                     sluring--;
@@ -223,9 +230,9 @@ void AbcSmf::onSMFWriteTrack(int track) {
         case ABC_INST: {
             int val;
             if (sscanf(s->text, "MIDI program %d", &val)) {
-                writeMidiEvent(0, program, chan, val);
+                writeMidiEvent(0, m_program, chan, val);
             } else if (sscanf(s->text, "MIDI transpose %d", &val)) {
-                transpose = val;
+                m_transpose = val;
             } else if (sscanf(s->text, "MIDI channel %d", &val)) {
                 chan = val -1;
             }
@@ -308,19 +315,19 @@ int AbcSmf::getSMFKeySignature(const char* text, int* mode) {
 
 void AbcSmf::setDynamic(long dur) {
     /* dynamics */
-    long d = (dur > 4 * tpu ? 4 : dur > 2 * tpu ? 2 : 1);
-    if (in_cresc > 0)
-        cur_dyn = (cur_dyn + d) < 128 ? cur_dyn + d : 127;
-    else if (in_cresc < 0)
-        cur_dyn = (cur_dyn - d) > 30 ? cur_dyn - d : 30;
+    long d = (dur > 4 * m_tick_per_unit ? 4 : dur > 2 * m_tick_per_unit ? 2 : 1);
+    if (m_in_cresc > 0)
+        m_cur_dyn = (m_cur_dyn + d) < 128 ? m_cur_dyn + d : 127;
+    else if (m_in_cresc < 0)
+        m_cur_dyn = (m_cur_dyn - d) > 30 ? m_cur_dyn - d : 30;
     else
-        cur_dyn = mark_dyn;
+        m_cur_dyn = m_mark_dyn;
 }
 
 void AbcSmf::writeExpression(int chan) {
-    if (expr) {
-        writeMidiEvent(0, control, chan, 0x0b, expr);
-        expr = EXPRESSION_DEFAULT;
+    if (m_expression) {
+        writeMidiEvent(0, m_control, chan, 0x0b, m_expression);
+        m_expression = EXPRESSION_DEFAULT;
     }
 }
 
