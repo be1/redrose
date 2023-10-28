@@ -41,7 +41,7 @@ Wizard::Wizard(QWidget *parent) :
 
     QHBoxLayout* hbox3 = new QHBoxLayout;
     QLabel* label3 = new QLabel;
-    label3->setText(tr("Templates:"));
+    label3->setText(tr("Template:"));
     m_template = new QComboBox;
     m_template->addItem(tr("none"), Template::TemplateNone);
     m_template->addItem(tr("Keyboard"), Template::TemplateKeyboard);

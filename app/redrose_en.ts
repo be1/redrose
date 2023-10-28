@@ -13,26 +13,26 @@
     <name>AbcPlainTextEdit</name>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="60"/>
-        <location filename="AbcPlainTextEdit.cpp" line="186"/>
+        <location filename="AbcPlainTextEdit.cpp" line="185"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="66"/>
-        <location filename="AbcPlainTextEdit.cpp" line="200"/>
+        <location filename="AbcPlainTextEdit.cpp" line="199"/>
         <source>Find forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="72"/>
-        <location filename="AbcPlainTextEdit.cpp" line="214"/>
+        <location filename="AbcPlainTextEdit.cpp" line="213"/>
         <source>Find backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="186"/>
-        <location filename="AbcPlainTextEdit.cpp" line="200"/>
-        <location filename="AbcPlainTextEdit.cpp" line="214"/>
+        <location filename="AbcPlainTextEdit.cpp" line="185"/>
+        <location filename="AbcPlainTextEdit.cpp" line="199"/>
+        <location filename="AbcPlainTextEdit.cpp" line="213"/>
         <source>Text:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -108,77 +108,93 @@ Close this score anyway?</source>
 <context>
     <name>EditVBoxLayout</name>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="35"/>
+        <location filename="EditVBoxLayout.cpp" line="34"/>
         <source>X:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="93"/>
+        <location filename="EditVBoxLayout.cpp" line="88"/>
         <source>Cannot load sound font.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="172"/>
+        <location filename="EditVBoxLayout.cpp" line="155"/>
         <source>Generating MIDI for playing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="181"/>
+        <location filename="EditVBoxLayout.cpp" line="164"/>
         <source>Stopping synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="166"/>
+        <location filename="EditVBoxLayout.cpp" line="149"/>
         <source>Please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="262"/>
+        <location filename="EditVBoxLayout.cpp" line="257"/>
+        <location filename="EditVBoxLayout.cpp" line="273"/>
         <source>Exporting score...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="278"/>
+        <location filename="EditVBoxLayout.cpp" line="293"/>
         <source>Error during MIDI generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="281"/>
-        <location filename="EditVBoxLayout.cpp" line="283"/>
-        <location filename="EditVBoxLayout.cpp" line="407"/>
-        <location filename="EditVBoxLayout.cpp" line="440"/>
+        <location filename="EditVBoxLayout.cpp" line="296"/>
+        <location filename="EditVBoxLayout.cpp" line="298"/>
+        <location filename="EditVBoxLayout.cpp" line="346"/>
+        <location filename="EditVBoxLayout.cpp" line="355"/>
+        <location filename="EditVBoxLayout.cpp" line="364"/>
+        <location filename="EditVBoxLayout.cpp" line="460"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="283"/>
+        <location filename="EditVBoxLayout.cpp" line="298"/>
         <source>Parse error in selected notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="290"/>
+        <location filename="EditVBoxLayout.cpp" line="305"/>
         <source>MIDI generation finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="307"/>
+        <location filename="EditVBoxLayout.cpp" line="324"/>
         <source>Synthesis error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="309"/>
+        <location filename="EditVBoxLayout.cpp" line="326"/>
         <source>Synthesis finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="405"/>
-        <location filename="EditVBoxLayout.cpp" line="438"/>
+        <location filename="EditVBoxLayout.cpp" line="346"/>
+        <source>Could not find PS score</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="EditVBoxLayout.cpp" line="355"/>
+        <source>Could not load PS score</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="EditVBoxLayout.cpp" line="364"/>
+        <source>Could not save to PDF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="EditVBoxLayout.cpp" line="458"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="410"/>
-        <location filename="EditVBoxLayout.cpp" line="443"/>
+        <location filename="EditVBoxLayout.cpp" line="463"/>
         <source>Score generated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -284,17 +300,17 @@ Redrose version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="61"/>
+        <location filename="midigenerator.cpp" line="62"/>
         <source>Parse error line: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="61"/>
+        <location filename="midigenerator.cpp" line="62"/>
         <source>, char: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="67"/>
+        <location filename="midigenerator.cpp" line="68"/>
         <source>Out of memory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -415,7 +431,7 @@ Redrose version </source>
 <context>
     <name>PsGenerator</name>
     <message>
-        <location filename="psgenerator.cpp" line="52"/>
+        <location filename="psgenerator.cpp" line="55"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -431,158 +447,244 @@ Redrose version </source>
 <context>
     <name>ScoreMenu</name>
     <message>
-        <location filename="ScoreMenu.cpp" line="16"/>
+        <location filename="ScoreMenu.cpp" line="19"/>
         <source>Score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="18"/>
+        <location filename="ScoreMenu.cpp" line="21"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="19"/>
+        <location filename="ScoreMenu.cpp" line="22"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="27"/>
+        <location filename="ScoreMenu.cpp" line="30"/>
         <source>Recently opened</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="33"/>
+        <location filename="ScoreMenu.cpp" line="36"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="34"/>
+        <location filename="ScoreMenu.cpp" line="37"/>
         <source>Save as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="35"/>
+        <location filename="ScoreMenu.cpp" line="38"/>
         <source>Export to MIDI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="36"/>
+        <location filename="ScoreMenu.cpp" line="39"/>
         <source>Export to Postscript</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="37"/>
+        <location filename="ScoreMenu.cpp" line="41"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="38"/>
+        <location filename="ScoreMenu.cpp" line="42"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="57"/>
+        <location filename="ScoreMenu.cpp" line="61"/>
         <source>Really quit?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="59"/>
+        <location filename="ScoreMenu.cpp" line="63"/>
         <source> score(s) not saved.
 Do you want to quit anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="81"/>
+        <location filename="ScoreMenu.cpp" line="85"/>
         <source>Open ABC score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="81"/>
-        <location filename="ScoreMenu.cpp" line="213"/>
+        <location filename="ScoreMenu.cpp" line="85"/>
+        <location filename="ScoreMenu.cpp" line="308"/>
         <source>ABC score (*.abc)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="103"/>
+        <location filename="ScoreMenu.cpp" line="198"/>
         <source>&amp;%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="163"/>
-        <location filename="ScoreMenu.cpp" line="180"/>
-        <location filename="ScoreMenu.cpp" line="197"/>
+        <location filename="ScoreMenu.cpp" line="258"/>
+        <location filename="ScoreMenu.cpp" line="275"/>
+        <location filename="ScoreMenu.cpp" line="292"/>
+        <location filename="ScoreMenu.cpp" line="334"/>
+        <location filename="ScoreMenu.cpp" line="359"/>
+        <location filename="ScoreMenu.cpp" line="384"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="163"/>
+        <location filename="ScoreMenu.cpp" line="258"/>
         <source>Could not open score!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="180"/>
+        <location filename="ScoreMenu.cpp" line="275"/>
         <source>Could not save an untitled ABC file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="195"/>
+        <location filename="ScoreMenu.cpp" line="290"/>
         <source>Score saved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="197"/>
+        <location filename="ScoreMenu.cpp" line="292"/>
         <source>Could not save ABC score!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="213"/>
+        <location filename="ScoreMenu.cpp" line="308"/>
         <source>Save ABC score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="239"/>
+        <location filename="ScoreMenu.cpp" line="334"/>
+        <location filename="ScoreMenu.cpp" line="359"/>
+        <location filename="ScoreMenu.cpp" line="384"/>
+        <source>Please save score before to export.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ScoreMenu.cpp" line="340"/>
         <source>Export MIDI file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="239"/>
+        <location filename="ScoreMenu.cpp" line="340"/>
         <source>MIDI file (*.mid)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="258"/>
+        <location filename="ScoreMenu.cpp" line="365"/>
         <source>Export Postscript file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="258"/>
+        <location filename="ScoreMenu.cpp" line="365"/>
         <source>Postscript file (*.ps)</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>SvgGenerator</name>
     <message>
-        <location filename="svggenerator.cpp" line="59"/>
-        <source>Error during score generation.</source>
+        <location filename="ScoreMenu.cpp" line="390"/>
+        <source>Export PDF file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ScoreMenu.cpp" line="390"/>
+        <source>PDF file (*.pdf)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ScoreMenu.cpp" line="428"/>
+        <source>Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ScoreMenu.cpp" line="428"/>
+        <source>Composer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ViewVSplitter</name>
     <message>
-        <location filename="ViewVSplitter.cpp" line="13"/>
+        <location filename="ViewVSplitter.cpp" line="12"/>
         <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ViewVSplitter.cpp" line="14"/>
+        <location filename="ViewVSplitter.cpp" line="13"/>
         <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ViewVSplitter.cpp" line="15"/>
+        <location filename="ViewVSplitter.cpp" line="14"/>
         <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Wizard</name>
+    <message>
+        <location filename="wizard.cpp" line="12"/>
+        <source>New score</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="18"/>
+        <source>Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="20"/>
+        <source>Composer / Lyricist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="24"/>
+        <source>Voices:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="33"/>
+        <source>Grouping:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="35"/>
+        <location filename="wizard.cpp" line="46"/>
+        <source>none</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="36"/>
+        <source>Brace {</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="37"/>
+        <source>Bracket [</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="44"/>
+        <source>Template:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="47"/>
+        <source>Keyboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="48"/>
+        <source>String Quartet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="49"/>
+        <source>SATB Choir</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
