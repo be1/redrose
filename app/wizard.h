@@ -15,14 +15,12 @@ public:
     Wizard(QWidget* parent = nullptr);
 
     const QString title();
-    const QString subtitle();
     const QString composer();
     int voices();
     QString braceType();
 
 private:
     QLineEdit* m_title;
-    QLineEdit* m_subtitle;
     QLineEdit* m_composer;
     QSpinBox* m_voices;
     QComboBox* m_bracetype;

@@ -16,8 +16,6 @@ Wizard::Wizard(QWidget *parent) :
 
     m_title = new QLineEdit;
     m_title->setPlaceholderText(tr("Title"));
-    m_subtitle = new QLineEdit;
-    m_subtitle->setPlaceholderText(tr("Subtitle"));
     m_composer = new QLineEdit;
     m_composer->setPlaceholderText(tr("Composer / Lyricist"));
 
@@ -45,7 +43,6 @@ Wizard::Wizard(QWidget *parent) :
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
 
     mainLayout->addWidget(m_title);
-    mainLayout->addWidget(m_subtitle);
     mainLayout->addWidget(m_composer);
     mainLayout->addLayout(hbox1);
     mainLayout->addLayout(hbox2);
@@ -56,11 +53,6 @@ Wizard::Wizard(QWidget *parent) :
 const QString Wizard::title()
 {
     return m_title->text();
-}
-
-const QString Wizard::subtitle()
-{
-    return m_subtitle->text();
 }
 
 const QString Wizard::composer()

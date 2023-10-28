@@ -333,8 +333,8 @@ void ScoreMenu::onNewActionTriggered()
     Wizard* wiz = new Wizard(a->mainWindow());
     wiz->exec();
 
-    QString abc("%abc\nX:1\nT:%1\nS:%2\nC:%3\nQ:1/4=120\nL:1/8\nM:4/4\nK:CMaj\n");
-    abc = abc.arg(wiz->title(), wiz->subtitle(), wiz->composer());
+    QString abc("%abc\nX:1\nT:%1\nC:%2\nQ:1/4=120\nL:1/8\nM:4/4\nK:CMaj\n");
+    abc = abc.arg(wiz->title(), wiz->composer());
 
     if (!wiz->braceType().isEmpty()) {
         abc = abc.append("%%staves %1").arg(wiz->braceType());
