@@ -30,14 +30,27 @@ Wizard::Wizard(QWidget *parent) :
 
     QHBoxLayout* hbox2 = new QHBoxLayout;
     QLabel* label2 = new QLabel;
-    label2->setText(tr("Brace type:"));
-    m_bracetype = new QComboBox;
-    m_bracetype->addItem(tr("none"), "");
-    m_bracetype->addItem(tr("Brace {"), "{");
-    m_bracetype->addItem(tr("Bracket ["), "[");
-    label2->setBuddy(m_bracetype);
+    label2->setText(tr("Grouping:"));
+    m_grouping = new QComboBox;
+    m_grouping->addItem(tr("none"), "");
+    m_grouping->addItem(tr("Brace {"), "{");
+    m_grouping->addItem(tr("Bracket ["), "[");
+    label2->setBuddy(m_grouping);
     hbox2->addWidget(label2);
-    hbox2->addWidget(m_bracetype);
+    hbox2->addWidget(m_grouping);
+
+    QHBoxLayout* hbox3 = new QHBoxLayout;
+    QLabel* label3 = new QLabel;
+    label3->setText(tr("Templates:"));
+    m_template = new QComboBox;
+    m_template->addItem(tr("none"), Template::TemplateNone);
+    m_template->addItem(tr("Keyboard"), Template::TemplateKeyboard);
+    m_template->addItem(tr("String Quartet"), Template::TemplateString4tet);
+    m_template->addItem(tr("SATB Choir"), Template::TemplateSATBChoir);
+    connect(m_template, &QComboBox::currentTextChanged, this, &Wizard::onTemplateChange);
+    label3->setBuddy(m_template);
+    hbox3->addWidget(label3);
+    hbox3->addWidget(m_template);
 
     buttons = new QDialogButtonBox(QDialogButtonBox::Ok);
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -46,6 +59,7 @@ Wizard::Wizard(QWidget *parent) :
     mainLayout->addWidget(m_composer);
     mainLayout->addLayout(hbox1);
     mainLayout->addLayout(hbox2);
+    mainLayout->addLayout(hbox3);
     mainLayout->addWidget(buttons);
     setLayout(mainLayout);
 }
@@ -65,7 +79,19 @@ int Wizard::voices()
     return m_voices->value();
 }
 
-QString Wizard::braceType()
+QString Wizard::grouping()
 {
-    return m_bracetype->currentData().toString();
+    return m_grouping->currentData().toString();
+}
+
+Wizard::Template Wizard::templat()
+{
+    return Template(m_template->currentData().toInt());
+}
+
+void Wizard::onTemplateChange()
+{
+    /* assume 0 is 'none' */
+    m_voices->setEnabled(!m_template->currentIndex());
+    m_grouping->setEnabled(!m_template->currentIndex());
 }

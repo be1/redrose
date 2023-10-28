@@ -3,6 +3,7 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include "wizard.h"
 
 class ScoreMenu: public QMenu
 {
@@ -18,6 +19,7 @@ protected:
     void setRecentFile(const QString& fileName, bool ok);
     void updateRecentFileActions();
     QString strippedName(const QString &fullFileName);
+    void generateTemplate(QString &abc, Wizard::Template tmpl);
 
 protected slots:
     void onQuitActionTriggered();

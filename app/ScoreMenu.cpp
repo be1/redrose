@@ -96,6 +96,97 @@ QString ScoreMenu::strippedName(const QString& fullFileName)
     return QFileInfo(fullFileName).fileName();
 }
 
+void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
+{
+    int voices = 1;
+    QString grouping;
+
+    switch (tmpl) {
+    case Wizard::TemplateKeyboard:
+        voices = 2;
+        grouping = "{";
+        break;
+    case Wizard::TemplateString4tet:
+        voices = 4;
+        grouping = "[";
+        break;
+    case Wizard::TemplateSATBChoir:
+        voices = 4;
+        break;
+    case Wizard::TemplateNone:
+    default:
+        break;
+    }
+
+    if (!grouping.isEmpty()) {
+        abc = abc.append("%%staves ");
+        abc = abc.append(grouping);
+        for (int i = 0; i < voices; i++) {
+            abc = abc.append(" %1").arg(i+1);
+        }
+
+        if (grouping == "{")
+            abc = abc.append(" }\n");
+        else
+            abc = abc.append(" ]\n");
+    }
+
+    for (int i = 0; i < voices; i++) {
+        abc = abc.append("V:%1").arg(i+1);
+        if (tmpl == Wizard::TemplateKeyboard) {
+            abc = abc.append("\n");
+            abc = abc.append("%%MIDI program 0 % Grand Piano\n");
+            abc = abc.append("C8|]\n");
+        } else if (tmpl == Wizard::TemplateString4tet) {
+            switch (i) {
+            case 0:
+                abc = abc.append(" clef=treble name=Violin1 sname=Vln.1\n");
+                abc = abc.append("%%MIDI program 40 % Violin\n");
+                abc = abc.append("c8|]\n");
+                break;
+            case 1:
+                abc = abc.append(" clef=treble name=Violin2 sname=Vln.2\n");
+                abc = abc.append("%%MIDI program 40 % Violin\n");
+                abc = abc.append("G8|]\n");
+                break;
+            case 2:
+                abc = abc.append(" clef=alto name=Viola sname=Vla.\n");
+                abc = abc.append("%%MIDI program 41 % Viola\n");
+                abc = abc.append("E8|]\n");
+                break;
+            case 3:
+                abc = abc.append(" clef=bass name=Cello sname=Clo.\n");
+                abc = abc.append("%%MIDI program 42 % Cello\n");
+                abc = abc.append("C8|]\n");
+                break;
+            }
+        } else if (tmpl == Wizard::TemplateSATBChoir) {
+            switch (i) {
+            case 0:
+                abc = abc.append(" clef=treble name=Soparno sname=S.\n");
+                abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
+                abc = abc.append("c8|]\n");
+                break;
+            case 1:
+                abc = abc.append(" clef=treble name=Alto sname=A.\n");
+                abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
+                abc = abc.append("E8|]\n");
+                break;
+            case 2:
+                abc = abc.append(" clef=tenor name=Tenor sname=T.\n");
+                abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
+                abc = abc.append("G,8|]\n");
+                break;
+            case 3:
+                abc = abc.append(" clef=bass name=Bass sname=B.\n");
+                abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
+                abc = abc.append("C,8|]\n");
+                break;
+            }
+        }
+    }
+}
+
 void ScoreMenu::updateRecentFileActions()
 {
     Settings settings;
@@ -336,24 +427,28 @@ void ScoreMenu::onNewActionTriggered()
     QString abc("%abc\nX:1\nT:%1\nC:%2\nQ:1/4=120\nL:1/8\nM:4/4\nK:CMaj\n");
     abc = abc.arg(wiz->title(tr("Title")), wiz->composer(tr("Composer")));
 
-    if (!wiz->braceType().isEmpty()) {
-        abc = abc.append("%%staves %1").arg(wiz->braceType());
-        for (int i = 1; i <= wiz->voices(); i++) {
-            abc = abc.append(" ");
-            abc = abc.append(QString::number(i));
+    if (wiz->templat() == Wizard::TemplateNone) {
+        if (!wiz->grouping().isEmpty()) {
+            abc = abc.append("%%staves %1").arg(wiz->grouping());
+            for (int i = 1; i <= wiz->voices(); i++) {
+                abc = abc.append(" ");
+                abc = abc.append(QString::number(i));
+            }
+
+            if (wiz->grouping() == "{")
+                abc.append(" }");
+            else if (wiz->grouping() == "[")
+                abc.append(" ]");
+
+            abc = abc.append("\n");
         }
 
-        if (wiz->braceType() == "{")
-            abc.append(" }");
-        else if (wiz->braceType() == "[")
-            abc.append(" ]");
-
-        abc = abc.append("\n");
-    }
-
-    for (int i = 1; i <= wiz->voices(); i++) {
-        abc = abc.append("V:%1\n").arg(i);
-        abc = abc.append("C8|]\n");
+        for (int i = 1; i <= wiz->voices(); i++) {
+            abc = abc.append("V:%1\n").arg(i);
+            abc = abc.append("C8|]\n");
+        }
+    } else {
+        generateTemplate(abc, wiz->templat());
     }
 
     EditTabWidget *edittabs = a->mainWindow()->mainHSplitter()->editTabWidget();
