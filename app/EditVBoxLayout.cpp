@@ -222,16 +222,16 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     Settings settings;
     QVariant player = settings.value(PLAYER_KEY);
 
+    if (filename.isEmpty()) {
+        filename = tempFile.fileName();
+        filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
+    }
+
+    midigen = new MidiGenerator(filename, this);
+    connect(midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
+
     if (player == LIBABC2SMF) {
         QByteArray ba = tosave.toUtf8();
-
-        if (filename.isEmpty()) {
-            filename = tempFile.fileName();
-            filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
-        }
-
-        midigen = new MidiGenerator(filename, this);
-        connect(midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
         midigen->generate(ba, tempFile.fileName(), xspinbox.value(), cont);
     } else {
         midigen->generate(tempFile.fileName(), xspinbox.value(), cont);
