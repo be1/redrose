@@ -25,8 +25,9 @@ struct abc {
 	int error_line;
 	int error_char;
     char* ks; /* first key signature */
-    char* ul;  /* first unit length */
-    char* mm;  /* first measure metric */
+    char* ul; /* first unit length */
+    char* mm; /* first measure metric */
+    char* qq; /* first measure tempo */
 };
 
 struct abc_header {
@@ -51,6 +52,7 @@ struct abc_voice {
     char* ks; /* current key signature */
     char* ul;  /* current unit length */
     char* mm;  /* current measure metric */
+    char* qq;  /* current measure tempo */
 };
 
 enum abc_event_type { EV_NOTE, EV_KEYSIG, EV_TEMPO, EV_METRIC, EV_UNIT };
@@ -170,6 +172,8 @@ long abc_tempo(const char* th_text);
 
 /* gives the nr of base units (in L header) per measure (based on M header) */
 int abc_unit_per_measure(const char* lh_text, const char* mh_text);
+
+void abc_debug_headers(struct abc* yy);
 
 #ifdef __cplusplus
 }

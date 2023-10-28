@@ -26,11 +26,12 @@ static void print_error(struct abc* auxil) {
 	int line = 1;
 
 	int l = 0;
-	for (int i = 0; i < auxil->buffer->index; i++)
+	for (int i = 0; i < auxil->buffer->index; i++) {
 		if (auxil->buffer->buf[i] == '\n') {
 			line++;
 			l = i + 1;
 		}
+	}
 
 	auxil->error = 1;
 	auxil->error_line = line;

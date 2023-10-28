@@ -494,18 +494,14 @@ void abc_header_append(struct abc* yy, const char* yytext, const char which)
     new->h = which;
     new->text = strdup(yytext);
 
-    if (which == 'K')
-        yy->ks = new->text;
-    else if (which == 'L')
-        yy->ul = new->text;
-    else if (which == 'M')
-        yy->mm = new->text;
-	else if (which == 'Q') {
-		char* text = NULL;
-		if (-1 == asprintf(&text, "Q:%s", yytext)); /* ;yup; */
-		else abc_change_append(yy, text);
-		free(text);
-	}
+	if (which == 'K')
+		yy->ks = strdup(new->text);
+	else if (which == 'L')
+		yy->ul = strdup(new->text);
+	else if (which == 'M')
+		yy->mm = strdup(new->text);
+	else if (which == 'Q')
+		yy->qq = strdup(new->text);
 }
 
 void abc_voice_append(struct abc* yy, const char* yytext)
@@ -515,6 +511,7 @@ void abc_voice_append(struct abc* yy, const char* yytext)
     new->ks = yy->ks ? strdup(yy->ks) : NULL;
     new->ul = yy->ul ? strdup(yy->ul) : NULL;
     new->mm = yy->mm ? strdup(yy->mm) : NULL;
+    new->qq = yy->qq ? strdup(yy->qq) : NULL;
 
     struct abc_tune* tune = yy->tunes[yy->count-1];
     tune->voices = realloc(tune->voices, sizeof (struct abc_voice*) * (tune->count + 1));
@@ -2194,6 +2191,7 @@ void abc_release_voice(struct abc_voice* v) {
     free(v->ks);
     free(v->ul);
     free(v->mm);
+    free(v->qq);
     free(v);
 }
 
@@ -2209,3 +2207,17 @@ struct abc_voice* abc_make_events_for_voice(const struct abc_tune *t, int voice)
 
     return v;
 }
+
+void abc_debug_headers(struct abc* yy)
+{
+    if (yy->count == 0)
+        return;
+
+    struct abc_tune* t = yy->tunes[yy->count-1];
+	struct abc_header* h = t->headers;
+	while (h) {
+		puts(h->text);
+		h = h->next;
+	}
+}
+
