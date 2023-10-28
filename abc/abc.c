@@ -500,6 +500,12 @@ void abc_header_append(struct abc* yy, const char* yytext, const char which)
         yy->ul = new->text;
     else if (which == 'M')
         yy->mm = new->text;
+	else if (which == 'Q') {
+		char* text = NULL;
+		if (-1 == asprintf(&text, "Q:%s", yytext)); /* ;yup; */
+		else abc_change_append(yy, text);
+		free(text);
+	}
 }
 
 void abc_voice_append(struct abc* yy, const char* yytext)
@@ -953,7 +959,7 @@ void abc_nuplet_append(struct abc* yy, int p, int q, int r)
 {
     struct abc_symbol* new = abc_new_symbol(yy);
     new->kind = ABC_NUP;
-    if (-1 == asprintf(&new->text, "%d:%d:%d", p, q, r)) {;}
+    if (-1 == asprintf(&new->text, "%d:%d:%d", p, q, r)); /* ;yup; */
 }
 
 void abc_deco_append(struct abc* yy, const char* yytext)

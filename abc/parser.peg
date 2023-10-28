@@ -1,6 +1,6 @@
 %auxil "struct abc *"
 
-%common{
+%common {
 #include "abc.h"
 }
 
@@ -9,7 +9,7 @@
 #include <stdio.h>
 }
 
-%source{
+%source {
 #define PCC_GETCHAR(auxil) get_char(auxil)
 static int get_char(struct abc* auxil) {
 	if (auxil->error)
@@ -36,43 +36,48 @@ static void print_error(struct abc* auxil) {
 	auxil->error_line = line;
 	auxil->error_char = auxil->buffer->index - l;
 }
+
 }
 
 TuneBook <- (Comment EOL+)* Tune EOF
 	/ (Comment EOL+)* Tune TuneBook
 
-Tune <- Xheader (Header EOL)* (Kheader EOL)? (Comment EOL)* Score
+Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score
 
 Header <- Oheader
 	/ Comment
 
-Xheader <- "X:" Xvalue EOL
+Xheader <- "X:" Xvalue
 
 Xvalue <- < [1-9][0-9]* > { abc_tune_append(auxil, $0); }
 
 Kheader <- "K:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'K'); }
 
-Oheader <- "A:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'A'); }
-	/ "B:" < (!EOL .)+ > { abc_header_append(auxil, $2, 'B'); }
-	/ "C:" < (!EOL .)+ > { abc_header_append(auxil, $3, 'C'); }
-	/ "D:" < (!EOL .)+ > { abc_header_append(auxil, $4, 'D'); }
-	/ "F:" < (!EOL .)+ > { abc_header_append(auxil, $5, 'F'); }
-	/ "G:" < (!EOL .)+ > { abc_header_append(auxil, $6, 'G'); }
-	/ "H:" < (!EOL .)+ > { abc_header_append(auxil, $7, 'H'); }
-	/ "I:" < (!EOL .)+ > { abc_header_append(auxil, $8, 'I'); }
-	/ "L:" < (!EOL .)+ > { abc_header_append(auxil, $9, 'L'); }
-	/ "M:" < (!EOL .)+ > { abc_header_append(auxil, $10, 'M'); }
-	/ "N:" < (!EOL .)+ > { abc_header_append(auxil, $11, 'N'); }
-	/ "O:" < (!EOL .)+ > { abc_header_append(auxil, $12, 'O'); }
-	/ "P:" < (!EOL .)+ > { abc_header_append(auxil, $13, 'P'); }
-	/ "Q:" < (!EOL .)+ > { abc_header_append(auxil, $14, 'Q'); }
-	/ "R:" < (!EOL .)+ > { abc_header_append(auxil, $15, 'R'); }
-	/ "S:" < (!EOL .)+ > { abc_header_append(auxil, $16, 'S'); }
-	/ "T:" < (!EOL .)+ > { abc_header_append(auxil, $17, 'T'); }
-	/ "U:" < (!EOL .)+ > { abc_header_append(auxil, $18, 'U'); }
-	/ "W:" < (!EOL .)+ > { abc_header_append(auxil, $19, 'W'); }
-	/ "Z:" < (!EOL .)+ > { abc_header_append(auxil, $20, 'Z'); }
-    / VoiceDef #ignore
+HeaderKey <- < [ABCDFGHILMNOPQRSTUWZ] > { $$ = ($0)[0]; }
+Oheader <-  key:HeaderKey ":" < (!EOL .)+ > { abc_header_append(auxil, $1, key); }
+	/ VoiceDef
+
+#	/ "A:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'A'); }
+#	/ "B:" < (!EOL .)+ > { abc_header_append(auxil, $2, 'B'); }
+#	/ "C:" < (!EOL .)+ > { abc_header_append(auxil, $3, 'C'); }
+#	/ "D:" < (!EOL .)+ > { abc_header_append(auxil, $4, 'D'); }
+#	/ "F:" < (!EOL .)+ > { abc_header_append(auxil, $5, 'F'); }
+#	/ "G:" < (!EOL .)+ > { abc_header_append(auxil, $6, 'G'); }
+#	/ "H:" < (!EOL .)+ > { abc_header_append(auxil, $7, 'H'); }
+#	/ "I:" < (!EOL .)+ > { abc_header_append(auxil, $8, 'I'); }
+#	/ "L:" < (!EOL .)+ > { abc_header_append(auxil, $9, 'L'); }
+#	/ "M:" < (!EOL .)+ > { abc_header_append(auxil, $10, 'M'); }
+#	/ "N:" < (!EOL .)+ > { abc_header_append(auxil, $11, 'N'); }
+#	/ "O:" < (!EOL .)+ > { abc_header_append(auxil, $12, 'O'); }
+#	/ "P:" < (!EOL .)+ > { abc_header_append(auxil, $13, 'P'); }
+#	/ "Q:" < (!EOL .)+ > { abc_header_append(auxil, $14, 'Q'); }
+#	/ "R:" < (!EOL .)+ > { abc_header_append(auxil, $15, 'R'); }
+#	/ "S:" < (!EOL .)+ > { abc_header_append(auxil, $16, 'S'); }
+#	/ "T:" < (!EOL .)+ > { abc_header_append(auxil, $17, 'T'); }
+#	/ "U:" < (!EOL .)+ > { abc_header_append(auxil, $18, 'U'); }
+#	/ "W:" < (!EOL .)+ > { abc_header_append(auxil, $19, 'W'); }
+#	/ "Z:" < (!EOL .)+ > { abc_header_append(auxil, $20, 'Z'); }
+#    / VoiceDef #ignore
 
 VoiceDef <- "V:" (!EOL .)+
 
