@@ -730,7 +730,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
         QStringLiteral("^N:[^\n]+"), QStringLiteral("^O:[^\n]+"), QStringLiteral("^P:[^\n]+"),
         QStringLiteral("^Q:[^\n]+"), QStringLiteral("^R:[^\n]+"), QStringLiteral("^S:[^\n]+"),
         QStringLiteral("^T:[^\n]+"), QStringLiteral("^V:[^\n]+"), QStringLiteral("^W:[^\n]+"),
-        QStringLiteral("^X:[^\n]+"), QStringLiteral("^Z:[^\n]+"), QStringLiteral("\\[[KMQ]:[^\\]]+\\]")
+        QStringLiteral("^X:[^\n]+"), QStringLiteral("^Z:[^\n]+"), QStringLiteral("\\[[KLMQ]:[^\\]]+\\]")
     };
 
     for (const QString &pattern : keywordPatterns) {
