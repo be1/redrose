@@ -14,8 +14,8 @@ class Wizard : public QDialog
 public:
     Wizard(QWidget* parent = nullptr);
 
-    const QString title();
-    const QString composer();
+    const QString title(const QString& deflt);
+    const QString composer(const QString &deflt);
     int voices();
     QString braceType();
 

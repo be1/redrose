@@ -50,14 +50,14 @@ Wizard::Wizard(QWidget *parent) :
     setLayout(mainLayout);
 }
 
-const QString Wizard::title()
+const QString Wizard::title(const QString &deflt)
 {
-    return m_title->text();
+    return m_title->text().isEmpty() ? deflt : m_title->text();
 }
 
-const QString Wizard::composer()
+const QString Wizard::composer(const QString& deflt)
 {
-    return m_composer->text();
+    return m_composer->text().isEmpty() ? deflt : m_composer->text();
 }
 
 int Wizard::voices()

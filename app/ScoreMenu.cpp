@@ -334,7 +334,7 @@ void ScoreMenu::onNewActionTriggered()
     wiz->exec();
 
     QString abc("%abc\nX:1\nT:%1\nC:%2\nQ:1/4=120\nL:1/8\nM:4/4\nK:CMaj\n");
-    abc = abc.arg(wiz->title(), wiz->composer());
+    abc = abc.arg(wiz->title(tr("Title")), wiz->composer(tr("Composer")));
 
     if (!wiz->braceType().isEmpty()) {
         abc = abc.append("%%staves %1").arg(wiz->braceType());
@@ -360,5 +360,7 @@ void ScoreMenu::onNewActionTriggered()
     EditWidget* widget = new EditWidget(QString(), nullptr);
     widget->editVBoxLayout()->abcPlainTextEdit()->setPlainText(abc);
     edittabs->addTab(widget);
+
+    delete wiz;
 #endif
 }
