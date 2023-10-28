@@ -181,8 +181,8 @@ void AbcSmf::onSMFWriteTrack(int track) {
                 writeKeySignature(0, s->ev.key, s->ev.value);
             } else if (s->ev.type == EV_TEMPO) {
                 tempo = s->ev.value;
-                long mspqn = 60000 / tempo;
-                writeTempo(0, mspqn);
+                //long mspqn = 60000 / tempo;
+                //writeTempo(0, mspqn);
                 writeBpmTempo(0, tempo);
             } else if (s->ev.type == EV_METRIC) {
                 m = &s->text[2];
