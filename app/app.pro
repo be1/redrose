@@ -22,7 +22,8 @@ SOURCES = ScoreMenu.cpp PreferencesMenu.cpp HelpMenu.cpp AbcPlainTextEdit.cpp Pl
 	scorepswidget.cpp \
 	settings.cpp \
 	sfloader.cpp \
-	QProgressIndicator.cpp
+	QProgressIndicator.cpp \
+	wizard.cpp
 HEADERS = ScoreMenu.h PreferencesMenu.h HelpMenu.h AbcPlainTextEdit.h PlayPushButton.h EditVBoxLayout.h EditWidget.h EditTabWidget.h RunPushButton.h AbcMainWindow.h AbcApplication.h \
 	AbcProcess.h \
 	AbcTemporaryFile.h \
@@ -39,7 +40,8 @@ HEADERS = ScoreMenu.h PreferencesMenu.h HelpMenu.h AbcPlainTextEdit.h PlayPushBu
 	scorepswidget.h \
 	settings.h \
 	sfloader.h \
-	QProgressIndicator.h
+	QProgressIndicator.h \
+	wizard.h
 config.input = config.h.in
 config.output = config.h
 QMAKE_SUBSTITUTES += config

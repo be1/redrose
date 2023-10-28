@@ -4,6 +4,7 @@
 #include "EditTabWidget.h"
 #include "EditWidget.h"
 #include "settings.h"
+#include "wizard.h"
 #include <QMessageBox>
 #include <QApplication>
 #include <QFileDialog>
@@ -317,6 +318,7 @@ void ScoreMenu::onCloseActionTriggered()
 
 void ScoreMenu::onNewActionTriggered()
 {
+#if 0
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
     EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
@@ -326,4 +328,37 @@ void ScoreMenu::onNewActionTriggered()
     swidget->editVBoxLayout()->abcPlainTextEdit()->setPlainText(NEW_TEMPLATE);
 
     edittabs->addTab(swidget);
+#else
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    Wizard* wiz = new Wizard(a->mainWindow());
+    wiz->exec();
+
+    QString abc("%abc\nX:1\nT:%1\nS:%2\nC:%3\nQ:1/4=120\nL:1/8\nM:4/4\nK:CMaj\n");
+    abc = abc.arg(wiz->title(), wiz->subtitle(), wiz->composer());
+
+    if (!wiz->braceType().isEmpty()) {
+        abc = abc.append("%%staves %1").arg(wiz->braceType());
+        for (int i = 1; i <= wiz->voices(); i++) {
+            abc = abc.append(" ");
+            abc = abc.append(QString::number(i));
+        }
+
+        if (wiz->braceType() == "{")
+            abc.append(" }");
+        else if (wiz->braceType() == "[")
+            abc.append(" ]");
+
+        abc = abc.append("\n");
+    }
+
+    for (int i = 1; i <= wiz->voices(); i++) {
+        abc = abc.append("V:%1\n").arg(i);
+        abc = abc.append("C8|]\n");
+    }
+
+    EditTabWidget *edittabs = a->mainWindow()->mainHSplitter()->editTabWidget();
+    EditWidget* widget = new EditWidget(QString(), nullptr);
+    widget->editVBoxLayout()->abcPlainTextEdit()->setPlainText(abc);
+    edittabs->addTab(widget);
+#endif
 }
