@@ -168,7 +168,7 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
         } else if (tmpl == Wizard::TemplateSATBChoir) {
             switch (i) {
             case 1:
-                abc = abc.append(" clef=treble name=Soparno sname=S.\n");
+                abc = abc.append(" clef=treble name=Soprano sname=S.\n");
                 abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
                 abc = abc.append("c8|]\n");
                 break;
