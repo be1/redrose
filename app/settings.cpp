@@ -26,7 +26,7 @@ void Settings::check()
         setValue(SOUNDFONT_KEY, DEB_SF2_GM);
 
     QVariant driver = value(DRIVER_KEY);
-    if (!sfont.isValid())
+    if (!driver.isValid())
         setValue(DRIVER_KEY, DRIVER_ALSA);
 
     QVariant player = value(PLAYER_KEY);
@@ -78,6 +78,10 @@ void Settings::check()
     if (!color.isValid())
         setValue(EDITOR_LYRIC_COLOR, "magenta");
 
+    QVariant reverb = value(REVERB_KEY);
+    if (!reverb.isValid())
+        setValue(REVERB_KEY, 0.);
+
     sync();
 }
 
@@ -118,5 +122,6 @@ void Settings::reset()
 
     setValue(EDITOR_LYRIC_COLOR, "magenta");
 
+    setValue(REVERB_KEY, 0.);
     sync();
 }

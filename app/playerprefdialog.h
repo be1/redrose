@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
@@ -20,6 +21,7 @@ public:
     QString getSoundfont();
     int getVelocity();
     int getDuration();
+    double getReverb();
 
 protected slots:
     void onSoundfontButtonClicked();
@@ -43,6 +45,9 @@ private:
 
     QLabel* defaultDurationLabel;
     QSpinBox* defaultDurationSpinBox;
+
+    QLabel* reverbLabel;
+    QDoubleSpinBox* reverbDoubleSpinBox;
 
     QDialogButtonBox* buttons;
 };

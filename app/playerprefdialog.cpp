@@ -116,6 +116,21 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
 
     mainLayout->addLayout(sfhbox);
 
+    /* reverb */
+    QVariant reverb = settings.value(REVERB_KEY);
+    reverbLabel = new QLabel(tr("Reverb level"));
+    reverbDoubleSpinBox = new QDoubleSpinBox;
+    reverbDoubleSpinBox->setMaximum(1.);
+    reverbDoubleSpinBox->setMinimum(0.);
+    reverbDoubleSpinBox->setStepType(QDoubleSpinBox::AdaptiveDecimalStepType);
+    reverbDoubleSpinBox->setValue(reverb.toDouble());
+    reverbLabel->setBuddy(reverbDoubleSpinBox);
+    QHBoxLayout* revhbox = new QHBoxLayout;
+    revhbox->addWidget(reverbLabel);
+    revhbox->addWidget(reverbDoubleSpinBox);
+
+    mainLayout->addLayout(revhbox);
+
     /* OK / Cancel buttons */
     buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -147,6 +162,11 @@ int PlayerPrefDialog::getVelocity()
 int PlayerPrefDialog::getDuration()
 {
     return defaultDurationSpinBox->value();
+}
+
+double PlayerPrefDialog::getReverb()
+{
+    return reverbDoubleSpinBox->value();
 }
 
 void PlayerPrefDialog::onSoundfontButtonClicked()

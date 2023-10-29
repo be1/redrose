@@ -30,6 +30,12 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
     //qDebug() << name << drv;
     fluid_settings = new_fluid_settings();
+    //qDebug() << fluid_settings_setint(fluid_settings, "synth.reverb.active", TRUE);
+    //qDebug() << fluid_settings_setnum(fluid_settings, "synth.reverb.room-size", 1.);
+    //qDebug() << fluid_settings_setnum(fluid_settings, "synth.reverb.width", 100.);
+    //qDebug() << fluid_settings_setnum(fluid_settings, "synth.reverb.damp", 1.);
+    //qDebug() << fluid_settings_setnum(fluid_settings, "synth.reverb.level", 1.);
+
     fluid_settings_setstr(fluid_settings, "audio.driver", drv);
 
     if (settings.value(DRIVER_KEY) == DRIVER_JACK) {
@@ -70,6 +76,17 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
     playback_monitor.setInterval(1000);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
+
+    qreal reverb = settings.value(REVERB_KEY).toDouble();
+    if (reverb > 0.) {
+        qDebug() << fluid_synth_reverb_on(fluid_synth, -1, TRUE);
+        qDebug() << fluid_synth_set_reverb_group_roomsize(fluid_synth, -1, 0.2);
+        qDebug() << fluid_synth_set_reverb_group_width(fluid_synth, -1, 0.5);
+        qDebug() << fluid_synth_set_reverb_group_damp(fluid_synth, -1, 0.);
+        qDebug() << fluid_synth_set_reverb_group_level(fluid_synth, -1, reverb);
+    } else {
+        fluid_synth_reverb_on(fluid_synth, -1, FALSE);
+    }
 }
 
 AbcSynth::~AbcSynth()
