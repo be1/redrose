@@ -114,7 +114,7 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
         voices = 4;
         break;
     case Wizard::TemplatePercussion:
-        voices = 2;
+        voices = 3;
         grouping = "(";
     case Wizard::TemplateNone:
     default:
@@ -136,30 +136,30 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
             abc = abc.append(" )\n");
     }
 
-    for (int i = 0; i < voices; i++) {
-        abc = abc.append("V:%1").arg(i+1);
+    for (int i = 1; i <= voices; i++) {
+        abc = abc.append("V:%1").arg(i);
         if (tmpl == Wizard::TemplateKeyboard) {
             abc = abc.append("\n");
             abc = abc.append("%%MIDI program 0 % Grand Piano\n");
             abc = abc.append("C8|]\n");
         } else if (tmpl == Wizard::TemplateString4tet) {
             switch (i) {
-            case 0:
+            case 1:
                 abc = abc.append(" clef=treble name=Violin1 sname=Vln.1\n");
                 abc = abc.append("%%MIDI program 40 % Violin\n");
                 abc = abc.append("c8|]\n");
                 break;
-            case 1:
+            case 2:
                 abc = abc.append(" clef=treble name=Violin2 sname=Vln.2\n");
                 abc = abc.append("%%MIDI program 40 % Violin\n");
                 abc = abc.append("G8|]\n");
                 break;
-            case 2:
+            case 3:
                 abc = abc.append(" clef=alto name=Viola sname=Vla.\n");
                 abc = abc.append("%%MIDI program 41 % Viola\n");
                 abc = abc.append("E8|]\n");
                 break;
-            case 3:
+            case 4:
                 abc = abc.append(" clef=bass name=Cello sname=Clo.\n");
                 abc = abc.append("%%MIDI program 42 % Cello\n");
                 abc = abc.append("C8|]\n");
@@ -167,22 +167,22 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
             }
         } else if (tmpl == Wizard::TemplateSATBChoir) {
             switch (i) {
-            case 0:
+            case 1:
                 abc = abc.append(" clef=treble name=Soparno sname=S.\n");
                 abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
                 abc = abc.append("c8|]\n");
                 break;
-            case 1:
+            case 2:
                 abc = abc.append(" clef=treble name=Alto sname=A.\n");
                 abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
                 abc = abc.append("E8|]\n");
                 break;
-            case 2:
+            case 3:
                 abc = abc.append(" clef=tenor name=Tenor sname=T.\n");
                 abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
                 abc = abc.append("G,8|]\n");
                 break;
-            case 3:
+            case 4:
                 abc = abc.append(" clef=bass name=Bass sname=B.\n");
                 abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
                 abc = abc.append("C,8|]\n");
@@ -190,17 +190,24 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
             }
         } else if (tmpl == Wizard::TemplatePercussion) {
             switch (i) {
-            case 0:
-                abc = abc.append(" clef=perc\n");
-                abc = abc.append("%%MIDI program 117 % Melodic Drum\n");
-                abc = abc.append("%%MIDI transpose -12\n");
-                abc = abc.append("^c/2^c/2^c/2^c/2^G/2^G/2^G/2^G/2^C/2^C/2^C/2^C/2^G,,2|]\n");
-                break;
             case 1:
                 abc = abc.append(" clef=perc\n");
                 abc = abc.append("%%MIDI program 119 % Reverse Cymbal\n");
                 abc = abc.append(("z6 ^c'2|]\n"));
-            }
+                break;
+             case 2:
+                abc = abc.append(" clef=perc\n");
+                abc = abc.append("%%MIDI program 117 % Melodic Drum\n");
+                abc = abc.append("%%MIDI transpose -12\n");
+                abc = abc.append("^c/2^c/2^c/2^c/2^G/2^G/2^G/2^G/2^C/2^C/2^C/2^C/2 z2|]\n");
+                break;
+            case 3:
+                abc = abc.append(" clef=perc\n");
+                abc = abc.append("%%MIDI program 117 % Melodic Drum\n");
+                abc = abc.append("%%MIDI transpose -24\n");
+                abc = abc.append("z6 G,2|]\n");
+                break;
+           }
         }
     }
 }
