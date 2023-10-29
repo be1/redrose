@@ -370,7 +370,7 @@ Redrose version </source>
     <message>
         <location filename="playerprefdialog.cpp" line="121"/>
         <source>Reverb level</source>
-		<translation>Niveau de réverbération</translation>
+        <translation>Niveau de réverbération</translation>
     </message>
     <message>
         <location filename="playerprefdialog.cpp" line="179"/>
@@ -521,94 +521,94 @@ Voulez-vous quitter malgré tout ?</translation>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="85"/>
-        <location filename="ScoreMenu.cpp" line="308"/>
+        <location filename="ScoreMenu.cpp" line="326"/>
         <source>ABC score (*.abc)</source>
         <translation>Partition ABC (*.abc)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="198"/>
+        <location filename="ScoreMenu.cpp" line="216"/>
         <source>&amp;%1 %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="258"/>
-        <location filename="ScoreMenu.cpp" line="275"/>
-        <location filename="ScoreMenu.cpp" line="292"/>
-        <location filename="ScoreMenu.cpp" line="334"/>
-        <location filename="ScoreMenu.cpp" line="359"/>
-        <location filename="ScoreMenu.cpp" line="384"/>
+        <location filename="ScoreMenu.cpp" line="276"/>
+        <location filename="ScoreMenu.cpp" line="293"/>
+        <location filename="ScoreMenu.cpp" line="310"/>
+        <location filename="ScoreMenu.cpp" line="352"/>
+        <location filename="ScoreMenu.cpp" line="377"/>
+        <location filename="ScoreMenu.cpp" line="402"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="258"/>
+        <location filename="ScoreMenu.cpp" line="276"/>
         <source>Could not open score!</source>
         <translation>Impossible d&apos;ouvrir la partition !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="275"/>
+        <location filename="ScoreMenu.cpp" line="293"/>
         <source>Could not save an untitled ABC file!</source>
         <translation>Impossible d&apos;enregistrer un fichier ABC sans nom !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="290"/>
+        <location filename="ScoreMenu.cpp" line="308"/>
         <source>Score saved.</source>
         <translation>Partition enregistrée.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="292"/>
+        <location filename="ScoreMenu.cpp" line="310"/>
         <source>Could not save ABC score!</source>
         <translation>Impossible d&apos;enregistrer la partition ABC !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="308"/>
+        <location filename="ScoreMenu.cpp" line="326"/>
         <source>Save ABC score</source>
         <translation>Enregistrer la partition ABC</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="334"/>
-        <location filename="ScoreMenu.cpp" line="359"/>
-        <location filename="ScoreMenu.cpp" line="384"/>
+        <location filename="ScoreMenu.cpp" line="352"/>
+        <location filename="ScoreMenu.cpp" line="377"/>
+        <location filename="ScoreMenu.cpp" line="402"/>
         <source>Please save score before to export.</source>
         <translation>Veuillez sauvegarder la partition avant de l&apos;exporter.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="340"/>
+        <location filename="ScoreMenu.cpp" line="358"/>
         <source>Export MIDI file</source>
         <translation>Exporter en fichier MIDI</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="340"/>
+        <location filename="ScoreMenu.cpp" line="358"/>
         <source>MIDI file (*.mid)</source>
         <translation>Fichier MIDI (*.mid)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="365"/>
+        <location filename="ScoreMenu.cpp" line="383"/>
         <source>Export Postscript file</source>
         <translation>Exporter en fichier Postscript</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="365"/>
+        <location filename="ScoreMenu.cpp" line="383"/>
         <source>Postscript file (*.ps)</source>
         <translation>Fichier Postscript (*.ps)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="390"/>
+        <location filename="ScoreMenu.cpp" line="408"/>
         <source>Export PDF file</source>
         <translation>Exporter en fichier PDF</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="390"/>
+        <location filename="ScoreMenu.cpp" line="408"/>
         <source>PDF file (*.pdf)</source>
         <translation>Fichier PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="428"/>
+        <location filename="ScoreMenu.cpp" line="446"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="428"/>
+        <location filename="ScoreMenu.cpp" line="446"/>
         <source>Composer</source>
         <translation>Compositeur</translation>
     </message>
@@ -693,6 +693,11 @@ Voulez-vous quitter malgré tout ?</translation>
         <location filename="wizard.cpp" line="49"/>
         <source>SATB Choir</source>
         <translation>Chœur SATB</translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="50"/>
+        <source>Percussion</source>
+        <translation>Percussion</translation>
     </message>
 </context>
 <context>

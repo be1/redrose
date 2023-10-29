@@ -519,94 +519,94 @@ Do you want to quit anyway?</source>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="85"/>
-        <location filename="ScoreMenu.cpp" line="308"/>
+        <location filename="ScoreMenu.cpp" line="326"/>
         <source>ABC score (*.abc)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="198"/>
+        <location filename="ScoreMenu.cpp" line="216"/>
         <source>&amp;%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="258"/>
-        <location filename="ScoreMenu.cpp" line="275"/>
-        <location filename="ScoreMenu.cpp" line="292"/>
-        <location filename="ScoreMenu.cpp" line="334"/>
-        <location filename="ScoreMenu.cpp" line="359"/>
-        <location filename="ScoreMenu.cpp" line="384"/>
+        <location filename="ScoreMenu.cpp" line="276"/>
+        <location filename="ScoreMenu.cpp" line="293"/>
+        <location filename="ScoreMenu.cpp" line="310"/>
+        <location filename="ScoreMenu.cpp" line="352"/>
+        <location filename="ScoreMenu.cpp" line="377"/>
+        <location filename="ScoreMenu.cpp" line="402"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="258"/>
+        <location filename="ScoreMenu.cpp" line="276"/>
         <source>Could not open score!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="275"/>
+        <location filename="ScoreMenu.cpp" line="293"/>
         <source>Could not save an untitled ABC file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="290"/>
+        <location filename="ScoreMenu.cpp" line="308"/>
         <source>Score saved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="292"/>
+        <location filename="ScoreMenu.cpp" line="310"/>
         <source>Could not save ABC score!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="308"/>
+        <location filename="ScoreMenu.cpp" line="326"/>
         <source>Save ABC score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="334"/>
-        <location filename="ScoreMenu.cpp" line="359"/>
-        <location filename="ScoreMenu.cpp" line="384"/>
+        <location filename="ScoreMenu.cpp" line="352"/>
+        <location filename="ScoreMenu.cpp" line="377"/>
+        <location filename="ScoreMenu.cpp" line="402"/>
         <source>Please save score before to export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="340"/>
+        <location filename="ScoreMenu.cpp" line="358"/>
         <source>Export MIDI file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="340"/>
+        <location filename="ScoreMenu.cpp" line="358"/>
         <source>MIDI file (*.mid)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="365"/>
+        <location filename="ScoreMenu.cpp" line="383"/>
         <source>Export Postscript file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="365"/>
+        <location filename="ScoreMenu.cpp" line="383"/>
         <source>Postscript file (*.ps)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="390"/>
+        <location filename="ScoreMenu.cpp" line="408"/>
         <source>Export PDF file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="390"/>
+        <location filename="ScoreMenu.cpp" line="408"/>
         <source>PDF file (*.pdf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="428"/>
+        <location filename="ScoreMenu.cpp" line="446"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="428"/>
+        <location filename="ScoreMenu.cpp" line="446"/>
         <source>Composer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -690,6 +690,11 @@ Do you want to quit anyway?</source>
     <message>
         <location filename="wizard.cpp" line="49"/>
         <source>SATB Choir</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizard.cpp" line="50"/>
+        <source>Percussion</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
