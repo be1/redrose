@@ -79,14 +79,14 @@ void AbcSmf::reset() {
 }
 
 void AbcSmf::manageDecoration(struct abc_symbol* s) {
-    if (!strcmp(s->text, "pppp")) m_mark_dyn = m_cur_dyn = 20;
-    else if (!strcmp(s->text, "ppp")) m_mark_dyn = m_cur_dyn = 30;
-    else if (!strcmp(s->text, "pp")) m_mark_dyn = m_cur_dyn = 45;
-    else if (!strcmp(s->text, "p")) m_mark_dyn = m_cur_dyn = 60;
-    else if (!strcmp(s->text, "mp")) m_mark_dyn = m_cur_dyn = 75;
-    else if (!strcmp(s->text, "mf")) m_mark_dyn = m_cur_dyn = 90;
-    else if (!strcmp(s->text, "f")) m_mark_dyn = m_cur_dyn = 105;
-    else if (!strcmp(s->text, "ff")) m_mark_dyn = m_cur_dyn = 120;
+    if (!strcmp(s->text, "pppp")) m_mark_dyn = m_cur_dyn = 8;
+    else if (!strcmp(s->text, "ppp")) m_mark_dyn = m_cur_dyn = 16;
+    else if (!strcmp(s->text, "pp")) m_mark_dyn = m_cur_dyn = 32;
+    else if (!strcmp(s->text, "p")) m_mark_dyn = m_cur_dyn = 48;
+    else if (!strcmp(s->text, "mp")) m_mark_dyn = m_cur_dyn = 64;
+    else if (!strcmp(s->text, "mf")) m_mark_dyn = m_cur_dyn = 80;
+    else if (!strcmp(s->text, "f")) m_mark_dyn = m_cur_dyn = 96;
+    else if (!strcmp(s->text, "ff")) m_mark_dyn = m_cur_dyn = 112;
     else if (!strcmp(s->text, "fff")) m_mark_dyn = m_cur_dyn = 124;
     else if (!strcmp(s->text, "ffff")) m_mark_dyn = m_cur_dyn = 127;
     else if (!strcmp(s->text, "sfz")) m_mark_dyn = m_cur_dyn = 100;
