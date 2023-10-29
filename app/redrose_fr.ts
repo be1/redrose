@@ -40,53 +40,53 @@
 <context>
     <name>AbcSynth</name>
     <message>
-        <location filename="abcsynth.cpp" line="57"/>
+        <location filename="abcsynth.cpp" line="63"/>
         <source>No soundfont to load! Please check settings.</source>
         <translation>Fonte sonore manquante ! Veuillez vérifier les paramètres.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="68"/>
+        <location filename="abcsynth.cpp" line="74"/>
         <source>Loading sound font: </source>
         <translation>Chargement de la fonte sonore : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="98"/>
+        <location filename="abcsynth.cpp" line="115"/>
         <source>Ready.</source>
         <translation>Prêt.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="101"/>
+        <location filename="abcsynth.cpp" line="118"/>
         <source>Playing </source>
         <translation>Lecture </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="105"/>
+        <location filename="abcsynth.cpp" line="122"/>
         <source>Stopping.</source>
         <translation>Arrêt.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="112"/>
-        <location filename="abcsynth.cpp" line="119"/>
+        <location filename="abcsynth.cpp" line="129"/>
+        <location filename="abcsynth.cpp" line="136"/>
         <source>Done.</source>
         <translation>Terminé.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="147"/>
+        <location filename="abcsynth.cpp" line="164"/>
         <source>Cannot load sound font: </source>
         <translation>Impossible de charger la fonte sonore : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="151"/>
+        <location filename="abcsynth.cpp" line="168"/>
         <source>Sound font loaded.</source>
         <translation>Fonte sonore chargée.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="174"/>
+        <location filename="abcsynth.cpp" line="191"/>
         <source>Cannot load MIDI file: </source>
         <translation>Impossible de charger le fichier MIDI : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="179"/>
+        <location filename="abcsynth.cpp" line="196"/>
         <source>Starting synthesis...</source>
         <translation>Démarrage de la synthèse...</translation>
     </message>
@@ -368,15 +368,20 @@ Redrose version </source>
         <translation>Choisir un fichier</translation>
     </message>
     <message>
-        <location filename="playerprefdialog.cpp" line="159"/>
-        <location filename="playerprefdialog.cpp" line="161"/>
+        <location filename="playerprefdialog.cpp" line="121"/>
+        <source>Reverb level</source>
+		<translation>Niveau de réverbération</translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="179"/>
+        <location filename="playerprefdialog.cpp" line="181"/>
         <source>Audio sound font selection</source>
         <oldsource>Audio sound font preference</oldsource>
         <translation>Sélection de la fonte sonore</translation>
     </message>
     <message>
-        <location filename="playerprefdialog.cpp" line="159"/>
-        <location filename="playerprefdialog.cpp" line="161"/>
+        <location filename="playerprefdialog.cpp" line="179"/>
+        <location filename="playerprefdialog.cpp" line="181"/>
         <source>Soundfont (*.sf[23])</source>
         <translation>Fonte sonore (*.sf[23])</translation>
     </message>
@@ -409,22 +414,22 @@ Redrose version </source>
         <translation>Préférences du lecteur</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="63"/>
+        <location filename="PreferencesMenu.cpp" line="64"/>
         <source>Postscript export preference</source>
         <translation>Préférence d&apos;export Postscript</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="63"/>
+        <location filename="PreferencesMenu.cpp" line="64"/>
         <source>Tunes:</source>
         <translation>Morceaux :</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="77"/>
+        <location filename="PreferencesMenu.cpp" line="78"/>
         <source>Reset prefrences?</source>
         <translation>Remettre les préférences à zéro ?</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="77"/>
+        <location filename="PreferencesMenu.cpp" line="78"/>
         <source>Do you really want to reset preferences?</source>
         <translation>Voulez-vous vraiment remettre les préférences d&apos;origine ?</translation>
     </message>
@@ -565,7 +570,7 @@ Voulez-vous quitter malgré tout ?</translation>
         <location filename="ScoreMenu.cpp" line="359"/>
         <location filename="ScoreMenu.cpp" line="384"/>
         <source>Please save score before to export.</source>
-        <translation>Veuillez sauvegarder la partition avant de l'exporter.</translation>
+        <translation>Veuillez sauvegarder la partition avant de l&apos;exporter.</translation>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="340"/>
@@ -641,7 +646,7 @@ Voulez-vous quitter malgré tout ?</translation>
     <message>
         <location filename="wizard.cpp" line="20"/>
         <source>Composer / Lyricist</source>
-		<translation>Composer / Parolier</translation>
+        <translation>Composer / Parolier</translation>
     </message>
     <message>
         <location filename="wizard.cpp" line="24"/>
@@ -662,7 +667,7 @@ Voulez-vous quitter malgré tout ?</translation>
     <message>
         <location filename="wizard.cpp" line="36"/>
         <source>Brace {</source>
-		<translation>Accolade {</translation>
+        <translation>Accolade {</translation>
     </message>
     <message>
         <location filename="wizard.cpp" line="37"/>
