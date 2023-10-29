@@ -47,6 +47,7 @@ Wizard::Wizard(QWidget *parent) :
     m_template->addItem(tr("Keyboard"), Template::TemplateKeyboard);
     m_template->addItem(tr("String Quartet"), Template::TemplateString4tet);
     m_template->addItem(tr("SATB Choir"), Template::TemplateSATBChoir);
+    m_template->addItem(tr("Percussion"), Template::TemplatePercussion);
     connect(m_template, &QComboBox::currentTextChanged, this, &Wizard::onTemplateChange);
     label3->setBuddy(m_template);
     hbox3->addWidget(label3);

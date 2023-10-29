@@ -113,6 +113,9 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
     case Wizard::TemplateSATBChoir:
         voices = 4;
         break;
+    case Wizard::TemplatePercussion:
+        voices = 2;
+        grouping = "(";
     case Wizard::TemplateNone:
     default:
         break;
@@ -127,8 +130,10 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
 
         if (grouping == "{")
             abc = abc.append(" }\n");
-        else
+        else if (grouping == "[")
             abc = abc.append(" ]\n");
+        else /* default to ) */
+            abc = abc.append(" )\n");
     }
 
     for (int i = 0; i < voices; i++) {
@@ -182,6 +187,19 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
                 abc = abc.append("%%MIDI program 53 % Voice Oohs\n");
                 abc = abc.append("C,8|]\n");
                 break;
+            }
+        } else if (tmpl == Wizard::TemplatePercussion) {
+            switch (i) {
+            case 0:
+                abc = abc.append(" clef=perc\n");
+                abc = abc.append("%%MIDI program 117 % Melodic Drum\n");
+                abc = abc.append("%%MIDI transpose -12\n");
+                abc = abc.append("^c/2^c/2^c/2^c/2^G/2^G/2^G/2^G/2^C/2^C/2^C/2^C/2^G,,2|]\n");
+                break;
+            case 1:
+                abc = abc.append(" clef=perc\n");
+                abc = abc.append("%%MIDI program 119 % Reverse Cymbal\n");
+                abc = abc.append(("z6 ^c'2|]\n"));
             }
         }
     }

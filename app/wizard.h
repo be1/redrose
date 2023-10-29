@@ -13,7 +13,7 @@ class Wizard : public QDialog
     Q_OBJECT
 public:
     Wizard(QWidget* parent = nullptr);
-    enum Template { TemplateNone, TemplateKeyboard, TemplateString4tet, TemplateSATBChoir };
+    enum Template { TemplateNone, TemplateKeyboard, TemplateString4tet, TemplateSATBChoir, TemplatePercussion };
 
     const QString title(const QString& deflt);
     const QString composer(const QString &deflt);
