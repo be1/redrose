@@ -37,7 +37,9 @@ void PreferencesMenu::onPlayerActionTriggered()
         settings.setValue(SOUNDFONT_KEY, dialog->getSoundfont());
         settings.setValue(PLAYER_DURATION, dialog->getDuration());
         settings.setValue(PLAYER_VELOCITY, dialog->getVelocity());
+#if 0
         settings.setValue(REVERB_KEY, dialog->getReverb());
+#endif
         settings.sync();
     }
 

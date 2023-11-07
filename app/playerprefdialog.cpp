@@ -115,7 +115,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
     sfhbox->addWidget(soundfontButton);
 
     mainLayout->addLayout(sfhbox);
-
+#if 0
     /* reverb */
     QVariant reverb = settings.value(REVERB_KEY);
     reverbLabel = new QLabel(tr("Reverb level"));
@@ -130,7 +130,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
     revhbox->addWidget(reverbDoubleSpinBox);
 
     mainLayout->addLayout(revhbox);
-
+#endif
     /* OK / Cancel buttons */
     buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
@@ -164,11 +164,12 @@ int PlayerPrefDialog::getDuration()
     return defaultDurationSpinBox->value();
 }
 
+#if 0
 double PlayerPrefDialog::getReverb()
 {
     return reverbDoubleSpinBox->value();
 }
-
+#endif
 void PlayerPrefDialog::onSoundfontButtonClicked()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);

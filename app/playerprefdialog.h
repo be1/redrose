@@ -21,8 +21,9 @@ public:
     QString getSoundfont();
     int getVelocity();
     int getDuration();
+#if 0
     double getReverb();
-
+#endif
 protected slots:
     void onSoundfontButtonClicked();
     void onPlayerComboChanged(const QString& text);
@@ -45,10 +46,10 @@ private:
 
     QLabel* defaultDurationLabel;
     QSpinBox* defaultDurationSpinBox;
-
+#if 0
     QLabel* reverbLabel;
     QDoubleSpinBox* reverbDoubleSpinBox;
-
+#endif
     QDialogButtonBox* buttons;
 };
 

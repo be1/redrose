@@ -76,7 +76,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
     playback_monitor.setInterval(1000);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
-
+#if 0
     qreal reverb = settings.value(REVERB_KEY).toDouble();
     if (reverb > 0.) {
         qDebug() << fluid_synth_reverb_on(fluid_synth, -1, TRUE);
@@ -87,6 +87,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     } else {
         fluid_synth_reverb_on(fluid_synth, -1, FALSE);
     }
+#endif
 }
 
 AbcSynth::~AbcSynth()
