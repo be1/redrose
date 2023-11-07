@@ -1,0 +1,67 @@
+name: redrose
+base: core20
+version: '0.5.3'
+summary: Integrated ABC music notation environment
+description: |
+  Redrose lets you write ABC musical scores in ABC notation and, with
+  the help of abcm2ps, can display your score. It can also play the score,
+  generate MIDI with or without abc2midi, and print the score.
+
+grade: stable
+confinement: strict
+
+parts:
+  redrose:
+    plugin: qmake
+    build-snaps:
+      - kde-frameworks-5-99-qt-5-15-7-core20-sdk
+      - kde-frameworks-5-99-qt-5-15-7-core20
+    override-pull: |
+      snapcraftctl pull
+      sed -i.bak -e 's|DRIVER_ALSA|DRIVER_PULSEAUDIO|g' app/settings.cpp
+      sed -i.bak -e 's|drumstick::File::|drumstick::|g' app/abcsmf.*
+      sed -i.bak -e '122,124d' app/abcsynth.cpp
+      sed -i.bak -e 's|Icon=redrose|Icon=/usr/local/share/icons/hicolor/scalable/apps/redrose.svg|g' app/redrose.desktop
+
+    build-packages:
+      - g++
+      - qtbase5-dev
+      - qtbase5-dev-tools
+      - qttools5-dev-tools
+      - pkg-config
+      - libspectre-dev
+      - libdrumstick-dev
+      - libfluidsynth-dev
+    stage-packages:
+      - libqt5core5a
+      - libqt5gui5
+      - libqt5widgets5
+      - libqt5printsupport5
+      - libgs9-common
+      - libspectre1
+      - libdrumstick-file1
+      - timgm6mb-soundfont
+      - libfluidsynth2
+      - abcm2ps
+      - abcmidi
+    source: http://brouits.free.fr/redrose/redrose-0.5.3.tar.gz
+
+apps:
+  redrose:
+    extensions: [kde-neon]
+    environment:
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
+      GS_LIB: $SNAP/usr/share/ghostscript/9.50/Resource/Init
+      GS_FONTPATH: $SNAP/usr/share/ghostscript/9.50/Resource/Font
+    desktop: usr/local/share/applications/redrose.desktop
+    command: usr/local/bin/redrose
+    plugs:
+      - desktop
+      - desktop-legacy
+      - home
+      - audio-playback
+      - pulseaudio
+      - jack1
+      - alsa
+      - cups-control
+
