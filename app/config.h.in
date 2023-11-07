@@ -11,7 +11,7 @@
 #define SETTINGS_APP \"Redrose\"
 
 #define PLAYER_KEY \"ABC/player\"
-#define ABC2MIDI \"/usr/bin/abc2midi\"
+#define ABC2MIDI \"abc2midi\"
 #define LIBABC2SMF \"internal\"
 
 #define PLAYER_VELOCITY \"ABC/player/default_velocity\"

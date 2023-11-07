@@ -23,11 +23,6 @@ void MidiGenerator::generate(const QString &inputpath, int xopt, AbcProcess::Con
     QStringList argv = program.split(" ");
     program = argv.at(0);
 
-    if (!QFileInfo::exists(program)) {
-        emit generated(1, tr("Program not found: ") + program, cont);
-        return;
-    }
-
     if (outFile().isEmpty()) {
         QString path = inputpath;
         path.replace(m_abcext, QString::number(xopt) + ".mid");
