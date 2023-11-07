@@ -60,7 +60,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     curSFont = soundfont.toString();
     QFileInfo info(curSFont);
     if (!info.exists()) {
-        a->mainWindow()->statusBar()->showMessage(tr("No soundfont to load! Please check settings."));
+        QMessageBox::warning(a->mainWindow(), tr("Error"), tr("No soundfont to load!\nPlease close tab and check player preferences."));
         return;
     }
 
@@ -73,6 +73,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     connect(sfloader, &SFLoader::finished, this, &AbcSynth::onSFontFinished);
     a->mainWindow()->statusBar()->showMessage(tr("Loading sound font: ") + sf);
     sfloader->start();
+
 
     playback_monitor.setInterval(1000);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
