@@ -41,8 +41,15 @@
     <name>AbcSynth</name>
     <message>
         <location filename="abcsynth.cpp" line="63"/>
-        <source>No soundfont to load! Please check settings.</source>
-        <translation>Fonte sonore manquante ! Veuillez vérifier les paramètres.</translation>
+        <source>Error</source>
+        <translation>Erreur</translation>
+    </message>
+    <message>
+        <location filename="abcsynth.cpp" line="63"/>
+        <source>No soundfont to load!
+Please close tab and check player preferences.</source>
+        <translation>Pas de fonte sonore à charger !
+Veuillez fermer la partition et vérifier les préférences du lecteur.</translation>
     </message>
     <message>
         <location filename="abcsynth.cpp" line="74"/>
@@ -50,43 +57,43 @@
         <translation>Chargement de la fonte sonore : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="115"/>
+        <location filename="abcsynth.cpp" line="117"/>
         <source>Ready.</source>
         <translation>Prêt.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="118"/>
+        <location filename="abcsynth.cpp" line="120"/>
         <source>Playing </source>
         <translation>Lecture </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="122"/>
+        <location filename="abcsynth.cpp" line="124"/>
         <source>Stopping.</source>
         <translation>Arrêt.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="129"/>
-        <location filename="abcsynth.cpp" line="136"/>
+        <location filename="abcsynth.cpp" line="131"/>
+        <location filename="abcsynth.cpp" line="138"/>
         <source>Done.</source>
         <translation>Terminé.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="164"/>
+        <location filename="abcsynth.cpp" line="166"/>
         <source>Cannot load sound font: </source>
         <translation>Impossible de charger la fonte sonore : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="168"/>
+        <location filename="abcsynth.cpp" line="170"/>
         <source>Sound font loaded.</source>
         <translation>Fonte sonore chargée.</translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="191"/>
+        <location filename="abcsynth.cpp" line="193"/>
         <source>Cannot load MIDI file: </source>
         <translation>Impossible de charger le fichier MIDI : </translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="196"/>
+        <location filename="abcsynth.cpp" line="198"/>
         <source>Starting synthesis...</source>
         <translation>Démarrage de la synthèse...</translation>
     </message>
@@ -296,22 +303,17 @@ Redrose version </source>
 <context>
     <name>MidiGenerator</name>
     <message>
-        <location filename="midigenerator.cpp" line="27"/>
-        <source>Program not found: </source>
-        <translation>Programme non trouvé : </translation>
-    </message>
-    <message>
-        <location filename="midigenerator.cpp" line="62"/>
+        <location filename="midigenerator.cpp" line="57"/>
         <source>Parse error line: </source>
         <translation>Erreur d&apos;analyse ligne : </translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="62"/>
+        <location filename="midigenerator.cpp" line="57"/>
         <source>, char: </source>
         <translation>, caractère : </translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="68"/>
+        <location filename="midigenerator.cpp" line="63"/>
         <source>Out of memory</source>
         <translation>Pas assez de mémoire</translation>
     </message>
@@ -373,15 +375,15 @@ Redrose version </source>
         <translation>Niveau de réverbération</translation>
     </message>
     <message>
-        <location filename="playerprefdialog.cpp" line="179"/>
-        <location filename="playerprefdialog.cpp" line="181"/>
+        <location filename="playerprefdialog.cpp" line="180"/>
+        <location filename="playerprefdialog.cpp" line="182"/>
         <source>Audio sound font selection</source>
         <oldsource>Audio sound font preference</oldsource>
         <translation>Sélection de la fonte sonore</translation>
     </message>
     <message>
-        <location filename="playerprefdialog.cpp" line="179"/>
-        <location filename="playerprefdialog.cpp" line="181"/>
+        <location filename="playerprefdialog.cpp" line="180"/>
+        <location filename="playerprefdialog.cpp" line="182"/>
         <source>Soundfont (*.sf[23])</source>
         <translation>Fonte sonore (*.sf[23])</translation>
     </message>
@@ -414,22 +416,22 @@ Redrose version </source>
         <translation>Préférences du lecteur</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="64"/>
+        <location filename="PreferencesMenu.cpp" line="66"/>
         <source>Postscript export preference</source>
         <translation>Préférence d&apos;export Postscript</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="64"/>
+        <location filename="PreferencesMenu.cpp" line="66"/>
         <source>Tunes:</source>
         <translation>Morceaux :</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="78"/>
+        <location filename="PreferencesMenu.cpp" line="80"/>
         <source>Reset prefrences?</source>
         <translation>Remettre les préférences à zéro ?</translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="78"/>
+        <location filename="PreferencesMenu.cpp" line="80"/>
         <source>Do you really want to reset preferences?</source>
         <translation>Voulez-vous vraiment remettre les préférences d&apos;origine ?</translation>
     </message>
@@ -521,94 +523,94 @@ Voulez-vous quitter malgré tout ?</translation>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="85"/>
-        <location filename="ScoreMenu.cpp" line="326"/>
+        <location filename="ScoreMenu.cpp" line="333"/>
         <source>ABC score (*.abc)</source>
         <translation>Partition ABC (*.abc)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="216"/>
+        <location filename="ScoreMenu.cpp" line="223"/>
         <source>&amp;%1 %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="276"/>
-        <location filename="ScoreMenu.cpp" line="293"/>
-        <location filename="ScoreMenu.cpp" line="310"/>
-        <location filename="ScoreMenu.cpp" line="352"/>
-        <location filename="ScoreMenu.cpp" line="377"/>
-        <location filename="ScoreMenu.cpp" line="402"/>
+        <location filename="ScoreMenu.cpp" line="283"/>
+        <location filename="ScoreMenu.cpp" line="300"/>
+        <location filename="ScoreMenu.cpp" line="317"/>
+        <location filename="ScoreMenu.cpp" line="359"/>
+        <location filename="ScoreMenu.cpp" line="384"/>
+        <location filename="ScoreMenu.cpp" line="409"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="276"/>
+        <location filename="ScoreMenu.cpp" line="283"/>
         <source>Could not open score!</source>
         <translation>Impossible d&apos;ouvrir la partition !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="293"/>
+        <location filename="ScoreMenu.cpp" line="300"/>
         <source>Could not save an untitled ABC file!</source>
         <translation>Impossible d&apos;enregistrer un fichier ABC sans nom !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="308"/>
+        <location filename="ScoreMenu.cpp" line="315"/>
         <source>Score saved.</source>
         <translation>Partition enregistrée.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="310"/>
+        <location filename="ScoreMenu.cpp" line="317"/>
         <source>Could not save ABC score!</source>
         <translation>Impossible d&apos;enregistrer la partition ABC !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="326"/>
+        <location filename="ScoreMenu.cpp" line="333"/>
         <source>Save ABC score</source>
         <translation>Enregistrer la partition ABC</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="352"/>
-        <location filename="ScoreMenu.cpp" line="377"/>
-        <location filename="ScoreMenu.cpp" line="402"/>
+        <location filename="ScoreMenu.cpp" line="359"/>
+        <location filename="ScoreMenu.cpp" line="384"/>
+        <location filename="ScoreMenu.cpp" line="409"/>
         <source>Please save score before to export.</source>
         <translation>Veuillez sauvegarder la partition avant de l&apos;exporter.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="358"/>
+        <location filename="ScoreMenu.cpp" line="365"/>
         <source>Export MIDI file</source>
         <translation>Exporter en fichier MIDI</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="358"/>
+        <location filename="ScoreMenu.cpp" line="365"/>
         <source>MIDI file (*.mid)</source>
         <translation>Fichier MIDI (*.mid)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="383"/>
+        <location filename="ScoreMenu.cpp" line="390"/>
         <source>Export Postscript file</source>
         <translation>Exporter en fichier Postscript</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="383"/>
+        <location filename="ScoreMenu.cpp" line="390"/>
         <source>Postscript file (*.ps)</source>
         <translation>Fichier Postscript (*.ps)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="408"/>
+        <location filename="ScoreMenu.cpp" line="415"/>
         <source>Export PDF file</source>
         <translation>Exporter en fichier PDF</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="408"/>
+        <location filename="ScoreMenu.cpp" line="415"/>
         <source>PDF file (*.pdf)</source>
         <translation>Fichier PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="446"/>
+        <location filename="ScoreMenu.cpp" line="453"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="446"/>
+        <location filename="ScoreMenu.cpp" line="453"/>
         <source>Composer</source>
         <translation>Compositeur</translation>
     </message>
