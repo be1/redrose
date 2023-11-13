@@ -19,7 +19,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
     QVariant player = settings.value(PLAYER_KEY);
     playerLabel = new QLabel(tr("MIDI generator"));
     playerComboBox = new QComboBox;
-    playerComboBox->setEditable(true);
+    playerComboBox->setEditable(false);
 
     QStringList pitems;
     if (!player.isNull()) {
