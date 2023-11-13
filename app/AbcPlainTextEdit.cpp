@@ -289,11 +289,8 @@ QString AbcPlainTextEdit::noteUnderCursor(QTextCursor tc) const
     if (sym.isEmpty())
         return QString();
 
-    if (!isPitch(sym.at(0)) && !isRest(sym.at(0)))
+    if (!isPitch(sym.at(0)))
         return QString();
-
-    if (isRest(sym.at(0)))
-        return sym;
 
     /* now, it is a pitch */
 
