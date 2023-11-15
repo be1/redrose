@@ -167,42 +167,16 @@ void EditVBoxLayout::onPlayClicked()
     }
 }
 
-QString EditVBoxLayout::constructHeaders() {
-    QString headers;
-
-    QString all = abcPlainTextEdit()->toPlainText();
-    int i = 0, xl = 0;
-    QStringList lines = all.split('\n');
-
-    /* find last X: before selectionIndex */
-    for (int l = 0; l < lines.count() && i < selectionIndex; l++) {
-        i += lines.at(l).count() +1; /* count \n */
-        if (lines.at(l).startsWith("X:")) {
-            xspinbox.setValue(lines.at(l).rightRef(1).toInt());
-            xl = l;
-            /* don't break on first X: continue until selectionIndex */
-        }
-    }
-
-    /* construct headers */
-    for (int j = xl;  j < lines.count(); j++) {
-        /* stop at 'V:' but include all other headers and comments above it */
-        if (lines.at(j).contains(QRegularExpression("^((%[^\n]*)|([A-UW-Z]:[^\n]+))$"))) {
-            headers += lines.at(j) + "\n";
-        } else /* found 'V:' or notes */
-            break;
-    }
-
-    return headers;
-}
-
 void EditVBoxLayout::exportMIDI(QString filename) {
     QString tosave;
 
     if (selection.isEmpty()) {
         tosave = abcPlainTextEdit()->toPlainText();
     } else {
-        tosave = constructHeaders();
+        int x = 0;
+        tosave = abcPlainTextEdit()->constructHeaders(selectionIndex, &x);
+        xspinbox.setValue(x);
+        tosave += abcPlainTextEdit()->getLastKeySignatureChange();
         /* when coming from QTextCursor::selectedText(), LF is replaced by U+2029! */
         tosave += selection.replace(QChar::ParagraphSeparator, "\n");
     }
@@ -428,7 +402,8 @@ void EditVBoxLayout::onSelectionChanged()
 
 void EditVBoxLayout::onPlayableNote(const QString &note)
 {
-    QString abc = constructHeaders();
+    int x = 0;
+    QString abc = abcPlainTextEdit()->constructHeaders(selectionIndex, &x);
     abc.append(note);
 #if 0
     const QDataStream* stream = midigen.generate(abc.toUtf8(), xOfCursor(abcplaintextedit.textCursor()));

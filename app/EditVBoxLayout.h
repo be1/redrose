@@ -54,7 +54,6 @@ protected:
     int xOfCursor(const QTextCursor& c);
     void cleanupProcesses();
     void cleanupThreads();
-    QString constructHeaders();
 
 public slots:
     void onXChanged(int value);

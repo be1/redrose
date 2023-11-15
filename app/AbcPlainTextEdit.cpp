@@ -152,6 +152,37 @@ void AbcPlainTextEdit::setSaved()
     this->document()->setModified(false);
 }
 
+QString AbcPlainTextEdit::constructHeaders(int selectionIndex, int* x)
+{
+    QString headers;
+
+    QString all = this->toPlainText();
+    int i = 0, xl = 0;
+    QStringList lines = all.split('\n');
+
+    /* find last X: before selectionIndex */
+    for (int l = 0; l < lines.count() && i < selectionIndex; l++) {
+        i += lines.at(l).count() +1; /* count \n */
+        if (lines.at(l).startsWith("X:")) {
+            /* report X value */
+            *x = lines.at(l).rightRef(1).toInt();
+            xl = l;
+            /* don't break on first X: continue until selectionIndex */
+        }
+    }
+
+    /* construct headers */
+    for (int j = xl;  j < lines.count(); j++) {
+        /* stop at 'V:' but include all other headers and comments above it */
+        if (lines.at(j).contains(QRegularExpression("^((%[^\n]*)|([A-UW-Z]:[^\n]+))$"))) {
+            headers += lines.at(j) + "\n";
+        } else /* found 'V:' or notes */
+            break;
+    }
+
+    return headers;
+}
+
 void AbcPlainTextEdit::insertCompletion(const QString &completion)
 {
     if (c->widget() != this)
@@ -363,11 +394,11 @@ QString AbcPlainTextEdit::getLastKeySignatureChange() const
 
     /* search also for non-inline change */
     tc = doc->find(QRegularExpression("^K:"), textCursor(), QTextDocument::FindBackward);
-    ktc = doc->find(QRegularExpression("^K:"), ktc, QTextDocument::FindBackward);
+    ktc = doc->find(QRegularExpression("^K:"), tc, QTextDocument::FindBackward);
     /* we must avoid initial KS */
-    if (tc.position() > ktc.position()) {
+    if (tc.position() > ktc.position() && tc.position() > vtc.position()) {
         tc.select(QTextCursor::LineUnderCursor);
-        return tc.selectedText();
+        return tc.selectedText() + "\n";
     }
 
     return QString();

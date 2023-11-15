@@ -58,6 +58,8 @@ public:
 
     bool isSaved();
     void setSaved();
+    QString constructHeaders(int selectionIndex, int* x);
+    QString getLastKeySignatureChange() const;
 
 signals:
     void playableNote(const QString& note);
@@ -99,7 +101,6 @@ private:
     bool isRest(QChar car) const;
     bool isPitch(QChar car) const;
     bool isAccid(QChar car) const;
-    QString getLastKeySignatureChange() const;
     QString getCurrentVoiceOrChannel() const;
     QString getCurrentMIDIComment(const QString& com) const;
 
