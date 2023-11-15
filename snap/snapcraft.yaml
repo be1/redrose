@@ -1,6 +1,6 @@
 name: redrose
 base: core20
-version: '0.5.5'
+version: '0.5.6'
 summary: Integrated ABC music notation environment
 description: |
   Redrose lets you write ABC musical scores in ABC notation and, with
@@ -49,7 +49,7 @@ parts:
       - libfluidsynth2
       - abcm2ps
       - abcmidi
-    source: http://brouits.free.fr/redrose/redrose-0.5.5.tar.gz
+    source: http://brouits.free.fr/redrose/redrose-0.5.6.tar.gz
 
 apps:
   redrose:
