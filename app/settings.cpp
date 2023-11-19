@@ -15,7 +15,7 @@ void Settings::check()
 
     QVariant duration = value(PLAYER_DURATION);
     if (!duration.isValid() || duration.toInt() <= 0)
-        setValue(PLAYER_DURATION, 10);
+        setValue(PLAYER_DURATION, 8);
 
     QVariant autoplay = value(EDITOR_AUTOPLAY);
     if (!autoplay.isValid())
@@ -89,7 +89,7 @@ void Settings::reset()
 {
     setValue(PLAYER_VELOCITY, 80);
 
-    setValue(PLAYER_DURATION, 10);
+    setValue(PLAYER_DURATION, 8);
 
     setValue(EDITOR_AUTOPLAY, false);
 
