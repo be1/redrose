@@ -9,9 +9,9 @@
 
 ViewVSplitter::ViewVSplitter(QWidget* parent)
     : QSplitter(parent)
-    , prev(QIcon::fromTheme("previous"), tr("Previous"), this)
+    , prev(QIcon::fromTheme("go-previous"), tr("Previous"), this)
     , print(QIcon::fromTheme("document-print"), tr("Print"), this)
-    , next(QIcon::fromTheme("next"), tr("Next"), this)
+    , next(QIcon::fromTheme("go-next"), tr("Next"), this)
 {
     setOrientation(Qt::Vertical);
 
