@@ -38,6 +38,7 @@ parts:
       - libdrumstick-dev
       - libfluidsynth-dev
     stage-packages:
+      - adwaita-icon-theme-full
       - qttranslations5-l10n
       - libqt5core5a
       - libqt5gui5
@@ -78,3 +79,5 @@ layout:
     bind: $SNAP/usr/share/sounds
   /usr/share/qt5:
     bind: $SNAP/usr/share/qt5
+  /usr/share/icons:
+    bind: $SNAP/usr/share/icons
