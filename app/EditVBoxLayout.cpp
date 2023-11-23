@@ -38,8 +38,17 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     progress->setColor(qApp->palette().color(QPalette::Text));
     progress->startAnimation();
 
+    positionslider.setOrientation(Qt::Orientation::Horizontal);
+    positionslider.setTickPosition(QSlider::TickPosition::NoTicks);
+    positionslider.setTickInterval(0);
+    positionslider.setMinimum(0);
+    positionslider.setMaximum(0);
+    positionslider.setSingleStep(0);
+    connect(&positionslider, &QSlider::sliderMoved, this, &EditVBoxLayout::onPositionSliderChanged);
+
     hboxlayout.addWidget(&xlabel);
-	hboxlayout.addWidget(&xspinbox);
+    hboxlayout.addWidget(&xspinbox);
+    hboxlayout.addWidget(&positionslider);
     hboxlayout.addWidget(progress);
     hboxlayout.addWidget(&playpushbutton);
 	hboxlayout.addWidget(&runpushbutton);
@@ -109,7 +118,12 @@ PlayPushButton *EditVBoxLayout::playPushButton()
 
 RunPushButton *EditVBoxLayout::runPushButton()
 {
-	return &runpushbutton;
+    return &runpushbutton;
+}
+
+QSlider *EditVBoxLayout::positionSlider()
+{
+    return &positionslider;
 }
 
 void EditVBoxLayout::setFileName(const QString &fn)
@@ -311,6 +325,11 @@ void EditVBoxLayout::onSynthFinished(bool err)
 void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     QMessageBox::warning(a->mainWindow(), title, text);
+}
+
+void EditVBoxLayout::onPositionSliderChanged(int val)
+{
+    synth->seek(val);
 }
 
 void EditVBoxLayout::saveToPDF(const QString &outfile)

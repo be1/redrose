@@ -12,6 +12,7 @@
 #include "QProgressIndicator.h"
 #include <QVBoxLayout>
 #include <QSpinBox>
+#include <QSlider>
 #include <QLabel>
 #include <QDir>
 #include <QTemporaryFile>
@@ -30,6 +31,7 @@ public:
     AbcPlainTextEdit *abcPlainTextEdit();
     PlayPushButton *playPushButton();
     RunPushButton *runPushButton();
+    QSlider* positionSlider();
     void setFileName(const QString& fn);
 
     /**
@@ -69,11 +71,13 @@ protected slots:
     void onSynthFinished(bool err);
     void saveToPDF(const QString& outfile);
     void popupWarning(const QString& title, const QString& text);
+    void onPositionSliderChanged(int val);
 
 private:
 	AbcPlainTextEdit abcplaintextedit;
     PlayPushButton playpushbutton; /* midi */
-    RunPushButton runpushbutton; /* svg */
+    RunPushButton runpushbutton; /* ps */
+    QSlider positionslider;
     QHBoxLayout hboxlayout;
     QSpinBox xspinbox;
     QLabel xlabel;

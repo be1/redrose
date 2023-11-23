@@ -2,6 +2,7 @@
 #define ABCSYNTH_H
 #include <fluidsynth.h>
 #include <QString>
+#include <QMutex>
 #include <QTimer>
 #include <QObject>
 #include "sfloader.h"
@@ -17,19 +18,27 @@ public:
     void play(const QString& midifile);
     void play(const QByteArray& ba);
     void fire(int chan, int pgm, int key, int vel);
+    void seek(int tick);
+    int getTotalTicks();
     void stop(void); /* synchronous */
     bool isLoading(void);
     bool isPlaying(void);
+    fluid_synth_t* synth() { return fluid_synth; }
+    fluid_player_t* player() { return fluid_player; }
+    int m_position; /* current measure */
 
 signals:
     void initFinished(bool err);
     void synthFinished(int ret);
+    void positionChanged();
 
 private slots:
     void onSFontFinished();
     void monitorPlayback();
+    void onPositionChanged();
 
 private:
+    QMutex m_mutex;
     QTimer playback_monitor;
     fluid_settings_t* fluid_settings;
     fluid_synth_t* fluid_synth;

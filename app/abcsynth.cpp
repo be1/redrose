@@ -1,9 +1,27 @@
 #include "abcsynth.h"
+#include "fluidsynth/event.h"
 #include "config.h"
 #include <QTimer>
+#include <QMutexLocker>
 #include <QDebug>
 #include "AbcApplication.h"
 #include "settings.h"
+
+static int handle_midi_tick(void *data, int tick) {
+    AbcSynth* self = static_cast<AbcSynth*>(data);
+
+    if (self->m_position == tick)
+        return FLUID_OK;
+
+    self->m_position = tick;
+    emit self->positionChanged();
+    return FLUID_OK;
+}
+
+static int handle_midi_event(void *data, fluid_midi_event_t *event) {
+    AbcSynth* self = static_cast<AbcSynth*>(data);
+    return fluid_synth_handle_midi_event(self->synth(), event);
+}
 
 AbcSynth::AbcSynth(const QString& name, QObject* parent)
     : QObject(parent),
@@ -74,9 +92,9 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     a->mainWindow()->statusBar()->showMessage(tr("Loading sound font: ") + sf);
     sfloader->start();
 
-
     playback_monitor.setInterval(1000);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
+    connect(this, &AbcSynth::positionChanged, this, &AbcSynth::onPositionChanged);
 #if 0
     qreal reverb = settings.value(REVERB_KEY).toDouble();
     if (reverb > 0.) {
@@ -112,32 +130,46 @@ void AbcSynth::monitorPlayback()
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
 
     if (fluid_player) {
+        m_mutex.lock();
         switch (fluid_player_get_status(fluid_player)) {
         case FLUID_PLAYER_READY:
+            m_mutex.unlock();
             a->mainWindow()->statusBar()->showMessage(tr("Ready."));
             break;
         case FLUID_PLAYER_PLAYING:
+            m_mutex.unlock();
             a->mainWindow()->statusBar()->showMessage(tr("Playing ") + QString::number(m_secs) + "s.");
             m_secs++;
             break;
         case FLUID_PLAYER_STOPPING:
+            m_mutex.unlock();
             a->mainWindow()->statusBar()->showMessage(tr("Stopping."));
             break;
         case FLUID_PLAYER_DONE:
         default:
+            m_mutex.unlock();
             /* cleanup and trigger synthFinished */
             stop();
             mon->stop();
-            a->mainWindow()->statusBar()->showMessage(tr("Done."));
+            a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_secs) + "s.");
             emit synthFinished(m_err);
             break;
         }
     } else {
         /* stopped before ending: player has been freed and nulled */
         mon->stop();
-        a->mainWindow()->statusBar()->showMessage(tr("Done."));
+        a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_secs) + "s.");
         emit synthFinished(m_err);
     }
+}
+
+void AbcSynth::onPositionChanged()
+{
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    EditWidget* curtab = qobject_cast<EditWidget*>(a->mainWindow()->mainHSplitter()->editTabWidget()->currentWidget());
+    EditVBoxLayout* layout = curtab->editVBoxLayout();
+    layout->positionSlider()->setMaximum(getTotalTicks());
+    layout->positionSlider()->setValue(m_position);
 }
 
 void AbcSynth::abortPlay()
@@ -187,14 +219,15 @@ void AbcSynth::play(const QString& midifile) {
     }
 
     fluid_player = new_fluid_player(fluid_synth);
+    fluid_player_set_playback_callback(fluid_player, handle_midi_event, this);
+    fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
 
     qDebug() << "Loading " << midifile;
     if (FLUID_FAILED == fluid_player_add(fluid_player, midifile.toUtf8().constData())) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load MIDI file: ") + midifile);
         qWarning() << "Cannot load MIDI file: " << midifile;
     } else {
-        qDebug() << "Starting playback with SoundFont " << sf;
-
+        qDebug() << "Starting file playback with SoundFont " << sf;
         a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
 
         m_err = fluid_player_play(fluid_player);
@@ -204,16 +237,23 @@ void AbcSynth::play(const QString& midifile) {
 
 void AbcSynth::play(const QByteArray& ba)
 {
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+
     if (isPlaying()) {
         qDebug() << "Synth is playing. Stopping it.";
         stop();
     }
 
     fluid_player = new_fluid_player(fluid_synth);
+    fluid_player_set_playback_callback(fluid_player, handle_midi_event, this);
+    fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
 
     if (FLUID_FAILED == fluid_player_add_mem(fluid_player, ba.constData(), ba.size())) {
         qWarning() << "Cannot load MIDI buffer." ;
     } else {
+        qDebug() << "Starting buffer playback with SoundFont " << sf;
+
+        a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
         m_err = fluid_player_play(fluid_player);
         playback_monitor.start();
     }
@@ -227,8 +267,30 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
     QTimer::singleShot(500, this, [this, chan, key] () { fluid_synth_noteoff(fluid_synth, chan, key); });
 }
 
+void AbcSynth::seek(int tick)
+{
+    QMutexLocker locker(&m_mutex);
+
+    if (fluid_player) {
+        fluid_player_seek(fluid_player, tick);
+    }
+}
+
+int AbcSynth::getTotalTicks()
+{
+    QMutexLocker locker(&m_mutex);
+
+    if (fluid_player) {
+        return fluid_player_get_total_ticks(fluid_player);
+    }
+
+    return 0;
+}
+
 void AbcSynth::stop()
 {
+    QMutexLocker locker(&m_mutex);
+
     m_secs = 1;
     if (fluid_player) {
         fluid_synth_all_notes_off(fluid_synth, -1);
@@ -246,6 +308,8 @@ bool AbcSynth::isLoading()
 
 bool AbcSynth::isPlaying()
 {
+    QMutexLocker locker(&m_mutex);
+
     if (fluid_player)
         return fluid_player_get_status(fluid_player) == FLUID_PLAYER_PLAYING;
     else
