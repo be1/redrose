@@ -20,7 +20,15 @@ static int handle_midi_tick(void *data, int tick) {
 
 static int handle_midi_event(void *data, fluid_midi_event_t *event) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
+    if (self->m_position == fluid_player_get_current_tick(self->player())) {
+        ;
+    } else {
+        self->m_position = fluid_player_get_current_tick(self->player());
+        emit self->positionChanged();
+    }
+
     return fluid_synth_handle_midi_event(self->synth(), event);
+
 }
 
 AbcSynth::AbcSynth(const QString& name, QObject* parent)
@@ -220,7 +228,7 @@ void AbcSynth::play(const QString& midifile) {
 
     fluid_player = new_fluid_player(fluid_synth);
     fluid_player_set_playback_callback(fluid_player, handle_midi_event, this);
-    fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
+    //fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
 
     qDebug() << "Loading " << midifile;
     if (FLUID_FAILED == fluid_player_add(fluid_player, midifile.toUtf8().constData())) {
@@ -246,7 +254,7 @@ void AbcSynth::play(const QByteArray& ba)
 
     fluid_player = new_fluid_player(fluid_synth);
     fluid_player_set_playback_callback(fluid_player, handle_midi_event, this);
-    fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
+    //fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
 
     if (FLUID_FAILED == fluid_player_add_mem(fluid_player, ba.constData(), ba.size())) {
         qWarning() << "Cannot load MIDI buffer." ;
