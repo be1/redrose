@@ -25,17 +25,16 @@ public:
     bool isPlaying(void);
     fluid_synth_t* synth() { return fluid_synth; }
     fluid_player_t* player() { return fluid_player; }
-    int m_position; /* current measure */
+    int m_tick;
 
 signals:
     void initFinished(bool err);
     void synthFinished(int ret);
-    void positionChanged();
+    void tickChanged(int tick);
 
 private slots:
     void onSFontFinished();
     void monitorPlayback();
-    void onPositionChanged();
 
 private:
     QMutex m_mutex;

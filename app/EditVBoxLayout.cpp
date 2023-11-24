@@ -68,6 +68,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     synth = new AbcSynth(info.baseName(), this);
     connect(synth, &AbcSynth::initFinished, this, &EditVBoxLayout::onSynthInited);
     connect(synth, &AbcSynth::synthFinished, this, &EditVBoxLayout::onSynthFinished);
+    connect(synth, &AbcSynth::tickChanged, this, &EditVBoxLayout::onSynthTickChanged);
     playpushbutton.setEnabled(false);
 }
 
@@ -330,6 +331,12 @@ void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
 void EditVBoxLayout::onPositionSliderChanged(int val)
 {
     synth->seek(val);
+}
+
+void EditVBoxLayout::onSynthTickChanged(int tick)
+{
+    positionslider.setMaximum(synth->getTotalTicks());
+    positionslider.setValue(tick);
 }
 
 void EditVBoxLayout::saveToPDF(const QString &outfile)

@@ -10,25 +10,24 @@
 static int handle_midi_tick(void *data, int tick) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
 
-    if (self->m_position == tick)
+    if (self->m_tick == tick)
         return FLUID_OK;
 
-    self->m_position = tick;
-    emit self->positionChanged();
+    self->m_tick = tick;
+    emit self->tickChanged(tick);
     return FLUID_OK;
 }
 
 static int handle_midi_event(void *data, fluid_midi_event_t *event) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
-    if (self->m_position == fluid_player_get_current_tick(self->player())) {
+    if (self->m_tick == fluid_player_get_current_tick(self->player())) {
         ;
     } else {
-        self->m_position = fluid_player_get_current_tick(self->player());
-        emit self->positionChanged();
+        self->m_tick = fluid_player_get_current_tick(self->player());
+        emit self->tickChanged(self->m_tick);
     }
 
     return fluid_synth_handle_midi_event(self->synth(), event);
-
 }
 
 AbcSynth::AbcSynth(const QString& name, QObject* parent)
@@ -102,7 +101,6 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
     playback_monitor.setInterval(1000);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
-    connect(this, &AbcSynth::positionChanged, this, &AbcSynth::onPositionChanged);
 #if 0
     qreal reverb = settings.value(REVERB_KEY).toDouble();
     if (reverb > 0.) {
@@ -169,15 +167,6 @@ void AbcSynth::monitorPlayback()
         a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_secs) + "s.");
         emit synthFinished(m_err);
     }
-}
-
-void AbcSynth::onPositionChanged()
-{
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
-    EditWidget* curtab = qobject_cast<EditWidget*>(a->mainWindow()->mainHSplitter()->editTabWidget()->currentWidget());
-    EditVBoxLayout* layout = curtab->editVBoxLayout();
-    layout->positionSlider()->setMaximum(getTotalTicks());
-    layout->positionSlider()->setValue(m_position);
 }
 
 void AbcSynth::abortPlay()

@@ -72,6 +72,7 @@ protected slots:
     void saveToPDF(const QString& outfile);
     void popupWarning(const QString& title, const QString& text);
     void onPositionSliderChanged(int val);
+    void onSynthTickChanged(int tick);
 
 private:
 	AbcPlainTextEdit abcplaintextedit;
