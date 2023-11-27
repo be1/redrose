@@ -95,6 +95,7 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, "H")) m_shorten = 100;
     else if (!strcmp(s->text, "tenuto")) m_shorten = 100;
     else if (!strcmp(s->text, "L")) m_emphasis = 24;
+    else if (!strcmp(s->text, ">")) m_emphasis = 24;
     else if (!strcmp(s->text, "accent")) m_emphasis = 24;
     else if (!strcmp(s->text, "emphasis")) m_emphasis = 24;
     else if (!strcmp(s->text, "crescendo(")) m_in_cresc = 1;
