@@ -2754,22 +2754,22 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Fragment(pcc_context_t *ctx) {
     L0010:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (
-            pcc_refill_buffer(ctx, 1) < 1 ||
-            ctx->buffer.buf[ctx->cur] != '!'
-        ) goto L0011;
-        ctx->cur++;
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_ExDecoration, &chunk->thunks, NULL)) goto L0011;
-        if (
-            pcc_refill_buffer(ctx, 1) < 1 ||
-            ctx->buffer.buf[ctx->cur] != '!'
-        ) goto L0011;
-        ctx->cur++;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Decoration, &chunk->thunks, NULL)) goto L0011;
         goto L0001;
     L0011:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Decoration, &chunk->thunks, NULL)) goto L0012;
+        if (
+            pcc_refill_buffer(ctx, 1) < 1 ||
+            ctx->buffer.buf[ctx->cur] != '!'
+        ) goto L0012;
+        ctx->cur++;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_ExDecoration, &chunk->thunks, NULL)) goto L0012;
+        if (
+            pcc_refill_buffer(ctx, 1) < 1 ||
+            ctx->buffer.buf[ctx->cur] != '!'
+        ) goto L0012;
+        ctx->cur++;
         goto L0001;
     L0012:;
         ctx->cur = p;
@@ -3673,26 +3673,65 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_NoteConstruct(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "NoteConstruct", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
+    {
+        int i;
+        for (i = 0;; i++) {
+            const size_t p = ctx->cur;
+            const size_t n = chunk->thunks.len;
+            {
+                const size_t p = ctx->cur;
+                const size_t n = chunk->thunks.len;
+                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Decoration, &chunk->thunks, NULL)) goto L0003;
+                goto L0002;
+            L0003:;
+                ctx->cur = p;
+                pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+                if (
+                    pcc_refill_buffer(ctx, 1) < 1 ||
+                    ctx->buffer.buf[ctx->cur] != '!'
+                ) goto L0004;
+                ctx->cur++;
+                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_ExDecoration, &chunk->thunks, NULL)) goto L0004;
+                if (
+                    pcc_refill_buffer(ctx, 1) < 1 ||
+                    ctx->buffer.buf[ctx->cur] != '!'
+                ) goto L0004;
+                ctx->cur++;
+                goto L0002;
+            L0004:;
+                ctx->cur = p;
+                pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+                goto L0001;
+            L0002:;
+            }
+            if (ctx->cur == p) break;
+            continue;
+        L0001:;
+            ctx->cur = p;
+            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+            break;
+        }
+    }
     if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Note, &chunk->thunks, NULL)) goto L0000;
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_NoteDuration, &chunk->thunks, NULL)) goto L0001;
-        goto L0002;
-    L0001:;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_NoteDuration, &chunk->thunks, NULL)) goto L0005;
+        goto L0006;
+    L0005:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-    L0002:;
+    L0006:;
     }
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0003;
-        goto L0004;
-    L0003:;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Tie, &chunk->thunks, NULL)) goto L0007;
+        goto L0008;
+    L0007:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-    L0004:;
+    L0008:;
     }
     ctx->level--;
     PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "NoteConstruct", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));

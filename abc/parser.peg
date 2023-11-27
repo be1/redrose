@@ -93,8 +93,8 @@ Fragment <- _ / "y"
 	/ NotePunct
 	/ NoteConstruct
 	/ '"' Gchord '"'
-	/ "!" ExDecoration "!"
 	/ Decoration
+	/ "!" ExDecoration "!"
 	/ ChordPunct
 	/ Chord Tie?
 	/ Grace
@@ -127,7 +127,7 @@ ChordPunct <- Chord Tie? _* < (">" / "<")+ > _* Chord Tie? { abc_chordpunct_set(
 
 NotePunct <- NoteConstruct _* < (">" / "<")+ > _* NoteConstruct { abc_notepunct_set(auxil, $1); }
 
-NoteConstruct <- Note NoteDuration? Tie?
+NoteConstruct <- (Decoration / ("!" ExDecoration "!"))* Note NoteDuration? Tie?
 
 Instruction <- < !"%" (!EOL .)* > { abc_instruction_append(auxil, $0); }
 
