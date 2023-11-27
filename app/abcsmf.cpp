@@ -14,6 +14,7 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) :
         m_unit_per_measure(0),
         m_tempo(0),
         m_expression(EXPRESSION_DEFAULT),
+        m_emphasis(0),
         m_last_tick(0),
         m_note_dur(0),
         m_in_slur(short_den),
@@ -93,9 +94,9 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, ".")) m_shorten = 2;
     else if (!strcmp(s->text, "H")) m_shorten = 100;
     else if (!strcmp(s->text, "tenuto")) m_shorten = 100;
-    else if (!strcmp(s->text, "L")) m_expression = 127;
-    else if (!strcmp(s->text, "accent")) m_expression = 127;
-    else if (!strcmp(s->text, "emphasis")) m_expression = 127;
+    else if (!strcmp(s->text, "L")) m_emphasis = 24;
+    else if (!strcmp(s->text, "accent")) m_emphasis = 24;
+    else if (!strcmp(s->text, "emphasis")) m_emphasis = 24;
     else if (!strcmp(s->text, "crescendo(")) m_in_cresc = 1;
     else if (!strcmp(s->text, "<(")) m_in_cresc = 1;
     else if (!strcmp(s->text, "crescendo)")) m_in_cresc = 0;
@@ -126,7 +127,7 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
 
 
         if (s->ev.value) {
-            writeMidiEvent(delta_tick, m_noteon, chan, s->ev.key + m_transpose, m_cur_dyn * s->ev.value);
+            writeMidiEvent(delta_tick, m_noteon, chan, s->ev.key + m_transpose, (m_cur_dyn + m_emphasis) * s->ev.value);
         } else {
             long small = m_tick_per_unit * m_unit_per_measure / 8;
             small = (delta_tick > small) ? small : delta_tick;
@@ -134,6 +135,7 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
             m_last_tick -= (small / m_shorten);
             /* reset after singlenote decorations */
             m_shorten = m_in_slur;
+            m_emphasis = 0; /* reset to normal dynamic */
         }
     }
 }

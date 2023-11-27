@@ -43,6 +43,7 @@ private:
     long m_tempo;    /* quarter per minute */
 
     int m_expression;      /* expression */
+    int m_emphasis;      /* per note temporary delta velocity */
     long m_last_tick;
     long m_note_dur;      /* note duration */
     int m_in_slur;
