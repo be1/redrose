@@ -18,14 +18,12 @@ private slots:
 
 private:
 #define DPQN 960
-#define EXPRESSION_DEFAULT 0
 
     void manageDecoration(struct abc_symbol* s);
     void writeSingleNote(int track, struct abc_symbol* s);
     void getNumDen(const char* text, long* num, long* den);
     int getSMFKeySignature(const char* text, int* mode);
     void setDynamic(long dur);
-    void writeExpression(int track);
     void writeLyric(const char* l);
     void feedPitchDiff(void);
 
@@ -42,7 +40,6 @@ private:
     long m_unit_per_measure;      /* units per measure */
     long m_tempo;    /* quarter per minute */
 
-    int m_expression;      /* expression */
     int m_emphasis;      /* per note temporary delta velocity */
     long m_last_tick;
     long m_note_dur;      /* note duration */

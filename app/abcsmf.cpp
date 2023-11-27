@@ -13,7 +13,6 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) :
         m_tick_per_unit(0),
         m_unit_per_measure(0),
         m_tempo(0),
-        m_expression(EXPRESSION_DEFAULT),
         m_emphasis(0),
         m_last_tick(0),
         m_note_dur(0),
@@ -120,12 +119,8 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
         /* modify cur_dyn from context */
         setDynamic(delta_tick);
 
-        /* prepend with expression pedal if any */
-        writeExpression(chan);
-
         /* set note lyrics if any */
         writeLyric(s->lyr);
-
 
         if (s->ev.value) {
             writeMidiEvent(delta_tick, m_noteon, chan, s->ev.key + m_transpose, (m_cur_dyn + m_emphasis) * s->ev.value);
@@ -168,7 +163,6 @@ void AbcSmf::onSMFWriteTrack(int track) {
     m_grace_tick = 0; /* grace group duration */
 
     m_grace_mod = 1.0; /* duration modified for graces */
-    m_expression = EXPRESSION_DEFAULT;
     m_in_slur = m_default_shorten;
     m_shorten = m_in_slur; /* dur will be shortened of 1/10 of a unit */
 
@@ -325,13 +319,6 @@ void AbcSmf::setDynamic(long dur) {
         m_cur_dyn = (m_cur_dyn - d) > 30 ? m_cur_dyn - d : 30;
     else
         m_cur_dyn = m_mark_dyn;
-}
-
-void AbcSmf::writeExpression(int chan) {
-    if (m_expression) {
-        writeMidiEvent(0, m_control, chan, 0x0b, m_expression);
-        m_expression = EXPRESSION_DEFAULT;
-    }
 }
 
 void AbcSmf::writeLyric(const char* l) {
