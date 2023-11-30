@@ -5352,7 +5352,9 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Note(pcc_context_t *ctx) {
                 (u >= 0x000041 && u <= 0x000047) ||
                 (u >= 0x000061 && u <= 0x000067) ||
                 u == 0x00005a ||
-                u == 0x00007a
+                u == 0x00007a ||
+                u == 0x000058 ||
+                u == 0x000078
             )) goto L0000;
             ctx->cur += n;
         }

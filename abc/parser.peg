@@ -172,7 +172,7 @@ NoteDuration <- < [0-9]*"/" > { abc_duration_num_set(auxil, $0); } < [1-9][0-9]*
 	/ < [0-9]+ > { abc_duration_num_set(auxil, $0); }
 	/ < "/"+ > { abc_duration_den_set(auxil, $0); }
 
-Note <- < [_=^]*[A-Ga-gZz][,']* > { abc_note_append(auxil, $0); }
+Note <- < [_=^]*[A-Ga-gZzXx][,']* > { abc_note_append(auxil, $0); }
 
 EOL <- "\r\n" / "\r" / "\n"
 

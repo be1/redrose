@@ -110,7 +110,7 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
 void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
     long delta_tick;
 
-    if (s->text[0] == 'Z' || s->text[0] == 'z') {
+    if (s->text[0] == 'Z' || s->text[0] == 'z' || s->text[0] == 'X' || s->text[0] == 'x') {
         /* no event */
     } else {
         delta_tick = (m_tick_per_unit * s->ev.start_num / s->ev.start_den) - m_last_tick;

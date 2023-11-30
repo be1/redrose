@@ -365,7 +365,7 @@ unsigned char note2key(const char* keysig, const char* note, int* measure_accid)
             accid = ACCID_NATURAL;
     }
 
-    unsigned char pitch = 0;
+    unsigned char pitch = 128;
     const char *c;
 
     for (c = note; *c && !isalpha(*c); c++) {;}
@@ -647,7 +647,7 @@ void abc_note_append(struct abc* yy, const char* yytext)
     new->text = strdup(yytext);
 
     new->ev.key = note2key(cur_voice->ks, new->text, cur_voice->measure_accid);
-    if (new->text[0] == 'Z') {
+    if (new->text[0] == 'Z' || new->text[0] == 'X') {
         /* fix numerator */
         new->dur_num = abc_unit_per_measure(cur_voice->ul, cur_voice->mm);
     }
