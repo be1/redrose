@@ -109,11 +109,12 @@ Fragment <- _ / "y"
 	/ "w:" Lyrics
 
 InlineChange <- "[" Change "]"
-Change <- KeySig / Unit / TimeSig / Tempo
+Change <- KeySig / Unit / TimeSig / Tempo / Part
 
 KeySig <- < "K:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 Unit <- < "L:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 TimeSig <- < "M:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
+Part <- < "P:" (!EOL [^\]])+ > #ignore
 Tempo <- < "Q:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 
 Comment <- "%" !"%" (!EOL .)*
