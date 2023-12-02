@@ -1024,13 +1024,13 @@ void abc_change_append(struct abc* yy, const char* yytext)
         new->ev.type = EV_METRIC;
         free (cur_voice->mm);
         cur_voice->mm = strdup(&new->text[2]);
-        if (2 != sscanf(cur_voice->mm, "%d/%d", &new->ev.key, &new->ev.value))
+        if (2 != sscanf(cur_voice->mm, " %d / %d", &new->ev.key, &new->ev.value))
             new->ev.key = 4, new->ev.value = 4;
     } else if (new->text[0] == 'L') {
         new->ev.type = EV_UNIT;
         free (cur_voice->ul);
         cur_voice->ul = strdup(&new->text[2]);
-        if (2 != sscanf(cur_voice->ul, "%d/%d", &new->ev.key, &new->ev.value))
+        if (2 != sscanf(cur_voice->ul, " %d / %d", &new->ev.key, &new->ev.value))
             new->ev.key = 1, new->ev.value = 8;
     }
 }
@@ -1296,7 +1296,7 @@ double abc_apply_divide(const char* div) {
         return 0.0;
 
     int num, den;
-    if(2 != sscanf(div, "%d/%d", &num, &den))
+    if(2 != sscanf(div, " %d / %d", &num, &den))
         return 0.0;
     return (double) num / (double) den;
 }
@@ -1308,11 +1308,13 @@ int abc_unit_per_measure(const char* lh_text, const char* mh_text) {
         mh_text = "4/4";
 
     int ln, ld, mn, md;
-    if (2 == sscanf(lh_text, "%d/%d", &ln, &ld)) {;}
-    else { ln = 1; ld = 8; }
+    if (2 != sscanf(lh_text, " %d / %d", &ln, &ld)) {
+        ln = 1; ld = 8;
+    }
 
-    if (2 == sscanf(mh_text, "%d/%d", &mn, &md)) {;}
-    else { mn = 4; md = 4; }
+    if (2 != sscanf(mh_text, " %d / %d", &mn, &md)) {
+        mn = 4; md = 4;
+    }
 
     return (ld * mn) / (md * ln);
 }
@@ -1323,9 +1325,9 @@ long abc_tempo(const char* th_text) {
     if (th_text) {
         int q = 0;
         int num, den;
-        if (3 == sscanf(th_text, "%d/%d=%d", &num, &den, &q))
+        if (3 == sscanf(th_text, " %d / %d = %d", &num, &den, &q))
             tempo = (q * 4 * num) / den;
-        else if (1 == sscanf(th_text, "%d", &q))
+        else if (1 == sscanf(th_text, " %d", &q))
             tempo = q;
         else if (!strncasecmp(th_text, "\"Largo\"", 5))
             tempo = 40;
@@ -1359,7 +1361,7 @@ void abc_compute_pqr(int* p, int* q, int* r, const char* m) {
     if (!m || m[0] == 'C')
         m = "4/4";
 
-    if (2 != sscanf(m, "%d/%d", &num, &den))
+    if (2 != sscanf(m, " %d / %d", &num, &den))
         num = den = 4;
 
     if (!*r)
@@ -1886,8 +1888,7 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
         ctx.m = mh->text;
 
     struct abc_header* h = abc_find_header(t, 'L');
-    if (h && (2 == sscanf(h->text, "%ld/%ld", &ctx.l_num, &ctx.l_den))) {;}
-    else {
+    if (!h || (2 != sscanf(h->text, " %ld / %ld", &ctx.l_num, &ctx.l_den))) {
         ctx.l_num = 1;
         ctx.l_den = 8;
     }
@@ -1902,7 +1903,7 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                      ctx.m = &s->text[2];
                                  } else if (s->text[0]== 'L') {
                                      long l_n, l_d;
-                                     if (2 == sscanf(&s->text[2], "%ld/%ld", &l_n, &l_d)) {
+                                     if (2 == sscanf(&s->text[2], " %ld / %ld", &l_n, &l_d)) {
                                          ctx.l_mul = l_n / ctx.l_num;
                                          ctx.l_div = l_d / ctx.l_den;
                                      }
@@ -1913,7 +1914,7 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                              break;
 
             case ABC_NUP: {
-                              if (3 == sscanf(s->text, "%d:%d:%d", &ctx.nup_p, &ctx.nup_q, &ctx.nup_r)) {
+                              if (3 == sscanf(s->text, " %d : %d : %d", &ctx.nup_p, &ctx.nup_q, &ctx.nup_r)) {
                                   abc_compute_pqr(&ctx.nup_p, &ctx.nup_q, &ctx.nup_r, ctx.m);
                               }
                           }
