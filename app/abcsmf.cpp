@@ -251,7 +251,12 @@ void AbcSmf::getNumDen(const char* text, long* num, long* den) {
     bool ok;
     QString str(text);
     QStringList sl = str.split('/');
-    if (sl.count() < 2) *num = 1, *den = 8;
+    if (sl.size() < 2) {
+        *num = 1;
+        *den = 8;
+        return;
+    }
+
     *num = sl.at(0).toLong(&ok);
     if (!ok) *num = 1;
     *den = sl.at(1).toLong(&ok);
