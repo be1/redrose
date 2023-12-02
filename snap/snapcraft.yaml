@@ -1,6 +1,6 @@
 name: redrose
 base: core20
-version: '0.5.9'
+version: '0.5.10'
 summary: Integrated ABC music notation environment
 description: |
   Redrose lets you write ABC musical scores in ABC notation and, with
@@ -19,7 +19,7 @@ parts:
       sed -i.bak -e 's|LIBABC2SMF|ABC2MIDI|g' app/settings.cpp
       sed -i.bak -e 's|DRIVER_ALSA|DRIVER_PULSEAUDIO|g' app/settings.cpp
       sed -i.bak -e 's|drumstick::File::|drumstick::|g' app/abcsmf.*
-      sed -i.bak -e '152,155d' app/abcsynth.cpp
+      sed -i.bak -e '150,153d' app/abcsynth.cpp
       sed -i.bak -e 's|Icon=redrose|Icon=/usr/local/share/icons/hicolor/scalable/apps/redrose.svg|g' app/redrose.desktop
       sed -i.bak -e 's|default-GM.sf2|TimGM6mb.sf2|g' app/config.h.in
     override-build: |
@@ -48,7 +48,7 @@ parts:
       - libfluidsynth2
       - abcm2ps
       - abcmidi
-    source: http://brouits.free.fr/redrose/redrose-0.5.9.tar.gz
+    source: http://brouits.free.fr/redrose/redrose-0.5.10.tar.gz
 
 apps:
   redrose:
