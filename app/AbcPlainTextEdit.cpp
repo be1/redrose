@@ -287,7 +287,7 @@ QString AbcPlainTextEdit::wordBeforeCursor(QTextCursor tc) const
 
 bool AbcPlainTextEdit::isRest(QChar car) const
 {
-    return car == 'z' || car == 'Z';
+    return car == 'z' || car == 'Z' || car == 'x' || car == 'X';
 }
 
 bool AbcPlainTextEdit::isPitch(QChar car) const
