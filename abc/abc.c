@@ -294,49 +294,49 @@ signed char _pitch_diff_FMaj_0x3c['h'] = {
 
 /* semitones between note over C or c. */
 unsigned char pitch_diff_0x3c(const char* ks, int note) {
-    if (!ks || !strcasecmp(ks, "") || !strcasecmp(ks, "C") || !strcasecmp(ks, "Cmaj") || !strcasecmp(ks, "Amin") /* || !strcasecmp(ks, "Ddor") ... */ )
+    if (!ks || !strcasecmp(ks, "") || !strcasecmp(ks, "C") || !strcasecmp(ks, "Cmaj") || !strcmp(ks, "Am") || !strcasecmp(ks, "Amin") /* || !strcasecmp(ks, "Ddor") ... */ )
         return _pitch_diff_CMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "G") || !strcasecmp(ks, "Gmaj") || !strcasecmp(ks, "Emin"))
+    if (!strcasecmp(ks, "G") || !strcasecmp(ks, "Gmaj") || !strcmp(ks, "Em") || !strcasecmp(ks, "Emin"))
         return _pitch_diff_GMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "D") || !strcasecmp(ks, "Dmaj") || !strcasecmp(ks, "Bmin"))
+    if (!strcasecmp(ks, "D") || !strcasecmp(ks, "Dmaj") || !strcmp(ks, "Bm") || !strcasecmp(ks, "Bmin"))
         return _pitch_diff_DMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "A") || !strcasecmp(ks, "Amaj") || !strcasecmp(ks, "F#min"))
+    if (!strcasecmp(ks, "A") || !strcasecmp(ks, "Amaj") || !strcmp(ks, "F#m") || !strcasecmp(ks, "F#min"))
         return _pitch_diff_AMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "E") || !strcasecmp(ks, "Emaj") || !strcasecmp(ks, "C#min"))
+    if (!strcasecmp(ks, "E") || !strcasecmp(ks, "Emaj") || !strcmp(ks, "C#m") || !strcasecmp(ks, "C#min"))
         return _pitch_diff_EMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "B") || !strcasecmp(ks, "Bmaj") || !strcasecmp(ks, "G#min"))
+    if (!strcasecmp(ks, "B") || !strcasecmp(ks, "Bmaj") || !strcmp(ks, "G#m") || !strcasecmp(ks, "G#min"))
         return _pitch_diff_BMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "Cb") || !strcasecmp(ks, "Cbmaj") || !strcasecmp(ks, "Abmin"))
+    if (!strcasecmp(ks, "Cb") || !strcasecmp(ks, "Cbmaj") || !strcmp(ks, "Abm") || !strcasecmp(ks, "Abmin"))
         return _pitch_diff_CFlatMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "F#") || !strcasecmp(ks, "F#maj") || !strcasecmp(ks, "D#min"))
+    if (!strcasecmp(ks, "F#") || !strcasecmp(ks, "F#maj") || !strcmp(ks, "D#m") || !strcasecmp(ks, "D#min"))
         return _pitch_diff_FSharpMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "Gb") || !strcasecmp(ks, "Gbmaj") || !strcasecmp(ks, "Ebmin"))
+    if (!strcasecmp(ks, "Gb") || !strcasecmp(ks, "Gbmaj") || !strcmp(ks, "Ebm") || !strcasecmp(ks, "Ebmin"))
         return _pitch_diff_GFlatMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "C#") || !strcasecmp(ks, "C#maj") || !strcasecmp(ks, "A#min"))
+    if (!strcasecmp(ks, "C#") || !strcasecmp(ks, "C#maj") || !strcmp(ks, "A#m") || !strcasecmp(ks, "A#min"))
         return _pitch_diff_CSharpMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "Db") || !strcasecmp(ks, "Dbmaj") || !strcasecmp(ks, "Bbmin"))
+    if (!strcasecmp(ks, "Db") || !strcasecmp(ks, "Dbmaj") || !strcmp(ks, "Bbm") || !strcasecmp(ks, "Bbmin"))
         return _pitch_diff_DFlatMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "Ab") || !strcasecmp(ks, "Abmaj") || !strcasecmp(ks, "Fmin"))
+    if (!strcasecmp(ks, "Ab") || !strcasecmp(ks, "Abmaj") || !strcmp(ks, "Fm") || !strcasecmp(ks, "Fmin"))
         return _pitch_diff_AFlatMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "Eb") || !strcasecmp(ks, "Ebmaj") || !strcasecmp(ks, "Cmin"))
+    if (!strcasecmp(ks, "Eb") || !strcasecmp(ks, "Ebmaj") || !strcmp(ks, "Cm") || !strcasecmp(ks, "Cmin"))
         return _pitch_diff_EFlatMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "Bb") || !strcasecmp(ks, "Bbmaj") || !strcasecmp(ks, "Gmin"))
+    if (!strcasecmp(ks, "Bb") || !strcasecmp(ks, "Bbmaj") || !strcmp(ks, "Gm") || !strcasecmp(ks, "Gmin"))
         return _pitch_diff_BFlatMaj_0x3c[note];
 
-    if (!strcasecmp(ks, "F") || !strcasecmp(ks, "Fmaj") || !strcasecmp(ks, "Dmin"))
+    if (!strcasecmp(ks, "F") || !strcasecmp(ks, "Fmaj") || !strcmp(ks, "Dm") || !strcasecmp(ks, "Dmin"))
         return _pitch_diff_FMaj_0x3c[note];
 
     /* default */
@@ -402,53 +402,53 @@ unsigned char note2key(const char* keysig, const char* note, int* measure_accid)
 static
 int smf_key_signature(const char* text, int* mode) {
     *mode = 0;
-    if (strstr(text, "min"))
+    if (strstr(text, "min") || (strstr(text, "m") && !strstr(text, "aj")))
         *mode = 1;
 
-    if (!text || !strcmp(text, "C") || !strcmp(text, "Cmaj") || !strcmp(text, "Amin"))
+    if (!text || !strcmp(text, "C") || !strcasecmp(text, "Cmaj") || !strcmp(text, "Am") || !strcmp(text, "Amin"))
         return 0;
 
-    if (!strcmp(text, "G") || !strcmp(text, "Gmaj") || !strcmp(text, "Emin"))
+    if (!strcmp(text, "G") || !strcasecmp(text, "Gmaj") || !strcmp(text, "Em") || !strcmp(text, "Emin"))
         return 1;
 
-    if (!strcmp(text, "D") || !strcmp(text, "Dmaj") || !strcmp(text, "Bmin"))
+    if (!strcmp(text, "D") || !strcasecmp(text, "Dmaj") || !strcmp(text, "Bm") || !strcmp(text, "Bmin"))
         return 2;
 
-    if (!strcmp(text, "A") || !strcmp(text, "Amaj") || !strcmp(text, "F#min"))
+    if (!strcmp(text, "A") || !strcasecmp(text, "Amaj") || !strcmp(text, "F#m") || !strcmp(text, "F#min"))
         return 3;
 
-    if (!strcmp(text, "E") || !strcmp(text, "Emaj") || !strcmp(text, "C#min"))
+    if (!strcmp(text, "E") || !strcasecmp(text, "Emaj") || !strcmp(text, "C#m") || !strcmp(text, "C#min"))
         return 4;
 
-    if (!strcmp(text, "B") || !strcmp(text, "Bmaj") || !strcmp(text, "G#min"))
+    if (!strcmp(text, "B") || !strcasecmp(text, "Bmaj") || !strcmp(text, "G#m") || !strcmp(text, "G#min"))
         return 5;
 
-    if (!strcmp(text, "F#") || !strcmp(text, "F#maj") || !strcmp(text, "D#min"))
+    if (!strcmp(text, "F#") || !strcasecmp(text, "F#maj") || !strcmp(text, "D#m") || !strcmp(text, "D#min"))
         return 6;
 
-    if (!strcmp(text, "C#") || !strcmp(text, "C#maj") || !strcmp(text, "A#min"))
+    if (!strcmp(text, "C#") || !strcasecmp(text, "C#maj") || !strcmp(text, "A#m") || !strcmp(text, "A#min"))
         return 7;
 
 
-    if (!strcmp(text, "F") || !strcmp(text, "Fmaj") || !strcmp(text, "Dmin"))
+    if (!strcmp(text, "F") || !strcasecmp(text, "Fmaj") || !strcmp(text, "Dm") || !strcmp(text, "Dmin"))
         return -1;
 
-    if (!strcmp(text, "Bb") || !strcmp(text, "Bbmaj") || !strcmp(text, "Gmin"))
+    if (!strcmp(text, "Bb") || !strcasecmp(text, "Bbmaj") || !strcmp(text, "Gm") || !strcmp(text, "Gmin"))
         return -2;
 
-    if (!strcmp(text, "Eb") || !strcmp(text, "Ebmaj") || !strcmp(text, "Cmin"))
+    if (!strcmp(text, "Eb") || !strcasecmp(text, "Ebmaj") || !strcmp(text, "Cm") || !strcmp(text, "Cmin"))
         return -3;
 
-    if (!strcmp(text, "Ab") || !strcmp(text, "Abmaj") || !strcmp(text, "Fmin"))
+    if (!strcmp(text, "Ab") || !strcasecmp(text, "Abmaj") || !strcmp(text, "Fm") || !strcmp(text, "Fmin"))
         return -4;
 
-    if (!strcmp(text, "Db") || !strcmp(text, "Dbmaj") || !strcmp(text, "Bbmin"))
+    if (!strcmp(text, "Db") || !strcasecmp(text, "Dbmaj") || !strcmp(text, "Bbm") || !strcmp(text, "Bbmin"))
         return -5;
 
-    if (!strcmp(text, "Gb") || !strcmp(text, "Gbmaj") || !strcmp(text, "Ebmin"))
+    if (!strcmp(text, "Gb") || !strcasecmp(text, "Gbmaj") || !strcmp(text, "Ebm") || !strcmp(text, "Ebmin"))
         return -6;
 
-    if (!strcmp(text, "Cb") || !strcmp(text, "Cbmaj") || !strcmp(text, "Abmin"))
+    if (!strcmp(text, "Cb") || !strcasecmp(text, "Cbmaj") || !strcmp(text, "Abm") || !strcmp(text, "Abmin"))
         return -7;
 
     return 0;
@@ -956,7 +956,11 @@ void abc_nuplet_append(struct abc* yy, int p, int q, int r)
 {
     struct abc_symbol* new = abc_new_symbol(yy);
     new->kind = ABC_NUP;
-    if (-1 == asprintf(&new->text, "%d:%d:%d", p, q, r)); /* ;yup; */
+    if (-1 == asprintf(&new->text, "%d:%d:%d", p, q, r)) {
+#ifdef EBUG
+        fprintf(stderr, "asprintf error");
+#endif
+    }
 }
 
 void abc_deco_append(struct abc* yy, const char* yytext)
