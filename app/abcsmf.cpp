@@ -142,6 +142,10 @@ void AbcSmf::onSMFWriteTempoTrack(void) {
 
 void AbcSmf::onSMFWriteTrack(int track) {
     reset();
+
+    if (!m_tune)
+        return;
+
     int sluring = 0;
     int chan = track;
     //long mspqn = 60000 / tempo;
@@ -173,8 +177,8 @@ void AbcSmf::onSMFWriteTrack(int track) {
         case ABC_NUP:
         case ABC_CHORD: /* ungrouping is already done */
         case ABC_GRACE:
-        case ABC_TIE: /* untying has been already done */
-        case ABC_ALT: /* unfolding is already done */
+        case ABC_TIE:   /* untying is already done */
+        case ABC_ALT:   /* unfolding is already done */
         case ABC_GCHORD:
         case ABC_EOL:
         case ABC_SPACE: {

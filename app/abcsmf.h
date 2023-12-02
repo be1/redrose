@@ -17,7 +17,7 @@ private slots:
     void onSMFWriteTrack(int track);
 
 private:
-#define DPQN 960
+#define DPQN 960 /* divisions per quarter note */
 
     void manageDecoration(struct abc_symbol* s);
     void writeSingleNote(int track, struct abc_symbol* s);
@@ -25,7 +25,6 @@ private:
     int getSMFKeySignature(const char* text, int* mode);
     void setDynamic(long dur);
     void writeLyric(const char* l);
-    void feedPitchDiff(void);
 
     struct abc* m_yy; /* takes ownership of yy */
     int m_x;
@@ -37,19 +36,19 @@ private:
     const char* m_unit_length; /* L header text */
     const char* m_metric;      /* M header text */
     long m_tick_per_unit;      /* ticks per unit */
-    long m_unit_per_measure;      /* units per measure */
-    long m_tempo;    /* quarter per minute */
+    long m_unit_per_measure;   /* units per measure */
+    long m_tempo;              /* quarter per minute */
 
     int m_emphasis;      /* per note temporary delta velocity */
     long m_last_tick;
-    long m_note_dur;      /* note duration */
+    long m_note_dur;     /* note duration */
     int m_in_slur;
     int m_shorten;
-    double m_grace_mod; /* duration modified for grace notes */
+    double m_grace_mod;  /* duration modified for grace notes */
     int m_in_cresc;
     unsigned char m_mark_dyn;
     unsigned char m_cur_dyn;
-    long m_grace_tick; /* ticks elapsed by a grace group */
+    long m_grace_tick;   /* ticks elapsed by a grace group */
     char m_noteon;
     char m_program;
     char m_control;
