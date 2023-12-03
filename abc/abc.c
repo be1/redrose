@@ -1,7 +1,7 @@
 #define _GNU_SOURCE
-#include <ctype.h>	/* isdigit */
-#include <stdlib.h>	/* atoi, qsort */
-#include <stdio.h>	/* asprintf */
+#include <ctype.h>  /* isdigit */
+#include <stdlib.h> /* atoi, qsort */
+#include <stdio.h>  /* asprintf */
 #include <string.h>
 #include <math.h>   /* pow */
 #include "abc.h"
@@ -122,7 +122,7 @@ signed char _pitch_diff_BMaj_0x3c['h'] = {
 };
 
 signed char _pitch_diff_CFlatMaj_0x3c['h'] = {
-	/* CFlatMaj */
+    /* CFlatMaj */
     ['A'] = 8,
     ['B'] = 10,
     ['C'] = -1,
@@ -494,14 +494,14 @@ void abc_header_append(struct abc* yy, const char* yytext, const char which)
     new->h = which;
     new->text = strdup(yytext);
 
-	if (which == 'K')
-		yy->ks = strdup(new->text);
-	else if (which == 'L')
-		yy->ul = strdup(new->text);
-	else if (which == 'M')
-		yy->mm = strdup(new->text);
-	else if (which == 'Q')
-		yy->qq = strdup(new->text);
+    if (which == 'K')
+        yy->ks = strdup(new->text);
+    else if (which == 'L')
+        yy->ul = strdup(new->text);
+    else if (which == 'M')
+        yy->mm = strdup(new->text);
+    else if (which == 'Q')
+        yy->qq = strdup(new->text);
 }
 
 void abc_voice_append(struct abc* yy, const char* yytext)
@@ -1795,27 +1795,27 @@ static struct abc_voice* abc_pass2_0_untie_fix_voice(struct abc_voice* v)
         struct abc_symbol* n = NULL;
 
         switch (s->kind) {
-        case ABC_CHORD:
-            if (s->will_tie) {
-                struct abc_symbol* p = output->last;
-                while (p && p->kind != ABC_CHORD) {
-                    if (p->kind == ABC_NOTE) {
-                        p->will_tie = 1;
+            case ABC_CHORD:
+                if (s->will_tie) {
+                    struct abc_symbol* p = output->last;
+                    while (p && p->kind != ABC_CHORD) {
+                        if (p->kind == ABC_NOTE) {
+                            p->will_tie = 1;
+                        }
+
+                        p = p->prev;
                     }
 
-                    p = p->prev;
+                    s->will_tie = 0;
                 }
 
-                s->will_tie = 0;
-            }
-
-            n = abc_dup_symbol(s);
-            break;
-        case ABC_TIE:
-            break;
-        default:
-            n = abc_dup_symbol(s);
-            break;
+                n = abc_dup_symbol(s);
+                break;
+            case ABC_TIE:
+                break;
+            default:
+                n = abc_dup_symbol(s);
+                break;
         }
 
         if (n) {
@@ -1835,7 +1835,7 @@ void update_ties_for_note(struct abc_untie_ctx* ctx, struct abc_symbol* note, in
     /* find eq note */
     for (i = 0; i < ctx->ties_len; i++) {
         if (ctx->ties[i]->ev.key == note->ev.key)
-                break;
+            break;
     }
 
     if (i < ctx->ties_len) {
@@ -1988,83 +1988,83 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                             break;
 
             case ABC_NOTE: {
-                                if (ctx.ties_ready) {
-                                    /* we've got ties to lengthen */
-                                    if (ctx.in_chord) {
-                                        ctx.nextchord[ctx.nextchord_len++] = s;
+                               if (ctx.ties_ready) {
+                                   /* we've got ties to lengthen */
+                                   if (ctx.in_chord) {
+                                       ctx.nextchord[ctx.nextchord_len++] = s;
 
-                                        /* we are in a tied chord */
-                                        int found = abc_untie_voice_lengthen_tied_chord(&ctx, s);
-                                        if (!found) {
-                                            /* note not found, add a new one */
-                                            struct abc_symbol* n = abc_untie_voice_add_note_to_tied_chord(&ctx, s, voice);
-                                            update_ties_for_note(&ctx, n, n->will_tie);
-                                        } else if (!s->will_tie) {
-                                            /* possible end of tie */
-                                            update_ties_for_note(&ctx, s, 0);
-                                        }
-                                    } else if (ctx.prev_chord) {
-                                        ctx.nextchord_len = 0;
-                                        ctx.nextchord[ctx.nextchord_len++] = s;
+                                       /* we are in a tied chord */
+                                       int found = abc_untie_voice_lengthen_tied_chord(&ctx, s);
+                                       if (!found) {
+                                           /* note not found, add a new one */
+                                           struct abc_symbol* n = abc_untie_voice_add_note_to_tied_chord(&ctx, s, voice);
+                                           update_ties_for_note(&ctx, n, n->will_tie);
+                                       } else if (!s->will_tie) {
+                                           /* possible end of tie */
+                                           update_ties_for_note(&ctx, s, 0);
+                                       }
+                                   } else if (ctx.prev_chord) {
+                                       ctx.nextchord_len = 0;
+                                       ctx.nextchord[ctx.nextchord_len++] = s;
 
-                                        /* lengthen previous chord with this single note */
-                                        int found = abc_untie_voice_lengthen_tied_chord(&ctx, s);
-                                        if (found) {
-                                            abc_frac_add(&ctx.tick_num, &ctx.tick_den, ctx.chord_num, ctx.chord_den);
-                                            ctx.chord_num = 0, ctx.chord_den = 1;
-                                            if (ctx.nup_r)
-                                                ctx.nup_r--;
+                                       /* lengthen previous chord with this single note */
+                                       int found = abc_untie_voice_lengthen_tied_chord(&ctx, s);
+                                       if (found) {
+                                           abc_frac_add(&ctx.tick_num, &ctx.tick_den, ctx.chord_num, ctx.chord_den);
+                                           ctx.chord_num = 0, ctx.chord_den = 1;
+                                           if (ctx.nup_r)
+                                               ctx.nup_r--;
 
-                                            fix_dangling_ties(&ctx);
+                                           fix_dangling_ties(&ctx);
 
-                                            if (!s->will_tie) {
-                                                update_ties_for_note(&ctx, s, 0);
-                                            }
-                                            ctx.ties_ready = ctx.ties_len;
-                                        } else {
-                                            /* bad tie from chord to single new note, ignore it */
-                                            fix_dangling_ties(&ctx);
-                                            ctx.ties_ready = ctx.ties_len = 0;
+                                           if (!s->will_tie) {
+                                               update_ties_for_note(&ctx, s, 0);
+                                           }
+                                           ctx.ties_ready = ctx.ties_len;
+                                       } else {
+                                           /* bad tie from chord to single new note, ignore it */
+                                           fix_dangling_ties(&ctx);
+                                           ctx.ties_ready = ctx.ties_len = 0;
 
-                                            new = abc_untie_voice_produce_single_note(&ctx, s);
-                                            ctx.prev_chord = 0;
+                                           new = abc_untie_voice_produce_single_note(&ctx, s);
+                                           ctx.prev_chord = 0;
 
-                                            update_ties_for_note(&ctx, new, new->will_tie);
-                                            ctx.ties_ready = ctx.ties_len;
-                                        }
-                                    } else {
-                                        ctx.nextchord_len = 0;
-                                        ctx.nextchord[ctx.nextchord_len++] = s;
+                                           update_ties_for_note(&ctx, new, new->will_tie);
+                                           ctx.ties_ready = ctx.ties_len;
+                                       }
+                                   } else {
+                                       ctx.nextchord_len = 0;
+                                       ctx.nextchord[ctx.nextchord_len++] = s;
 
-                                        /* single tied note */
-                                        if (abc_untie_voice_lengthen_tied_note(&ctx, s)) {
-                                            update_ties_for_note(&ctx, s, s->will_tie);
-                                        } else {
-                                            /* bad tie */
-                                            fix_dangling_ties(&ctx);
-                                            ctx.ties_ready = ctx.ties_len = 0;
+                                       /* single tied note */
+                                       if (abc_untie_voice_lengthen_tied_note(&ctx, s)) {
+                                           update_ties_for_note(&ctx, s, s->will_tie);
+                                       } else {
+                                           /* bad tie */
+                                           fix_dangling_ties(&ctx);
+                                           ctx.ties_ready = ctx.ties_len = 0;
 
-                                            new = abc_untie_voice_produce_single_note(&ctx, s);
-                                            update_ties_for_note(&ctx, new, new->will_tie);
-                                        }
+                                           new = abc_untie_voice_produce_single_note(&ctx, s);
+                                           update_ties_for_note(&ctx, new, new->will_tie);
+                                       }
 
-                                        ctx.ties_ready = ctx.ties_len;
-                                    }
-                                } else {
-                                    if (ctx.in_chord) {
-                                        new = abc_untie_voice_produce_single_chord(&ctx, s);
+                                       ctx.ties_ready = ctx.ties_len;
+                                   }
+                               } else {
+                                   if (ctx.in_chord) {
+                                       new = abc_untie_voice_produce_single_chord(&ctx, s);
 
-                                        update_ties_for_note(&ctx, new, new->will_tie);
-                                    } else {
-                                        new = abc_untie_voice_produce_single_note(&ctx, s);
-                                        ctx.prev_chord = 0;
+                                       update_ties_for_note(&ctx, new, new->will_tie);
+                                   } else {
+                                       new = abc_untie_voice_produce_single_note(&ctx, s);
+                                       ctx.prev_chord = 0;
 
-                                        update_ties_for_note(&ctx, new, new->will_tie);
-                                        ctx.ties_ready = ctx.ties_len;
-                                    }
-                                }
-                            }
-                            break;
+                                       update_ties_for_note(&ctx, new, new->will_tie);
+                                       ctx.ties_ready = ctx.ties_len;
+                                   }
+                               }
+                           }
+                           break;
             default: {
                          /* and ABC_BAR and ABC_SPACE */
                          new = abc_dup_symbol(s);
@@ -2219,10 +2219,10 @@ void abc_debug_headers(struct abc* yy)
         return;
 
     struct abc_tune* t = yy->tunes[yy->count-1];
-	struct abc_header* h = t->headers;
-	while (h) {
-		puts(h->text);
-		h = h->next;
-	}
+    struct abc_header* h = t->headers;
+    while (h) {
+        puts(h->text);
+        h = h->next;
+    }
 }
 
