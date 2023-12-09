@@ -1916,8 +1916,8 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                  } else if (s->text[0]== 'L') {
                                      long l_n, l_d;
                                      if (2 == sscanf(&s->text[2], " %ld / %ld", &l_n, &l_d)) {
-                                         ctx.l_mul = l_n / ctx.l_num;
-                                         ctx.l_div = l_d / ctx.l_den;
+                                         ctx.l_mul = l_n * l_d / ctx.l_num;
+                                         ctx.l_div = l_d * l_d / ctx.l_den;
                                      }
                                  } else {
                                      new = abc_dup_symbol(s);
