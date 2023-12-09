@@ -1316,7 +1316,12 @@ int abc_unit_per_measure(const char* lh_text, const char* mh_text) {
         ln = 1; ld = 8;
     }
 
-    if (2 != sscanf(mh_text, " %d / %d", &mn, &md)) {
+    if (!strcmp(mh_text, "C")) {
+        mn = 4; md = 4;
+    } else if (!strcmp(mh_text, "C|")) {
+        mn = 2; md = 4;
+    } else if (2 != sscanf(mh_text, " %d / %d", &mn, &md)) {
+        /* default */
         mn = 4; md = 4;
     }
 
@@ -1362,8 +1367,10 @@ long abc_tempo(const char* th_text) {
 void abc_compute_pqr(int* p, int* q, int* r, const char* m) {
     int num, den;
 
-    if (!m || m[0] == 'C')
+    if (!m || !strcmp(m, "C"))
         m = "4/4";
+    else if (!strcmp(m, "C|"))
+        m = "2/4";
 
     if (2 != sscanf(m, " %d / %d", &num, &den))
         num = den = 4;
@@ -1382,7 +1389,6 @@ void abc_compute_pqr(int* p, int* q, int* r, const char* m) {
             case 8: *q = 3; break;
             case 9: if (!(num % 3) && (den == 8)) *q = 3; else *q = 2; break;
         }
-
     }
 }
 
@@ -1886,8 +1892,10 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
     voice->v = strdup(v->v);
 
     struct abc_header* mh = abc_find_header(t, 'M');
-    if (!mh || mh->text[0] == 'C')
+    if (!mh || !strcmp(mh->text, "C"))
         ctx.m = "4/4";
+    else if (!strcmp(mh->text, "C|"))
+        ctx.m = "2/4";
     else
         ctx.m = mh->text;
 
