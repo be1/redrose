@@ -1637,7 +1637,7 @@ struct abc_untie_ctx {
     int in_chord;            /* chord state */
     int in_grace;            /* grace state */
     long grace_num, grace_den;
-    long l_num, l_den, l_mul, l_div; /* L */
+    long l_num, l_den; /* L */
     const char* m;
     long chord_num, chord_den; /* chord duration */
 
@@ -1654,8 +1654,8 @@ struct abc_untie_ctx {
 static struct abc_symbol* abc_untie_voice_produce_single_note(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
     /* produce simple note */
     struct abc_symbol* new = abc_dup_symbol(s);
-    new->dur_num *= ctx->l_mul;
-    new->dur_den *= ctx->l_div;
+    new->dur_num *= ctx->l_num;
+    new->dur_den *= ctx->l_den;
 
     if (ctx->in_grace) {
         new->dur_den *= GRACE_DEN;
@@ -1680,8 +1680,8 @@ static struct abc_symbol* abc_untie_voice_produce_single_note(struct abc_untie_c
 
 static struct abc_symbol* abc_untie_voice_produce_single_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s) {
     struct abc_symbol* new = abc_dup_symbol(s);
-    new->dur_num *= ctx->l_mul;
-    new->dur_den *= ctx->l_div;
+    new->dur_num *= ctx->l_num;
+    new->dur_den *= ctx->l_den;
 
     if (ctx->nup_r) {
         new->dur_num *= ctx->nup_q;
@@ -1708,8 +1708,8 @@ static int abc_untie_voice_lengthen_tied_note(struct abc_untie_ctx* ctx, struct 
         }
     }
 
-    int nup_num = ctx->l_mul * s->dur_num;
-    int nup_den = ctx->l_div * s->dur_den;
+    int nup_num = ctx->l_num * s->dur_num;
+    int nup_den = ctx->l_den * s->dur_den;
     if (ctx->nup_r) {
         nup_num *= ctx->nup_q;
         nup_den *= ctx->nup_p;
@@ -1735,8 +1735,8 @@ static int  abc_untie_voice_lengthen_tied_chord(struct abc_untie_ctx* ctx, struc
         if (s->kind == ABC_NOTE && p->ev.key == s->ev.key) {
             found = 1;
             /* make tie */
-            long dur_num = ctx->l_mul * s->dur_num;
-            long dur_den = ctx->l_div * s->dur_den;
+            long dur_num = ctx->l_num * s->dur_num;
+            long dur_den = ctx->l_den * s->dur_den;
 
             if (ctx->nup_r) {
                 dur_num *= ctx->nup_q;
@@ -1760,8 +1760,8 @@ static int  abc_untie_voice_lengthen_tied_chord(struct abc_untie_ctx* ctx, struc
 static struct abc_symbol* abc_untie_voice_add_note_to_tied_chord(struct abc_untie_ctx* ctx, struct abc_symbol* s, struct abc_voice* voice) {
     /* this note has to be created (no previous tie found) */
     struct abc_symbol* n = abc_dup_symbol(s);
-    n->dur_num *= ctx->l_mul;
-    n->dur_den *= ctx->l_div;
+    n->dur_num *= ctx->l_num;
+    n->dur_den *= ctx->l_den;
     if (ctx->nup_r) {
         n->dur_num *= ctx->nup_q;
         n->dur_den *= ctx->nup_p;
@@ -1884,8 +1884,6 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
     ctx.tick_den = 1;
     ctx.grace_den = 1;
     ctx.l_den = 1;
-    ctx.l_mul = 1;
-    ctx.l_div = 1;
     ctx.chord_den = 1;
 
     struct abc_voice* voice = calloc(1, sizeof (struct abc_voice));
@@ -1916,12 +1914,12 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
                                  } else if (s->text[0]== 'L') {
                                      long l_n, l_d;
                                      if (2 == sscanf(&s->text[2], " %ld / %ld", &l_n, &l_d)) {
-                                         ctx.l_mul = l_n * l_d / ctx.l_num;
-                                         ctx.l_div = l_d * l_d / ctx.l_den;
+                                         ctx.l_num = l_n;
+                                         ctx.l_den = l_d;
                                      }
-                                 } else {
-                                     new = abc_dup_symbol(s);
                                  }
+
+                                 new = abc_dup_symbol(s);
                              }
                              break;
 

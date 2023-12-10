@@ -11,7 +11,7 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) :
         m_unit_length(nullptr),
         m_metric(nullptr),
         m_tick_per_unit(0),
-        m_unit_per_measure(0),
+        m_unit_per_whole(0),
         m_tempo(0),
         m_emphasis(0),
         m_last_tick(0),
@@ -57,7 +57,7 @@ void AbcSmf::reset() {
     else
         m_metric = "4/4";
 
-    m_unit_per_measure = abc_unit_per_measure(m_unit_length, m_metric);
+    m_unit_per_whole = abc_unit_per_measure(m_unit_length, "4/4");
     struct abc_header* qh = abc_find_header(m_tune, 'Q');
     if (qh)
         m_tempo = abc_tempo(qh->text);
@@ -67,7 +67,7 @@ void AbcSmf::reset() {
     long num = 1, den = 8;
     getNumDen(m_unit_length, &num, &den);
 
-    m_tick_per_unit = (num * 4 * DPQN) / (den);
+    m_tick_per_unit = DPQN * num * 4 / den;
 
     struct abc_header* kh = abc_find_header(m_tune, 'K');
     if (!kh) {
@@ -113,7 +113,7 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
     if (s->text[0] == 'Z' || s->text[0] == 'z' || s->text[0] == 'X' || s->text[0] == 'x') {
         /* no event */
     } else {
-        delta_tick = (m_tick_per_unit * s->ev.start_num / s->ev.start_den) - m_last_tick;
+        delta_tick = (m_tick_per_unit * m_unit_per_whole * s->ev.start_num / s->ev.start_den) - m_last_tick;
         m_last_tick += delta_tick;
 
         /* modify cur_dyn from context */
@@ -125,7 +125,7 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
         if (s->ev.value) {
             writeMidiEvent(delta_tick, m_noteon, chan, s->ev.key + m_transpose, (m_cur_dyn + m_emphasis) * s->ev.value);
         } else {
-            long small = m_tick_per_unit * m_unit_per_measure / 8;
+            long small = m_tick_per_unit * m_unit_per_whole / 8;
             small = (delta_tick > small) ? small : delta_tick;
             writeMidiEvent(delta_tick - (small / m_shorten), m_noteon, chan, s->ev.key + m_transpose, 0x00); /* note off */
             m_last_tick -= (small / m_shorten);
@@ -153,7 +153,7 @@ void AbcSmf::onSMFWriteTrack(int track) {
     writeBpmTempo(0, m_tempo);
     writeKeySignature(0, m_midi_keysig, m_midi_mode);
 
-    /* transform voice nr 'track' from tune 't' into MIDI-aware voice 'v' */
+    /* transform voice nr 'track' from tune 'm_tune' into MIDI-aware voice 'v' */
     struct abc_voice* v = abc_make_events_for_voice(m_tune, track);
 
     struct abc_symbol* s = v->first;
@@ -194,12 +194,11 @@ void AbcSmf::onSMFWriteTrack(int track) {
                 writeBpmTempo(0, m_tempo);
             } else if (s->ev.type == EV_METRIC) {
                 m_metric = &s->text[2];
-                m_unit_per_measure = abc_unit_per_measure(m_unit_length, m_metric);
             } else if (s->ev.type == EV_UNIT) {
                 m_unit_length = &s->text[2];
                 /* 'key' = numerator, 'value' = denominator */
-                m_tick_per_unit = (s->ev.key * 4 * DPQN) / (s->ev.value);
-                m_unit_per_measure = abc_unit_per_measure(m_unit_length, m_metric);
+                m_unit_per_whole = abc_unit_per_measure(m_unit_length, "4/4");
+                m_tick_per_unit = (DPQN * 4 * s->ev.key) / (s->ev.value);
             }
             break;
         }

@@ -36,7 +36,7 @@ private:
     const char* m_unit_length; /* L header text */
     const char* m_metric;      /* M header text */
     long m_tick_per_unit;      /* ticks per unit */
-    long m_unit_per_measure;   /* units per measure */
+    long m_unit_per_whole;     /* units per whole note */
     long m_tempo;              /* quarter per minute */
 
     int m_emphasis;      /* per note temporary delta velocity */
