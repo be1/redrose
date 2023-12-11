@@ -49,7 +49,11 @@ struct abc_voice {
 	struct abc_symbol* last;
     int in_alt;
     int measure_accid['h']; /* 'g' + 1 */
-    char* ks; /* current key signature */
+    char* i_ks; /* initial key signature */
+    char* i_ul; /* initial unit length */
+    char* i_mm; /* initial measure metric */
+    char* i_qq; /* initial measure tempo */
+    char* ks;  /* current key signature */
     char* ul;  /* current unit length */
     char* mm;  /* current measure metric */
     char* qq;  /* current measure tempo */
@@ -166,6 +170,9 @@ struct abc_tune* abc_find_tune(const struct abc* yy, int x);
 
 /* find header 'h' in tine 't' */
 struct abc_header* abc_find_header(const struct abc_tune* t, char h);
+
+/* find the previous inline change */
+struct abc_symbol* abc_find_previous_change(struct abc_symbol *s, char c);
 
 /* gives the tempo from T header 't'*/
 long abc_tempo(const char* th_text);

@@ -508,10 +508,15 @@ void abc_voice_append(struct abc* yy, const char* yytext)
 {
     struct abc_voice* new = calloc(1, sizeof (struct abc_voice));
     new->v = strdup(yytext);
-    new->ks = yy->ks ? strdup(yy->ks) : NULL;
-    new->ul = yy->ul ? strdup(yy->ul) : NULL;
-    new->mm = yy->mm ? strdup(yy->mm) : NULL;
-    new->qq = yy->qq ? strdup(yy->qq) : NULL;
+    new->i_ks = yy->ks ? strdup(yy->ks) : strdup("C");
+    new->i_ul = yy->ul ? strdup(yy->ul) : strdup("1/8");
+    new->i_mm = yy->mm ? strdup(yy->mm) : strdup("4/4");
+    new->i_qq = yy->qq ? strdup(yy->qq) : strdup("120");
+
+    new->ks = yy->ks ? strdup(yy->ks) : strdup("C");
+    new->ul = yy->ul ? strdup(yy->ul) : strdup("1/8");
+    new->mm = yy->mm ? strdup(yy->mm) : strdup("4/4");
+    new->qq = yy->qq ? strdup(yy->qq) : strdup("120");
 
     struct abc_tune* tune = yy->tunes[yy->count-1];
     tune->voices = realloc(tune->voices, sizeof (struct abc_voice*) * (tune->count + 1));
@@ -1130,6 +1135,19 @@ struct abc_header* abc_find_header(const struct abc_tune* t, char h) {
     return header;
 }
 
+/* find the previous inline change */
+struct abc_symbol* abc_find_previous_change(struct abc_symbol* s, char c) {
+    while (s->prev) {
+        s = s->prev;
+        if (s->kind == ABC_CHANGE && s->text[0] == c) {
+            return s;
+        }
+    }
+
+    /* NULL */
+    return s->prev;
+}
+
 /* find previous symbol that is a tie */
 int abc_prev_is_tie(struct abc_symbol *s) {
     while (s->prev) {
@@ -1174,6 +1192,7 @@ struct abc_symbol* abc_find_start_repeat(struct abc_symbol* s) {
             return s->next;
     }
 
+    /* default to first measure */
     return s;
 }
 
@@ -2095,12 +2114,63 @@ static struct abc_voice* abc_pass2_1_untie_voice(struct abc_voice* v, const stru
     return voice;
 }
 
+static void abc_append_inline_changes(struct abc_voice* v, struct abc_symbol* s) {
+    struct abc_symbol* sym = abc_find_previous_change(s, 'L');
+    if (sym) {
+        sym = abc_dup_symbol(sym);
+    } else {
+        sym = calloc(1, sizeof (struct abc_symbol));
+        sym->ev.start_den = 1;
+        sym->kind = ABC_CHANGE;
+        sym->ev.type = EV_UNIT;
+        long num, den;
+        if (2 != sscanf(v->i_ul, " %ld / %ld", &num, &den))
+            num = 1, den = 8;
+        sym->ev.key = num;
+        sym->ev.value = den;
+
+        if (-1 == asprintf(&sym->text, "L:%s", v->i_ul)) {
+#ifdef EBUG
+            fprintf(stderr, "asprintf error");
+#endif
+        }
+    }
+    abc_voice_append_symbol(v, sym);
+
+    sym = abc_find_previous_change(s, 'Q');
+    if (sym) {
+        sym = abc_dup_symbol(sym);
+    } else {
+        sym = calloc(1, sizeof (struct abc_symbol));
+        sym->ev.start_den = 1;
+        sym->kind = ABC_CHANGE;
+        sym->ev.type = EV_TEMPO;
+        sym->ev.value = abc_tempo(v->i_qq);
+
+        if (-1 == asprintf(&sym->text, "Q:%s", v->i_qq)) {
+#ifdef EBUG
+            fprintf(stderr, "asprintf error");
+#endif
+        }
+    }
+    abc_voice_append_symbol(v, sym);
+}
+
 static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
     int pass = 1;
     struct abc_symbol* cur_repeat = NULL;
 
     struct abc_voice* voice = calloc(1, sizeof (struct abc_voice));
     voice->v = strdup(v->v);
+    voice->i_ul = v->i_ul ? strdup(v->i_ul) : NULL;
+    voice->i_mm = v->i_mm ? strdup(v->i_mm) : NULL;
+    voice->i_qq = v->i_qq ? strdup(v->i_qq) : NULL;
+    voice->i_ks = v->i_ks ? strdup(v->i_ks) : NULL;
+
+    voice->ul = v->ul ? strdup(v->ul) : NULL;
+    voice->mm = v->mm ? strdup(v->mm) : NULL;
+    voice->qq = v->qq ? strdup(v->qq) : NULL;
+    voice->ks = v->ks ? strdup(v->ks) : NULL;
 
     struct abc_symbol* s = v->first;
     while (s) {
@@ -2125,6 +2195,7 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                                       cur_repeat = s;
                                       s = abc_find_start_repeat(s);
                                       abc_voice_append_symbol(voice, new);
+                                      abc_append_inline_changes(voice, s);
                                       pass++;
                                       continue;
                                   }
@@ -2154,6 +2225,7 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
         if (new) {
             abc_voice_append_symbol(voice, new);
         }
+
         s = s->next;
     }
 
@@ -2199,6 +2271,12 @@ void abc_release_voice(struct abc_voice* v) {
     }
 
     free(v->v);
+
+    free(v->i_ks);
+    free(v->i_ul);
+    free(v->i_mm);
+    free(v->i_qq);
+
     free(v->ks);
     free(v->ul);
     free(v->mm);
