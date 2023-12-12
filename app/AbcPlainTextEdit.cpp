@@ -542,6 +542,10 @@ void AbcPlainTextEdit::focusInEvent(QFocusEvent *e)
 
 void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
 {
+    /* avoid reaction when some text is selected */
+    if (!textCursor().selectedText().isEmpty())
+        return QPlainTextEdit::keyPressEvent(e);
+
     /* bad hack to play octavied input note */
     if (autoplay && (e->key() == ',' || e->key() == '\'')) {
         QPlainTextEdit::keyPressEvent(e);
