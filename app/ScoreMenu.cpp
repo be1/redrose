@@ -202,19 +202,19 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
             case 1:
                 abc = abc.append(" clef=perc\n");
                 abc = abc.append("%%MIDI program 119 % Reverse Cymbal\n");
-                abc = abc.append(("z6 ^c'2|]\n"));
+                abc = abc.append(("x6 ^c'2|]\n"));
                 break;
              case 2:
                 abc = abc.append(" clef=perc\n");
                 abc = abc.append("%%MIDI program 117 % Melodic Drum\n");
                 abc = abc.append("%%MIDI transpose -12\n");
-                abc = abc.append("^c/2^c/2^c/2^c/2^G/2^G/2^G/2^G/2^C/2^C/2^C/2^C/2 z2|]\n");
+                abc = abc.append("^c/2^c/2^c/2^c/2^G/2^G/2^G/2^G/2^C/2^C/2^C/2^C/2 x2|]\n");
                 break;
             case 3:
                 abc = abc.append(" clef=perc\n");
                 abc = abc.append("%%MIDI program 117 % Melodic Drum\n");
                 abc = abc.append("%%MIDI transpose -24\n");
-                abc = abc.append("z6 G,2|]\n");
+                abc = abc.append("x6 G,2|]\n");
                 break;
            }
         }
