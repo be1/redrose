@@ -139,9 +139,18 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
     for (int i = 1; i <= voices; i++) {
         abc = abc.append("V:%1").arg(i);
         if (tmpl == Wizard::TemplateKeyboard) {
-            abc = abc.append("\n");
-            abc = abc.append("%%MIDI program 0 % Grand Piano\n");
-            abc = abc.append("C8|]\n");
+            switch (i) {
+            case 1:
+                abc = abc.append(" clef=treble\n");
+                abc = abc.append("%%MIDI program 0 % Acoustic Grand Piano\n");
+                abc = abc.append("C8|]\n");
+                break;
+            case 2:
+                abc = abc.append(" clef=bass\n");
+                abc = abc.append("%%MIDI program 0 % Acoustic Grand Piano\n");
+                abc = abc.append("C,8|]\n");
+                break;
+            }
         } else if (tmpl == Wizard::TemplateString4tet) {
             switch (i) {
             case 1:
