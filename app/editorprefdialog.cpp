@@ -2,7 +2,6 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QColorDialog>
-#include <QFontDialog>
 #include "config.h"
 #include "settings.h"
 
