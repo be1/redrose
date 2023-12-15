@@ -31,6 +31,7 @@
 #define DRIVER_JACK	\"jack\"
 #define DRIVER_OSS	\"oss\"
 
+#define EDITOR_FONT_BASE \"ABC/editor/font_base\"
 #define EDITOR_FONT_RANGE \"ABC/editor/font_range\"
 #define EDITOR_HIGHLIGHT \"ABC/editor/highlight\"
 #define EDITOR_BAR_COLOR \"ABC/editor/bar_color\"

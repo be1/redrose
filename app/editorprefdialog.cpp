@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QColorDialog>
+#include <QFontDialog>
 #include "config.h"
 #include "settings.h"
 
@@ -13,6 +14,23 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
     setMinimumSize(400, 320);
 
     mainLayout = new QVBoxLayout;
+
+    /* info */
+    QLabel* info = new QLabel(tr("These settings will be applied on newly opened tabs only."));
+    mainLayout->addWidget(info);
+
+    /* font */
+    fontLabel = new QLabel(tr("Base font"));
+    fontBaseCombo = new QFontComboBox;
+    fontLabel->setBuddy(fontBaseCombo);
+    QFont base;
+    base.fromString(settings.value(EDITOR_FONT_BASE).toString());
+    fontBaseCombo->setCurrentFont(base);
+    QHBoxLayout* fbhbox = new QHBoxLayout;
+    fbhbox->addWidget(fontLabel);
+    fbhbox->addWidget(fontBaseCombo);
+
+    mainLayout->addLayout(fbhbox);
 
     /* font magnifier */
     int fontRange = settings.value(EDITOR_FONT_RANGE).toInt();
@@ -128,6 +146,11 @@ bool EditorPrefDialog::getAutoplay()
 int EditorPrefDialog::getFontRange()
 {
     return fontRangeSpinBox->value();
+}
+
+QFont EditorPrefDialog::getBaseFont()
+{
+    return fontBaseCombo->currentFont();
 }
 
 void EditorPrefDialog::onColorButtonClicked()

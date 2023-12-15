@@ -1,3 +1,5 @@
+#include <QFont>
+
 #include "settings.h"
 #include "config.h"
 
@@ -41,6 +43,11 @@ void Settings::check()
     QVariant pstunes = value(PSTUNES_KEY);
     if (!pstunes.isValid())
         setValue(PSTUNES_KEY, TUNES_SELECTED);
+
+    QFont font;
+    QVariant font_base = value(EDITOR_FONT_BASE);
+    if (!font_base.isValid())
+        setValue(EDITOR_FONT_BASE, font.defaultFamily());
 
     QVariant font_range = value(EDITOR_FONT_RANGE);
     if (!font_range.isValid())
@@ -103,6 +110,9 @@ void Settings::reset()
     setValue(COMPILER_KEY, ABCM2PS);
 #endif
     setValue(PSTUNES_KEY, TUNES_SELECTED);
+
+    QFont font;
+    setValue(EDITOR_FONT_BASE, font.defaultFamily());
 
     setValue(EDITOR_FONT_RANGE, 0);
 

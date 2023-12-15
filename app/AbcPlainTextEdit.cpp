@@ -46,6 +46,11 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
 
     updateLineNumberAreaWidth(0);
 
+    QVariant fontBase = settings.value(EDITOR_FONT_BASE);
+    QFont base;
+    base.setFamily(fontBase.toString());
+    setFont(base);
+
     QVariant fontRange = settings.value(EDITOR_FONT_RANGE);
     int range = fontRange.toInt();
     zoomIn(range);

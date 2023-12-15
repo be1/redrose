@@ -12,27 +12,27 @@
 <context>
     <name>AbcPlainTextEdit</name>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="60"/>
-        <location filename="AbcPlainTextEdit.cpp" line="185"/>
+        <location filename="AbcPlainTextEdit.cpp" line="65"/>
+        <location filename="AbcPlainTextEdit.cpp" line="221"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="66"/>
-        <location filename="AbcPlainTextEdit.cpp" line="199"/>
+        <location filename="AbcPlainTextEdit.cpp" line="71"/>
+        <location filename="AbcPlainTextEdit.cpp" line="235"/>
         <source>Find forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="72"/>
-        <location filename="AbcPlainTextEdit.cpp" line="213"/>
+        <location filename="AbcPlainTextEdit.cpp" line="77"/>
+        <location filename="AbcPlainTextEdit.cpp" line="249"/>
         <source>Find backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="185"/>
-        <location filename="AbcPlainTextEdit.cpp" line="199"/>
-        <location filename="AbcPlainTextEdit.cpp" line="213"/>
+        <location filename="AbcPlainTextEdit.cpp" line="221"/>
+        <location filename="AbcPlainTextEdit.cpp" line="235"/>
+        <location filename="AbcPlainTextEdit.cpp" line="249"/>
         <source>Text:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -40,59 +40,60 @@
 <context>
     <name>AbcSynth</name>
     <message>
-        <location filename="abcsynth.cpp" line="63"/>
+        <location filename="abcsynth.cpp" line="88"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="63"/>
+        <location filename="abcsynth.cpp" line="88"/>
         <source>No soundfont to load!
 Please close tab and check player preferences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="74"/>
+        <location filename="abcsynth.cpp" line="99"/>
         <source>Loading sound font: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="117"/>
+        <location filename="abcsynth.cpp" line="143"/>
         <source>Ready.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="120"/>
+        <location filename="abcsynth.cpp" line="147"/>
         <source>Playing </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="124"/>
+        <location filename="abcsynth.cpp" line="152"/>
         <source>Stopping.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="131"/>
-        <location filename="abcsynth.cpp" line="138"/>
-        <source>Done.</source>
+        <location filename="abcsynth.cpp" line="160"/>
+        <location filename="abcsynth.cpp" line="167"/>
+        <source>Done: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="166"/>
+        <location filename="abcsynth.cpp" line="195"/>
         <source>Cannot load sound font: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="170"/>
+        <location filename="abcsynth.cpp" line="199"/>
         <source>Sound font loaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="193"/>
+        <location filename="abcsynth.cpp" line="224"/>
         <source>Cannot load MIDI file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="198"/>
+        <location filename="abcsynth.cpp" line="228"/>
+        <location filename="abcsynth.cpp" line="253"/>
         <source>Starting synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -119,63 +120,63 @@ Close this score anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="88"/>
+        <location filename="EditVBoxLayout.cpp" line="98"/>
         <source>Cannot load sound font.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="155"/>
+        <location filename="EditVBoxLayout.cpp" line="170"/>
         <source>Generating MIDI for playing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="164"/>
+        <location filename="EditVBoxLayout.cpp" line="179"/>
         <source>Stopping synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="149"/>
+        <location filename="EditVBoxLayout.cpp" line="164"/>
         <source>Please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="257"/>
-        <location filename="EditVBoxLayout.cpp" line="273"/>
+        <location filename="EditVBoxLayout.cpp" line="246"/>
+        <location filename="EditVBoxLayout.cpp" line="262"/>
         <source>Exporting score...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="293"/>
+        <location filename="EditVBoxLayout.cpp" line="282"/>
         <source>Error during MIDI generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="296"/>
-        <location filename="EditVBoxLayout.cpp" line="298"/>
+        <location filename="EditVBoxLayout.cpp" line="285"/>
+        <location filename="EditVBoxLayout.cpp" line="287"/>
         <location filename="EditVBoxLayout.cpp" line="346"/>
         <location filename="EditVBoxLayout.cpp" line="355"/>
         <location filename="EditVBoxLayout.cpp" line="364"/>
-        <location filename="EditVBoxLayout.cpp" line="460"/>
+        <location filename="EditVBoxLayout.cpp" line="461"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="298"/>
+        <location filename="EditVBoxLayout.cpp" line="287"/>
         <source>Parse error in selected notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="305"/>
+        <location filename="EditVBoxLayout.cpp" line="294"/>
         <source>MIDI generation finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="324"/>
+        <location filename="EditVBoxLayout.cpp" line="313"/>
         <source>Synthesis error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="326"/>
+        <location filename="EditVBoxLayout.cpp" line="315"/>
         <source>Synthesis finished.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -195,12 +196,12 @@ Close this score anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="458"/>
+        <location filename="EditVBoxLayout.cpp" line="459"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="463"/>
+        <location filename="EditVBoxLayout.cpp" line="464"/>
         <source>Score generated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -208,57 +209,67 @@ Close this score anyway?</source>
 <context>
     <name>EditorPrefDialog</name>
     <message>
-        <location filename="editorprefdialog.cpp" line="12"/>
+        <location filename="editorprefdialog.cpp" line="13"/>
         <source>Editor settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="editorprefdialog.cpp" line="19"/>
+        <source>These settings will be applied on newly opened tabs only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorprefdialog.cpp" line="23"/>
+        <source>Base font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorprefdialog.cpp" line="37"/>
         <source>Font enlargement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="32"/>
+        <location filename="editorprefdialog.cpp" line="50"/>
         <source>Highlight current line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="44"/>
+        <location filename="editorprefdialog.cpp" line="62"/>
         <source>Auto play current note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="56"/>
+        <location filename="editorprefdialog.cpp" line="74"/>
         <source>Header color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="57"/>
+        <location filename="editorprefdialog.cpp" line="75"/>
         <source>Comment color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="58"/>
+        <location filename="editorprefdialog.cpp" line="76"/>
         <source>Extra instruction color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="59"/>
+        <location filename="editorprefdialog.cpp" line="77"/>
         <source>Measure bar color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="60"/>
+        <location filename="editorprefdialog.cpp" line="78"/>
         <source>Decoration color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="61"/>
+        <location filename="editorprefdialog.cpp" line="79"/>
         <source>Guitar chord color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="62"/>
+        <location filename="editorprefdialog.cpp" line="80"/>
         <source>Lyric color</source>
         <translation type="unfinished"></translation>
     </message>
@@ -520,94 +531,94 @@ Do you want to quit anyway?</source>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="85"/>
-        <location filename="ScoreMenu.cpp" line="333"/>
+        <location filename="ScoreMenu.cpp" line="342"/>
         <source>ABC score (*.abc)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="223"/>
+        <location filename="ScoreMenu.cpp" line="232"/>
         <source>&amp;%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="283"/>
-        <location filename="ScoreMenu.cpp" line="300"/>
-        <location filename="ScoreMenu.cpp" line="317"/>
-        <location filename="ScoreMenu.cpp" line="359"/>
-        <location filename="ScoreMenu.cpp" line="384"/>
-        <location filename="ScoreMenu.cpp" line="409"/>
+        <location filename="ScoreMenu.cpp" line="292"/>
+        <location filename="ScoreMenu.cpp" line="309"/>
+        <location filename="ScoreMenu.cpp" line="326"/>
+        <location filename="ScoreMenu.cpp" line="368"/>
+        <location filename="ScoreMenu.cpp" line="393"/>
+        <location filename="ScoreMenu.cpp" line="418"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="283"/>
+        <location filename="ScoreMenu.cpp" line="292"/>
         <source>Could not open score!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="300"/>
+        <location filename="ScoreMenu.cpp" line="309"/>
         <source>Could not save an untitled ABC file!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="315"/>
+        <location filename="ScoreMenu.cpp" line="324"/>
         <source>Score saved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="317"/>
+        <location filename="ScoreMenu.cpp" line="326"/>
         <source>Could not save ABC score!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="333"/>
+        <location filename="ScoreMenu.cpp" line="342"/>
         <source>Save ABC score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="359"/>
-        <location filename="ScoreMenu.cpp" line="384"/>
-        <location filename="ScoreMenu.cpp" line="409"/>
+        <location filename="ScoreMenu.cpp" line="368"/>
+        <location filename="ScoreMenu.cpp" line="393"/>
+        <location filename="ScoreMenu.cpp" line="418"/>
         <source>Please save score before to export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="365"/>
+        <location filename="ScoreMenu.cpp" line="374"/>
         <source>Export MIDI file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="365"/>
+        <location filename="ScoreMenu.cpp" line="374"/>
         <source>MIDI file (*.mid)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="390"/>
+        <location filename="ScoreMenu.cpp" line="399"/>
         <source>Export Postscript file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="390"/>
+        <location filename="ScoreMenu.cpp" line="399"/>
         <source>Postscript file (*.ps)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="415"/>
+        <location filename="ScoreMenu.cpp" line="424"/>
         <source>Export PDF file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="415"/>
+        <location filename="ScoreMenu.cpp" line="424"/>
         <source>PDF file (*.pdf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="453"/>
+        <location filename="ScoreMenu.cpp" line="462"/>
         <source>Title</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="453"/>
+        <location filename="ScoreMenu.cpp" line="462"/>
         <source>Composer</source>
         <translation type="unfinished"></translation>
     </message>

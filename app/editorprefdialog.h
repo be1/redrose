@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QFontComboBox>
 
 class EditorPrefDialog : public QDialog
 {
@@ -19,6 +20,7 @@ public:
     bool getHighlight();
     bool getAutoplay();
     int getFontRange();
+    QFont getBaseFont();
 
 signals:
 
@@ -27,6 +29,9 @@ private slots:
 
 private:
     QVBoxLayout* mainLayout;
+
+    QLabel* fontLabel;
+    QFontComboBox* fontBaseCombo;
 
     QLabel* fontRangeLabel;
     QSpinBox* fontRangeSpinBox;
