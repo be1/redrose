@@ -1472,12 +1472,13 @@ void abc_duration_add(struct abc_symbol* to, struct abc_symbol* with) {
 static int event_cmp(const void* a, const void* b) {
     const struct abc_symbol* s1 = a;
     const struct abc_symbol* s2 = b;
-    long s1_v, s2_v;
+    double s1_v, s2_v;
 
-    /* if the tick values are the same, return noteoff first.
+    /* if the tick & key are the same, return noteoff first.
      * this allow repeated notes to not overlap in some cases. */
     if (s1->ev.start_num == s2->ev.start_num
-            && s1->ev.start_den == s2->ev.start_den) {
+            && s1->ev.start_den == s2->ev.start_den
+            && s1->ev.key == s2->ev.key) {
         return s1->ev.value - s2->ev.value;
     }
 
