@@ -5619,6 +5619,18 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Note(pcc_context_t *ctx) {
         chunk->capts.buf[0].range.end = q;
     }
     {
+        const size_t p = ctx->cur;
+        if (
+            pcc_refill_buffer(ctx, 1) < 1 ||
+            ctx->buffer.buf[ctx->cur] != ':'
+        ) goto L0006;
+        ctx->cur++;
+        ctx->cur = p;
+        goto L0000;
+    L0006:;
+        ctx->cur = p;
+    }
+    {
         pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_Note_0, 0, 1);
         thunk->data.leaf.capts.buf[0] = &(chunk->capts.buf[0]);
         thunk->data.leaf.capt0.range.start = chunk->pos;
