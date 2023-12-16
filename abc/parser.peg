@@ -43,7 +43,7 @@ static void print_error(struct abc* auxil) {
 TuneBook <- (Comment EOL+)* Tune EOF
 	/ (Comment EOL+)* Tune TuneBook
 
-Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL*)*
+Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL*)* EOL?
 
 Words <- "W:" (!EOL .)*
 
@@ -84,8 +84,8 @@ Oheader <-  key:HeaderKey ":" [ \t]* < (!EOL .)* > { abc_header_append(auxil, $1
 
 VoiceDef <- "V:" (!EOL .)+
 
-Score <- Vheader EOL Fragment+ Score*
-	/ Fragment+
+Score <- Vheader EOL (Fragment+ LineBreak?)+ Score*
+	/ (Fragment+ LineBreak?)+
 
 Fragment <- _ / "y"
 	/ "%%" Instruction EOL
@@ -107,7 +107,6 @@ Fragment <- _ / "y"
 	/ Bar
 	/ Alternative
 	/ LineCont
-	/ LineBreak
 	/ "w:" Lyrics
 
 InlineChange <- "[" Change "]"
@@ -175,7 +174,7 @@ NoteDuration <- < [0-9]*"/" > { abc_duration_num_set(auxil, $0); } < [1-9][0-9]*
 	/ < [0-9]+ > { abc_duration_num_set(auxil, $0); }
 	/ < "/"+ > { abc_duration_den_set(auxil, $0); }
 
-Note <- < ([_=^]*[A-Ga-g][,']* / [XxZz]) > !":" { abc_note_append(auxil, $0); }
+Note <- < ([_=^]*[A-Ga-g][,']* / [XxZz]) > { abc_note_append(auxil, $0); }
 
 EOL <- "\r\n" / "\r" / "\n"
 
