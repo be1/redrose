@@ -404,7 +404,7 @@ int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
     for (int l = 0; l < lines.count() && i < index; l++) {
         i += lines.at(l).count() +1; /* count \n */
         if (lines.at(l).startsWith("X:")) {
-            x = lines.at(l).rightRef(1).toInt();
+            x = lines.at(l).midRef(2).toInt();
         }
     }
 
