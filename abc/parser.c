@@ -5532,65 +5532,87 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Note(pcc_context_t *ctx) {
         const size_t p = ctx->cur;
         size_t q;
         {
-            int i;
-            for (i = 0;; i++) {
-                const size_t p = ctx->cur;
-                const size_t n = chunk->thunks.len;
-                {
-                    int u;
-                    const size_t n = pcc_get_char_as_utf32(ctx, &u);
-                    if (n == 0) goto L0001;
-                    if (!(
-                        u == 0x00005f ||
-                        u == 0x00003d ||
-                        u == 0x00005e
-                    )) goto L0001;
-                    ctx->cur += n;
+            const size_t p = ctx->cur;
+            const size_t n = chunk->thunks.len;
+            {
+                int i;
+                for (i = 0;; i++) {
+                    const size_t p = ctx->cur;
+                    const size_t n = chunk->thunks.len;
+                    {
+                        int u;
+                        const size_t n = pcc_get_char_as_utf32(ctx, &u);
+                        if (n == 0) goto L0003;
+                        if (!(
+                            u == 0x00005f ||
+                            u == 0x00003d ||
+                            u == 0x00005e
+                        )) goto L0003;
+                        ctx->cur += n;
+                    }
+                    if (ctx->cur == p) break;
+                    continue;
+                L0003:;
+                    ctx->cur = p;
+                    pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+                    break;
                 }
-                if (ctx->cur == p) break;
-                continue;
-            L0001:;
-                ctx->cur = p;
-                pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-                break;
             }
-        }
-        {
-            int u;
-            const size_t n = pcc_get_char_as_utf32(ctx, &u);
-            if (n == 0) goto L0000;
-            if (!(
-                (u >= 0x000041 && u <= 0x000047) ||
-                (u >= 0x000061 && u <= 0x000067) ||
-                u == 0x00005a ||
-                u == 0x00007a ||
-                u == 0x000058 ||
-                u == 0x000078
-            )) goto L0000;
-            ctx->cur += n;
-        }
-        {
-            int i;
-            for (i = 0;; i++) {
-                const size_t p = ctx->cur;
-                const size_t n = chunk->thunks.len;
-                {
-                    int u;
-                    const size_t n = pcc_get_char_as_utf32(ctx, &u);
-                    if (n == 0) goto L0002;
-                    if (!(
-                        u == 0x00002c ||
-                        u == 0x000027
-                    )) goto L0002;
-                    ctx->cur += n;
+            {
+                int u;
+                const size_t n = pcc_get_char_as_utf32(ctx, &u);
+                if (n == 0) goto L0002;
+                if (!(
+                    (u >= 0x000041 && u <= 0x000047) ||
+                    (u >= 0x000061 && u <= 0x000067)
+                )) goto L0002;
+                ctx->cur += n;
+            }
+            {
+                int i;
+                for (i = 0;; i++) {
+                    const size_t p = ctx->cur;
+                    const size_t n = chunk->thunks.len;
+                    {
+                        int u;
+                        const size_t n = pcc_get_char_as_utf32(ctx, &u);
+                        if (n == 0) goto L0004;
+                        if (!(
+                            u == 0x00002c ||
+                            u == 0x000027
+                        )) goto L0004;
+                        ctx->cur += n;
+                    }
+                    if (ctx->cur == p) break;
+                    continue;
+                L0004:;
+                    ctx->cur = p;
+                    pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+                    break;
                 }
-                if (ctx->cur == p) break;
-                continue;
-            L0002:;
-                ctx->cur = p;
-                pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-                break;
             }
+            goto L0001;
+        L0002:;
+            ctx->cur = p;
+            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+            {
+                int u;
+                const size_t n = pcc_get_char_as_utf32(ctx, &u);
+                if (n == 0) goto L0005;
+                if (!(
+                    u == 0x000058 ||
+                    u == 0x000078 ||
+                    u == 0x00005a ||
+                    u == 0x00007a
+                )) goto L0005;
+                ctx->cur += n;
+            }
+            goto L0001;
+        L0005:;
+            ctx->cur = p;
+            pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+            goto L0000;
+        L0001:;
         }
         q = ctx->cur;
         chunk->capts.buf[0].range.start = p;
