@@ -104,7 +104,7 @@ void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus,
                 && proc->exitStatus() == exitStatus
                 && proc->which() == which) {
             output = QString::fromUtf8(*(proc->log()));
-            exitCode = getGenerationError(output, &formatted);
+            getGenerationError(output, &formatted);
             disconnect(proc, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, AbcProcess::Continuation>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
             delete proc;
             processlist.removeAt(i);
