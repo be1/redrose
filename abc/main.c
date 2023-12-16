@@ -33,7 +33,7 @@ int main() {
 			printf("tune %d, voice %s\n", t->x, v->v);
 			struct abc_symbol* s;
 			for (s = v->first; s; s = s->next) {
-				printf("kind %d: key %d, start %ld/%ld -> duration %ld/%ld ", s->kind, s->ev.key, s->ev.start_num, s->ev.start_den, s->dur_num, s->dur_den);
+				printf("kind %d: key %d, val: %d, start %ld/%ld -> duration %ld/%ld ", s->kind, s->ev.key, s->ev.value, s->ev.start_num, s->ev.start_den, s->dur_num, s->dur_den);
 				if (s->text) puts(s->text);
 				if (s->lyr) puts(s->lyr);
 			}
