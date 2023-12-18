@@ -471,6 +471,7 @@ void abc_tune_append(struct abc* yy, const char* yytext)
 {
     struct abc_tune* new = calloc(1, sizeof (struct abc_tune));
     new->x = atoi(yytext);
+    new->lbc = '\n';
 
     yy->tunes = realloc(yy->tunes, sizeof (struct abc_tune*) * (yy->count + 1));
     yy->tunes[yy->count] = new;

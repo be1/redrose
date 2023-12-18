@@ -1215,7 +1215,7 @@ static void pcc_action_Iheader_1(pcc_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in
 #define _2 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[1])
 #define _2s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[1]->range.start))
 #define _2e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[1]->range.end))
-    auxil->tunes[auxil->count -1]->lbc = (_2)[0];
+    if (strlen(_2) == 1) auxil->tunes[auxil->count -1]->lbc = (_2)[0]; else if (!strcmp(_2, "<none>")) auxil->tunes[auxil->count - 1]->lbc = '\0';
 #undef _2e
 #undef _2s
 #undef _2
@@ -2028,7 +2028,13 @@ static void pcc_action_LineBreak_0(pcc_context_t *__pcc_ctx, pcc_thunk_t *__pcc_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-    abc_eol_append(auxil, _0);
+#define _1 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[0])
+#define _1s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.start))
+#define _1e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.end))
+    if ((_1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, _1);
+#undef _1e
+#undef _1s
+#undef _1
 #undef _0e
 #undef _0s
 #undef _0
@@ -2042,13 +2048,13 @@ static void pcc_action_LineBreak_1(pcc_context_t *__pcc_ctx, pcc_thunk_t *__pcc_
 #define _0 pcc_get_capture_string(__pcc_ctx, &__pcc_in->data.leaf.capt0)
 #define _0s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.start))
 #define _0e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capt0.range.end))
-#define _1 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[0])
-#define _1s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.start))
-#define _1e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.end))
-    if ((_1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, _1); else { auxil->buffer->index = _1s; gen_error(auxil); }
-#undef _1e
-#undef _1s
-#undef _1
+#define _2 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[1])
+#define _2s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[1]->range.start))
+#define _2e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[1]->range.end))
+    if ((_2)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, _2); else { auxil->buffer->index = _2s; gen_error(auxil); }
+#undef _2e
+#undef _2s
+#undef _2
 #undef _0e
 #undef _0s
 #undef _0
@@ -2756,18 +2762,38 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Iheader(pcc_context_t *ctx) {
             const size_t p = ctx->cur;
             size_t q;
             {
-                const size_t p = ctx->cur;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0010;
-                ctx->cur = p;
-                goto L0007;
-            L0010:;
-                ctx->cur = p;
-            }
-            {
-                int u;
-                const size_t n = pcc_get_char_as_utf32(ctx, &u);
-                if (n == 0) goto L0007;
-                ctx->cur += n;
+                const size_t p0 = ctx->cur;
+                const size_t n0 = chunk->thunks.len;
+                int i;
+                for (i = 0;; i++) {
+                    const size_t p = ctx->cur;
+                    const size_t n = chunk->thunks.len;
+                    {
+                        const size_t p = ctx->cur;
+                        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0011;
+                        ctx->cur = p;
+                        goto L0010;
+                    L0011:;
+                        ctx->cur = p;
+                    }
+                    {
+                        int u;
+                        const size_t n = pcc_get_char_as_utf32(ctx, &u);
+                        if (n == 0) goto L0010;
+                        ctx->cur += n;
+                    }
+                    if (ctx->cur == p) break;
+                    continue;
+                L0010:;
+                    ctx->cur = p;
+                    pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+                    break;
+                }
+                if (i < 1) {
+                    ctx->cur = p0;
+                    pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n0);
+                    goto L0007;
+                }
             }
             q = ctx->cur;
             chunk->capts.buf[1].range.start = p;
@@ -6075,42 +6101,27 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineBreak(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "LineBreak", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->buffer.len - chunk->pos));
     ctx->level++;
-    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 1);
+    pcc_capture_table__resize(ctx->auxil, &chunk->capts, 2);
     {
         const size_t p = ctx->cur;
         const size_t n = chunk->thunks.len;
-        if (
-            pcc_refill_buffer(ctx, 2) < 2 ||
-            (ctx->buffer.buf + ctx->cur)[0] != '\r' ||
-            (ctx->buffer.buf + ctx->cur)[1] != '\n'
-        ) goto L0002;
-        ctx->cur += 2;
-        goto L0001;
-    L0002:;
-        ctx->cur = p;
-        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (
-            pcc_refill_buffer(ctx, 1) < 1 ||
-            ctx->buffer.buf[ctx->cur] != '\r'
-        ) goto L0003;
-        ctx->cur++;
-        goto L0001;
-    L0003:;
-        ctx->cur = p;
-        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        if (
-            pcc_refill_buffer(ctx, 1) < 1 ||
-            ctx->buffer.buf[ctx->cur] != '\n'
-        ) goto L0004;
-        ctx->cur++;
         {
-            pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_LineBreak_0, 0, 1);
+            const size_t p = ctx->cur;
+            size_t q;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0002;
+            q = ctx->cur;
+            chunk->capts.buf[0].range.start = p;
+            chunk->capts.buf[0].range.end = q;
+        }
+        {
+            pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_LineBreak_0, 0, 2);
+            thunk->data.leaf.capts.buf[0] = &(chunk->capts.buf[0]);
             thunk->data.leaf.capt0.range.start = chunk->pos;
             thunk->data.leaf.capt0.range.end = ctx->cur;
             pcc_thunk_array__add(ctx->auxil, &chunk->thunks, thunk);
         }
         goto L0001;
-    L0004:;
+    L0002:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         {
@@ -6118,31 +6129,31 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineBreak(pcc_context_t *ctx) {
             size_t q;
             {
                 const size_t p = ctx->cur;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragment, &chunk->thunks, NULL)) goto L0006;
+                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragment, &chunk->thunks, NULL)) goto L0004;
                 ctx->cur = p;
-                goto L0005;
-            L0006:;
+                goto L0003;
+            L0004:;
                 ctx->cur = p;
             }
             {
                 int u;
                 const size_t n = pcc_get_char_as_utf32(ctx, &u);
-                if (n == 0) goto L0005;
+                if (n == 0) goto L0003;
                 ctx->cur += n;
             }
             q = ctx->cur;
-            chunk->capts.buf[0].range.start = p;
-            chunk->capts.buf[0].range.end = q;
+            chunk->capts.buf[1].range.start = p;
+            chunk->capts.buf[1].range.end = q;
         }
         {
-            pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_LineBreak_1, 0, 1);
-            thunk->data.leaf.capts.buf[0] = &(chunk->capts.buf[0]);
+            pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_LineBreak_1, 0, 2);
+            thunk->data.leaf.capts.buf[1] = &(chunk->capts.buf[1]);
             thunk->data.leaf.capt0.range.start = chunk->pos;
             thunk->data.leaf.capt0.range.end = ctx->cur;
             pcc_thunk_array__add(ctx->auxil, &chunk->thunks, thunk);
         }
         goto L0001;
-    L0005:;
+    L0003:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         goto L0000;
