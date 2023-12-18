@@ -13,8 +13,10 @@ int main() {
 	}
 	
 	struct abc* yy = abc_parse_buffer(buf, count);
-	if (yy->error)
-		puts("Parse error");
+	if (yy->error) {
+		printf("Parse error line %d, char %d\n", yy->error_line, yy->error_char);
+        return 1;
+    }
 
 	printf("tunes: %d\n", yy->count);
 	for (int i = 0; i < yy->count; i++) {
