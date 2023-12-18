@@ -199,7 +199,7 @@ Fermer cette partition quand-même ?</translation>
     <message>
         <location filename="EditVBoxLayout.cpp" line="466"/>
         <source>Error during score generation.</source>
-        <translation>Erreur pendant la génératin de la partition.</translation>
+        <translation>Erreur pendant la génération de la partition.</translation>
     </message>
     <message>
         <location filename="EditVBoxLayout.cpp" line="468"/>
