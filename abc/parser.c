@@ -5816,6 +5816,15 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineBreak(pcc_context_t *ctx) {
             ctx->buffer.buf[ctx->cur] != '\n'
         ) goto L0004;
         ctx->cur++;
+        goto L0001;
+    L0004:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
+        if (
+            pcc_refill_buffer(ctx, 1) < 1 ||
+            ctx->buffer.buf[ctx->cur] != '$'
+        ) goto L0005;
+        ctx->cur++;
         {
             pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_LineBreak_0, 0, 0);
             thunk->data.leaf.capt0.range.start = chunk->pos;
@@ -5823,7 +5832,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineBreak(pcc_context_t *ctx) {
             pcc_thunk_array__add(ctx->auxil, &chunk->thunks, thunk);
         }
         goto L0001;
-    L0004:;
+    L0005:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         goto L0000;

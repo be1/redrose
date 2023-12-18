@@ -180,7 +180,7 @@ EOL <- "\r\n" / "\r" / "\n"
 
 LineCont <- "\\" _* EOL
 
-LineBreak <- "\r\n" / "\r" / "\n" { abc_eol_append(auxil, $0); }
+LineBreak <- "\r\n" / "\r" / "\n" / "$" { abc_eol_append(auxil, $0); }
 
 EOF <- !.
 
