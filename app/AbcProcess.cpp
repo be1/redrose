@@ -6,11 +6,12 @@ AbcProcess::AbcProcess(ProcessType which, QObject *parent, Continuation cont)
       type(which),
       cont(cont)
 {
-    setProcessChannelMode(SeparateChannels);
     connect(this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &AbcProcess::onFinished);
 #if 1
+    //setProcessChannelMode(MergedChannels);
     connect(this, &QProcess::readyRead, this, &AbcProcess::onOutput);
 #else
+    setProcessChannelMode(SeparateChannels);
     connect(this, &QProcess::readyReadStandardOutput, this, &AbcProcess::onStdout);
     connect(this, &QProcess::readyReadStandardError, this, &AbcProcess::onStderr);
 #endif
@@ -28,7 +29,8 @@ QByteArray *AbcProcess::log()
 #if 1
 void AbcProcess::onOutput()
 {
-    stdlog = readAll();
+    stdlog = readAllStandardError();
+    stdlog += readAllStandardOutput();
     emit outputText(stdlog);
 }
 #else

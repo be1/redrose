@@ -1,9 +1,11 @@
 #ifndef ABCAPPLICATION_H
 #define ABCAPPLICATION_H
 
+#include <QApplication>
+
 #include "AbcMainWindow.h"
 #include "AbcProcess.h"
-#include <QApplication>
+#include "logwindow.h"
 
 class AbcApplication: public QApplication
 {
@@ -14,14 +16,20 @@ public:
 	~AbcApplication();
 
 	void setMainWindow(AbcMainWindow* w);
-	AbcMainWindow *mainWindow();
+    AbcMainWindow *mainWindow();
+
     void openFileNames(const QStringList& fileNames);
     static bool isQuit();
+
+    LogWindow *logWindow() const;
+    void setLogWindow(LogWindow *newLogwindow);
+
 public slots:
     static void quit();
 
 private:
     AbcMainWindow *abcmainwindow;
+    LogWindow *logwindow;
     static bool isquit;
 };
 #endif

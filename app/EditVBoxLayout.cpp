@@ -278,6 +278,10 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
     if (a->isQuit())
         return;
 
+    if (a->logWindow()) {
+        a->logWindow()->append(errstr);
+    }
+
     if (exitCode) {
         a->mainWindow()->statusBar()->showMessage(tr("Error during MIDI generation."));
 
@@ -454,12 +458,12 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
 
     qDebug() << "ps" << exitCode;
 
+    if (a->logWindow()) {
+        a->logWindow()->append(errstr);
+    }
+
     if (exitCode) {
-        if (cont == AbcProcess::ContinuationRender) {
-            a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
-        } else {
-            QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
-        }
+        a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
     }

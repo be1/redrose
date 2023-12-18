@@ -12,7 +12,8 @@ public:
 	~HelpMenu();
 
 protected slots:
-void onAboutActionTriggered();
-void onAboutQtActionTriggered();
+    void onAboutActionTriggered();
+    void onAboutQtActionTriggered();
+    void onViewLogActionTriggered();
 };
 #endif

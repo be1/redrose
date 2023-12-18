@@ -8,7 +8,8 @@
 #include "settings.h"
 
 AbcApplication::AbcApplication(int& argc, char **argv)
-	: QApplication(argc, argv)
+    : QApplication(argc, argv),
+      logwindow(nullptr)
 {
     setOrganizationName(SETTINGS_DOMAIN);
 	//setOrganizationDomain("herewe");
@@ -53,6 +54,16 @@ void AbcApplication::quit()
 {
     AbcApplication::isquit = true;
     QApplication::quit();
+}
+
+LogWindow *AbcApplication::logWindow() const
+{
+    return logwindow;
+}
+
+void AbcApplication::setLogWindow(LogWindow *newLogwindow)
+{
+    logwindow = newLogwindow;
 }
 
 bool AbcApplication::isQuit()

@@ -96,7 +96,6 @@ void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus,
 {
     /* delete garbage */
     QString output;
-    QString formatted;
     for (int i = 0; i < processlist.length(); i++) {
         AbcProcess* proc = processlist.at(i);
         if (proc->state() == QProcess::NotRunning
@@ -104,14 +103,13 @@ void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus,
                 && proc->exitStatus() == exitStatus
                 && proc->which() == which) {
             output = QString::fromUtf8(*(proc->log()));
-            getGenerationError(output, &formatted);
             disconnect(proc, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, AbcProcess::Continuation>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
             delete proc;
             processlist.removeAt(i);
         }
     }
 
-    emit generated(exitCode != 0, formatted, cont);
+    emit generated(exitCode != 0, output, cont);
 }
 
 void Generator::onProgramError(QProcess::ProcessError err)
