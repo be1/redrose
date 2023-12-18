@@ -11,7 +11,7 @@ extern "C" {
 typedef struct pcc_context_tag pcc_context_t;
 
 pcc_context_t *pcc_create(struct abc *auxil);
-int pcc_parse(pcc_context_t *ctx, int *ret);
+int pcc_parse(pcc_context_t *ctx, char *ret);
 void pcc_destroy(pcc_context_t *ctx);
 
 #ifdef __cplusplus

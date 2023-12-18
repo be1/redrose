@@ -1,5 +1,5 @@
 %auxil "struct abc *"
-
+%value "char"
 %common {
 #include "abc.h"
 }
@@ -21,10 +21,9 @@ static int get_char(struct abc* auxil) {
 	return auxil->buffer->buf[auxil->buffer->index++];
 }
 
-#define PCC_ERROR(auxil) print_error(auxil)
-static void print_error(struct abc* auxil) {
+#define PCC_ERROR(auxil) gen_error(auxil)
+static void gen_error(struct abc* auxil) {
 	int line = 1;
-
 	int l = 0;
 	for (int i = 0; i < auxil->buffer->index; i++) {
 		if (auxil->buffer->buf[i] == '\n') {
@@ -56,8 +55,11 @@ Xvalue <- < [1-9][0-9]* > { abc_tune_append(auxil, $0); }
 
 Kheader <- "K:" [ \t]* < (!EOL .)+ > { abc_header_append(auxil, $1, 'K'); }
 
-HeaderKey <- < [ABCDFGHILMNOPQRSTUWZ] > { $$ = ($0)[0]; }
-Oheader <-  key:HeaderKey ":" [ \t]* < (!EOL .)* > { abc_header_append(auxil, $1, key); }
+Iheader <- "I:" [ \t]* < !"linebreak" (!EOL .)* > { abc_header_append(auxil, $1, 'I'); }
+    / "I:" [ \t]* "linebreak" [ \t]* < (!EOL .) > { auxil->tunes[auxil->count -1]->lbc = ($2)[0]; }
+HeaderKey <- < [ABCDFGHLMNOPQRSTUWZ] > { $$ = ($0)[0]; }
+Oheader <- Iheader
+    / key:HeaderKey ":" [ \t]* < (!EOL .)* > { abc_header_append(auxil, $1, key); }
 	/ VoiceDef
 
 #	/ "A:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'A'); }
@@ -178,9 +180,9 @@ Note <- < ([_=^]*[A-Ga-g][,']* / [XxZz]) > { abc_note_append(auxil, $0); }
 
 EOL <- "\r\n" / "\r" / "\n"
 
-LineCont <- "\\" _* EOL
+LineCont <- "\\" [ \t]* EOL
 
-LineBreak <- "\r\n" / "\r" / "\n" / "$" { abc_eol_append(auxil, $0); }
+LineBreak <- "\r\n" / "\r" / "\n" { abc_eol_append(auxil, $0); }
+    / < (!Fragment .) > { if (($1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $1); else { auxil->buffer->index = $1s; gen_error(auxil); } }
 
 EOF <- !.
-

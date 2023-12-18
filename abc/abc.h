@@ -41,6 +41,7 @@ struct abc_tune {
 	struct abc_header* headers;
     struct abc_voice** voices;
 	int count;
+	char lbc; /* linebreak char (usually '$') */
 };
 
 struct abc_voice {
