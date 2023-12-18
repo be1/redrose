@@ -146,62 +146,61 @@ Close this score anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="282"/>
+        <location filename="EditVBoxLayout.cpp" line="286"/>
         <source>Error during MIDI generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="285"/>
-        <location filename="EditVBoxLayout.cpp" line="287"/>
-        <location filename="EditVBoxLayout.cpp" line="346"/>
-        <location filename="EditVBoxLayout.cpp" line="355"/>
-        <location filename="EditVBoxLayout.cpp" line="364"/>
-        <location filename="EditVBoxLayout.cpp" line="461"/>
+        <location filename="EditVBoxLayout.cpp" line="289"/>
+        <location filename="EditVBoxLayout.cpp" line="291"/>
+        <location filename="EditVBoxLayout.cpp" line="350"/>
+        <location filename="EditVBoxLayout.cpp" line="359"/>
+        <location filename="EditVBoxLayout.cpp" line="368"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="287"/>
+        <location filename="EditVBoxLayout.cpp" line="291"/>
         <source>Parse error in selected notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="294"/>
+        <location filename="EditVBoxLayout.cpp" line="298"/>
         <source>MIDI generation finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="313"/>
+        <location filename="EditVBoxLayout.cpp" line="317"/>
         <source>Synthesis error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="315"/>
+        <location filename="EditVBoxLayout.cpp" line="319"/>
         <source>Synthesis finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="346"/>
+        <location filename="EditVBoxLayout.cpp" line="350"/>
         <source>Could not find PS score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="355"/>
+        <location filename="EditVBoxLayout.cpp" line="359"/>
         <source>Could not load PS score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="364"/>
+        <location filename="EditVBoxLayout.cpp" line="368"/>
         <source>Could not save to PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="459"/>
+        <location filename="EditVBoxLayout.cpp" line="466"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="464"/>
+        <location filename="EditVBoxLayout.cpp" line="468"/>
         <source>Score generated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -209,67 +208,67 @@ Close this score anyway?</source>
 <context>
     <name>EditorPrefDialog</name>
     <message>
-        <location filename="editorprefdialog.cpp" line="13"/>
+        <location filename="editorprefdialog.cpp" line="12"/>
         <source>Editor settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="19"/>
+        <location filename="editorprefdialog.cpp" line="18"/>
         <source>These settings will be applied on newly opened tabs only.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="23"/>
+        <location filename="editorprefdialog.cpp" line="22"/>
         <source>Base font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="37"/>
+        <location filename="editorprefdialog.cpp" line="36"/>
         <source>Font enlargement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="50"/>
+        <location filename="editorprefdialog.cpp" line="49"/>
         <source>Highlight current line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="62"/>
+        <location filename="editorprefdialog.cpp" line="61"/>
         <source>Auto play current note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="74"/>
+        <location filename="editorprefdialog.cpp" line="73"/>
         <source>Header color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="75"/>
+        <location filename="editorprefdialog.cpp" line="74"/>
         <source>Comment color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="76"/>
+        <location filename="editorprefdialog.cpp" line="75"/>
         <source>Extra instruction color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="77"/>
+        <location filename="editorprefdialog.cpp" line="76"/>
         <source>Measure bar color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="78"/>
+        <location filename="editorprefdialog.cpp" line="77"/>
         <source>Decoration color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="79"/>
+        <location filename="editorprefdialog.cpp" line="78"/>
         <source>Guitar chord color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="80"/>
+        <location filename="editorprefdialog.cpp" line="79"/>
         <source>Lyric color</source>
         <translation type="unfinished"></translation>
     </message>
@@ -277,35 +276,48 @@ Close this score anyway?</source>
 <context>
     <name>HelpMenu</name>
     <message>
-        <location filename="HelpMenu.cpp" line="9"/>
+        <location filename="HelpMenu.cpp" line="10"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="HelpMenu.cpp" line="10"/>
+        <location filename="HelpMenu.cpp" line="11"/>
+        <source>View Log window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="HelpMenu.cpp" line="12"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="HelpMenu.cpp" line="11"/>
+        <location filename="HelpMenu.cpp" line="13"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="HelpMenu.cpp" line="21"/>
-        <location filename="HelpMenu.cpp" line="27"/>
+        <location filename="HelpMenu.cpp" line="23"/>
+        <location filename="HelpMenu.cpp" line="29"/>
         <source>ABC score editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="HelpMenu.cpp" line="21"/>
+        <location filename="HelpMenu.cpp" line="23"/>
         <source>
 Redrose version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="HelpMenu.cpp" line="21"/>
+        <location filename="HelpMenu.cpp" line="23"/>
         <source>Copyright © 2021 Benoît Rouits &lt;brouits@free.fr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LogWindow</name>
+    <message>
+        <location filename="logwindow.cpp" line="15"/>
+        <source>Clear Log</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
