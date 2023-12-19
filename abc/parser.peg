@@ -39,10 +39,10 @@ static void gen_error(struct abc* auxil) {
 
 }
 
-TuneBook <- (Comment EOL)* Tune EOF
-	/ (Comment EOL)* Tune TuneBook
+TuneBook <- (Comment EOL)* Tune TuneBook
+	/ EOF
 
-Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL*)* EOL?
+Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL)* EOL?
 
 Words <- "W:" (!EOL .)*
 
@@ -64,7 +64,7 @@ Oheader <- Iheader
 
 VoiceDef <- "V:" (!EOL .)+
 
-Score <- Vheader EOL (Fragment+ LineBreak?)+ (Comment EOL)* Score*
+Score <- Vheader EOL (Fragment+ LineBreak?)+ Score*
 	/ (Fragment+ LineBreak?)+
 
 Fragment <- _ / "y"
