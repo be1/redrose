@@ -39,8 +39,8 @@ static void gen_error(struct abc* auxil) {
 
 }
 
-TuneBook <- (Comment EOL+)* Tune EOF
-	/ (Comment EOL+)* Tune TuneBook
+TuneBook <- (Comment EOL)* Tune EOF
+	/ (Comment EOL)* Tune TuneBook
 
 Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL*)* EOL?
 
@@ -62,35 +62,13 @@ Oheader <- Iheader
     / key:HeaderKey ":" [ \t]* < (!EOL .)* > { abc_header_append(auxil, $1, key); }
 	/ VoiceDef
 
-#	/ "A:" < (!EOL .)+ > { abc_header_append(auxil, $1, 'A'); }
-#	/ "B:" < (!EOL .)+ > { abc_header_append(auxil, $2, 'B'); }
-#	/ "C:" < (!EOL .)+ > { abc_header_append(auxil, $3, 'C'); }
-#	/ "D:" < (!EOL .)+ > { abc_header_append(auxil, $4, 'D'); }
-#	/ "F:" < (!EOL .)+ > { abc_header_append(auxil, $5, 'F'); }
-#	/ "G:" < (!EOL .)+ > { abc_header_append(auxil, $6, 'G'); }
-#	/ "H:" < (!EOL .)+ > { abc_header_append(auxil, $7, 'H'); }
-#	/ "I:" < (!EOL .)+ > { abc_header_append(auxil, $8, 'I'); }
-#	/ "L:" < (!EOL .)+ > { abc_header_append(auxil, $9, 'L'); }
-#	/ "M:" < (!EOL .)+ > { abc_header_append(auxil, $10, 'M'); }
-#	/ "N:" < (!EOL .)+ > { abc_header_append(auxil, $11, 'N'); }
-#	/ "O:" < (!EOL .)+ > { abc_header_append(auxil, $12, 'O'); }
-#	/ "P:" < (!EOL .)+ > { abc_header_append(auxil, $13, 'P'); }
-#	/ "Q:" < (!EOL .)+ > { abc_header_append(auxil, $14, 'Q'); }
-#	/ "R:" < (!EOL .)+ > { abc_header_append(auxil, $15, 'R'); }
-#	/ "S:" < (!EOL .)+ > { abc_header_append(auxil, $16, 'S'); }
-#	/ "T:" < (!EOL .)+ > { abc_header_append(auxil, $17, 'T'); }
-#	/ "U:" < (!EOL .)+ > { abc_header_append(auxil, $18, 'U'); }
-#	/ "W:" < (!EOL .)+ > { abc_header_append(auxil, $19, 'W'); }
-#	/ "Z:" < (!EOL .)+ > { abc_header_append(auxil, $20, 'Z'); }
-#    / VoiceDef #ignore
-
 VoiceDef <- "V:" (!EOL .)+
 
-Score <- Vheader EOL (Fragment+ LineBreak?)+ Score*
+Score <- Vheader EOL (Fragment+ LineBreak?)+ (Comment EOL)* Score*
 	/ (Fragment+ LineBreak?)+
 
 Fragment <- _ / "y"
-	/ "%%" Instruction EOL
+	/ "%%" MidiInstruction EOL
 	/ InlineChange
 	/ Change EOL
 	/ Comment EOL
@@ -121,7 +99,7 @@ Part <- < "P:" (!EOL [^\]])+ > #ignore
 Tempo <- < "Q:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 
 Comment <- "%" !"%" (!EOL .)*
-	/ "%" "%" ![A-Z] (!EOL .)*
+	/ "%%" !"MIDI" (!EOL .)*
 
 Vheader <- "V:" Vvalue
 
@@ -133,7 +111,7 @@ NotePunct <- NoteConstruct _* < (">" / "<")+ > _* NoteConstruct { abc_notepunct_
 
 NoteConstruct <- (Decoration / ("!" ExDecoration "!"))* Note NoteDuration? Tie?
 
-Instruction <- < !"%" (!EOL .)* > { abc_instruction_append(auxil, $0); }
+MidiInstruction <- < "MIDI" [ \t] (!EOL .)* > { abc_instruction_append(auxil, $0); }
 
 Lyrics <- < (!EOL .)* > { abc_lyrics_append(auxil, $0); }
 
