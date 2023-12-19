@@ -64,14 +64,14 @@ Oheader <- Iheader
 
 VoiceDef <- "V:" (!EOL .)+
 
-Score <- Vheader EOL (FragmentLine EOL)+ Score*
-	/ (FragmentLine EOL)+
+Score <- Vheader EOL FragmentLine+ Score*
+	/ FragmentLine+
 
-FragmentLine <- "%%" MidiInstruction
-    / Comment
-    / Change
-    / "w:" Lyrics
-    / Fragment+ LineBreak?
+FragmentLine <- "%%" MidiInstruction EOL
+    / Comment EOL
+    / Change EOL
+    / "w:" Lyrics EOL
+    / Fragment+ LineBreak? EOL?
 
 Fragment <- _ / "y"
 	/ InlineChange
