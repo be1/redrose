@@ -64,14 +64,17 @@ Oheader <- Iheader
 
 VoiceDef <- "V:" (!EOL .)+
 
-Score <- Vheader EOL (Fragment+ LineBreak?)+ Score*
-	/ (Fragment+ LineBreak?)+
+Score <- Vheader EOL (FragmentLine EOL)+ Score*
+	/ (FragmentLine EOL)+
+
+FragmentLine <- "%%" MidiInstruction
+    / Comment
+    / Change
+    / "w:" Lyrics
+    / Fragment+ LineBreak?
 
 Fragment <- _ / "y"
-	/ "%%" MidiInstruction EOL
 	/ InlineChange
-	/ Change EOL
-	/ Comment EOL
 	/ NotePunct
 	/ NoteConstruct
 	/ '"' Gchord '"'
@@ -86,8 +89,7 @@ Fragment <- _ / "y"
 	/ Bar SimpleAlter
 	/ Bar
 	/ Alternative
-	/ LineCont EOL
-	/ "w:" Lyrics
+	/ LineCont
 
 InlineChange <- "[" Change "]"
 Change <- KeySig / Unit / TimeSig / Tempo / Part
@@ -160,7 +162,7 @@ EOL <- "\r\n" / "\r" / "\n"
 
 LineCont <- "\\" [ \t]*
 
-LineBreak <- < EOL > { if (($1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $1); }
+LineBreak <- &< EOL > { if (($1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $1); }
     / < (!Fragment .) > { if (($2)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $2); else { auxil->buffer->index = $2s; gen_error(auxil); } }
 
 EOF <- !.
