@@ -1437,7 +1437,7 @@ static void pcc_action_Lyrics_0(pcc_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in,
 #define _1 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[0])
 #define _1s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.start))
 #define _1e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.end))
-    abc_lyrics_append(auxil, _0);
+    abc_lyrics_append(auxil, _1);
 #undef _1e
 #undef _1s
 #undef _1
@@ -3280,6 +3280,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Fragment(pcc_context_t *ctx) {
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineCont, &chunk->thunks, NULL)) goto L0024;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0024;
         goto L0001;
     L0024:;
         ctx->cur = p;
@@ -6017,7 +6018,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineCont(pcc_context_t *ctx) {
             break;
         }
     }
-    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0000;
     ctx->level--;
     PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "LineCont", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));
     return chunk;

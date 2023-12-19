@@ -86,7 +86,7 @@ Fragment <- _ / "y"
 	/ Bar SimpleAlter
 	/ Bar
 	/ Alternative
-	/ LineCont
+	/ LineCont EOL
 	/ "w:" Lyrics
 
 InlineChange <- "[" Change "]"
@@ -113,7 +113,7 @@ NoteConstruct <- (Decoration / ("!" ExDecoration "!"))* Note NoteDuration? Tie?
 
 MidiInstruction <- < "MIDI" [ \t] (!EOL .)* > { abc_instruction_append(auxil, $0); }
 
-Lyrics <- < (!EOL .)* > { abc_lyrics_append(auxil, $0); }
+Lyrics <- < (!EOL .)* > { abc_lyrics_append(auxil, $1); }
 
 Tie <- < "-" > { abc_tie_append(auxil, $0); }
 
@@ -158,7 +158,7 @@ Note <- < ([_=^]*[A-Ga-g][,']* / [XxZz]) > { abc_note_append(auxil, $0); }
 
 EOL <- "\r\n" / "\r" / "\n"
 
-LineCont <- "\\" [ \t]* EOL
+LineCont <- "\\" [ \t]*
 
 LineBreak <- < EOL > { if (($1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $1); }
     / < (!Fragment .) > { if (($2)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $2); else { auxil->buffer->index = $2s; gen_error(auxil); } }
