@@ -71,7 +71,7 @@ FragmentLine <- "%%" MidiInstruction EOL
     / Comment EOL
     / Change EOL
     / "w:" Lyrics EOL
-    / Fragment+ LineBreak? EOL?
+    / Fragment+ (LineCont / LineBreak?) EOL?
 
 Fragment <- _ / "y"
 	/ InlineChange
@@ -89,7 +89,6 @@ Fragment <- _ / "y"
 	/ Bar SimpleAlter
 	/ Bar
 	/ Alternative
-	/ LineCont
 
 InlineChange <- "[" Change "]"
 Change <- KeySig / Unit / TimeSig / Tempo / Part
