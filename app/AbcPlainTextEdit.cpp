@@ -752,7 +752,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
     color = settings.value(EDITOR_LYRIC_COLOR).toString();
     lyricFormat.setFontWeight(QFont::Normal);
     lyricFormat.setForeground(color);
-    rule.pattern = QRegularExpression(QStringLiteral("^w:[^\n]+"));
+    rule.pattern = QRegularExpression(QStringLiteral("^[Ww]:[^\n]*"));
     rule.format = lyricFormat;
     highlightingRules.append(rule);
 
@@ -766,7 +766,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
         QStringLiteral("^K:[^\n]+"), QStringLiteral("^L:[^\n]+"), QStringLiteral("^M:[^\n]+"),
         QStringLiteral("^N:[^\n]+"), QStringLiteral("^O:[^\n]+"), QStringLiteral("^P:[^\n]+"),
         QStringLiteral("^Q:[^\n]+"), QStringLiteral("^R:[^\n]+"), QStringLiteral("^S:[^\n]+"),
-        QStringLiteral("^T:[^\n]+"), QStringLiteral("^V:[^\n]+"), QStringLiteral("^W:[^\n]+"),
+        QStringLiteral("^T:[^\n]+"), QStringLiteral("^V:[^\n]+"),
         QStringLiteral("^X:[^\n]+"), QStringLiteral("^Z:[^\n]+"), QStringLiteral("\\[[KLMPQ]:[^\\]]+\\]")
     };
 
