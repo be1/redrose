@@ -3132,31 +3132,18 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_FragmentLine(pcc_context_t *ctx) {
             const size_t p = ctx->cur;
             const size_t n = chunk->thunks.len;
             if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineCont, &chunk->thunks, NULL)) goto L0009;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0009;
             goto L0008;
         L0009:;
             ctx->cur = p;
             pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-            {
-                const size_t p = ctx->cur;
-                const size_t n = chunk->thunks.len;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineBreak, &chunk->thunks, NULL)) goto L0011;
-                goto L0012;
-            L0011:;
-                ctx->cur = p;
-                pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-            L0012:;
-            }
-        L0008:;
-        }
-        {
-            const size_t p = ctx->cur;
-            const size_t n = chunk->thunks.len;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0013;
-            goto L0014;
-        L0013:;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineBreak, &chunk->thunks, NULL)) goto L0010;
+            goto L0008;
+        L0010:;
             ctx->cur = p;
             pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
-        L0014:;
+            goto L0006;
+        L0008:;
         }
         goto L0001;
     L0006:;
@@ -6051,20 +6038,11 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineBreak(pcc_context_t *ctx) {
         const size_t n = chunk->thunks.len;
         {
             const size_t p = ctx->cur;
-            {
-                const size_t p = ctx->cur;
-                size_t q;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0003;
-                q = ctx->cur;
-                chunk->capts.buf[0].range.start = p;
-                chunk->capts.buf[0].range.end = q;
-            }
-            ctx->cur = p;
-            goto L0004;
-        L0003:;
-            ctx->cur = p;
-            goto L0002;
-        L0004:;
+            size_t q;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &chunk->thunks, NULL)) goto L0002;
+            q = ctx->cur;
+            chunk->capts.buf[0].range.start = p;
+            chunk->capts.buf[0].range.end = q;
         }
         {
             pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx->auxil, pcc_action_LineBreak_0, 0, 2);
@@ -6082,16 +6060,16 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineBreak(pcc_context_t *ctx) {
             size_t q;
             {
                 const size_t p = ctx->cur;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragment, &chunk->thunks, NULL)) goto L0006;
+                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragment, &chunk->thunks, NULL)) goto L0004;
                 ctx->cur = p;
-                goto L0005;
-            L0006:;
+                goto L0003;
+            L0004:;
                 ctx->cur = p;
             }
             {
                 int u;
                 const size_t n = pcc_get_char_as_utf32(ctx, &u);
-                if (n == 0) goto L0005;
+                if (n == 0) goto L0003;
                 ctx->cur += n;
             }
             q = ctx->cur;
@@ -6106,7 +6084,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_LineBreak(pcc_context_t *ctx) {
             pcc_thunk_array__add(ctx->auxil, &chunk->thunks, thunk);
         }
         goto L0001;
-    L0005:;
+    L0003:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx->auxil, &chunk->thunks, n);
         goto L0000;

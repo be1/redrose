@@ -71,7 +71,7 @@ FragmentLine <- "%%" MidiInstruction EOL
     / Comment EOL
     / Change EOL
     / "w:" Lyrics EOL
-    / Fragment+ (LineCont / LineBreak?) EOL?
+    / Fragment+ (LineCont EOL / LineBreak)
 
 Fragment <- _ / "y"
 	/ InlineChange
@@ -161,7 +161,7 @@ EOL <- "\r\n" / "\r" / "\n"
 
 LineCont <- "\\" [ \t]*
 
-LineBreak <- &< EOL > { if (($1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $1); }
+LineBreak <- < EOL > { if (($1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $1); }
     / < (!Fragment .) > { if (($2)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $2); else { auxil->buffer->index = $2s; gen_error(auxil); } }
 
 EOF <- !.
