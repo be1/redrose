@@ -526,7 +526,7 @@ QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
     if (!voice.isEmpty())
         note.prepend("\n").prepend(voice);
 
-    return note.append("\n");
+    return note;
 }
 
 void AbcPlainTextEdit::checkPlayableNote()
