@@ -409,6 +409,23 @@ QString AbcPlainTextEdit::getLastKeySignatureChange() const
     return QString();
 }
 
+QString AbcPlainTextEdit::getLastMidiProgramChange() const
+{
+    QTextDocument* doc = document();
+    QTextCursor tc, vtc;
+
+    vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
+
+    /* search %%MIDI program N */
+    tc = doc->find("%%MIDI program", textCursor(), QTextDocument::FindBackward);
+    if (tc.position() > vtc.position()) {
+        tc.select(QTextCursor::LineUnderCursor);
+        return tc.selectedText() + "\n";
+    }
+
+    return QString();
+}
+
 QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
 {
     QTextCursor tc;

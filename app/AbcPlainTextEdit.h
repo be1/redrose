@@ -60,6 +60,7 @@ public:
     void setSaved();
     QString constructHeaders(int selectionIndex, int* x);
     QString getLastKeySignatureChange() const;
+    QString getLastMidiProgramChange() const;
 
 signals:
     void playableNote(const QString& note);
