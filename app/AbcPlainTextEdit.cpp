@@ -170,7 +170,7 @@ QString AbcPlainTextEdit::constructHeaders(int selectionIndex, int* x)
         i += lines.at(l).count() +1; /* count \n */
         if (lines.at(l).startsWith("X:")) {
             /* report X value */
-            *x = lines.at(l).rightRef(1).toInt();
+            *x = lines.at(l).midRef(2).toInt();
             xl = l;
             /* don't break on first X: continue until selectionIndex */
         }
@@ -440,9 +440,9 @@ QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
     /* check if tc was valid */
     if (tc.position() > 0) {
         tc.select(QTextCursor::LineUnderCursor);
-        return tc.selectedText();
+        return tc.selectedText() + "\n";
     } else {
-        return "V:1";
+        return QString();
     }
 }
 
@@ -455,9 +455,9 @@ QString AbcPlainTextEdit::getCurrentMIDIComment(const QString& com) const
 
     tc.select(QTextCursor::LineUnderCursor);
     if (tc.position() > vtc.position())
-        return tc.selectedText();
+        return tc.selectedText() + "\n";
 
-    return ""; /* default */
+    return QString();
 }
 
 QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
@@ -534,14 +534,11 @@ QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
     QString keysig = getLastKeySignatureChange();
     QString pgm = getCurrentMIDIComment("program");
     QString trp = getCurrentMIDIComment("transpose");
-    if (!trp.isEmpty())
-        note.prepend("\n").prepend(trp);
-    if (!pgm.isEmpty())
-        note.prepend("\n").prepend(pgm);
-    if (!keysig.isEmpty())
-        note.prepend("\n").prepend(keysig);
-    if (!voice.isEmpty())
-        note.prepend("\n").prepend(voice);
+
+    note.prepend(trp);
+    note.prepend(pgm);
+    note.prepend(keysig);
+    note.prepend(voice);
 
     return note;
 }

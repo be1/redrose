@@ -192,8 +192,10 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         int x = 0;
         tosave = abcPlainTextEdit()->constructHeaders(selectionIndex, &x);
         xspinbox.setValue(x);
+
         tosave += abcPlainTextEdit()->getLastKeySignatureChange();
         tosave += abcPlainTextEdit()->getLastMidiProgramChange();
+
         /* when coming from QTextCursor::selectedText(), LF is replaced by U+2029! */
         tosave += selection.replace(QChar::ParagraphSeparator, "\n");
     }
