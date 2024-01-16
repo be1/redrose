@@ -50,13 +50,12 @@ void ScorePsWidget::refresh()
     spectre_render_context_set_scale(m_render_context, (double) width() / (double) w, (double) height() / (double) h);
     spectre_page_render(m_current_page, m_render_context, &m_page_data, &m_row_length);
 
-    QImage image(m_page_data, width(), height(), m_row_length, QImage::Format_RGB32);
+    QImage image(m_page_data, width(), height(), m_row_length, QImage::Format_RGBX8888);
     setPixmap(QPixmap::fromImage(image));
 }
 
 void ScorePsWidget::load(const QString &filename)
 {
-
     spectre_document_free(m_document);
     m_document = nullptr;
 
@@ -122,7 +121,7 @@ void ScorePsWidget::printPage(int index, QPainter* painter)
     spectre_render_context_set_scale(context, (double) pwidth / (double) w, (double) pheight / (double) h);
     spectre_page_render(page, context, &page_data, &row_length);
 
-    QImage image(page_data, pwidth, pheight, row_length, QImage::Format_RGB32);
+    QImage image(page_data, pwidth, pheight, row_length, QImage::Format_RGBX8888);
     painter->drawImage(0, 0, image);
 
     spectre_page_free(page);
