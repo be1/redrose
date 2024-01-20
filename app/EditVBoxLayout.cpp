@@ -512,6 +512,7 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
     }
 
     if (cont == AbcProcess::ContinuationNone) {
+        delete psgen;
         runpushbutton.setEnabled(true);
         generating = false;
         return;
