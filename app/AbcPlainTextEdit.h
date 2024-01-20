@@ -61,6 +61,7 @@ public:
     QString constructHeaders(int selectionIndex, int* x);
     QString getLastKeySignatureChange() const;
     QString getLastMidiProgramChange() const;
+    void findX(int x);
 
 signals:
     void playableNote(const QString& note);

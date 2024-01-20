@@ -56,8 +56,10 @@ protected:
     int xOfCursor(const QTextCursor& c);
     void cleanupProcesses();
     void cleanupThreads();
+    void scheduleDisplay();
 
 public slots:
+    void onCursorPositionChanged();
     void onXChanged(int value);
     void onPlayClicked(); /* midi */
     void onDisplayClicked(); /* ps */
@@ -75,7 +77,10 @@ protected slots:
     void onSynthTickChanged(int tick);
 
 private:
-	AbcPlainTextEdit abcplaintextedit;
+    bool in_cursor_position_changed = false;
+    bool generating = false;
+    QTimer generationTimer;
+    AbcPlainTextEdit abcplaintextedit;
     PlayPushButton playpushbutton; /* midi */
     RunPushButton runpushbutton; /* ps */
     QSlider positionslider;

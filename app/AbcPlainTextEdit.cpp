@@ -426,6 +426,17 @@ QString AbcPlainTextEdit::getLastMidiProgramChange() const
     return QString();
 }
 
+void AbcPlainTextEdit::findX(int x)
+{
+    QRegularExpression re("^X:[ \t]*" + QString::number(x) + "[ \t]*$");
+    QTextCursor tc = document()->find(re);
+    if (tc.isNull())
+        return;
+
+    tc.clearSelection();
+    setTextCursor(tc);
+}
+
 QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
 {
     QTextCursor tc;

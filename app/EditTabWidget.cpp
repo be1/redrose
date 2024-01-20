@@ -35,7 +35,7 @@ void EditTabWidget::removeTab(int index)
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* m = a->mainWindow();
 
-    /* clear SVG view */
+    /* clear view */
     m->mainHSplitter()->viewWidget()->cleanup();
     m->mainHSplitter()->viewWidget()->psWidget()->load(QString()); /* the only way to clear view */
 

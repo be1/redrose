@@ -29,10 +29,14 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
       midigen(nullptr)
 {
     QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
-	tempFile.setFileTemplate(t);
+    tempFile.setFileTemplate(t);
+
+    generationTimer.setInterval(500);
+    generationTimer.setSingleShot(true);
+
     xspinbox.setMinimum(1);
     xspinbox.setMaximum(9999);
-	xlabel.setText(tr("X:"));
+    xlabel.setText(tr("X:"));
 	xlabel.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     xlabel.setBuddy(&xspinbox);
     progress = new QProgressIndicator();
@@ -57,8 +61,10 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 	addWidget(&abcplaintextedit);
 	addLayout(&hboxlayout);
 
+    connect(&generationTimer, &QTimer::timeout, this, &EditVBoxLayout::onDisplayClicked);
     connect(&abcplaintextedit, &QPlainTextEdit::selectionChanged, this, &EditVBoxLayout::onSelectionChanged);
     connect(&abcplaintextedit, &AbcPlainTextEdit::playableNote, this, &EditVBoxLayout::onPlayableNote);
+    connect(&abcplaintextedit, &AbcPlainTextEdit::cursorPositionChanged, this, &EditVBoxLayout::onCursorPositionChanged);
     connect(&xspinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &EditVBoxLayout::onXChanged);
     connect(&playpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onPlayClicked);
     connect(&runpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onDisplayClicked);
@@ -148,10 +154,32 @@ void EditVBoxLayout::cleanupThreads()
         synth->abortPlay();
 }
 
+void EditVBoxLayout::scheduleDisplay()
+{
+    if (generationTimer.isActive() || generating)
+        generationTimer.stop();
+
+    generationTimer.start();
+}
+
+void EditVBoxLayout::onCursorPositionChanged()
+{
+    in_cursor_position_changed = true;
+    AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
+    QTextCursor tc = te->textCursor();
+    int x = xOfCursor(tc);
+    xspinbox.setValue(x);
+}
+
 void EditVBoxLayout::onXChanged(int value)
 {
-    qDebug() << value;
-    onDisplayClicked();
+    if (!in_cursor_position_changed) {
+        abcPlainTextEdit()->findX(value);
+    }
+
+    scheduleDisplay();
+
+    in_cursor_position_changed = false;
 }
 
 void EditVBoxLayout::onPlayClicked()
@@ -380,6 +408,7 @@ void EditVBoxLayout::saveToPDF(const QString &outfile)
 
 void EditVBoxLayout::onDisplayClicked()
 {
+    generating = true;
     runpushbutton.setEnabled(false);
 
     /* do not disable/enable xspinbox because Play manages it for audio rendering! */
@@ -408,6 +437,19 @@ int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
     int i = 0;
     QStringList lines = all.split('\n');
 
+    /* look if line under cursor is an X: */
+    QTextCursor tc(c);
+    tc.select(QTextCursor::LineUnderCursor);
+    if (tc.selectedText().startsWith("X:")) {
+        bool ok = false;
+        x = tc.selectedText().midRef(2).toInt(&ok);
+        if (ok) {
+            return x;
+        } else {
+            x = 1;
+        }
+    }
+
     /* find last X: before selectionIndex */
     for (int l = 0; l < lines.count() && i < index; l++) {
         i += lines.at(l).count() +1; /* count \n */
@@ -428,9 +470,6 @@ void EditVBoxLayout::onSelectionChanged()
     } else {
         selection.clear();
         selectionIndex = c.selectionStart();
-        /* set X spinbox */
-        int x = xOfCursor(c);
-        xspinbox.setValue(x);
     }
 }
 
@@ -474,6 +513,7 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
 
     if (cont == AbcProcess::ContinuationNone) {
         runpushbutton.setEnabled(true);
+        generating = false;
         return;
     } else if (cont == AbcProcess::ContinuationRender) {
         /* continuation: display PS */
@@ -491,4 +531,5 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
 
     delete psgen;
     runpushbutton.setEnabled(true);
+    generating = false;
 }
