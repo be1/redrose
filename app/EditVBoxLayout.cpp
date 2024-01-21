@@ -195,6 +195,10 @@ void EditVBoxLayout::onPlayClicked()
         return;
     }
 
+    /* do not play selection garbage */
+    if (!selection.isEmpty() && !abcplaintextedit.cursorIsInFragmentLine())
+        return;
+
     if (playpushbutton.isPlay()) {
         a->mainWindow()->statusBar()->showMessage(tr("Generating MIDI for playing."));
         playpushbutton.flip();

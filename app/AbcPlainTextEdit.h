@@ -62,6 +62,7 @@ public:
     QString getLastKeySignatureChange() const;
     QString getLastMidiProgramChange() const;
     void findX(int x);
+    bool cursorIsInFragmentLine();
 
 signals:
     void playableNote(const QString& note);
@@ -94,7 +95,7 @@ private:
 
     QWidget *lineNumberArea;
     AbcHighlighter *highlighter;
-    QString playableNoteUnderCusror(QTextCursor tc);
+    QString playableNoteUnderCursor(QTextCursor tc);
     QString textUnderCursor() const;
     QString lineUnderCursor() const;
     QString noteUnderCursor(QTextCursor tc) const;

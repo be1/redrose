@@ -131,6 +131,10 @@ void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
     QTextDocument* doc = document();
     QTextCursor tc = textCursor();
 
+    if (charBeforeCursor(tc) == ']' || charBeforeCursor(tc) == '|') {
+        tc.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 2);
+    }
+
     /* postion at start of measure */
     QTextCursor lbar = doc->find(QRegularExpression(QStringLiteral("(\\||^)")), tc, QTextDocument::FindBackward);
     tc.setPosition(lbar.position());
@@ -139,8 +143,13 @@ void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
     QTextCursor rbar = doc->find(QRegularExpression(QStringLiteral("(\\||$)")), tc);
     tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, rbar.position() - tc.position());
 
-    if (tc.selectedText().isEmpty())
-        return QPlainTextEdit::mouseDoubleClickEvent(e);
+    /* default to full line */
+    if (tc.selectedText().isEmpty()) {
+        QTextCursor sol = doc->find(QRegularExpression("^"), tc, QTextDocument::FindBackward);
+        tc.setPosition(sol.position());
+        QTextCursor eol = doc->find(QRegularExpression("$"), tc);
+        tc.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, eol.position() - sol.position());
+    }
 
     setTextCursor(tc);
     e->accept();
@@ -437,6 +446,26 @@ void AbcPlainTextEdit::findX(int x)
     setTextCursor(tc);
 }
 
+bool AbcPlainTextEdit::cursorIsInFragmentLine()
+{
+    QString line = lineUnderCursor();
+
+    /* comment */
+    if (line.startsWith('%'))
+        return false;
+
+    /* formulated header */
+    if (line.size() > 1 && line.at(0).isLetter() && line.at(1) == ':')
+        return false;
+
+    /* in progress header or garbage */
+    if (line.at(0).isLetter() && !isPitch(line.at(0)) && !isRest(line.at(0)))
+        return false;
+
+    /* anything else */
+    return true;
+}
+
 QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
 {
     QTextCursor tc;
@@ -471,7 +500,7 @@ QString AbcPlainTextEdit::getCurrentMIDIComment(const QString& com) const
     return QString();
 }
 
-QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
+QString AbcPlainTextEdit::playableNoteUnderCursor(QTextCursor tc)
 {
     /* check manual selection */
     if (!tc.selectedText().isEmpty())
@@ -556,7 +585,7 @@ QString AbcPlainTextEdit::playableNoteUnderCusror(QTextCursor tc)
 
 void AbcPlainTextEdit::checkPlayableNote()
 {
-    QString note = playableNoteUnderCusror(textCursor());
+    QString note = playableNoteUnderCursor(textCursor());
     if (note.isEmpty())
         return;
 
@@ -589,7 +618,7 @@ void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
             c = charBeforeCursor(tc).at(0);
         }
 
-        QString note = playableNoteUnderCusror(tc);
+        QString note = playableNoteUnderCursor(tc);
         if (!note.isEmpty())
             emit playableNote(note);
 
