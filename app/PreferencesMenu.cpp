@@ -6,6 +6,7 @@
 #include "AbcApplication.h"
 #include "editorprefdialog.h"
 #include "playerprefdialog.h"
+#include "psprefdialog.h"
 #include "settings.h"
 #include "config.h"
 
@@ -48,29 +49,19 @@ void PreferencesMenu::onPlayerActionTriggered()
 
 void PreferencesMenu::onPsActionTriggered()
 {
-    Settings settings;
-    QVariant ps = settings.value(PSTUNES_KEY);
-
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    PsPrefDialog* dialog = new PsPrefDialog (a->mainWindow());
 
-    QStringList items;
-    if (!ps.isNull()) {
-        items << ps.toString();
+    if (QDialog::Accepted == dialog->exec()) {
+        Settings settings;
+
+        settings.setValue(PSTUNES_KEY, dialog->getTunesExport());
+        settings.setValue(PSPAGES_KEY, dialog->getPageNumbering());
+
+        settings.sync();
     }
 
-    items << TUNES_SELECTED << TUNES_ALL;
-    items.removeDuplicates();
-
-    bool ok;
-    QString param;
-    param = QInputDialog::getItem(a->mainWindow(), tr("Postscript export preference"), tr("Tunes:"), items, 0, false, &ok);
-
-    if (!ok)
-        return;
-
-    settings.setValue(PSTUNES_KEY, param);
-    settings.sync();
-
+    delete dialog;
 }
 
 void PreferencesMenu::onResetActionTriggered()

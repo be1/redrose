@@ -21,6 +21,8 @@
 #define TUNES_ALL \"all\"
 #define TUNES_SELECTED \"selected\"
 
+#define PSPAGES_KEY \"ABC/pspages\"
+
 /* external compiler not used anymore */
 #define COMPILER_KEY \"ABC/compiler\"
 #define ABCM2PS \"$$DATADIR\" \"/$$TARGET/\" \"abcm2ps/abcm2ps\"
