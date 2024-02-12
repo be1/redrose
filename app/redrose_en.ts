@@ -13,26 +13,26 @@
     <name>AbcPlainTextEdit</name>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="65"/>
-        <location filename="AbcPlainTextEdit.cpp" line="221"/>
+        <location filename="AbcPlainTextEdit.cpp" line="230"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="71"/>
-        <location filename="AbcPlainTextEdit.cpp" line="235"/>
+        <location filename="AbcPlainTextEdit.cpp" line="244"/>
         <source>Find forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="77"/>
-        <location filename="AbcPlainTextEdit.cpp" line="249"/>
+        <location filename="AbcPlainTextEdit.cpp" line="258"/>
         <source>Find backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="221"/>
-        <location filename="AbcPlainTextEdit.cpp" line="235"/>
-        <location filename="AbcPlainTextEdit.cpp" line="249"/>
+        <location filename="AbcPlainTextEdit.cpp" line="230"/>
+        <location filename="AbcPlainTextEdit.cpp" line="244"/>
+        <location filename="AbcPlainTextEdit.cpp" line="258"/>
         <source>Text:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -115,92 +115,92 @@ Close this score anyway?</source>
 <context>
     <name>EditVBoxLayout</name>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="34"/>
+        <location filename="EditVBoxLayout.cpp" line="39"/>
         <source>X:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="98"/>
+        <location filename="EditVBoxLayout.cpp" line="105"/>
         <source>Cannot load sound font.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="170"/>
+        <location filename="EditVBoxLayout.cpp" line="203"/>
         <source>Generating MIDI for playing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="179"/>
+        <location filename="EditVBoxLayout.cpp" line="212"/>
         <source>Stopping synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="164"/>
+        <location filename="EditVBoxLayout.cpp" line="193"/>
         <source>Please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="246"/>
-        <location filename="EditVBoxLayout.cpp" line="262"/>
+        <location filename="EditVBoxLayout.cpp" line="282"/>
+        <location filename="EditVBoxLayout.cpp" line="298"/>
         <source>Exporting score...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="286"/>
+        <location filename="EditVBoxLayout.cpp" line="322"/>
         <source>Error during MIDI generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="289"/>
-        <location filename="EditVBoxLayout.cpp" line="291"/>
-        <location filename="EditVBoxLayout.cpp" line="350"/>
-        <location filename="EditVBoxLayout.cpp" line="359"/>
-        <location filename="EditVBoxLayout.cpp" line="368"/>
+        <location filename="EditVBoxLayout.cpp" line="325"/>
+        <location filename="EditVBoxLayout.cpp" line="327"/>
+        <location filename="EditVBoxLayout.cpp" line="386"/>
+        <location filename="EditVBoxLayout.cpp" line="395"/>
+        <location filename="EditVBoxLayout.cpp" line="404"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="291"/>
+        <location filename="EditVBoxLayout.cpp" line="327"/>
         <source>Parse error in selected notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="298"/>
+        <location filename="EditVBoxLayout.cpp" line="334"/>
         <source>MIDI generation finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="317"/>
+        <location filename="EditVBoxLayout.cpp" line="353"/>
         <source>Synthesis error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="319"/>
+        <location filename="EditVBoxLayout.cpp" line="355"/>
         <source>Synthesis finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="350"/>
+        <location filename="EditVBoxLayout.cpp" line="386"/>
         <source>Could not find PS score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="359"/>
+        <location filename="EditVBoxLayout.cpp" line="395"/>
         <source>Could not load PS score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="368"/>
+        <location filename="EditVBoxLayout.cpp" line="404"/>
         <source>Could not save to PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="466"/>
+        <location filename="EditVBoxLayout.cpp" line="513"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="468"/>
+        <location filename="EditVBoxLayout.cpp" line="515"/>
         <source>Score generated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -412,47 +412,37 @@ Redrose version </source>
 <context>
     <name>PreferencesMenu</name>
     <message>
-        <location filename="PreferencesMenu.cpp" line="15"/>
+        <location filename="PreferencesMenu.cpp" line="16"/>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="18"/>
+        <location filename="PreferencesMenu.cpp" line="19"/>
         <source>Postscript export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="19"/>
+        <location filename="PreferencesMenu.cpp" line="20"/>
         <source>Editor settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="20"/>
+        <location filename="PreferencesMenu.cpp" line="21"/>
         <source>Reset settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="17"/>
+        <location filename="PreferencesMenu.cpp" line="18"/>
         <source>Player settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="66"/>
-        <source>Postscript export preference</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="66"/>
-        <source>Tunes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PreferencesMenu.cpp" line="80"/>
+        <location filename="PreferencesMenu.cpp" line="71"/>
         <source>Reset prefrences?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="80"/>
+        <location filename="PreferencesMenu.cpp" line="71"/>
         <source>Do you really want to reset preferences?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -460,8 +450,51 @@ Redrose version </source>
 <context>
     <name>PsGenerator</name>
     <message>
-        <location filename="psgenerator.cpp" line="55"/>
+        <location filename="psgenerator.cpp" line="56"/>
         <source>Error during score generation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PsPrefDialog</name>
+    <message>
+        <location filename="psprefdialog.cpp" line="11"/>
+        <source>Postscript settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="18"/>
+        <source>Tune(s) export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="40"/>
+        <source>Page number position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="45"/>
+        <source>no page numbers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="45"/>
+        <source>always top left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="45"/>
+        <source>always top right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="45"/>
+        <source>top left on even pages, else top right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="45"/>
+        <source>top right on even pages, else top left</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -42,7 +42,7 @@ PsPrefDialog::PsPrefDialog(QWidget* parent) : QDialog (parent)
     m_pagesComboBox->setEditable(false);
 
     QStringList nitems;
-    nitems << tr("no page numbers") << tr("always top left") << tr("always top right") << tr("top left on even pages, else top right") << tr("to right on even pages, else top left");
+    nitems << tr("no page numbers") << tr("always top left") << tr("always top right") << tr("top left on even pages, else top right") << tr("top right on even pages, else top left");
     /*
      * 0      no page numbers
      * 1      at top left
