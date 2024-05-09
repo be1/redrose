@@ -470,32 +470,42 @@ Redrose version </source>
         <translation>Export de morceau(x)</translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="40"/>
+        <location filename="psprefdialog.cpp" line="23"/>
+        <source>Selected tune</source>
+        <translation>Morceau sélectionné</translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="23"/>
+        <source>All tunes</source>
+        <translation>Tous les morceaux</translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="41"/>
         <source>Page number position</source>
         <translation>Position du n° de page</translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>no page numbers</source>
         <translation>pas de n° de page</translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>always top left</source>
         <translation>en haut à gauche</translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>always top right</source>
         <translation>en haut à droite</translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>top left on even pages, else top right</source>
         <translation>en haut à gauche sur les pages paires, à droite sinon</translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>top right on even pages, else top left</source>
         <translation>en haut à droite sur les pages paires, à gauche sinon</translation>
     </message>

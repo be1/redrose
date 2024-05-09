@@ -468,32 +468,42 @@ Redrose version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="40"/>
+        <location filename="psprefdialog.cpp" line="23"/>
+        <source>Selected tune</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="23"/>
+        <source>All tunes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="psprefdialog.cpp" line="41"/>
         <source>Page number position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>no page numbers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>always top left</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>always top right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>top left on even pages, else top right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="psprefdialog.cpp" line="45"/>
+        <location filename="psprefdialog.cpp" line="46"/>
         <source>top right on even pages, else top left</source>
         <translation type="unfinished"></translation>
     </message>

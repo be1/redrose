@@ -18,8 +18,8 @@
 #define PLAYER_DURATION \"ABC/player/default_duration\"
 
 #define PSTUNES_KEY \"ABC/pstunes\"
-#define TUNES_ALL \"all\"
-#define TUNES_SELECTED \"selected\"
+#define TUNES_SELECTED 0
+#define TUNES_ALL 1
 
 #define PSPAGES_KEY \"ABC/pspages\"
 

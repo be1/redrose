@@ -13,7 +13,7 @@ class PsPrefDialog : public QDialog
     Q_OBJECT
 public:
     PsPrefDialog(QWidget* parent = nullptr);
-    QString getTunesExport();
+    int getTunesExport();
     int getPageNumbering();
 
 private:

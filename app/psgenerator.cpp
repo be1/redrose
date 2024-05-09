@@ -28,7 +28,7 @@ void PsGenerator::generate(const QString &input, int xopt, AbcProcess::Continuat
         setOutFile(path);
     }
 
-    if (param.toString() == TUNES_ALL) {
+    if (param.toInt() == TUNES_ALL) {
         argv << "-N" << QString::number(pages.toInt()) << input << "-O" << outFile();
     } else {
         argv << "-N" << QString::number(pages.toInt()) << input << "-e" << QString::number(xopt) << "-O" << outFile();

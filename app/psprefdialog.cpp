@@ -20,14 +20,15 @@ PsPrefDialog::PsPrefDialog(QWidget* parent) : QDialog (parent)
     m_tunesComboBox->setEditable(false);
 
     QStringList pitems;
-    if (!tunes.isNull()) {
-        pitems << tunes.toString();
-    }
-
-    pitems << TUNES_SELECTED << TUNES_ALL;
-    pitems.removeDuplicates();
+    pitems << tr("Selected tune") << tr("All tunes");
+    /*
+     * 0 = selected tune
+     * 1 = all tunes
+     */
 
     m_tunesComboBox->addItems(pitems);
+    m_tunesComboBox->setCurrentIndex(tunes.toInt());
+
     m_tunesLabel->setBuddy(m_tunesComboBox);
     QHBoxLayout* plhbox = new QHBoxLayout;
     plhbox->addWidget(m_tunesLabel);
@@ -71,9 +72,13 @@ PsPrefDialog::PsPrefDialog(QWidget* parent) : QDialog (parent)
     setLayout(m_mainLayout);
 }
 
-QString PsPrefDialog::getTunesExport()
+int PsPrefDialog::getTunesExport()
 {
-    return m_tunesComboBox->currentText();
+    /*
+     * 0 = selected
+     * 1 = all
+     */
+    return m_tunesComboBox->currentIndex();
 }
 
 int PsPrefDialog::getPageNumbering()
