@@ -135,7 +135,7 @@ Nuplet <- p:Digits "::" { abc_nuplet_append(auxil, p, 0, 0); }
 
 Digits <- < [0-9]+ > { $$ = atoi($0); }
 
-Gchord <- < [A-H][^"]* > { abc_gchord_append(auxil, $0); }
+Gchord <- < [^"]* > { abc_gchord_append(auxil, $0); }
 
 SlurStart <- < "(" > { abc_slur_append(auxil, $0); }
 

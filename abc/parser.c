@@ -5002,15 +5002,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Gchord(pcc_context_t *ctx) {
         const size_t p = ctx->cur;
         size_t q;
         {
-            int u;
-            const size_t n = pcc_get_char_as_utf32(ctx, &u);
-            if (n == 0) goto L0000;
-            if (!(
-                (u >= 0x000041 && u <= 0x000048)
-            )) goto L0000;
-            ctx->cur += n;
-        }
-        {
             int i;
             for (i = 0;; i++) {
                 const size_t p = ctx->cur;
@@ -5046,11 +5037,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Gchord(pcc_context_t *ctx) {
     ctx->level--;
     PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Gchord", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));
     return chunk;
-L0000:;
-    ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Gchord", ctx->level, chunk->pos, (ctx->buffer.buf + chunk->pos), (ctx->cur - chunk->pos));
-    pcc_thunk_chunk__destroy(ctx, chunk);
-    return NULL;
 }
 
 static pcc_thunk_chunk_t *pcc_evaluate_rule_SlurStart(pcc_context_t *ctx) {
