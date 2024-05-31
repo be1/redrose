@@ -168,7 +168,11 @@ void EditVBoxLayout::onCursorPositionChanged()
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
     int x = xOfCursor(tc);
-    xspinbox.setValue(x);
+
+    if (xspinbox.value() == x)
+        in_cursor_position_changed = false;
+    else
+        xspinbox.setValue(x);
 }
 
 void EditVBoxLayout::onXChanged(int value)
