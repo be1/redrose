@@ -1,8 +1,9 @@
+#include <QDebug>
+#include <QRegularExpression>
+
 #include "generator.h"
 #include "AbcProcess.h"
-#include "AbcApplication.h"
 #include "../abc/abc.h"
-#include <QDebug>
 
 const QRegularExpression Generator::m_abcext("\\.abc$");
 
@@ -132,7 +133,11 @@ int Generator::getGenerationError(const QString& from, QString* to)
     end = from.indexOf('\n', beg);
     if (to) {
         to->clear();
+#if (QT_VERSION < QT_VERSION_CHECK(6,0,0))
         to->append(from.midRef(beg, end - beg));
+#else
+        to->append(from.mid(beg, end - beg));
+#endif
     }
 
     return ret;

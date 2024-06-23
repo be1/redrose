@@ -1,5 +1,4 @@
 #include <QDebug>
-#include <QTextCodec>
 #include <drumstick/qsmf.h>
 #include "abcsmf.h"
 

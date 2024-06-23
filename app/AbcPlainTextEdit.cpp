@@ -176,10 +176,14 @@ QString AbcPlainTextEdit::constructHeaders(int selectionIndex, int* x)
 
     /* find last X: before selectionIndex */
     for (int l = 0; l < lines.count() && i < selectionIndex; l++) {
-        i += lines.at(l).count() +1; /* count \n */
+        i += lines.at(l).size() +1; /* count \n */
         if (lines.at(l).startsWith("X:")) {
             /* report X value */
+#if (QT_VERSION < QT_VERSION_CHECK(6,0,0))
             *x = lines.at(l).midRef(2).toInt();
+#else
+            *x = lines.at(l).mid(2).toInt();
+#endif
             xl = l;
             /* don't break on first X: continue until selectionIndex */
         }

@@ -18,8 +18,13 @@ ScoreMenu::ScoreMenu(QWidget* parent)
 {
     setTitle(tr("Score"));
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     addAction(tr("New"), this, &ScoreMenu::onNewActionTriggered, QKeySequence::New);
     addAction(tr("Open"), this, &ScoreMenu::onOpenActionTriggered, QKeySequence::Open);
+#else
+    addAction(tr("New"), QKeySequence::New, this, &ScoreMenu::onNewActionTriggered);
+    addAction(tr("Open"), QKeySequence::Open, this, &ScoreMenu::onOpenActionTriggered);
+#endif
 
     for (int i = 0; i < MaxRecentFiles; ++i) {
         recentFileActs[i] = new QAction(this);
@@ -33,13 +38,23 @@ ScoreMenu::ScoreMenu(QWidget* parent)
 
     updateRecentFileActions();
 
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     addAction(tr("Save"), this, &ScoreMenu::onSaveActionTriggered, QKeySequence::Save);
     addAction(tr("Save as"), this, &ScoreMenu::onSaveAsActionTriggered, QKeySequence::SaveAs);
+#else
+    addAction(tr("Save"), QKeySequence::Save, this, &ScoreMenu::onSaveActionTriggered);
+    addAction(tr("Save as"), QKeySequence::SaveAs, this, &ScoreMenu::onSaveAsActionTriggered);
+#endif
     addAction(tr("Export to MIDI"), this, &ScoreMenu::onExportActionTriggered);
     addAction(tr("Export to Postscript"), this, &ScoreMenu::onExportPsActionTriggered);
-    //addAction(tr("Export to PDF"), this, &ScoreMenu::onExportPdfActionTriggered); FIXME libspectre export fails.
+    addAction(tr("Export to PDF"), this, &ScoreMenu::onExportPdfActionTriggered); //FIXME libspectre export fails.
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
     addAction(tr("Close"), this, &ScoreMenu::onCloseActionTriggered, QKeySequence::Close);
     addAction(tr("Quit"), this, &ScoreMenu::onQuitActionTriggered, QKeySequence::Quit);
+#else
+    addAction(tr("Close"), QKeySequence::Close, this, &ScoreMenu::onCloseActionTriggered);
+    addAction(tr("Quit"), QKeySequence::Quit, this, &ScoreMenu::onQuitActionTriggered);
+#endif
 }
 
 ScoreMenu::~ScoreMenu()

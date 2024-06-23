@@ -1,5 +1,4 @@
 #include "abcsynth.h"
-#include "fluidsynth/event.h"
 #include "config.h"
 #include <QTimer>
 #include <QMutexLocker>
@@ -7,6 +6,7 @@
 #include "AbcApplication.h"
 #include "settings.h"
 
+/*
 static int handle_midi_tick(void *data, int tick) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
 
@@ -17,7 +17,7 @@ static int handle_midi_tick(void *data, int tick) {
     emit self->tickChanged(tick);
     return FLUID_OK;
 }
-
+*/
 static int handle_midi_event(void *data, fluid_midi_event_t *event) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
     if (self->m_tick == fluid_player_get_current_tick(self->player())) {
