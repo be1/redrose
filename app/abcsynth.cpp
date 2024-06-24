@@ -148,10 +148,12 @@ void AbcSynth::monitorPlayback()
             a->mainWindow()->statusBar()->showMessage(tr("Playing ") + QString::number(m_secs) + "s.");
             m_secs++;
             break;
+#if FLUIDSYNTH_VERSION_MAJOR >= 3
         case FLUID_PLAYER_STOPPING:
             m_mutex.unlock();
             a->mainWindow()->statusBar()->showMessage(tr("Stopping."));
             break;
+#endif
         case FLUID_PLAYER_DONE:
         default:
             m_mutex.unlock();
