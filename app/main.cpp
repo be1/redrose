@@ -43,14 +43,21 @@ int main(int argc, char** argv)
 
 	QString locale = QLocale::system().name();
 	QTranslator qtTranslator;
-	qtTranslator.load("qt_" + locale,
-			QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-	abcapplication.installTranslator(&qtTranslator);
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+	if (qtTranslator.load("qt_" + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+#else
+	if (qtTranslator.load("qt_" + locale, QLibraryInfo::path(QLibraryInfo::TranslationsPath)))
+#endif
+		abcapplication.installTranslator(&qtTranslator);
 
 	QTranslator qabcTranslator;
-	if (!qabcTranslator.load(TARGET "_" + locale, "locale"))
-		qabcTranslator.load(TARGET "_" + locale, DATADIR "/" TARGET "/locale");
-	abcapplication.installTranslator(&qabcTranslator);
+	bool loaded = qabcTranslator.load(TARGET "_" + locale, "locale");
+	if (!loaded)
+		loaded = qabcTranslator.load(TARGET "_" + locale, DATADIR "/" TARGET "/locale");
+
+	if (loaded) {
+		abcapplication.installTranslator(&qabcTranslator);
+	}
 
 	QCommandLineParser parser;
 	parser.setApplicationDescription("ABC music notation minimal GUI.");
