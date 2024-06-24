@@ -52,7 +52,7 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
         dur = 10;
 
     QString errstr;
-    struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.count());
+    struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.size());
     if (yy->error) {
         errstr = tr("Parse error line: ") + QString::number(yy->error_line) + tr(", char: ") + QString::number(yy->error_char);
         emit generated(1, errstr, cont);
@@ -81,7 +81,7 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
 
 const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
 {
-    struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.count());
+    struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.size());
     if (yy->error) {
         abc_release_yy(yy);
         return nullptr;
