@@ -6,18 +6,7 @@
 #include "AbcApplication.h"
 #include "settings.h"
 
-/*
-static int handle_midi_tick(void *data, int tick) {
-    AbcSynth* self = static_cast<AbcSynth*>(data);
-
-    if (self->m_tick == tick)
-        return FLUID_OK;
-
-    self->m_tick = tick;
-    emit self->tickChanged(tick);
-    return FLUID_OK;
-}
-*/
+#if FLUIDSYNTH_VERSION_MAJOR < 3
 static int handle_midi_event(void *data, fluid_midi_event_t *event) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
     if (self->m_tick == fluid_player_get_current_tick(self->player())) {
@@ -29,6 +18,18 @@ static int handle_midi_event(void *data, fluid_midi_event_t *event) {
 
     return fluid_synth_handle_midi_event(self->synth(), event);
 }
+#else
+static int handle_midi_tick(void *data, int tick) {
+    AbcSynth* self = static_cast<AbcSynth*>(data);
+
+    if (self->m_tick == tick)
+        return FLUID_OK;
+
+    self->m_tick = tick;
+    emit self->tickChanged(tick);
+    return FLUID_OK;
+}
+#endif
 
 AbcSynth::AbcSynth(const QString& name, QObject* parent)
     : QObject(parent),
@@ -216,9 +217,11 @@ void AbcSynth::play(const QString& midifile) {
     }
 
     fluid_player = new_fluid_player(fluid_synth);
+#if FLUIDSYNTH_VERSION_MAJOR < 3
     fluid_player_set_playback_callback(fluid_player, handle_midi_event, this);
-    //fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
-
+#else
+    fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
+#endif
     qDebug() << "Loading " << midifile;
     if (FLUID_FAILED == fluid_player_add(fluid_player, midifile.toUtf8().constData())) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load MIDI file: ") + midifile);
@@ -242,9 +245,11 @@ void AbcSynth::play(const QByteArray& ba)
     }
 
     fluid_player = new_fluid_player(fluid_synth);
+#if FLUIDSYNTH_VERSION_MAJOR < 3
     fluid_player_set_playback_callback(fluid_player, handle_midi_event, this);
-    //fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
-
+#else
+    fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
+#endif
     if (FLUID_FAILED == fluid_player_add_mem(fluid_player, ba.constData(), ba.size())) {
         qWarning() << "Cannot load MIDI buffer." ;
     } else {
