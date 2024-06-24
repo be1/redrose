@@ -133,7 +133,7 @@ int Generator::getGenerationError(const QString& from, QString* to)
     end = from.indexOf('\n', beg);
     if (to) {
         to->clear();
-#if (QT_VERSION < QT_VERSION_CHECK(6,0,0))
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
         to->append(from.midRef(beg, end - beg));
 #else
         to->append(from.mid(beg, end - beg));

@@ -450,7 +450,7 @@ int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
     tc.select(QTextCursor::LineUnderCursor);
     if (tc.selectedText().startsWith("X:")) {
         bool ok = false;
-#if (QT_VERSION < QT_VERSION_CHECK(6,0,0))
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
         x = tc.selectedText().midRef(2).toInt(&ok);
 #else
         x = tc.selectedText().mid(2).toInt(&ok);
@@ -466,7 +466,7 @@ int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
     for (int l = 0; l < lines.count() && i < index; l++) {
         i += lines.at(l).size() +1; /* count \n */
         if (lines.at(l).startsWith("X:")) {
-#if (QT_VERSION < QT_VERSION_CHECK(6,0,0))
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
             x = lines.at(l).midRef(2).toInt();
 #else
             x = lines.at(l).mid(2).toInt();

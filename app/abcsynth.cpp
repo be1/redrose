@@ -6,7 +6,7 @@
 #include "AbcApplication.h"
 #include "settings.h"
 
-#if FLUIDSYNTH_VERSION_MAJOR < 3
+#if (FLUIDSYNTH_VERSION_MAJOR < 3)
 static int handle_midi_event(void *data, fluid_midi_event_t *event) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
     if (self->m_tick == fluid_player_get_current_tick(self->player())) {
@@ -148,7 +148,7 @@ void AbcSynth::monitorPlayback()
             a->mainWindow()->statusBar()->showMessage(tr("Playing ") + QString::number(m_secs) + "s.");
             m_secs++;
             break;
-#if FLUIDSYNTH_VERSION_MAJOR >= 3
+#if (FLUIDSYNTH_VERSION_MAJOR >= 3)
         case FLUID_PLAYER_STOPPING:
             m_mutex.unlock();
             a->mainWindow()->statusBar()->showMessage(tr("Stopping."));
@@ -219,7 +219,7 @@ void AbcSynth::play(const QString& midifile) {
     }
 
     fluid_player = new_fluid_player(fluid_synth);
-#if FLUIDSYNTH_VERSION_MAJOR < 3
+#if (FLUIDSYNTH_VERSION_MAJOR < 3)
     fluid_player_set_playback_callback(fluid_player, handle_midi_event, this);
 #else
     fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
@@ -247,7 +247,7 @@ void AbcSynth::play(const QByteArray& ba)
     }
 
     fluid_player = new_fluid_player(fluid_synth);
-#if FLUIDSYNTH_VERSION_MAJOR < 3
+#if (FLUIDSYNTH_VERSION_MAJOR < 3)
     fluid_player_set_playback_callback(fluid_player, handle_midi_event, this);
 #else
     fluid_player_set_tick_callback(fluid_player, handle_midi_tick, this);
