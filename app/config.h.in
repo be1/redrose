@@ -32,6 +32,7 @@
 #define DRIVER_PULSEAUDIO	\"pulseaudio\"
 #define DRIVER_JACK	\"jack\"
 #define DRIVER_OSS	\"oss\"
+#define DRIVER_PIPEWIRE \"pipewire\"
 
 #define EDITOR_FONT_BASE \"ABC/editor/font_base\"
 #define EDITOR_FONT_RANGE \"ABC/editor/font_range\"

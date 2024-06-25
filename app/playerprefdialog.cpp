@@ -87,6 +87,10 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
     }
 
     ditems << DRIVER_ALSA << DRIVER_OSS << DRIVER_PULSEAUDIO << DRIVER_JACK;
+    AbcApplication* app = static_cast<AbcApplication*>(qApp);
+    if (app->hasPipewire()) {
+        ditems << DRIVER_PIPEWIRE;
+    }
     ditems.removeDuplicates();
 
     driverComboBox->addItems(ditems);

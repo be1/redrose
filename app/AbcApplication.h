@@ -4,7 +4,6 @@
 #include <QApplication>
 
 #include "AbcMainWindow.h"
-#include "AbcProcess.h"
 #include "logwindow.h"
 
 class AbcApplication: public QApplication
@@ -24,6 +23,10 @@ public:
     LogWindow *logWindow() const;
     void setLogWindow(LogWindow *newLogwindow);
 
+    bool hasPipewire() {
+        return pipewire_handle != NULL && fluid_has_pipewire;
+    }
+
 public slots:
     static void quit();
 
@@ -31,5 +34,7 @@ private:
     AbcMainWindow *abcmainwindow;
     LogWindow *logwindow;
     static bool isquit;
+    void* pipewire_handle = NULL;
+    bool fluid_has_pipewire = false;
 };
 #endif
