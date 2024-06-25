@@ -40,11 +40,21 @@ AbcApplication::AbcApplication(int& argc, char **argv)
             pw_init(&argc, argv);
         }
 
-        fluid_settings_t* temp = new_fluid_settings();
-        if (fluid_settings_setstr(temp, "audio.driver", "pipewire") == FLUID_OK) {
-            fluid_has_pipewire = true;
+        fluid_settings_t* fluid_settings = new_fluid_settings();
+        if (fluid_settings) {
+            if (fluid_settings_setstr(fluid_settings, "audio.driver", "pipewire") == FLUID_OK) {
+                fluid_synth_t* fluid_synth = new_fluid_synth(fluid_settings);
+                if (fluid_synth) {
+                    fluid_audio_driver_t* fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
+                    if (fluid_adriver) {
+                        fluid_has_pipewire = true;
+                        delete_fluid_audio_driver(fluid_adriver);
+                    }
+                    delete_fluid_synth(fluid_synth);
+                }
+            }
+            delete_fluid_settings(fluid_settings);
         }
-        delete_fluid_settings(temp);
     }
 }
 
