@@ -527,7 +527,7 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
         QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
         return;
     } else if (exitCode) {
-        a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
+        a->mainWindow()->statusBar()->showMessage(tr("Some errors during score generation."));
         /* abcm2ps can return 1 on warnings, but ps is generated yet
          * so we must display it anyway. */
     } else {
