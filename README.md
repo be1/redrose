@@ -14,25 +14,36 @@ Note that drumstick-file must be compiled against the same QT\_MAJOR\_VERSION nu
 ## Screenshot
 ![Redrose dark theme screenshot](http://brouits.free.fr/redrose/redrose.png)
 
-## Setting up
+## Setting up with Qt5 (Ubuntu Jammy, 22.04)
 ```
 sudo apt install qtbase5-dev
+sudo apt install qttools5-dev
 sudo apt install qttools5-dev-tools
 sudo apt install libdrumstick-dev
 sudo apt install libspectre-dev
 sudo apt install libfluidsynth-dev
-sudo apt install abcm2ps
-sudo apt install abcmidi
-git clone https://github.com/be1/redrose.git
+
+## Setting up with Qt6 (Ubuntu Noble, 24.04)
 ```
+sudo apt install qt6-base-dev
+sudo apt install qt6-tools-dev
+sudo apt install qt6-tools-dev-tools
+sudo apt install libdrumstick-dev
+sudo apt install libspectre-dev
+sudo apt install libfluidsynth-dev
+```
+
 ## Building
-Just a matter of:
 ```
+sudo apt install cmake
+git clone https://github.com/be1/redrose.git
 $ mkdir build
 $ cd build
 $ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make
 # make install (as root)
+$ sudo apt install abcm2ps
+$ sudo apt install abcmidi
 ```
 
 ## Starting
