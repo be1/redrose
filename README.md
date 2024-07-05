@@ -22,6 +22,7 @@ sudo apt install qttools5-dev-tools
 sudo apt install libdrumstick-dev
 sudo apt install libspectre-dev
 sudo apt install libfluidsynth-dev
+```
 
 ## Setting up with Qt6 (Ubuntu Noble, 24.04)
 ```
