@@ -85,3 +85,7 @@ set_target_properties(redrose PROPERTIES
 
 install(TARGETS redrose DESTINATION bin)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/locale DESTINATION ${PROJECT_DATADIR}/redrose)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/redrose.svg DESTINATION ${PROJECT_DATADIR}/icons/hicolor/scalable/apps)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/redrose.xml DESTINATION ${PROJECT_DATADIR}/mime/packages)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/fr.free.brouits.redrose.metainfo.xml DESTINATION ${PROJECT_DATADIR}/metainfo)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/redrose.desktop DESTINATION ${PROJECT_DATADIR}/applications)
