@@ -4,7 +4,6 @@
 #ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
 #endif
-#include "AbcApplication.h"
 #include "AbcProcess.h"
 #include "settings.h"
 

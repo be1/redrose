@@ -28,7 +28,7 @@ public:
     bool genFirstNote(const QString& abcbuf, int* chan, int* pgm, int* key);
 
 signals:
-    void generated(bool err, const QString& errstr, AbcProcess::Continuation cont);
+    void generated(int err, const QString& errstr, AbcProcess::Continuation cont);
 
 protected:
     void spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, \

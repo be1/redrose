@@ -334,7 +334,7 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             playpushbutton.flip();
             xspinbox.setEnabled(true);
         }
-	return;
+        return;
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
         if (cont == AbcProcess::ContinuationRender) {
@@ -522,10 +522,14 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
         a->logWindow()->append(errstr);
     }
 
-    if (exitCode) {
+    if (exitCode == 127) {
         a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
-	QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
-	return;
+        QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
+        return;
+    } else if (exitCode) {
+        a->mainWindow()->statusBar()->showMessage(tr("Error during score generation."));
+        /* abcm2ps can return 1 on warnings, but ps is generated yet
+         * so we must display it anyway. */
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
     }

@@ -110,7 +110,7 @@ void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus,
         }
     }
 
-    emit generated(exitCode != 0, output, cont);
+    emit generated(exitCode, output, cont);
 }
 
 void Generator::onProgramError(QProcess::ProcessError err)
@@ -118,7 +118,7 @@ void Generator::onProgramError(QProcess::ProcessError err)
     AbcProcess* p = qobject_cast<AbcProcess*>(sender());
     qWarning() << p->program() << p->errorString();
     if (err == QProcess::FailedToStart) {
-        emit generated(1, p->program() + ": " + p->errorString(), AbcProcess::ContinuationNone);
+        emit generated(127, p->program() + ": " + p->errorString(), AbcProcess::ContinuationNone);
     }
 }
 
