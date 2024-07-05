@@ -9,6 +9,7 @@ ABC music notation integrated environment
 - abc2midi (program, optional)
 
 Note that you *must* install **abcm2ps** binary for Redrose to display a view of the score.
+Note that drumstick-file must be compiled against the same QT\_MAJOR\_VERSION number as redrose will be compiled against.
 
 ## Screenshot
 ![Redrose dark theme screenshot](http://brouits.free.fr/redrose/redrose.png)
@@ -27,7 +28,9 @@ git clone https://github.com/be1/redrose.git
 ## Building
 Just a matter of:
 ```
-$ qmake -config release
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ make
 # make install (as root)
 ```
