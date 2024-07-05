@@ -2,7 +2,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DI
 
 set(QT_VERSION_MAJOR 6)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
+find_package(Qt6 QUIET COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
 if (NOT Qt6_FOUND)
 	message("Qt6 not found, looking for Qt5.15")
 	find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
@@ -11,8 +11,8 @@ endif()
 
 message("Qt version major is ${QT_VERSION_MAJOR}")
 find_package(Drumstick REQUIRED COMPONENTS File)
-find_package(FluidSynth REQUIRED COMPONENTS Config)
-find_library(SPECTRE NAMES libspectre)
+pkg_search_module(SPECTRE REQUIRED libspectre)
+pkg_search_module(FLUIDSYNTH REQUIRED fluidsynth>2.0)
 
 if (NOT Qt6_FOUND)
 	set(CMAKE_AUTOMOC ON)

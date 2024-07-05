@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(GNUInstallDirs)
+include(FindPkgConfig)
 
 message("Redrose version is ${PROJECT_VERSION}")
 execute_process(COMMAND bash -c "git describe --long --tags 2>/dev/null | tr -d '\n' || echo -n stable" OUTPUT_VARIABLE PROJECT_REVISION)
