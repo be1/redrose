@@ -36,7 +36,7 @@ $ sudo apt install libfluidsynth-dev
 
 ## Building
 ```
-$ sudo apt install cmake
+$ sudo apt install build-essential cmake git pkg-config
 $ git clone https://github.com/be1/redrose.git
 $ mkdir build
 $ cd build
