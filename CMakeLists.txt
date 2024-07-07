@@ -9,7 +9,7 @@ include(GNUInstallDirs)
 include(FindPkgConfig)
 
 message("Redrose version is ${PROJECT_VERSION}")
-execute_process(COMMAND sh -c "git status 2>&1 > /dev/null && git describe --long --tags | tr -d '\n' || echo -n stable" OUTPUT_VARIABLE PROJECT_REVISION)
+execute_process(COMMAND sh -c "git status > /dev/null 2>&1 && git describe --long --tags | tr -d '\n' || echo -n stable" OUTPUT_VARIABLE PROJECT_REVISION)
 set(PROJECT_TARGET ${PROJECT_NAME})
 set(PROJECT_PREFIX ${CMAKE_INSTALL_PREFIX})
 set(PROJECT_DATADIR ${CMAKE_INSTALL_PREFIX}/share)
