@@ -37,7 +37,12 @@ parts:
       #stage-snaps:
       #- gtk-common-themes
       #- qt-common-themes
+    override-stage: |
+      craftctl default
+      mkdir -p ${SNAPCRAFT_PART_INSTALL}/usr/share/icons/hicolor/48x48/actions
+      cp -a ${SNAPCRAFT_PART_INSTALL}/usr/share/icons/gnome/48x48/actions/media*.png ${SNAPCRAFT_PART_INSTALL}/usr/share/icons/hicolor/48x48/actions/
     stage-packages:
+      - gnome-icon-theme
       #- gtk2-engines-pixbuf
       #- shared-mime-info
       - qt6-gtk-platformtheme
@@ -103,7 +108,7 @@ apps:
       - cups-control
 
 layout:
-  /usr/local/share/redrose:
-    bind: $SNAP/usr/local/share/redrose
+  /usr/local/share:
+    bind: $SNAP/usr/local/share
   /usr/share/sounds:
     bind: $SNAP/usr/share/sounds
