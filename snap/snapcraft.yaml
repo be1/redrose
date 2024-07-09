@@ -21,7 +21,10 @@ parts:
       sed -i.bak -e 's|default-GM.sf2|TimGM6mb.sf2|g' app/config.h.in
     override-build: |
       craftctl default
-      cp -a ${SNAPCRAFT_PART_BUILD}/app/locale ${SNAPCRAFT_PART_INSTALL}/usr/local/share/redrose/
+      cp -a ${CRAFT_PART_BUILD}/app/locale ${CRAFT_PART_INSTALL}/usr/local/share/redrose/
+      mkdir -p ${CRAFT_PART_INSTALL}/usr/local/share/icons/hicolor/48x48/actions
+      cp -a ${CRAFT_PART_INSTALL}/usr/share/icons/gnome/48x48/actions/*.png ${SNAPCRAFT_PART_INSTALL}/usr/local/share/icons/hicolor/48x48/actions/
+
     build-packages:
       - build-essential
       #- libxcb-xinerama0-dev
@@ -37,10 +40,6 @@ parts:
       #stage-snaps:
       #- gtk-common-themes
       #- qt-common-themes
-    override-stage: |
-      craftctl default
-      mkdir -p ${SNAPCRAFT_PART_INSTALL}/usr/share/icons/hicolor/48x48/actions
-      cp -a ${SNAPCRAFT_PART_INSTALL}/usr/share/icons/gnome/48x48/actions/media*.png ${SNAPCRAFT_PART_INSTALL}/usr/share/icons/hicolor/48x48/actions/
     stage-packages:
       - gnome-icon-theme
       #- gtk2-engines-pixbuf
