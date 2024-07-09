@@ -1,6 +1,6 @@
 name: redrose
-base: core20
-version: '0.5.18'
+base: core24
+version: '0.5.19'
 summary: Integrated ABC music notation environment
 description: |
   Redrose lets you write ABC musical scores in ABC notation and, with
@@ -12,50 +12,85 @@ confinement: strict
 
 parts:
   redrose:
-    plugin: qmake
+    plugin: cmake
     override-pull: |
-      snapcraftctl pull
-      sed -i.bak -e 's|../abc/libabc.a|${SNAPCRAFT_PART_BUILD}/abc/libabc.a|g' app/app.pro
+      craftctl default
       sed -i.bak -e 's|LIBABC2SMF|ABC2MIDI|g' app/settings.cpp
       sed -i.bak -e 's|DRIVER_ALSA|DRIVER_PULSEAUDIO|g' app/settings.cpp
-      sed -i.bak -e 's|drumstick::File::|drumstick::|g' app/abcsmf.*
       sed -i.bak -e 's|Icon=redrose|Icon=/usr/local/share/icons/hicolor/scalable/apps/redrose.svg|g' app/redrose.desktop
       sed -i.bak -e 's|default-GM.sf2|TimGM6mb.sf2|g' app/config.h.in
     override-build: |
-      snapcraftctl build
+      craftctl default
       cp -a ${SNAPCRAFT_PART_BUILD}/app/locale ${SNAPCRAFT_PART_INSTALL}/usr/local/share/redrose/
     build-packages:
-      - g++
-      - qtbase5-dev
-      - qtbase5-dev-tools
-      - qttools5-dev-tools
+      - build-essential
+      #- libxcb-xinerama0-dev
+      #- libwayland-dev
+      - qt6-wayland-dev
+      - qt6-base-dev
+      - qt6-tools-dev
+      - qt6-tools-dev-tools
       - pkg-config
       - libspectre-dev
       - libdrumstick-dev
       - libfluidsynth-dev
+      #stage-snaps:
+      #- gtk-common-themes
+      #- qt-common-themes
     stage-packages:
-      - adwaita-icon-theme-full
-      - qttranslations5-l10n
-      - libqt5core5a
-      - libqt5gui5
-      - libqt5widgets5
-      - libqt5printsupport5
-      - libgs9-common
+      #- gtk2-engines-pixbuf
+      #- shared-mime-info
+      - qt6-gtk-platformtheme
+      #- fontconfig
+      #- fontconfig-config
+      - fonts-noto-core
+      - fonts-ubuntu
+      - fonts-freefont-ttf
+      - qt6-wayland
+      #- libwayland-client0
+      #- libwayland-egl1
+      #- libgl1-mesa-dri
+      #- libxcb-xinerama0
+      #- libpulse0
+      - libqt6printsupport6t64
+      - libqt6gui6t64
+      - libqt6widgets6t64
+      - adwaita-qt6
+      #- libgdk-pixbuf2.0-bin
+      #- libgdk-pixbuf2.0-common
+      #- gir1.2-gdkpixbuf-2.0
+      #- libgdk-pixbuf-2.0-0
+      #- gnome-themes-extra-data
+      #- gnome-accessibility-themes
+      #- humanity-icon-theme
+      #- hicolor-icon-theme
+      #- adwaita-icon-theme
+      #- yaru-theme-icon
+      #- gnome-icon-theme
+      #- gnome-colors-common
+      - qt6-translations-l10n
+      - libgs10-common
       - libspectre1
-      - libdrumstick-file1
+      - libdrumstick-file2t64
       - timgm6mb-soundfont
-      - libfluidsynth2
+      - libfluidsynth3
       - abcm2ps
       - abcmidi
-    source: http://brouits.free.fr/redrose/redrose-0.5.18.tar.gz
+    source: http://github.com/be1/redrose.git
+    source-type: git
+    source-branch: cmake
 
 apps:
   redrose:
-    extensions: [kde-neon]
+    extensions: [gnome]
     environment:
-      LD_LIBRARY_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio
-      GS_LIB: $SNAP/usr/share/ghostscript/9.50/Resource/Init
-      GS_FONTPATH: $SNAP/usr/share/ghostscript/9.50/Resource/Font
+      #WAYLAND_DISPLAY: ../wayland-0
+      #PULSE_SERVER: unix:$XDG_RUNTIME_DIR/../pulse/native
+      #FONTCONFIG_PATH: $SNAP/etc/fonts
+      QT_PLUGIN_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/qt6/plugins
+      #LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:$SNAP/usr/lib/x86_64-linux-gnu/pulseaudio
+      GS_LIB: $SNAP/usr/share/ghostscript/10.02.1/Resource/Init
+      GS_FONTPATH: $SNAP/usr/share/ghostscript/10.02.1/Resource/Font
     desktop: usr/local/share/applications/redrose.desktop
     command: usr/local/bin/redrose
     plugs:
@@ -63,7 +98,6 @@ apps:
       - desktop-legacy
       - home
       - audio-playback
-      - pulseaudio
       - jack1
       - alsa
       - cups-control
@@ -73,7 +107,3 @@ layout:
     bind: $SNAP/usr/local/share/redrose
   /usr/share/sounds:
     bind: $SNAP/usr/share/sounds
-  /usr/share/qt5:
-    bind: $SNAP/usr/share/qt5
-  /usr/share/icons:
-    bind: $SNAP/usr/share/icons
