@@ -42,6 +42,7 @@ parts:
       #- qt-common-themes
     stage-packages:
       - gnome-icon-theme
+      - librsvg2-common
       #- gtk2-engines-pixbuf
       #- shared-mime-info
       - qt6-gtk-platformtheme
@@ -56,6 +57,7 @@ parts:
       #- libgl1-mesa-dri
       #- libxcb-xinerama0
       #- libpulse0
+      - libqt6svg6
       - libqt6printsupport6t64
       - libqt6gui6t64
       - libqt6widgets6t64
