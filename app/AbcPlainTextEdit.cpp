@@ -847,7 +847,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
 
 void AbcHighlighter::highlightBlock(const QString &text)
 {
-    for (const AbcHighlightingRule &rule : qAsConst(highlightingRules)) {
+    for (const AbcHighlightingRule &rule : std::as_const(highlightingRules)) {
         QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
         while (matchIterator.hasNext()) {
             QRegularExpressionMatch match = matchIterator.next();

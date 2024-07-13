@@ -1,53 +1,53 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define TARGET \"$$TARGET\"
-#define PREFIX \"$$PREFIX\"
-#define VERSION \"$$VERSION\"
-#define DATADIR \"$$DATADIR\"
-#define REVISION \"$$REVISION\"
+#define TARGET "@PROJECT_TARGET@"
+#define PREFIX "@PROJECT_PREFIX@"
+#define VERSION "@PROJECT_VERSION@"
+#define DATADIR "@PROJECT_DATADIR@"
+#define REVISION "@PROJECT_REVISION@"
 
-#define SETTINGS_DOMAIN \"Herewe\"
-#define SETTINGS_APP \"Redrose\"
+#define SETTINGS_DOMAIN "Herewe"
+#define SETTINGS_APP "Redrose"
 
-#define PLAYER_KEY \"ABC/player\"
-#define ABC2MIDI \"abc2midi\"
-#define LIBABC2SMF \"internal\"
+#define PLAYER_KEY "ABC/player"
+#define ABC2MIDI "abc2midi"
+#define LIBABC2SMF "internal"
 
-#define PLAYER_VELOCITY \"ABC/player/default_velocity\"
-#define PLAYER_DURATION \"ABC/player/default_duration\"
+#define PLAYER_VELOCITY "ABC/player/default_velocity"
+#define PLAYER_DURATION "ABC/player/default_duration"
 
-#define PSTUNES_KEY \"ABC/pstunes\"
+#define PSTUNES_KEY "ABC/pstunes"
 #define TUNES_SELECTED 0
 #define TUNES_ALL 1
 
-#define PSPAGES_KEY \"ABC/pspages\"
+#define PSPAGES_KEY "ABC/pspages"
 
-/* external compiler not used anymore */
-#define COMPILER_KEY \"ABC/compiler\"
-#define ABCM2PS \"$$DATADIR\" \"/$$TARGET/\" \"abcm2ps/abcm2ps\"
+/* external compiler not used anymore, we use abcm2ps anyway */
+#define COMPILER_KEY "ABC/compiler"
+#define ABCM2PS "abcm2ps"
 
-#define DRIVER_KEY	\"ABC/driver\"
-#define DRIVER_ALSA	\"alsa\"
-#define DRIVER_PULSEAUDIO	\"pulseaudio\"
-#define DRIVER_JACK	\"jack\"
-#define DRIVER_OSS	\"oss\"
-#define DRIVER_PIPEWIRE \"pipewire\"
+#define DRIVER_KEY	"ABC/driver"
+#define DRIVER_ALSA	"alsa"
+#define DRIVER_PULSEAUDIO	"pulseaudio"
+#define DRIVER_JACK	"jack"
+#define DRIVER_OSS	"oss"
+#define DRIVER_PIPEWIRE "pipewire"
 
-#define EDITOR_FONT_BASE \"ABC/editor/font_base\"
-#define EDITOR_FONT_RANGE \"ABC/editor/font_range\"
-#define EDITOR_HIGHLIGHT \"ABC/editor/highlight\"
-#define EDITOR_BAR_COLOR \"ABC/editor/bar_color\"
-#define EDITOR_COMMENT_COLOR \"ABC/editor/comment_color\"
-#define EDITOR_DECORATION_COLOR \"ABC/editor/decoration_color\"
-#define EDITOR_EXTRAINSTR_COLOR \"ABC/editor/extrainstr_color\"
-#define EDITOR_GCHORD_COLOR \"ABC/editor/gchord_color\"
-#define EDITOR_HEADER_COLOR \"ABC/editor/header_color\"
-#define EDITOR_LYRIC_COLOR \"ABC/editor/lyric_color\"
-#define EDITOR_AUTOPLAY \"ABC/editor/autoplay\"
+#define EDITOR_FONT_BASE "ABC/editor/font_base"
+#define EDITOR_FONT_RANGE "ABC/editor/font_range"
+#define EDITOR_HIGHLIGHT "ABC/editor/highlight"
+#define EDITOR_BAR_COLOR "ABC/editor/bar_color"
+#define EDITOR_COMMENT_COLOR "ABC/editor/comment_color"
+#define EDITOR_DECORATION_COLOR "ABC/editor/decoration_color"
+#define EDITOR_EXTRAINSTR_COLOR "ABC/editor/extrainstr_color"
+#define EDITOR_GCHORD_COLOR "ABC/editor/gchord_color"
+#define EDITOR_HEADER_COLOR "ABC/editor/header_color"
+#define EDITOR_LYRIC_COLOR "ABC/editor/lyric_color"
+#define EDITOR_AUTOPLAY "ABC/editor/autoplay"
 
-#define SOUNDFONT_KEY \"ABC/soundfont\"
-#define DEB_SF2_GM	\"/usr/share/sounds/sf2/default-GM.sf2\"
+#define SOUNDFONT_KEY "ABC/soundfont"
+#define DEB_SF2_GM	"/usr/share/sounds/sf2/default-GM.sf2"
 
-#define REVERB_KEY \"ABC/reverb\"
+#define REVERB_KEY "ABC/reverb"
 #endif

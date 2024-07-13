@@ -1,6 +1,7 @@
 #ifndef SCOREPSWIDGET_H
 #define SCOREPSWIDGET_H
 
+#include <QTimer>
 #include <QImage>
 #include <QPixmap>
 #include <QLabel>
@@ -21,13 +22,16 @@ public:
     void displayPage(int index); /* starting at 0 */
     void printPage(int index, QPainter* painter);
 
-protected:
+protected slots:
     void cleanup();
     void refresh();
 
     void resizeEvent(QResizeEvent* event) override {
         QLabel::resizeEvent(event);
-        refresh();
+        if (m_refreshTimer.isActive())
+            m_refreshTimer.stop();
+
+        m_refreshTimer.start();
     };
 
 private:
@@ -36,6 +40,7 @@ private:
     SpectreRenderContext* m_render_context = nullptr;
     unsigned char* m_page_data = nullptr;
     int m_row_length = 0;
+    QTimer m_refreshTimer;
 };
 
 #endif // SCOREPSWIDGET_H

@@ -8,6 +8,10 @@ ScorePsWidget::ScorePsWidget(QWidget *parent):
     QLabel(parent)
 {
     m_render_context = spectre_render_context_new();
+
+    m_refreshTimer.setInterval(50);
+    m_refreshTimer.setSingleShot(true);
+    connect(&m_refreshTimer, &QTimer::timeout, this, &ScorePsWidget::refresh);
 }
 
 ScorePsWidget::ScorePsWidget(const QString &filename, QWidget *parent):
@@ -102,7 +106,10 @@ void ScorePsWidget::displayPage(int index)
 
     m_current_page = spectre_document_get_page(m_document, index);
 
-    refresh();
+    if (m_refreshTimer.isActive())
+        m_refreshTimer.stop();
+
+    m_refreshTimer.start();
 }
 
 void ScorePsWidget::printPage(int index, QPainter* painter)
