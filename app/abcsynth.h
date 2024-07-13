@@ -51,7 +51,7 @@ private:
     char *sf; /* soundfont file name */
     bool inited;
     bool m_err;
-    int m_secs; /* elapsed seconds */
+    int m_msecs; /* elapsed miliseconds */
 };
 
 #endif // ABCSYNTH_H

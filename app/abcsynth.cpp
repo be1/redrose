@@ -44,7 +44,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
       sf(NULL),
       inited(false),
       m_err(false),
-      m_secs(1)
+      m_msecs(0)
 {
     Settings settings;
 
@@ -100,7 +100,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     a->mainWindow()->statusBar()->showMessage(tr("Loading sound font: ") + sf);
     sfloader->start();
 
-    playback_monitor.setInterval(1000);
+    playback_monitor.setInterval(500);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
 #if 0
     qreal reverb = settings.value(REVERB_KEY).toDouble();
@@ -136,8 +136,9 @@ void AbcSynth::monitorPlayback()
     QTimer* mon = qobject_cast<QTimer*>(sender());
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
 
+    m_mutex.lock();
+
     if (fluid_player) {
-        m_mutex.lock();
         switch (fluid_player_get_status(fluid_player)) {
         case FLUID_PLAYER_READY:
             m_mutex.unlock();
@@ -145,8 +146,8 @@ void AbcSynth::monitorPlayback()
             break;
         case FLUID_PLAYER_PLAYING:
             m_mutex.unlock();
-            a->mainWindow()->statusBar()->showMessage(tr("Playing ") + QString::number(m_secs) + "s.");
-            m_secs++;
+            m_msecs += mon->interval();
+            a->mainWindow()->statusBar()->showMessage(tr("Playing ") + QString::number(m_msecs / 1000) + "s.");
             break;
 #if (FLUIDSYNTH_VERSION_MAJOR == 2 && FLUIDSYNTH_VERSION_MINOR >= 3)
         case FLUID_PLAYER_STOPPING:
@@ -160,14 +161,15 @@ void AbcSynth::monitorPlayback()
             /* cleanup and trigger synthFinished */
             stop();
             mon->stop();
-            a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_secs) + "s.");
+            a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_msecs / 1000) + "s.");
             emit synthFinished(m_err);
             break;
         }
     } else {
+        m_mutex.unlock();
         /* stopped before ending: player has been freed and nulled */
         mon->stop();
-        a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_secs) + "s.");
+        a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_msecs / 1000) + "s.");
         emit synthFinished(m_err);
     }
 }
@@ -295,7 +297,6 @@ void AbcSynth::stop()
 {
     QMutexLocker locker(&m_mutex);
 
-    m_secs = 1;
     if (fluid_player) {
         fluid_synth_all_notes_off(fluid_synth, -1);
         fluid_player_stop(fluid_player);
@@ -303,6 +304,8 @@ void AbcSynth::stop()
         delete_fluid_player(fluid_player);
         fluid_player = NULL;
     }
+
+    m_msecs = 0;
 }
 
 bool AbcSynth::isLoading()
