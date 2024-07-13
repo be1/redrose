@@ -41,6 +41,7 @@ parts:
       #- gtk-common-themes
       #- qt-common-themes
     stage-packages:
+      - libpaper-utils
       - gnome-icon-theme
       - librsvg2-common
       #- gtk2-engines-pixbuf
@@ -109,6 +110,8 @@ apps:
       - cups-control
 
 layout:
+  /etc/papersize:
+    bind-file: $SNAP/etc/papersize
   /usr/local/share:
     bind: $SNAP/usr/local/share
   /usr/share/sounds:
