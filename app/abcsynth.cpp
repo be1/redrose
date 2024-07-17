@@ -76,9 +76,6 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     fluid_synth = new_fluid_synth(fluid_settings);
     fluid_synth_set_gain(fluid_synth, 1.0);
 
-    /* start synthesizer thread */
-    fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
-
     /* early soundfont load */
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
 
@@ -234,6 +231,9 @@ void AbcSynth::play(const QString& midifile) {
         qDebug() << "Starting file playback with SoundFont " << sf;
         a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
 
+        /* start synthesizer thread */
+        fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
+
         m_err = fluid_player_play(fluid_player);
         playback_monitor.start();
     }
@@ -260,6 +260,10 @@ void AbcSynth::play(const QByteArray& ba)
         qDebug() << "Starting buffer playback with SoundFont " << sf;
 
         a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
+
+        /* start synthesizer thread */
+        fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
+
         m_err = fluid_player_play(fluid_player);
         playback_monitor.start();
     }
@@ -301,6 +305,8 @@ void AbcSynth::stop()
         fluid_synth_all_notes_off(fluid_synth, -1);
         fluid_player_stop(fluid_player);
         fluid_player_join(fluid_player);
+        delete_fluid_audio_driver(fluid_adriver);
+        fluid_adriver = NULL;
         delete_fluid_player(fluid_player);
         fluid_player = NULL;
     }
