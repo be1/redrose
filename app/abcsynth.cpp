@@ -71,6 +71,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
         strncpy(id, ba.constData(), ba.length());
         id[ba.length()] = '\0';
         fluid_settings_setstr(fluid_settings, "audio.jack.id", id);
+        fluid_settings_setint(fluid_settings, "audio.jack.autoconnect", 1);
     }
 
     fluid_synth = new_fluid_synth(fluid_settings);
