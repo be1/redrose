@@ -75,6 +75,8 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     }
 
     fluid_synth = new_fluid_synth(fluid_settings);
+    fluid_synth_auto = new_fluid_synth(fluid_settings);
+
     fluid_synth_set_gain(fluid_synth, 1.0);
 
     /* early soundfont load */
@@ -95,8 +97,12 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
     sfloader = new SFLoader(fluid_synth, sf, this);
     connect(sfloader, &SFLoader::finished, this, &AbcSynth::onSFontFinished);
+
+    sfloader_auto = new SFLoader(fluid_synth_auto, sf, this);
+
     a->mainWindow()->statusBar()->showMessage(tr("Loading sound font: ") + sf);
     sfloader->start();
+    sfloader_auto->start();
 
     playback_monitor.setInterval(500);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
@@ -112,6 +118,9 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
         fluid_synth_reverb_on(fluid_synth, -1, FALSE);
     }
 #endif
+
+    /* start synthesizer thread for autoplay */
+    fluid_adriver_auto = new_fluid_audio_driver(fluid_settings, fluid_synth_auto);
 }
 
 AbcSynth::~AbcSynth()
@@ -120,10 +129,17 @@ AbcSynth::~AbcSynth()
     abortSFLoad();
 
     delete sfloader;
+    delete sfloader_auto;
+
     delete_fluid_audio_driver(fluid_adriver);
+    delete_fluid_audio_driver(fluid_adriver_auto);
+
     delete_fluid_player(fluid_player);
     delete_fluid_synth(fluid_synth);
+    delete_fluid_synth(fluid_synth_auto);
+
     delete_fluid_settings(fluid_settings);
+
     free(id);
     free(drv);
     free(sf);
@@ -185,6 +201,9 @@ void AbcSynth::abortSFLoad()
         disconnect(sfloader, &SFLoader::finished, this, &AbcSynth::onSFontFinished);
         sfloader->wait();
     }
+
+    if (sfloader_auto && sfloader_auto->isRunning())
+        sfloader_auto->wait();
 
     inited = false;
 }
@@ -273,9 +292,9 @@ void AbcSynth::play(const QByteArray& ba)
 void AbcSynth::fire(int chan, int pgm, int key, int vel)
 {
     //qDebug() << "Firing: " << chan << pgm << key << vel;
-    fluid_synth_program_change(fluid_synth, chan, pgm);
-    fluid_synth_noteon(fluid_synth, chan, key, vel);
-    QTimer::singleShot(500, this, [this, chan, key] () { fluid_synth_noteoff(fluid_synth, chan, key); });
+    fluid_synth_program_change(fluid_synth_auto, chan, pgm);
+    fluid_synth_noteon(fluid_synth_auto, chan, key, vel);
+    QTimer::singleShot(500, this, [this, chan, key] () { fluid_synth_noteoff(fluid_synth_auto, chan, key); });
 }
 
 void AbcSynth::seek(int tick)

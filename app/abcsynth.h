@@ -41,9 +41,12 @@ private:
     QTimer playback_monitor;
     fluid_settings_t* fluid_settings;
     fluid_synth_t* fluid_synth;
+    fluid_synth_t* fluid_synth_auto = NULL; /* for note autoplay */
     fluid_audio_driver_t* fluid_adriver;
+    fluid_audio_driver_t* fluid_adriver_auto = NULL; /* for note autoplay */
     fluid_player_t* fluid_player;
     SFLoader *sfloader;
+    SFLoader *sfloader_auto; /* for note autoplay */
     QString curSFont;
     int sfid;
     char *id; /* jack identifier */
