@@ -85,7 +85,7 @@ parts:
       - abcmidi
     source: http://github.com/be1/redrose.git
     source-type: git
-    source-branch: main
+    source-tag: 0.5.20
 
 apps:
   redrose:
