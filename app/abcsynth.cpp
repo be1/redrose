@@ -102,7 +102,6 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
     a->mainWindow()->statusBar()->showMessage(tr("Loading sound font: ") + sf);
     sfloader->start();
-    sfloader_auto->start();
 
     playback_monitor.setInterval(500);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
@@ -218,6 +217,7 @@ void AbcSynth::onSFontFinished() {
         inited = false;
         emit initFinished(true);
     } else {
+        sfloader_auto->start(); /* should be fast */
         a->mainWindow()->statusBar()->showMessage(tr("Sound font loaded."));
         sfid = fid;
         inited = true;
