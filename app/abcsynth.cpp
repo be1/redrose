@@ -99,6 +99,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     connect(sfloader, &SFLoader::finished, this, &AbcSynth::onSFontFinished);
 
     sfloader_auto = new SFLoader(fluid_synth_auto, sf, this);
+    connect(sfloader_auto, &SFLoader::finished, this, &AbcSynth::onSFontAutoFinished);
 
     a->mainWindow()->statusBar()->showMessage(tr("Loading sound font: ") + sf);
     sfloader->start();
@@ -217,15 +218,24 @@ void AbcSynth::onSFontFinished() {
         inited = false;
         emit initFinished(true);
     } else {
-        sfloader_auto->start(); /* should be fast */
-        a->mainWindow()->statusBar()->showMessage(tr("Sound font loaded."));
         sfid = fid;
-        inited = true;
-        emit initFinished(false);
+        sfloader_auto->start(); /* should be fast */
     }
 
     delete sfloader;
     sfloader = nullptr;
+}
+
+void AbcSynth::onSFontAutoFinished() {
+    SFLoader* sfl = static_cast<SFLoader*>(sender());
+    int fid = sfl->sfid();
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+
+    if (fid != FLUID_FAILED) {
+        a->mainWindow()->statusBar()->showMessage(tr("Sound font loaded."));
+        inited = true;
+        emit initFinished(false);
+    }
 }
 
 

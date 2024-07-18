@@ -34,6 +34,7 @@ signals:
 
 private slots:
     void onSFontFinished();
+    void onSFontAutoFinished();
     void monitorPlayback();
 
 private:
