@@ -123,7 +123,7 @@ apps:
 
 plugs:
   gpu-2404:
-    inteface: content
+    interface: content
     target: $SNAP/gpu-2404
     default-provider: mesa-2404
 
