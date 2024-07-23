@@ -87,6 +87,16 @@ parts:
     source-type: git
     source-tag: 0.5.20
 
+  gpu-2404:
+    after: [redrose]
+    source: https://github.com/canonical/gpu-snap.git
+    plugin: dump
+    override-prime: |
+      craftctl default
+      ${CRAFT_PART_SRC}/bin/gpu-2404-cleanup mesa-2404
+    prime:
+      - bin/gpu-2404-wrapper
+
 apps:
   redrose:
     extensions: [gnome]
@@ -99,6 +109,8 @@ apps:
       GS_LIB: $SNAP/usr/share/ghostscript/10.02.1/Resource/Init
       GS_FONTPATH: $SNAP/usr/share/ghostscript/10.02.1/Resource/Font
     desktop: usr/local/share/applications/redrose.desktop
+    command-chain:
+      - bin/gpu-2404-wrapper
     command: usr/local/bin/redrose
     plugs:
       - desktop
@@ -109,7 +121,19 @@ apps:
       - alsa
       - cups-control
 
+plugs:
+  gpu-2404:
+    inteface: content
+    target: $SNAP/gpu-2404
+    default-provider: mesa-2404
+
 layout:
+  /usr/share/libdrm:
+    bind: $SNAP/gpu-2404/libdrm
+  /usr/share/drirc.d:
+    symlink: $SNAP/gpu-2404/drirc.d
+  /usr/share/X11/XErrorDB:
+    symlink: $SNAP/gpu-2404/X11/XErrorDB
   /etc/papersize:
     bind-file: $SNAP/etc/papersize
   /usr/local/share:
