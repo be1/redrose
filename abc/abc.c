@@ -1475,11 +1475,9 @@ static int event_cmp(const void* a, const void* b) {
     const struct abc_symbol* s2 = b;
     double s1_v, s2_v;
 
-    /* if the tick & key are the same, return noteoff first.
-     * this allow repeated notes to not overlap in some cases. */
+    /* if the tick is the same, place noteoff first */
     if (s1->ev.start_num == s2->ev.start_num
-            && s1->ev.start_den == s2->ev.start_den
-            && s1->ev.key == s2->ev.key) {
+           && s1->ev.start_den == s2->ev.start_den) {
         return s1->ev.value - s2->ev.value;
     }
 
@@ -1488,6 +1486,7 @@ static int event_cmp(const void* a, const void* b) {
 
     if (s1_v > s2_v)
         return 1;
+
     if (s1_v < s2_v)
         return -1;
 
@@ -1551,6 +1550,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                            new = abc_dup_symbol(s);
                                            abc_voice_append_symbol(voice, new);
                                        }
+
                                        s = s->next;
                                    }
 
