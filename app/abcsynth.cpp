@@ -77,7 +77,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     fluid_synth = new_fluid_synth(fluid_settings);
     fluid_synth_auto = new_fluid_synth(fluid_settings);
 
-    fluid_synth_set_gain(fluid_synth, 1.0);
+    //fluid_synth_set_gain(fluid_synth, 1.0);
 
     /* early soundfont load */
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
