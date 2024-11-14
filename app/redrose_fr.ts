@@ -172,7 +172,7 @@ Fermer cette partition quand-même ?</translation>
     </message>
     <message>
         <source>These settings will be applied on newly opened tabs only.</source>
-        <translation>Ces préférences ne seront appliquées qu&apos;aux nouvelles partitions ouvertes</translation>
+        <translation>Ces préférences ne seront appliquées qu&apos;aux nouvelles partitions ouvertes.</translation>
     </message>
     <message>
         <source>Base font</source>

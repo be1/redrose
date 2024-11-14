@@ -56,7 +56,7 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
 
     mainLayout->addLayout(hlhbox);
 
-    /* aut play current note */
+    /* auto play current note */
     bool autoplay = settings.value(EDITOR_AUTOPLAY).toBool();
     autoplayLabel = new QLabel(tr("Auto play current note"));
     autoplayCheck = new QCheckBox;
