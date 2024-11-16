@@ -19,7 +19,10 @@ if (NOT Qt6_FOUND)
 	set(CMAKE_AUTORCC ON)
 	set(CMAKE_AUTOUIC ON)
 else()
-	qt_standard_project_setup()
+	qt_standard_project_setup(
+		I18N_SOURCE_LANGUAGE en
+		I18N_TRANSLATED_LANGUAGES en fr
+	)
 endif()
 
 set(SOURCES
@@ -68,7 +71,8 @@ if (NOT Qt6_FOUND)
 	set(TS_FILES redrose_en.ts redrose_fr.ts)
 	qt5_add_translation(qmFiles ${TS_FILES})
 else()
-	qt_add_translations(redrose TS_FILES redrose_en.ts redrose_fr.ts)
+	#qt_add_translations(redrose TS_FILES redrose_en.ts redrose_fr.ts)
+	qt_add_translations(redrose TS_FILE_BASE redrose TS_FILE_DIR ./ INCLUDE_DIRECTORIES ./ IMMEDIATE_CALL)
 endif()
 
 target_link_libraries(redrose PRIVATE Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::PrintSupport fluidsynth drumstick-file spectre abc)
