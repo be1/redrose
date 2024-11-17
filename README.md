@@ -16,35 +16,23 @@ Note that drumstick-file must be compiled against the same QT\_MAJOR\_VERSION nu
 
 ## Setting up with Qt5 (Ubuntu Jammy, 22.04)
 ```
-$ sudo apt install qtbase5-dev
-$ sudo apt install qttools5-dev
-$ sudo apt install qttools5-dev-tools
-$ sudo apt install libdrumstick-dev
-$ sudo apt install libspectre-dev
-$ sudo apt install libfluidsynth-dev
+sudo apt install qtbase5-dev qttools5-dev qttools5-dev-tools libdrumstick-dev libspectre-dev libfluidsynth-dev
 ```
 
 ## Setting up with Qt6 (Ubuntu Noble, 24.04)
 ```
-$ sudo apt install qt6-base-dev
-$ sudo apt install qt6-tools-dev
-$ sudo apt install qt6-tools-dev-tools
-$ sudo apt install libdrumstick-dev
-$ sudo apt install libspectre-dev
-$ sudo apt install libfluidsynth-dev
+sudo apt install qt6-base-dev qt6-tools-dev qt6-tools-dev-tools libdrumstick-dev libspectre-dev libfluidsynth-dev
 ```
 
 ## Building
 ```
-$ sudo apt install build-essential cmake git pkg-config
-$ git clone https://github.com/be1/redrose.git
-$ mkdir build
-$ cd build
-$ cmake -DCMAKE_BUILD_TYPE=Release ..
-$ make
-$ sudo make install
-$ sudo apt install abcm2ps
-$ sudo apt install abcmidi
+sudo apt install build-essential cmake git pkg-config
+git clone https://github.com/be1/redrose.git
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make && sudo make install
+sudo apt install abcm2ps abcmidi
 ```
 
 ## Starting
