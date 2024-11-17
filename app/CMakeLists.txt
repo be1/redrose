@@ -70,7 +70,7 @@ set_source_files_properties(redrose_en.ts redrose_fr.ts PROPERTIES OUTPUT_LOCATI
 if (NOT Qt6_FOUND)
 	set(TS_FILES redrose_en.ts redrose_fr.ts)
 	qt5_add_translation(qmFiles ${TS_FILES})
-elseif (QT_VERSION VERSION_LESS 6.7)
+elseif (Qt6_VERSION VERSION_LESS 6.7)
 	qt_add_translations(redrose TS_FILES redrose_en.ts redrose_fr.ts)
 else()
 	qt_add_translations(redrose TS_FILE_BASE redrose TS_FILE_DIR ./ INCLUDE_DIRECTORIES ./ IMMEDIATE_CALL)
