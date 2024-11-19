@@ -21,6 +21,8 @@ public:
     QString getSoundfont();
     int getVelocity();
     int getDuration();
+    double getVolume();
+
 #if 0
     double getReverb();
 #endif
@@ -46,6 +48,10 @@ private:
 
     QLabel* defaultDurationLabel;
     QSpinBox* defaultDurationSpinBox;
+
+    QLabel* volumeLabel;
+    QDoubleSpinBox* volumeDoubleSpinBox;
+
 #if 0
     QLabel* reverbLabel;
     QDoubleSpinBox* reverbDoubleSpinBox;

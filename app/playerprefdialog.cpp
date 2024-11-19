@@ -119,6 +119,21 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
     sfhbox->addWidget(soundfontButton);
 
     mainLayout->addLayout(sfhbox);
+
+    /* volume */
+    QVariant volume = settings.value(VOLUME_KEY);
+    volumeLabel = new QLabel(tr("Playback volume"));
+    volumeDoubleSpinBox = new QDoubleSpinBox;
+    volumeDoubleSpinBox->setMaximum(1.0);
+    volumeDoubleSpinBox->setMinimum(0.0);
+    volumeDoubleSpinBox->setStepType(QDoubleSpinBox::AdaptiveDecimalStepType);
+    volumeDoubleSpinBox->setValue(volume.toDouble());
+    QHBoxLayout* vhbox = new QHBoxLayout;
+    vhbox->addWidget(volumeLabel);
+    vhbox->addWidget(volumeDoubleSpinBox);
+
+    mainLayout->addLayout(vhbox);
+
 #if 0
     /* reverb */
     QVariant reverb = settings.value(REVERB_KEY);
@@ -166,6 +181,11 @@ int PlayerPrefDialog::getVelocity()
 int PlayerPrefDialog::getDuration()
 {
     return defaultDurationSpinBox->value();
+}
+
+double PlayerPrefDialog::getVolume()
+{
+    return volumeDoubleSpinBox->value();
 }
 
 #if 0

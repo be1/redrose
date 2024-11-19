@@ -327,6 +327,10 @@ Redrose version </source>
         <source>Soundfont (*.sf[23])</source>
         <translation>Fonte sonore (*.sf[23])</translation>
     </message>
+    <message>
+        <source>Playback volume</source>
+        <translation>Volume de lecture</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesMenu</name>

@@ -49,5 +49,6 @@
 #define SOUNDFONT_KEY "ABC/soundfont"
 #define DEB_SF2_GM	"/usr/share/sounds/sf2/default-GM.sf2"
 
+#define VOLUME_KEY "ABC/volume"
 #define REVERB_KEY "ABC/reverb"
 #endif

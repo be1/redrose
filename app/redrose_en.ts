@@ -51,49 +51,49 @@ Please close tab and check player preferences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="100"/>
+        <location filename="abcsynth.cpp" line="104"/>
         <source>Loading sound font: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="144"/>
+        <location filename="abcsynth.cpp" line="159"/>
         <source>Ready.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="148"/>
+        <location filename="abcsynth.cpp" line="164"/>
         <source>Playing </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="154"/>
+        <location filename="abcsynth.cpp" line="169"/>
         <source>Stopping.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="163"/>
-        <location filename="abcsynth.cpp" line="170"/>
+        <location filename="abcsynth.cpp" line="178"/>
+        <location filename="abcsynth.cpp" line="186"/>
         <source>Done: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="198"/>
+        <location filename="abcsynth.cpp" line="217"/>
         <source>Cannot load sound font: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="202"/>
+        <location filename="abcsynth.cpp" line="235"/>
         <source>Sound font loaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="229"/>
+        <location filename="abcsynth.cpp" line="258"/>
         <source>Cannot load MIDI file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="abcsynth.cpp" line="233"/>
-        <location filename="abcsynth.cpp" line="260"/>
+        <location filename="abcsynth.cpp" line="262"/>
+        <location filename="abcsynth.cpp" line="292"/>
         <source>Starting synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -398,19 +398,24 @@ Redrose version </source>
     </message>
     <message>
         <location filename="playerprefdialog.cpp" line="125"/>
+        <source>Playback volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="playerprefdialog.cpp" line="140"/>
         <source>Reverb level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerprefdialog.cpp" line="184"/>
-        <location filename="playerprefdialog.cpp" line="186"/>
+        <location filename="playerprefdialog.cpp" line="204"/>
+        <location filename="playerprefdialog.cpp" line="206"/>
         <source>Audio sound font selection</source>
         <oldsource>Audio sound font preference</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerprefdialog.cpp" line="184"/>
-        <location filename="playerprefdialog.cpp" line="186"/>
+        <location filename="playerprefdialog.cpp" line="204"/>
+        <location filename="playerprefdialog.cpp" line="206"/>
         <source>Soundfont (*.sf[23])</source>
         <translation type="unfinished"></translation>
     </message>
@@ -443,12 +448,12 @@ Redrose version </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="71"/>
+        <location filename="PreferencesMenu.cpp" line="72"/>
         <source>Reset prefrences?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PreferencesMenu.cpp" line="71"/>
+        <location filename="PreferencesMenu.cpp" line="72"/>
         <source>Do you really want to reset preferences?</source>
         <translation type="unfinished"></translation>
     </message>

@@ -85,6 +85,10 @@ void Settings::check()
     if (!color.isValid())
         setValue(EDITOR_LYRIC_COLOR, "magenta");
 
+    QVariant volume = value(VOLUME_KEY);
+    if (!volume.isValid())
+        setValue(VOLUME_KEY, 0.75);
+
     QVariant reverb = value(REVERB_KEY);
     if (!reverb.isValid())
         setValue(REVERB_KEY, 0.);
@@ -131,6 +135,8 @@ void Settings::reset()
     setValue(EDITOR_HEADER_COLOR, "darkcyan");
 
     setValue(EDITOR_LYRIC_COLOR, "magenta");
+
+    setValue(VOLUME_KEY, 0.75);
 
     setValue(REVERB_KEY, 0.);
     sync();
