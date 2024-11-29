@@ -41,6 +41,7 @@ parts:
       #- gtk-common-themes
       #- qt-common-themes
     stage-packages:
+      - xkb-data
       - libpaper-utils
       - gnome-icon-theme
       - librsvg2-common
@@ -104,6 +105,7 @@ apps:
       #WAYLAND_DISPLAY: ../wayland-0
       #PULSE_SERVER: unix:$XDG_RUNTIME_DIR/../pulse/native
       #FONTCONFIG_PATH: $SNAP/etc/fonts
+      XKB_CONFIG_ROOT: $SNAP/usr/share/X11/xkb
       QT_PLUGIN_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/qt6/plugins
       #LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:$SNAP/usr/lib/x86_64-linux-gnu/pulseaudio
       GS_LIB: $SNAP/usr/share/ghostscript/10.02.1/Resource/Init
