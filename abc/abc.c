@@ -1233,6 +1233,18 @@ struct abc_symbol* abc_find_next_alt(struct abc_symbol* s, int alt) {
     return s;
 }
 
+struct abc_symbol* abc_find_coda_near(struct abc_symbol* s) {
+    while (s->next) {
+        s = s->next;
+        if (s->kind == ABC_DECO && !strcmp(s->text, "coda"))
+            return s;
+	if (s->kind == ABC_NOTE || s->kind == ABC_GRACE || s->kind == ABC_NUP)
+            return NULL;
+    }
+
+    return s;
+}
+
 struct abc_symbol* abc_find_next_segno(struct abc_symbol* s) {
     while (s->next) {
         s = s->next;
@@ -2161,6 +2173,7 @@ static void abc_append_inline_changes(struct abc_voice* v, struct abc_symbol* s)
 static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
     int pass = 1;
     struct abc_symbol* cur_repeat = NULL;
+    struct abc_symbol* coda = NULL;
 
     struct abc_voice* voice = calloc(1, sizeof (struct abc_voice));
     voice->v = strdup(v->v);
@@ -2179,7 +2192,18 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
         struct abc_symbol* new = NULL;
 
         switch (s->kind) {
+            case ABC_DECO: {
+                              if (!strcmp("dacoda", s->text)) {
+                                  /* go to coda if found */
+                                  if (coda) {
+				      s = coda->next;
+				      continue;
+				  }
+                              }
+                              break;
+                           }
             case ABC_BAR: {
+                              /* will always append a bar */
                               new = calloc(1, sizeof (struct abc_symbol));
                               new->kind = ABC_BAR;
                               new->text = strdup("|");
@@ -2187,13 +2211,19 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                               new->dur_den = 1;
 
                               if (abc_is_repeat(s)) {
+                                  /* check for coda just after s */
+                                  coda = abc_find_coda_near(s); /* can be NULL */
+
                                   if (cur_repeat == s) {
+                                      /* reached end of this repetition */
                                       /* never reset cur_repeat to NULL (loops forever) */
 
+                                      /* bar can be :|: */
                                       if (abc_is_start(s)) {
                                           pass = 1;
                                       }
                                   } else if (!cur_repeat || (cur_repeat->index < s->index)) {
+                                      /* reached new repeat bar: rewind repeating section */
                                       cur_repeat = s;
                                       s = abc_find_start_repeat(s);
                                       abc_voice_append_symbol(voice, new);
@@ -2207,13 +2237,18 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                               break;
                           }
             case ABC_ALT: {
+                              /* do not output symbol */
                               new = NULL;
 
                               if (!abc_alt_is_of(s, pass)) {
                                   struct abc_symbol* n;
                                   if ((n = abc_find_next_alt(s, pass))) {
-                                      s = n; /* s is a BAR */
+                                      /* fast-forward to the correct ALT bar */
+                                      s = n; /* n is a BAR */
                                       continue;
+                                  } else {
+                                      /* no more ALT for this repeat section */
+                                      /* go next token */
                                   }
                               }
 
