@@ -1182,7 +1182,8 @@ struct abc_symbol* abc_next_note_or_chord(struct abc_symbol* s) {
             return s;
     }
 
-    return s;
+    /* not found, return NULL */
+    return s->next;
 }
 
 /* rewind and return the first symbol just after start repeat */
@@ -1205,7 +1206,8 @@ struct abc_symbol* abc_find_next_repeat(struct abc_symbol* s) {
             return s;
     }
 
-    return s;
+    /* not found, return NULL */
+    return s->next;
 }
 
 /* return a bar symbol matching next alternation in pass of alt */
@@ -1221,6 +1223,7 @@ struct abc_symbol* abc_find_next_alt(struct abc_symbol* s, int alt) {
         }
 
         if ((s->kind == ABC_ALT) && abc_alt_is_of(s, alt)) {
+            /* found, return BAR */
             return s->prev;
         }
 
@@ -1230,7 +1233,8 @@ struct abc_symbol* abc_find_next_alt(struct abc_symbol* s, int alt) {
         }
     }
 
-    return s;
+    /* no alt found, return NULL */
+    return s->next;
 }
 
 struct abc_symbol* abc_find_coda_near(struct abc_symbol* s) {
@@ -1253,7 +1257,8 @@ struct abc_symbol* abc_find_next_segno(struct abc_symbol* s) {
             return s;
     }
 
-    return s;
+    /* not found, return NULL */
+    return s->next;
 }
 
 int abc_has_pair(struct abc_symbol* s, int chord) {
