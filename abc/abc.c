@@ -1242,7 +1242,8 @@ struct abc_symbol* abc_find_coda_near(struct abc_symbol* s) {
             return NULL;
     }
 
-    return s;
+    /* not found, return NULL */
+    return s->next;
 }
 
 struct abc_symbol* abc_find_next_segno(struct abc_symbol* s) {
