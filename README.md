@@ -39,7 +39,7 @@ sudo apt install abcm2ps abcmidi
 Launch `redrose` by clicking on the red rose icon, click on Score->New and type some ABC music in the editor, press `Play` button: you're done!
 
 ## Bugs
-Internal ABC parser is weak, you can use abc2midi instead (see player preferences).
+For MIDI generation, the internal ABC parser is weak and does not generate "Guitar chords". You can use abc2midi for that if you prefer (see player preferences).
 
 ## Thanks
 - Thanks to JF Moine for his free software `abcm2ps`
