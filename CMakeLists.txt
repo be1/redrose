@@ -14,5 +14,7 @@ set(PROJECT_TARGET ${PROJECT_NAME})
 set(PROJECT_PREFIX ${CMAKE_INSTALL_PREFIX})
 set(PROJECT_DATADIR ${CMAKE_INSTALL_PREFIX}/share)
 
+option(ForceQt5 "ForceQt5" OFF)
+
 add_subdirectory(app)
 add_subdirectory(abc)

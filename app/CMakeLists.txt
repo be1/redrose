@@ -1,12 +1,13 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 
-set(QT_VERSION_MAJOR 6)
-
-find_package(Qt6 QUIET COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
-if (NOT Qt6_FOUND)
+find_package(Qt6 QUIET COMPONENTS Core) # test only
+if (NOT Qt6_FOUND OR ForceQt5)
 	message("Qt6 not found, looking for Qt5.15")
 	find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
 	set(QT_VERSION_MAJOR 5)
+else()
+    find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
+    set(QT_VERSION_MAJOR 6)
 endif()
 
 message("Qt version major is ${QT_VERSION_MAJOR}")
