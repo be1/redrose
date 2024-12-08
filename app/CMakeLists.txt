@@ -2,8 +2,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DI
 
 find_package(Qt6 QUIET COMPONENTS Core) # test only
 if (NOT Qt6_FOUND OR ForceQt5)
-	message("Qt6 not found, looking for Qt5.15")
-	find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
+	message("Qt6 not found, looking for Qt5")
+	find_package(Qt REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
 	set(QT_VERSION_MAJOR 5)
 else()
 	find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
@@ -11,7 +11,10 @@ else()
 endif()
 
 message("Qt version major is ${QT_VERSION_MAJOR}")
-find_package(Drumstick REQUIRED COMPONENTS File)
+find_package(Drumstick QUIET COMPONENTS File)
+if (NOT Drumstick_FOUND)
+	pkg_search_module(DRUMSTICK REQUIRED drumstick-file)
+endif()
 pkg_search_module(SPECTRE REQUIRED libspectre)
 pkg_search_module(FLUIDSYNTH REQUIRED fluidsynth>2.0)
 
@@ -59,17 +62,19 @@ set(SOURCES
 	wizard.cpp
 )
 
-qt_add_resources(SOURCES resources.qrc)
-
 set(TS_FILES redrose_en.ts redrose_fr.ts)
 set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
 if (NOT Qt6_FOUND)
+	qt5_add_resources(SOURCES resources.qrc)
 	qt5_add_translation(QM_FILES ${TS_FILES})
 	add_executable(redrose ${SOURCES} ${QM_FILES})
 elseif (Qt6_VERSION VERSION_LESS 6.7)
+	qt_add_resources(SOURCES resources.qrc)
 	qt_add_executable(redrose ${SOURCES})
 	qt_add_translations(redrose TS_FILES ${TS_FILES})
 else()
+
+	qt_add_resources(SOURCES resources.qrc)
 	qt_add_executable(redrose ${SOURCES})
 	qt_add_translations(redrose IMMEDIATE_CALL)
 endif()
