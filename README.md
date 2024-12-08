@@ -14,7 +14,7 @@ Note that **drumstick-file** must be compiled against the same QT\_MAJOR\_VERSIO
 ## Screenshot
 ![Redrose dark theme screenshot](http://brouits.free.fr/redrose/redrose.png)
 
-## Setting up with Qt5 (Ubuntu Jammy, 22.04 or Ubuntu Lucid, 20.04)
+## Setting up with Qt5 (Ubuntu Jammy, 22.04 or Ubuntu Focal, 20.04)
 ```
 sudo apt install qtbase5-dev qttools5-dev qttools5-dev-tools libdrumstick-dev libspectre-dev libfluidsynth-dev
 ```
