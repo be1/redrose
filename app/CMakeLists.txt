@@ -100,7 +100,7 @@ set_target_properties(redrose PROPERTIES
 	MACOSX_BUNDLE ON
 )
 
-target_link_libraries(redrose PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport fluidsynth drumstick-file spectre abc)
+target_link_libraries(redrose PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport fluidsynth drumstick-file spectre abc ${CMAKE_DL_LIBS})
 
 install(TARGETS redrose DESTINATION bin)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/locale DESTINATION ${PROJECT_DATADIR}/redrose)
