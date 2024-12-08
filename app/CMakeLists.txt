@@ -61,20 +61,20 @@ set(SOURCES
 
 qt_add_resources(SOURCES resources.qrc)
 
+set(TS_FILES redrose_en.ts redrose_fr.ts)
+set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
 if (NOT Qt6_FOUND)
-	add_executable(redrose ${SOURCES})
-else()
-	qt_add_executable(redrose ${SOURCES})
-endif()
-
-set_source_files_properties(redrose_en.ts redrose_fr.ts PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
-if (NOT Qt6_FOUND)
-	set(TS_FILES redrose_en.ts redrose_fr.ts)
-	qt5_add_translation(qmFiles ${TS_FILES})
+	qt5_add_translation(QM_FILES ${TS_FILES})
 elseif (Qt6_VERSION VERSION_LESS 6.7)
-	qt_add_translations(redrose TS_FILES redrose_en.ts redrose_fr.ts)
+	qt_add_translations(redrose TS_FILES ${TS_FILES})
 else()
 	qt_add_translations(redrose TS_FILE_BASE redrose TS_FILE_DIR ./ INCLUDE_DIRECTORIES ./ IMMEDIATE_CALL)
+endif()
+
+if (NOT Qt6_FOUND)
+	add_executable(redrose ${SOURCES} ${QM_FILES})
+else()
+	qt_add_executable(redrose ${SOURCES})
 endif()
 
 target_link_libraries(redrose PRIVATE Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::PrintSupport fluidsynth drumstick-file spectre abc)
