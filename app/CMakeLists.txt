@@ -83,18 +83,14 @@ else()
 	qt_add_translations(redrose IMMEDIATE_CALL)
 endif()
 
-
-target_link_libraries(redrose PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport fluidsynth drumstick-file spectre abc)
-
 if (Drumstick_VERSION VERSION_LESS 2.0)
-	set(DRUMSTICK_VERSION_MAJOR, 1)
+	set(DRUMSTICK_VERSION_MAJOR 1)
 else()
-	set(DRUMSTICK_VERSION_MAJOR, 2)
+	set(DRUMSTICK_VERSION_MAJOR 2)
 endif()
 
-add_compile_options(DRUMSTICK_VERSION_MAJOR ${DRUMSTICK_VERSION_MAJOR})
-
 target_compile_definitions(redrose PUBLIC
+	DRUMSTICK_VERSION_MAJOR=${DRUMSTICK_VERSION_MAJOR}
 	$<$<CONFIG:DEBUG>:EBUG>
 	$<$<CONFIG:RELEASE>:QT_NO_DEBUG_OUTPUT>
 )
@@ -103,6 +99,8 @@ set_target_properties(redrose PROPERTIES
 	WIN32_EXECUTABLE ON
 	MACOSX_BUNDLE ON
 )
+
+target_link_libraries(redrose PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport fluidsynth drumstick-file spectre abc)
 
 install(TARGETS redrose DESTINATION bin)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/locale DESTINATION ${PROJECT_DATADIR}/redrose)
