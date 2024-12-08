@@ -3,7 +3,7 @@ ABC music notation integrated environment
 
 ## Dependencies
 - drumstick-file version 1 or 2 (library and headers)
-- fluidsynth version 2 or 3 (library and headers)
+- fluidsynth version < 2.3 or >= 2.3 (library and headers)
 - libspectre (library and headers)
 - abcm2ps (program)
 - abc2midi (program, optional)
