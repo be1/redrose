@@ -2,7 +2,11 @@
 #include <drumstick/qsmf.h>
 #include "abcsmf.h"
 
+#if DRUMSTICK_VERSION_MAJOR == 1
+AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) : drumstick::QSmf(parent),
+#else
 AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) : drumstick::File::QSmf(parent),
+#endif
         m_yy(yy),
         m_x(x),
         m_tune(nullptr),

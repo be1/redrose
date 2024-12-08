@@ -5,7 +5,11 @@
 #include <drumstick/qsmf.h>
 #include "../abc/abc.h"
 
+#if DRUMSTICK_VERSION_MAJOR == 1
+class AbcSmf : public drumstick::QSmf
+#else
 class AbcSmf : public drumstick::File::QSmf
+#endif
 {
     Q_OBJECT
 public:

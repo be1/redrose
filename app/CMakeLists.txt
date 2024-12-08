@@ -13,10 +13,14 @@ endif()
 message("Qt version major is ${QT_VERSION_MAJOR}")
 find_package(Drumstick QUIET COMPONENTS File)
 if (NOT Drumstick_FOUND)
-	pkg_search_module(DRUMSTICK REQUIRED drumstick-file)
+	pkg_search_module(Drumstick REQUIRED drumstick-file)
 endif()
-pkg_search_module(SPECTRE REQUIRED libspectre)
-pkg_search_module(FLUIDSYNTH REQUIRED fluidsynth>2.0)
+message("Drumstick version is ${Drumstick_VERSION}")
+pkg_search_module(Spectre REQUIRED libspectre)
+message("Spectre version is ${Spectre_VERSION}")
+pkg_search_module(Fluidsynth REQUIRED fluidsynth>2.0)
+message("Fluidsynth version is ${Fluidsynth_VERSION}")
+
 
 if (NOT Qt6_FOUND)
 	set(CMAKE_AUTOMOC ON)
@@ -81,6 +85,14 @@ endif()
 
 
 target_link_libraries(redrose PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport fluidsynth drumstick-file spectre abc)
+
+if (Drumstick_VERSION VERSION_LESS 2.0)
+	set(DRUMSTICK_VERSION_MAJOR, 1)
+else()
+	set(DRUMSTICK_VERSION_MAJOR, 2)
+endif()
+
+add_compile_options(DRUMSTICK_VERSION_MAJOR ${DRUMSTICK_VERSION_MAJOR})
 
 target_compile_definitions(redrose PUBLIC
 	$<$<CONFIG:DEBUG>:EBUG>
