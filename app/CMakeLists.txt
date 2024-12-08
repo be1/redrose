@@ -3,7 +3,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_SOURCE_DI
 find_package(Qt6 QUIET COMPONENTS Core) # test only
 if (NOT Qt6_FOUND OR ForceQt5)
 	message("Qt6 not found, looking for Qt5")
-	find_package(Qt REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
+	find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
 	set(QT_VERSION_MAJOR 5)
 else()
 	find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets PrintSupport LinguistTools)
@@ -80,7 +80,7 @@ else()
 endif()
 
 
-target_link_libraries(redrose PRIVATE Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::PrintSupport fluidsynth drumstick-file spectre abc)
+target_link_libraries(redrose PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport fluidsynth drumstick-file spectre abc)
 
 target_compile_definitions(redrose PUBLIC
 	$<$<CONFIG:DEBUG>:EBUG>
