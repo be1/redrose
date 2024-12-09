@@ -2202,9 +2202,9 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                               if (!strcmp("dacoda", s->text)) {
                                   /* go to coda if found */
                                   if (coda) {
-				      s = coda->next;
-				      continue;
-				  }
+                                      s = coda->next;
+                                      continue;
+                                  }
                               }
                               break;
                            }
