@@ -2178,8 +2178,10 @@ static void abc_append_inline_changes(struct abc_voice* v, struct abc_symbol* s)
 
 static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
     int pass = 1;
+
     struct abc_symbol* cur_repeat = NULL;
     struct abc_symbol* coda = NULL;
+    int dacapo_met = 0;
 
     struct abc_voice* voice = calloc(1, sizeof (struct abc_voice));
     voice->v = strdup(v->v);
@@ -2205,6 +2207,16 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                                       s = coda->next;
                                       continue;
                                   }
+                              }
+
+                              if (!strcmp("dacapo", s->text)) {
+                                  if (dacapo_met == 1) {
+                                      s = v->first;
+                                      dacapo_met = 2;
+                                      continue;
+                                  }
+
+                                  dacapo_met++;
                               }
                               break;
                            }
@@ -2232,6 +2244,7 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                                       /* reached new repeat bar: rewind repeating section */
                                       cur_repeat = s;
                                       s = abc_find_start_repeat(s);
+
                                       abc_voice_append_symbol(voice, new);
                                       abc_append_inline_changes(voice, s);
                                       pass++;
