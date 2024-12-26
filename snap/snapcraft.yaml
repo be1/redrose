@@ -1,6 +1,6 @@
 name: redrose
 base: core24
-version: '0.5.23'
+version: '0.5.24'
 summary: Integrated ABC music notation environment
 description: |
   Redrose lets you write ABC musical scores in ABC notation and, with
@@ -87,7 +87,7 @@ parts:
       - abcmidi
     source: http://github.com/be1/redrose.git
     source-type: git
-    source-tag: 0.5.23
+    source-tag: 0.5.24
 
   gpu-2404:
     after: [redrose]
