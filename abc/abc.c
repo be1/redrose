@@ -1242,7 +1242,7 @@ struct abc_symbol* abc_find_coda_near(struct abc_symbol* s) {
         s = s->next;
         if (s->kind == ABC_DECO && !strcmp(s->text, "coda"))
             return s;
-	if (s->kind == ABC_NOTE || s->kind == ABC_GRACE || s->kind == ABC_NUP)
+        if (s->kind == ABC_NOTE || s->kind == ABC_GRACE || s->kind == ABC_NUP)
             return NULL;
     }
 

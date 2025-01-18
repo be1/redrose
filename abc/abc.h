@@ -12,18 +12,22 @@ extern "C" {
 enum abc_type { ABC_EOL, ABC_SPACE, ABC_NOTE, ABC_NUP, ABC_GRACE, ABC_CHORD, ABC_DECO, ABC_GCHORD, ABC_TIE, ABC_SLUR, ABC_BAR, ABC_ALT, ABC_INST, ABC_CHANGE };
 
 struct abc_buffer {
-	char* buf;
-	int count;
-	int index;
+    char* buf;
+    int count;
+
+    int index;
 };
 
 struct abc {
-	struct abc_tune** tunes;
-	int count;
-	struct abc_buffer* buffer;
-	int error;
-	int error_line;
-	int error_char;
+    struct abc_tune** tunes;
+    int count;
+
+    struct abc_buffer* buffer;
+
+    int error;
+    int error_line;
+    int error_char;
+
     char* ks; /* first key signature */
     char* ul; /* first unit length */
     char* mm; /* first measure metric */
@@ -31,23 +35,25 @@ struct abc {
 };
 
 struct abc_header {
-	char h;
-	char* text;
-	struct abc_header* next;
+    char h;
+    char* text;
+    struct abc_header* next;
 };
 
 struct abc_tune {
-	int x;
-	struct abc_header* headers;
+    int x;
+    struct abc_header* headers;
+
     struct abc_voice** voices;
-	int count;
-	char lbc; /* linebreak char (usually '$') */
+    int count;
+
+    char lbc; /* linebreak char (usually '$') */
 };
 
 struct abc_voice {
-	char* v;
-	struct abc_symbol* first;
-	struct abc_symbol* last;
+    char* v;
+    struct abc_symbol* first;
+    struct abc_symbol* last;
     int in_alt;
     int measure_accid['h']; /* 'g' + 1 */
     char* i_ks; /* initial key signature */
@@ -63,28 +69,28 @@ struct abc_voice {
 enum abc_event_type { EV_NOTE, EV_KEYSIG, EV_TEMPO, EV_METRIC, EV_UNIT };
 
 struct abc_event {
-	long start_num;
-	long start_den;
+    long start_num;
+    long start_den;
     int key; /* note key, or keysignature sharps/flags numbers */
     int value; /* note velocity, or kesysignature maj/min mode, or tempo in quarter per measure */
     enum abc_event_type type;
 };
 
 struct abc_symbol {
-	enum abc_type kind;
-	char* lyr;
-	char* text;
-	long dur_num; /* duration */
-	long dur_den;
-	int index; /* symbol index in parser */
+    enum abc_type kind;
+    char* lyr;
+    char* text;
+    long dur_num; /* duration */
+    long dur_den;
+    int index; /* symbol index in parser */
     struct abc_event ev;
 
-	int in_alt;
+    int in_alt;
     int will_tie;
     int in_chord;
 
-	struct abc_symbol* next;
-	struct abc_symbol* prev;
+    struct abc_symbol* next;
+    struct abc_symbol* prev;
 };
 
 /* internal parser API */
