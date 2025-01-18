@@ -39,12 +39,16 @@ static void gen_error(struct abc* auxil) {
 
 }
 
-TuneBook <- (Comment EOL)* Tune TuneBook
+TuneBook <- Ps* (Comment EOL)* Tune TuneBook
 	/ EOF
+
+Ps <- BeginPS (!EndPs .)* EndPs
+BeginPS <- "%%beginps" EOL
+EndPs <- "%%endps" EOL
 
 Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL)* EOL?
 
-Words <- "W:" (!EOL .)*
+Words <- "W:" [ \t]* (!EOL .)*
 
 Header <- Oheader
 	/ Comment
@@ -70,7 +74,7 @@ Score <- Vheader EOL FragmentLine+ Score*
 FragmentLine <- "%%" MidiInstruction EOL
     / Comment EOL
     / Change EOL
-    / "w:" Lyrics EOL
+    / "w:" Lyrics* EOL
     / Fragment+ (LineCont EOL / LineBreak)?
 
 Fragment <- _ / "y"
@@ -93,16 +97,16 @@ Fragment <- _ / "y"
 InlineChange <- "[" Change "]"
 Change <- KeySig / Unit / TimeSig / Tempo / Part
 
-KeySig <- < "K:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
-Unit <- < "L:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
-TimeSig <- < "M:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
-Part <- < "P:" (!EOL [^\]])+ > #ignore
-Tempo <- < "Q:" (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
+KeySig <- < "K:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
+Unit <- < "L:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
+TimeSig <- < "M:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
+Part <- < "P:" [ \t]* (!EOL [^\]])+ > #ignore
+Tempo <- < "Q:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 
 Comment <- "%" !"%" (!EOL .)*
 	/ "%%" !"MIDI" (!EOL .)*
 
-Vheader <- "V:" Vvalue
+Vheader <- "V:" [ \t]* Vvalue
 
 Vvalue <- < (!EOL .)+ > { abc_voice_append(auxil, $0); }
 
@@ -114,7 +118,7 @@ NoteConstruct <- (Decoration / ("!" ExDecoration "!"))* Note NoteDuration? Tie?
 
 MidiInstruction <- < "MIDI" [ \t] (!EOL .)* > { abc_instruction_append(auxil, $0); }
 
-Lyrics <- < (!EOL .)* > { abc_lyrics_append(auxil, $1); }
+Lyrics <- < (!EOL .)+ > { abc_lyrics_append(auxil, $1); }
 
 Tie <- < "-" > { abc_tie_append(auxil, $0); }
 
