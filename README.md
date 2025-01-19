@@ -43,5 +43,6 @@ For MIDI generation, the internal ABC parser is weak and does not generate "Guit
 
 ## Thanks
 - Thanks to JF Moine for his free software `abcm2ps`
+- Thanks to Seymour Shlien for his free software `abc2midi`
 - Thanks to Morgan Leborgne for his QProgressIndicator free widget. https://github.com/mojocorp/QProgressIndicator
 
