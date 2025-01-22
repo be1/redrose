@@ -12,7 +12,7 @@ extern "C" {
 enum abc_type { ABC_EOL, ABC_SPACE, ABC_NOTE, ABC_NUP, ABC_GRACE, ABC_CHORD, ABC_DECO, ABC_GCHORD, ABC_TIE, ABC_SLUR, ABC_BAR, ABC_ALT, ABC_INST, ABC_CHANGE };
 
 struct abc_buffer {
-    char* buf;
+    unsigned char* buf;
     int count;
 
     int index;
