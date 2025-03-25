@@ -1680,11 +1680,11 @@ struct abc_untie_ctx {
     const char* m;
     long chord_num, chord_den; /* chord duration */
 
-    struct abc_symbol* ties[32]; /* per-note ties */
+    struct abc_symbol* ties[BUFSIZ]; /* per-note ties */
     int ties_len;
     int ties_ready;
 
-    struct abc_symbol* nextchord[32];
+    struct abc_symbol* nextchord[BUFSIZ];
     int nextchord_len;
 
     int prev_chord;
