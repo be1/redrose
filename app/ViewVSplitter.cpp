@@ -119,6 +119,7 @@ void ViewVSplitter::printClicked()
     printer.setResolution(300.); /* 300 DPI is enough */
     printer.setCreator("Redrose");
     printer.setDocName(origname);
+    printer.setOutputFileName(origname.replace(".abc", ".pdf"));
     printer.setPageOrientation(QPageLayout::Portrait);
     QPrintDialog dialog(&printer, this);
     if (dialog.exec() == QDialog::Accepted) {
