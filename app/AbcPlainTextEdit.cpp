@@ -192,7 +192,7 @@ QString AbcPlainTextEdit::constructHeaders(int selectionIndex, int* x)
     /* construct headers */
     for (int j = xl;  j < lines.count(); j++) {
         /* stop at 'V:' but include all other headers and comments above it */
-        if (lines.at(j).contains(QRegularExpression("^((%[^\n]*)|([A-UW-Z]:[^\n]+))$"))) {
+        if (lines.at(j).contains(QRegularExpression("^((%[^\n]*)|([A-UW-Z]:[^\n]*))$"))) {
             headers += lines.at(j) + "\n";
         } else /* found 'V:' or notes */
             break;
