@@ -41,6 +41,9 @@ Launch `redrose` by clicking on the red rose icon, click on Score->New and type 
 ## Bugs
 For MIDI generation, the internal ABC parser is weak and does not generate "Guitar chords". You can use abc2midi for that if you prefer (see player preferences).
 
+## TODO
+- Jack MIDI output (in addition to current Jack audio output)
+
 ## Thanks
 - Thanks to JF Moine for his free software `abcm2ps`
 - Thanks to Seymour Shlien for his free software `abc2midi`
