@@ -1358,9 +1358,19 @@ int abc_unit_per_measure(const char* lh_text, const char* mh_text) {
         mn = 4; md = 4;
     } else if (!strcmp(mh_text, "C|")) {
         mn = 2; md = 4;
-    } else if (2 != sscanf(mh_text, " %d / %d", &mn, &md)) {
-        /* default */
-        mn = 4; md = 4;
+    } else if (!strchr(mh_text, '+')) {
+        if (2 != sscanf(mh_text, " %d / %d", &mn, &md)) {
+            /* default */
+            mn = 4; md = 4;
+        }
+    } else {
+        int c1, c2;
+        if (3 == sscanf(mh_text, " %d + %d / %d", &c1, &c2, &md)) {
+            mn = c1 + c2;
+        } else {
+            /* f*ck */
+            mn = 4; md = 4;
+        }
     }
 
     return (ld * mn) / (md * ln);
