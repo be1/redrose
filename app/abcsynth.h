@@ -51,7 +51,7 @@ private:
     QString curSFont;
     int sfid;
     char *id; /* jack identifier */
-    char *drv; /* "alsa" or "pulseaudi"o or "jack" */
+    char *drv; /* "alsa" or "pulseaudio" or "jack" */
     char *sf; /* soundfont file name */
     bool inited;
     bool m_err;

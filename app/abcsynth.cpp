@@ -264,6 +264,10 @@ void AbcSynth::play(const QString& midifile) {
         /* start synthesizer thread */
         fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
 
+        if (m_tick > 0) {
+            fluid_player_seek(fluid_player, m_tick);
+        }
+
         m_err = fluid_player_play(fluid_player);
         playback_monitor.start();
     }
@@ -294,7 +298,12 @@ void AbcSynth::play(const QByteArray& ba)
         /* start synthesizer thread */
         fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
 
+        if (m_tick > 0) {
+            fluid_player_seek(fluid_player, m_tick);
+        }
+
         m_err = fluid_player_play(fluid_player);
+
         playback_monitor.start();
     }
 }

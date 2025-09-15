@@ -215,6 +215,9 @@ void EditVBoxLayout::onPlayClicked()
             dot.clear();
             a->mainWindow()->statusBar()->showMessage(tr("Stopping synthesis..."));
             synth->stop();
+
+            /* pre seek for next play */
+            synth->m_tick = positionslider.value();
         }
     }
 }
@@ -338,8 +341,9 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
         if (cont == AbcProcess::ContinuationRender) {
-            if (synth->isPlaying())
+            if (synth->isPlaying()) {
                 synth->stop();
+            }
 
             /* midi file can change from tune (xspinbox) index */
             QString midifile(tempFile.fileName());
@@ -359,6 +363,11 @@ void EditVBoxLayout::onSynthFinished(bool err)
     else
         a->mainWindow()->statusBar()->showMessage(tr("Synthesis finished."));
 
+    /* end reached : reset to start */
+    if (positionslider.value() == positionslider.maximum()) {
+        synth->m_tick = 0;
+    }
+
     int x = xspinbox.value();
     QString midi (tempFile.fileName());
     midi.replace(m_abcext, QString::number(x) + ".mid");
@@ -375,12 +384,16 @@ void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
 
 void EditVBoxLayout::onPositionSliderChanged(int val)
 {
+    synth->m_tick = val;
     synth->seek(val);
 }
 
 void EditVBoxLayout::onSynthTickChanged(int tick)
 {
-    positionslider.setMaximum(synth->getTotalTicks());
+
+    if (!positionslider.maximum())
+        positionslider.setMaximum(synth->getTotalTicks());
+
     positionslider.setValue(tick);
 }
 
@@ -481,13 +494,32 @@ int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
 void EditVBoxLayout::onSelectionChanged()
 {
     QTextCursor c = abcPlainTextEdit()->textCursor();
+    /* if selected text */
     if (c.hasSelection()) {
+        if (synth->isPlaying())
+            synth->stop();
+
+        /* and selected text != previous */
+        if (selection != c.selectedText())
+            positionslider.setValue(0);
+
         selection = c.selectedText();
         selectionIndex = c.selectionStart();
     } else {
-        selection.clear();
+        /* if just one click : reset */
+        synth->m_tick = 0;
+
+        if (!selection.isEmpty()) {
+            if (synth->isPlaying())
+                synth->stop();
+
+            selection.clear();
+        }
+
         selectionIndex = c.selectionStart();
     }
+
+    positionslider.setMaximum(0);
 }
 
 void EditVBoxLayout::onPlayableNote(const QString &note)
