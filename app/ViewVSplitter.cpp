@@ -6,6 +6,7 @@
 #include <QPrinter>
 #include <QPrinterInfo>
 #include <QPainter>
+#include <QScrollBar>
 
 ViewVSplitter::ViewVSplitter(QWidget* parent)
     : QSplitter(parent)
@@ -15,7 +16,7 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
 {
     setOrientation(Qt::Vertical);
 
-    /* configure the svg score */
+    /* configure the ps score */
     QPalette p = pswidget.palette();
     p.setColor(pswidget.backgroundRole(), Qt::white);
     pswidget.setPalette(p);
@@ -86,6 +87,8 @@ bool ViewVSplitter::requestPage(int i) {
             next.setEnabled(true);
         else
             next.setEnabled(false);
+
+        area->verticalScrollBar()->setSliderPosition(0);
         return true;
     }
 
@@ -100,6 +103,7 @@ void ViewVSplitter::cleanup()
     prev.setEnabled(false);
     print.setEnabled(false);
     next.setEnabled(false);
+    area->verticalScrollBar()->setSliderPosition(0);
 }
 
 ScorePsWidget *ViewVSplitter::psWidget()
