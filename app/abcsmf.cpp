@@ -93,9 +93,9 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, "fff")) m_mark_dyn = m_cur_dyn = 124;
     else if (!strcmp(s->text, "ffff")) m_mark_dyn = m_cur_dyn = 127;
     else if (!strcmp(s->text, "sfz")) m_mark_dyn = m_cur_dyn = 100;
-    else if (!strcmp(s->text, ".")) m_shorten = 2;
-    else if (!strcmp(s->text, "H")) m_shorten = 100;
-    else if (!strcmp(s->text, "tenuto")) m_shorten = 100;
+    else if (!strcmp(s->text, ".")) m_shorten = 5;
+    else if (!strcmp(s->text, "H")) m_shorten = 10;
+    else if (!strcmp(s->text, "tenuto")) m_shorten = 10;
     else if (!strcmp(s->text, "L")) m_emphasis = 24;
     else if (!strcmp(s->text, ">")) m_emphasis = 24;
     else if (!strcmp(s->text, "accent")) m_emphasis = 24;
@@ -116,7 +116,7 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
     if (s->text[0] == 'Z' || s->text[0] == 'z' || s->text[0] == 'X' || s->text[0] == 'x') {
         /* no event */
     } else {
-        delta_tick = (m_tick_per_unit * m_unit_per_whole * s->ev.start_num / s->ev.start_den) - m_last_tick;
+        delta_tick = m_tick_per_unit * m_unit_per_whole * ((qreal) s->ev.start_num / (qreal) s->ev.start_den) - m_last_tick;
         m_last_tick += delta_tick;
 
         /* modify cur_dyn from context */
@@ -128,10 +128,13 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
         if (s->ev.value) {
             writeMidiEvent(delta_tick, m_noteon, chan, s->ev.key + m_transpose, (m_cur_dyn + m_emphasis) * s->ev.value);
         } else {
-            long small = m_tick_per_unit * m_unit_per_whole / 8;
-            small = (delta_tick > small) ? small : delta_tick;
-            writeMidiEvent(delta_tick - (small / m_shorten), m_noteon, chan, s->ev.key + m_transpose, 0x00); /* note off */
-            m_last_tick -= (small / m_shorten);
+            /* use note duration stored in noteoff to compute shortening */
+            qreal smaller = ((qreal) (s->dur_num * m_shorten) / 10) / (qreal) s->dur_den;
+            qreal cut = ((qreal) s->dur_num / (qreal) s->dur_den) - smaller;
+            cut *= m_tick_per_unit * m_unit_per_whole;
+
+            writeMidiEvent(delta_tick - cut, m_noteon, chan, s->ev.key + m_transpose, 0x00); /* note off */
+            m_last_tick -= cut;
             /* reset after singlenote decorations */
             m_shorten = m_in_slur;
             m_emphasis = 0; /* reset to normal dynamic */

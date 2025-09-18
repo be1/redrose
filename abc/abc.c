@@ -1340,6 +1340,7 @@ double abc_apply_divide(const char* div) {
     int num, den;
     if(2 != sscanf(div, " %d / %d", &num, &den))
         return 0.0;
+
     return (double) num / (double) den;
 }
 
@@ -1553,8 +1554,9 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                    off = abc_dup_symbol(on);
                                    off->ev.start_num = tick_num;
                                    off->ev.start_den = tick_den;
-                                   off->dur_num = 0;
-                                   off->dur_den = 1;
+                                   /* we keep a memory of note duration in note off */
+                                   off->dur_num = on->dur_num;
+                                   off->dur_den = on->dur_den;
                                    off->ev.value = 0;
 
                                    abc_voice_append_symbol(voice, on);
@@ -1599,8 +1601,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                        struct abc_symbol* e = &stops[i];
                                        abc_frac_add(&e->ev.start_num, &e->ev.start_den, e->dur_num, e->dur_den);
 
-                                       e->dur_num = 0;
-                                       e->dur_den = 1;
+                                       /* we do not erase note duration in noteoff event */
                                    }
 
                                    struct abc_symbol* events = NULL;
@@ -2217,9 +2218,7 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                                       s = coda->next;
                                       continue;
                                   }
-                              }
-
-                              if (!strcmp("dacapo", s->text)) {
+                              } else if (!strcmp("dacapo", s->text)) {
                                   if (dacapo_met == 1) {
                                       s = v->first;
                                       dacapo_met = 2;
@@ -2227,6 +2226,8 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                                   }
 
                                   dacapo_met++;
+                              } else {
+                                  new = abc_dup_symbol(s);
                               }
                               break;
                            }
