@@ -47,7 +47,7 @@ private:
     long m_last_tick;
     long m_note_dur;     /* note duration */
     int m_in_slur;
-    int m_shorten;
+    int m_shorter;       /* [1-10] 1 is shortest, 10 is 100% duration */
     double m_grace_mod;  /* duration modified for grace notes */
     int m_in_cresc;
     unsigned char m_mark_dyn;
@@ -58,7 +58,7 @@ private:
     char m_control;
     int m_transpose;
     int m_default_velocity;
-    int m_default_shorten;
+    int m_default_shorter;
 };
 
 #endif // ABCSMF_H

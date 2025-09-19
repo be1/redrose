@@ -3,9 +3,9 @@
 #include "abcsmf.h"
 
 #if DRUMSTICK_VERSION_MAJOR == 1
-AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) : drumstick::QSmf(parent),
+AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : drumstick::QSmf(parent),
 #else
-AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) : drumstick::File::QSmf(parent),
+AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : drumstick::File::QSmf(parent),
 #endif
         m_yy(yy),
         m_x(x),
@@ -19,7 +19,7 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) :
         m_emphasis(0),
         m_last_tick(0),
         m_note_dur(0),
-        m_in_slur(short_den),
+        m_in_slur(shorter),
         m_in_cresc(0),
         m_mark_dyn(vel),
         m_cur_dyn(vel),
@@ -29,7 +29,7 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int short_den, int x, QObject *parent) :
         m_control(0xb0),
         m_transpose(0),
         m_default_velocity(vel),
-        m_default_shorten(short_den)
+        m_default_shorter(shorter)
 {
     connect(this, &QSmf::signalSMFWriteTempoTrack, this, &AbcSmf::onSMFWriteTempoTrack);
     connect(this, &QSmf::signalSMFWriteTrack, this, &AbcSmf::onSMFWriteTrack);
@@ -93,9 +93,9 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, "fff")) m_mark_dyn = m_cur_dyn = 124;
     else if (!strcmp(s->text, "ffff")) m_mark_dyn = m_cur_dyn = 127;
     else if (!strcmp(s->text, "sfz")) m_mark_dyn = m_cur_dyn = 100;
-    else if (!strcmp(s->text, ".")) m_shorten = 5;
-    else if (!strcmp(s->text, "H")) m_shorten = 10;
-    else if (!strcmp(s->text, "tenuto")) m_shorten = 10;
+    else if (!strcmp(s->text, ".")) m_shorter = 5;
+    else if (!strcmp(s->text, "H")) m_shorter = 10;
+    else if (!strcmp(s->text, "tenuto")) m_shorter = 10;
     else if (!strcmp(s->text, "L")) m_emphasis = 24;
     else if (!strcmp(s->text, ">")) m_emphasis = 24;
     else if (!strcmp(s->text, "accent")) m_emphasis = 24;
@@ -129,14 +129,14 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
             writeMidiEvent(delta_tick, m_noteon, chan, s->ev.key + m_transpose, (m_cur_dyn + m_emphasis) * s->ev.value);
         } else {
             /* use note duration stored in noteoff to compute shortening */
-            qreal smaller = ((qreal) (s->dur_num * m_shorten) / 10) / (qreal) s->dur_den;
+            qreal smaller = ((qreal) (s->dur_num * m_shorter) / 10) / (qreal) s->dur_den;
             qreal cut = ((qreal) s->dur_num / (qreal) s->dur_den) - smaller;
             cut *= m_tick_per_unit * m_unit_per_whole;
 
             writeMidiEvent(delta_tick - cut, m_noteon, chan, s->ev.key + m_transpose, 0x00); /* note off */
             m_last_tick -= cut;
             /* reset after singlenote decorations */
-            m_shorten = m_in_slur;
+            m_shorter = m_in_slur;
             m_emphasis = 0; /* reset to normal dynamic */
         }
     }
@@ -173,8 +173,8 @@ void AbcSmf::onSMFWriteTrack(int track) {
     m_grace_tick = 0; /* grace group duration */
 
     m_grace_mod = 1.0; /* duration modified for graces */
-    m_in_slur = m_default_shorten;
-    m_shorten = m_in_slur; /* dur will be shortened of 1/10 of a unit */
+    m_in_slur = m_default_shorter;
+    m_shorter = m_in_slur;
 
     writeMetaEvent(0, 0x03, QString(v->v)); /* textual voice name */
 
@@ -219,10 +219,10 @@ void AbcSmf::onSMFWriteTrack(int track) {
         case ABC_SLUR: {
             if (strchr(s->text, '(')) {
                 sluring++;
-                m_shorten = m_in_slur = 100;
+                m_shorter = m_in_slur = 10;
             } else {
                 if (sluring < 2)
-                    m_shorten =  m_in_slur = m_default_shorten;
+                    m_shorter =  m_in_slur = m_default_shorter;
 
                 if (sluring > 0)
                     sluring--;
