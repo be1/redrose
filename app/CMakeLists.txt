@@ -11,11 +11,11 @@ else()
 endif()
 
 message("Qt version major is ${QT_VERSION_MAJOR}")
-find_package(Drumstick QUIET COMPONENTS File)
-if (NOT Drumstick_FOUND)
-	pkg_search_module(Drumstick REQUIRED drumstick-file)
+find_package(Smf QUIET)
+if (NOT Smf_FOUND)
+	pkg_search_module(Smf REQUIRED smf)
 endif()
-message("Drumstick version is ${Drumstick_VERSION}")
+message("Smf version is ${Smf_VERSION}")
 pkg_search_module(Spectre REQUIRED libspectre)
 message("Spectre version is ${Spectre_VERSION}")
 pkg_search_module(Fluidsynth REQUIRED fluidsynth>2.0)
@@ -83,14 +83,10 @@ else()
 	qt_add_translations(redrose IMMEDIATE_CALL)
 endif()
 
-if (Drumstick_VERSION VERSION_LESS 2.0)
-	set(DRUMSTICK_VERSION_MAJOR 1)
-else()
-	set(DRUMSTICK_VERSION_MAJOR 2)
-endif()
-
+target_compile_options(redrose PUBLIC
+	${Smf_CFLAGS}
+)
 target_compile_definitions(redrose PUBLIC
-	DRUMSTICK_VERSION_MAJOR=${DRUMSTICK_VERSION_MAJOR}
 	$<$<CONFIG:DEBUG>:EBUG>
 	$<$<CONFIG:RELEASE>:QT_NO_DEBUG_OUTPUT>
 )
@@ -100,7 +96,7 @@ set_target_properties(redrose PROPERTIES
 	MACOSX_BUNDLE ON
 )
 
-target_link_libraries(redrose PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport fluidsynth drumstick-file spectre abc ${CMAKE_DL_LIBS})
+target_link_libraries(redrose PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport fluidsynth smf spectre abc ${CMAKE_DL_LIBS})
 
 install(TARGETS redrose DESTINATION bin)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/locale DESTINATION ${PROJECT_DATADIR}/redrose)

@@ -20,9 +20,10 @@ public:
      * @param cont Unused, forwarded.
      */
     void generate(const QByteArray& inputbuf, const QString& inpputhint, int xopt, AbcProcess::Continuation cont);
-
-    /* DON't USE THIS: */
+#if 0
+    /* DON'T USE THIS: */
     const QDataStream* generate(const QByteArray& inputbuf, int xopt);
+#endif
 
 protected:
     void spawnMidiCompiler(const QString &prog, const QStringList& args, const QDir &wrk, AbcProcess::Continuation cont);

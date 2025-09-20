@@ -1,12 +1,7 @@
 #include <QDebug>
-#include <drumstick/qsmf.h>
 #include "abcsmf.h"
 
-#if DRUMSTICK_VERSION_MAJOR == 1
-AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : drumstick::QSmf(parent),
-#else
-AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : drumstick::File::QSmf(parent),
-#endif
+AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : QObject(parent),
         m_yy(yy),
         m_x(x),
         m_tune(nullptr),
@@ -29,19 +24,20 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : d
         m_control(0xb0),
         m_transpose(0),
         m_default_velocity(vel),
-        m_default_shorter(shorter)
+        m_default_shorter(shorter),
+        m_smf(nullptr)
 {
-    connect(this, &QSmf::signalSMFWriteTempoTrack, this, &AbcSmf::onSMFWriteTempoTrack);
-    connect(this, &QSmf::signalSMFWriteTrack, this, &AbcSmf::onSMFWriteTrack);
-
     m_tune = abc_find_tune(yy, x);
     if (!m_tune)
         return;
 
-    setDivision(DPQN);
-    //setTextCodec(QTextCodec::codecForName("UTF-8"));
-    setFileFormat(1);
-    setTracks(m_tune->count);
+    m_smf = smf_new();
+    if (smf_set_ppqn(m_smf, DPQN)) {
+        smf_delete(m_smf);
+        return;
+    }
+
+    writeAll();
 }
 
 void AbcSmf::reset() {
@@ -110,7 +106,7 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, ">)")) m_in_cresc = 0;
 }
 
-void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
+void AbcSmf::writeSingleNote(smf_track_t *track, char chan, struct abc_symbol* s) {
     long delta_tick;
 
     if (s->text[0] == 'Z' || s->text[0] == 'z' || s->text[0] == 'X' || s->text[0] == 'x') {
@@ -123,17 +119,17 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
         setDynamic(delta_tick);
 
         /* set note lyrics if any */
-        writeLyric(s->lyr);
+        writeLyric(track, s->lyr);
 
         if (s->ev.value) {
-            writeMidiEvent(delta_tick, m_noteon, chan, s->ev.key + m_transpose, (m_cur_dyn + m_emphasis) * s->ev.value);
+            writeMidiEvent(track, delta_tick, m_noteon | chan, s->ev.key + m_transpose, (m_cur_dyn + m_emphasis) * s->ev.value);
         } else {
             /* use note duration stored in noteoff to compute shortening */
             qreal smaller = ((qreal) (s->dur_num * m_shorter) / 10) / (qreal) s->dur_den;
             qreal cut = ((qreal) s->dur_num / (qreal) s->dur_den) - smaller;
             cut *= m_tick_per_unit * m_unit_per_whole;
 
-            writeMidiEvent(delta_tick - cut, m_noteon, chan, s->ev.key + m_transpose, 0x00); /* note off */
+            writeMidiEvent(track, delta_tick - cut, m_noteon | chan, s->ev.key + m_transpose, 0x00); /* note off */
             m_last_tick -= cut;
             /* reset after singlenote decorations */
             m_shorter = m_in_slur;
@@ -142,25 +138,28 @@ void AbcSmf::writeSingleNote(int chan, struct abc_symbol* s) {
     }
 }
 
-void AbcSmf::onSMFWriteTempoTrack(void) {
-    qDebug() << "tempo track?";
+void AbcSmf::writeAll(){
+    for (int i = 0; i < m_tune->count; i++) {
+        smf_track_t* track = smf_track_new();
+        smf_add_track(m_smf, track);
+        writeTrack(track, i);
+    }
 }
 
-void AbcSmf::onSMFWriteTrack(int track) {
+void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
+    char chan = voice_nr;
+
     reset();
 
     if (!m_tune)
         return;
 
     int sluring = 0;
-    int chan = track;
-    //long mspqn = 60000 / tempo;
-    //writeTempo(0, mspqn);
-    writeBpmTempo(0, m_tempo);
-    writeKeySignature(0, m_midi_keysig, m_midi_mode);
+    writeBpmTempo(track, m_tempo);
+    writeKeySignature(track, m_midi_keysig, m_midi_mode);
 
     /* transform voice nr 'track' from tune 'm_tune' into MIDI-aware voice 'v' */
-    struct abc_voice* v = abc_make_events_for_voice(m_tune, track);
+    struct abc_voice* v = abc_make_events_for_voice(m_tune, voice_nr);
 
     struct abc_symbol* s = v->first;
 
@@ -176,7 +175,7 @@ void AbcSmf::onSMFWriteTrack(int track) {
     m_in_slur = m_default_shorter;
     m_shorter = m_in_slur;
 
-    writeMetaEvent(0, 0x03, QString(v->v)); /* textual voice name */
+    writeName(track, v->v); /* textual voice name */
 
     while (s) {
         switch (s->kind) {
@@ -192,12 +191,12 @@ void AbcSmf::onSMFWriteTrack(int track) {
         }
         case ABC_CHANGE: {
             if (s->ev.type == EV_KEYSIG) {
-                writeKeySignature(0, s->ev.key, s->ev.value);
+                writeKeySignature(track, s->ev.key, s->ev.value);
             } else if (s->ev.type == EV_TEMPO) {
                 m_tempo = s->ev.value;
                 //long mspqn = 60000 / tempo;
                 //writeTempo(0, mspqn);
-                writeBpmTempo(0, m_tempo);
+                writeBpmTempo(track, m_tempo);
             } else if (s->ev.type == EV_METRIC) {
                 m_metric = &s->text[2];
             } else if (s->ev.type == EV_UNIT) {
@@ -209,7 +208,7 @@ void AbcSmf::onSMFWriteTrack(int track) {
             break;
         }
         case ABC_NOTE: {
-            writeSingleNote(chan, s);
+            writeSingleNote(track, chan, s);
             break;
         }
         case ABC_DECO: {
@@ -236,7 +235,7 @@ void AbcSmf::onSMFWriteTrack(int track) {
         case ABC_INST: {
             int val;
             if (sscanf(s->text, "MIDI program %d", &val)) {
-                writeMidiEvent(0, m_program, chan, val);
+                writeMidiEvent(track, 0, m_program | chan, val, -1);
             } else if (sscanf(s->text, "MIDI transpose %d", &val)) {
                 m_transpose = val;
             } else if (sscanf(s->text, "MIDI channel %d", &val)) {
@@ -247,8 +246,33 @@ void AbcSmf::onSMFWriteTrack(int track) {
         } /* switch */
         s = s->next;
     }
-    writeMetaEvent(0, 0x2F);
+    if (smf_track_add_eot_delta_pulses(track, 0)) {
+        abc_release_voice(v);
+        return;
+    }
+
     abc_release_voice(v);
+}
+
+void AbcSmf::saveToFile(const char *filename) {
+    if (smf_save(m_smf, filename))
+        ;
+}
+
+AbcSmf::~AbcSmf() {
+    for (int i = m_smf->number_of_tracks; i > 0; i--) {
+        smf_track_t* track = smf_get_track_by_number(m_smf, i);
+
+        for (int j = track->number_of_events; j > 0; j--) {
+            smf_event_t* event = smf_track_get_event_by_number(track, j);
+
+            smf_event_remove_from_track(event);
+            smf_event_delete(event);
+        }
+
+        smf_track_remove_from_smf(track);
+        smf_track_delete(track);
+    }
 }
 
 /* text must be %d/%d */
@@ -335,8 +359,63 @@ void AbcSmf::setDynamic(long dur) {
         m_cur_dyn = m_mark_dyn;
 }
 
-void AbcSmf::writeLyric(const char* l) {
+void AbcSmf::writeName(smf_track_t* track, const char* l) {
     if (l) {
-        writeMetaEvent(0, 0x05, QString(l));
+        smf_event_t* event = smf_event_new_textual(0x03, l);
+        smf_track_add_event_delta_pulses(track, event, 0);
     }
+}
+
+void AbcSmf::writeLyric(smf_track_t* track, const char* l) {
+    if (l) {
+        smf_event_t* event = smf_event_new_textual(0x05, l);
+        smf_track_add_event_delta_pulses(track, event, 0);
+    }
+}
+
+void AbcSmf::writeBpmTempo(smf_track_t *track, char val) {
+    unsigned int ms = 60000000;
+    unsigned int set = ms / val;
+    unsigned char set1 = (set & 0xFF0000) >> 16, set2 = (set & 0x00FF00) >> 8, set3 = set & 0x0000FF;
+    unsigned char data[6] = { 0xFF, 0x51, 0x03, set1, set2, set3 };
+    smf_event_t* event = smf_event_new_from_pointer(data, 6);
+    smf_track_add_event_delta_pulses(track, event, 0);
+}
+
+void AbcSmf::writeTimeSignature(smf_track_t *track, unsigned char numerator, unsigned char denominator) {
+    unsigned char pow = 0;
+    while (denominator >= 0) {
+        denominator <<= 1;
+        pow++;
+    }
+
+    unsigned char data[7] = { 0xFF, 0x58, 0x04, numerator, pow, 24, 8 };
+    smf_event_t* event = smf_event_new_from_pointer(data, 7);
+    smf_track_add_event_delta_pulses(track, event, 0);
+}
+
+void AbcSmf::writeKeySignature(smf_track_t *track, unsigned char keysig, unsigned char mode) {
+    unsigned char data[5] = { 0xFF, 0x59, 0x02, keysig, mode };
+    smf_event_t* event = smf_event_new_from_pointer(data, 5);
+    smf_track_add_event_delta_pulses(track, event, 0);
+}
+
+void AbcSmf::writeMidiEvent(smf_track_t *track, int delta, unsigned char ev_type, unsigned char ev_key, char ev_val) {
+    smf_event_t* event = smf_event_new_from_bytes(ev_type, ev_key, ev_val);
+    smf_track_add_event_delta_pulses(track, event, delta);
+}
+
+void AbcSmf::writeMetaEvent(smf_track_t *track, int delta, char ev_type, char ev_val) {
+    smf_event_t* event = smf_event_new_from_bytes(ev_type, ev_val, -1);
+    smf_track_add_event_delta_pulses(track, event, delta);
+}
+
+void AbcSmf::writeMetaEvent(smf_track_t *track, int delta, char ev_type) {
+    smf_event_t* event = smf_event_new_from_bytes(ev_type, -1, -1);
+    smf_track_add_event_delta_pulses(track, event, delta);
+}
+
+void AbcSmf::writeMetaEvent(smf_track_t *track, int delta, char ev_type, const char *ev_val) {
+    smf_event_t* event = smf_event_new_textual(ev_type, ev_val);
+    smf_track_add_event_delta_pulses(track, event, delta);
 }

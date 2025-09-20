@@ -71,14 +71,14 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
             setOutFile(path);
         }
 
-        smf->writeToFile(outFile());
+        smf->saveToFile(outFile().toStdString().c_str());
 
         delete smf;
         emit generated(0, "", cont);
         abc_release_yy(yy);
     }
 }
-
+#if 0
 const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
 {
     struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.size());
@@ -100,7 +100,7 @@ const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
         return stream;
     }
 }
-
+#endif
 void MidiGenerator::spawnMidiCompiler(const QString& prog, const QStringList &args, const QDir &wrk, AbcProcess::Continuation cont)
 {
     return spawnProgram(prog, args, AbcProcess::ProcessPlayer, wrk, cont);
