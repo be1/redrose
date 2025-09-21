@@ -35,7 +35,7 @@ parts:
       - qt6-tools-dev-tools
       - pkg-config
       - libspectre-dev
-      - libdrumstick-dev
+      - libsmf-dev
       - libfluidsynth-dev
       #stage-snaps:
       #- gtk-common-themes
@@ -80,7 +80,7 @@ parts:
       - qt6-translations-l10n
       - libgs10-common
       - libspectre1
-      - libdrumstick-file2t64
+      - libsmf0t64
       - timgm6mb-soundfont
       - libfluidsynth3
       - abcm2ps
