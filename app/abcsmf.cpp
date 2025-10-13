@@ -92,10 +92,10 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, ".")) m_shorter = 5;
     else if (!strcmp(s->text, "H")) m_shorter = 10;
     else if (!strcmp(s->text, "tenuto")) m_shorter = 10;
-    else if (!strcmp(s->text, "L")) m_emphasis = 24;
-    else if (!strcmp(s->text, ">")) m_emphasis = 24;
-    else if (!strcmp(s->text, "accent")) m_emphasis = 24;
-    else if (!strcmp(s->text, "emphasis")) m_emphasis = 24;
+    else if (!strcmp(s->text, "L")) m_emphasis = 5;
+    else if (!strcmp(s->text, ">")) m_emphasis = 5;
+    else if (!strcmp(s->text, "accent")) m_emphasis = 5;
+    else if (!strcmp(s->text, "emphasis")) m_emphasis = 5;
     else if (!strcmp(s->text, "crescendo(")) m_in_cresc = 1;
     else if (!strcmp(s->text, "<(")) m_in_cresc = 1;
     else if (!strcmp(s->text, "crescendo)")) m_in_cresc = 0;
@@ -122,7 +122,8 @@ void AbcSmf::writeSingleNote(smf_track_t *track, char chan, struct abc_symbol* s
         writeLyric(track, s->lyr);
 
         if (s->ev.value) {
-            writeMidiEvent(track, delta_tick, m_noteon | chan, s->ev.key + m_transpose, (m_cur_dyn + m_emphasis) * s->ev.value);
+            char vel = m_cur_dyn + m_emphasis > 127 ? 127 : m_cur_dyn + m_emphasis;
+            writeMidiEvent(track, delta_tick, m_noteon | chan, s->ev.key + m_transpose, vel * s->ev.value);
         } else {
             /* use note duration stored in noteoff to compute shortening */
             qreal smaller = ((qreal) (s->dur_num * m_shorter) / 10) / (qreal) s->dur_den;
