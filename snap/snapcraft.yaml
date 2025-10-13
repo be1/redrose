@@ -1,6 +1,6 @@
 name: redrose
 base: core24
-version: '0.5.30'
+version: '0.5.31'
 summary: Integrated ABC music notation environment
 description: |
   Redrose lets you write ABC musical scores in ABC notation and, with
