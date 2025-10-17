@@ -62,7 +62,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
 
     defaultDurationLabel = new QLabel(tr("Default Relative Note duration"));
     defaultDurationSpinBox = new QSpinBox;
-    defaultDurationSpinBox->setRange(1,10);
+    defaultDurationSpinBox->setRange(50,100);
     defaultDurationSpinBox->setValue(duration);
 
     if (player.toString() != LIBABC2SMF)

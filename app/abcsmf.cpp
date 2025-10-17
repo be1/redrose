@@ -91,9 +91,9 @@ void AbcSmf::applyDecoration(struct abc_symbol* s) {
     }
 
     if (!strcmp(s->text, "sfz")) m_mark_dyn = m_cur_dyn = 100;
-    else if (!strcmp(s->text, ".")) m_shorter = 5;
-    else if (!strcmp(s->text, "H")) m_shorter = 10;
-    else if (!strcmp(s->text, "tenuto")) m_shorter = 10;
+    else if (!strcmp(s->text, ".")) m_shorter = 50;
+    else if (!strcmp(s->text, "H")) m_shorter = 100;
+    else if (!strcmp(s->text, "tenuto")) m_shorter = 100;
     else if (!strcmp(s->text, "L")) m_emphasis = 5;
     else if (!strcmp(s->text, ">")) m_emphasis = 5;
     else if (!strcmp(s->text, "accent")) m_emphasis = 5;
@@ -217,7 +217,7 @@ long AbcSmf::computeCut(struct abc_symbol* s) {
 
     /* use note duration stored in note to compute shortening */
     qreal ticks_per_whole = m_tick_per_unit * m_unit_per_whole;
-    qreal smaller = ticks_per_whole * ((qreal) (s->dur_num * m_shorter) / 10) / (qreal) s->dur_den;
+    qreal smaller = ticks_per_whole * ((qreal) (s->dur_num * m_shorter) / 100) / (qreal) s->dur_den;
     qreal cut = ticks_per_whole * (qreal) s->dur_num / (qreal) s->dur_den - smaller;
     return cut;
 }
@@ -384,7 +384,7 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
         case ABC_SLUR: {
             if (strchr(s->text, '(')) {
                 sluring++;
-                m_shorter = m_in_slur = 10;
+                m_shorter = m_in_slur = 100;
             } else {
                 if (sluring < 2)
                     m_shorter = m_in_slur = m_default_shorter;
