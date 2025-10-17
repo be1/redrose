@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QCheckBox>
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -20,6 +21,7 @@ public:
     QString getDriver();
     QString getSoundfont();
     int getVelocity();
+    bool getExpression();
     int getDuration();
     double getVolume();
 
@@ -45,6 +47,9 @@ private:
 
     QLabel* defaultVelocityLabel;
     QSpinBox* defaultVelocitySpinBox;
+
+    QLabel* expressionLabel;
+    QCheckBox* expressionCheckBox;
 
     QLabel* defaultDurationLabel;
     QSpinBox* defaultDurationSpinBox;

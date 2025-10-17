@@ -45,11 +45,14 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
     Settings settings;
     QVariant vel = settings.value(PLAYER_VELOCITY);
     QVariant dur = settings.value(PLAYER_DURATION);
+    QVariant expr = settings.value(PLAYER_EXPRESSION);
 
     if (!vel.isValid())
         vel = 80;
     if (!dur.isValid())
-        dur = 10;
+        dur = 95;
+    if (!expr.isValid())
+        expr = false;
 
     QString errstr;
     struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.size());
@@ -58,7 +61,7 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
         emit generated(1, errstr, cont);
         abc_release_yy(yy);
     } else {
-        AbcSmf *smf = new AbcSmf(yy, vel.toInt(), dur.toInt(), xopt, this);
+        AbcSmf *smf = new AbcSmf(yy, vel.toInt(), dur.toInt(), expr.toBool(), xopt, this);
         if (!smf) {
                 emit generated(1, tr("Out of memory"), cont);
                 abc_release_yy(yy);

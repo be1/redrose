@@ -55,10 +55,26 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
 
     mainLayout->addLayout(vlhbox);
 
+    /* expression */
+    bool expression = settings.value(PLAYER_EXPRESSION).toBool();
+    expressionLabel = new QLabel(tr("Manage MIDI expression"));
+    expressionCheckBox = new QCheckBox;
+    expressionCheckBox->setChecked(expression);
+
+    if (player.toString() != LIBABC2SMF)
+        expressionCheckBox->setEnabled(false);
+
+    expressionLabel->setBuddy(expressionCheckBox);
+    QHBoxLayout* exhbox = new QHBoxLayout;
+    exhbox->addWidget(expressionLabel);
+    exhbox->addWidget(expressionCheckBox);
+
+    mainLayout->addLayout(exhbox);
+
     /* duration */
     int duration = settings.value(PLAYER_DURATION).toInt();
-    if (duration <= 0)
-        duration = 1;
+    if (duration <= 10) /* be compatible with previous version */
+        duration *= 10;
 
     defaultDurationLabel = new QLabel(tr("Default Relative Note duration"));
     defaultDurationSpinBox = new QSpinBox;
@@ -178,6 +194,11 @@ int PlayerPrefDialog::getVelocity()
     return defaultVelocitySpinBox->value();
 }
 
+bool PlayerPrefDialog::getExpression()
+{
+    return expressionCheckBox->isChecked();
+}
+
 int PlayerPrefDialog::getDuration()
 {
     return defaultDurationSpinBox->value();
@@ -218,4 +239,5 @@ void PlayerPrefDialog::onPlayerComboChanged(const QString& text)
     bool enable = (text == LIBABC2SMF);
     defaultVelocitySpinBox->setEnabled(enable);
     defaultDurationSpinBox->setEnabled(enable);
+    expressionCheckBox->setEnabled(enable);
 }

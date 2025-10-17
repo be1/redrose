@@ -1,7 +1,7 @@
 #include <QDebug>
 #include "abcsmf.h"
 
-AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : QObject(parent),
+AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, bool expr, int x, QObject *parent) : QObject(parent),
         m_yy(yy),
         m_x(x),
         m_tune(nullptr),
@@ -21,6 +21,7 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : Q
         m_transpose(0),
         m_default_velocity(vel),
         m_default_shorter(shorter),
+        m_manage_expression(expr),
         m_smf(nullptr)
 {
     m_tune = abc_find_tune(yy, x);
@@ -281,8 +282,10 @@ void AbcSmf::writeSingleNoteEvent(smf_track_t* track, unsigned char chan, struct
                     break;
                 }
 
-                if (writeExpression(track, ev.first, chan, ev.second)) {
-                    next_note_delta_tick -= ev.first;
+                if (m_manage_expression) {
+                    if (writeExpression(track, ev.first, chan, ev.second)) {
+                        next_note_delta_tick -= ev.first;
+                    }
                 }
             }
 
@@ -340,7 +343,8 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
 
     writeName(track, v->v); /* textual voice name */
 
-    writeExpression (track, 0, chan, m_default_expression);
+    if (m_manage_expression)
+        writeExpression (track, 0, chan, m_default_expression);
 
     /* process list of symbols */
     while (s) {
@@ -406,7 +410,8 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
                 m_transpose = val;
             } else if (sscanf(s->text, "MIDI channel %d", &val)) {
                 chan = val -1;
-                writeExpression (track, 0, chan, m_default_expression);
+                if (m_manage_expression)
+                    writeExpression (track, 0, chan, m_default_expression);
             }
             break;
         }

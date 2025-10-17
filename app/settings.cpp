@@ -15,6 +15,10 @@ void Settings::check()
     if (!velocity.isValid())
         setValue(PLAYER_VELOCITY, 80);
 
+    QVariant expression = value(PLAYER_EXPRESSION);
+    if (!expression.isValid())
+        setValue(PLAYER_VELOCITY, false);
+
     QVariant duration = value(PLAYER_DURATION);
     if (!duration.isValid() || duration.toInt() <= 0)
         setValue(PLAYER_DURATION, 8);
@@ -99,6 +103,8 @@ void Settings::check()
 void Settings::reset()
 {
     setValue(PLAYER_VELOCITY, 80);
+
+    setValue(PLAYER_EXPRESSION, false);
 
     setValue(PLAYER_DURATION, 8);
 

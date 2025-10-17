@@ -9,7 +9,7 @@ class AbcSmf : public QObject
 {
     Q_OBJECT
 public:
-    explicit AbcSmf(struct abc* yy, int vel, int short_den, int x = 1, QObject *parent = nullptr);
+    explicit AbcSmf(struct abc* yy, int vel = 96, int shorter = 9, bool expr = 0, int x = 1, QObject *parent = nullptr);
     void reset();
     void writeAll();
     void saveToFile(const char* filename);
@@ -82,6 +82,7 @@ private:
     unsigned char m_climax_velocity = 127; /* can be pppp or ffff */
     long m_default_shorter;
     int m_chord_cc_done = 0;
+    bool m_manage_expression = false;
     smf_t* m_smf;
 };
 
