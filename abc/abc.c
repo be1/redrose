@@ -777,10 +777,15 @@ void abc_chord_append(struct abc* yy, const char* yytext)
     new->text = strdup(yytext);
     if (new->text[0] == ']') {
         struct abc_symbol* s = abc_chord_rewind(new->prev);
-        while (s->next && s->next->text[0] != ']') {
+        while (s && s->kind != ABC_NOTE)
             s = s->next;
+
+        struct abc_symbol* first = s;
+        while (s && s->text[0] != ']') {
             if (s->kind == ABC_NOTE)
-                s->in_chord = 1;
+                s->of_chord = first;
+
+            s = s->next;
         }
     }
 }
@@ -1524,6 +1529,7 @@ static int event_cmp(const void* a, const void* b) {
 
 static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
     int in_chord = 0;
+    struct abc_symbol* first_in_chord = NULL;
 
     /* use absolute ticks */
     long tick_num = 0, tick_den = 1;
@@ -1571,9 +1577,9 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                            struct abc_symbol* dup = abc_dup_symbol(s);
                                            starts[start_count - 1] = *dup;
                                            starts[start_count - 1].ev.value = 1;
+                                           starts[start_count - 1].of_chord == starts;
 
                                            free(dup);
-
                                        } else {
                                            /* if we have a BAR, insert it before chord */
                                            struct abc_symbol* new = NULL;
@@ -1592,6 +1598,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                        struct abc_symbol* dup = abc_dup_symbol(&starts[i]);
                                        stops[i] = *dup;
                                        stops[i].ev.value = 0;
+                                       stops[i].of_chord == starts;
 
                                        free(dup);
                                    }
@@ -1601,7 +1608,8 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                        struct abc_symbol* e = &stops[i];
                                        abc_frac_add(&e->ev.start_num, &e->ev.start_den, e->dur_num, e->dur_den);
 
-                                       /* we do not erase note duration in noteoff event */
+                                       /* we do not erase note duration in noteoff event.
+                                        this allow note managment to be on/off agnostic */
                                    }
 
                                    struct abc_symbol* events = NULL;
@@ -1610,6 +1618,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                    for (int i = 0; i < start_count; i++) {
                                        struct abc_symbol* dup = abc_dup_symbol(&starts[i]);
                                        events[i] = *dup;
+                                       events[i].of_chord == events;
 
                                        free(dup);
                                    }
@@ -1625,6 +1634,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                    for (int i = 0; i < stop_count; i++) {
                                        struct abc_symbol* dup = abc_dup_symbol(&stops[i]);
                                        events[i + start_count] = *dup;
+                                       events[i].of_chord == events;
 
                                        free(dup);
                                    }
@@ -1640,8 +1650,15 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                    /* sort in time on/off events */
                                    qsort(events, event_count, sizeof (*events), event_cmp);
 
+                                   /* attach events to first note in chord */
+                                   struct abc_symbol* first = NULL;
+                                   if (event_count)
+                                       first = abc_dup_symbol(&events[0]);
+
                                    for (int i = 0; i < event_count; i++) {
-                                       abc_voice_append_symbol(voice, abc_dup_symbol(&events[i]));
+                                       struct abc_symbol* note_ev = abc_dup_symbol(&events[i]);
+                                       note_ev->of_chord = first;
+                                       abc_voice_append_symbol(voice, note_ev);
                                    }
 
                                    /* we must use the complete chord duration as duration to add to main tick! */

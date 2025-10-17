@@ -18,21 +18,30 @@ public:
 private:
 #define DPQN 960 /* divisions per quarter note */
 
-    void manageDecoration(struct abc_symbol* s);
-    void writeSingleNote(smf_track_t* track, char voice_nr, struct abc_symbol* s);
+    bool isDynamicMark(const struct abc_symbol* deco);
+    bool isDynamicEnd(const abc_symbol *deco);
+    char getDynamic(const char* mark, unsigned char base, unsigned char dflt);
+    void applyDecoration(struct abc_symbol* s);
+    void writeSingleNoteEvent(smf_track_t* track, unsigned char voice_nr, struct abc_symbol* s);
     void getNumDen(const char* text, long* num, long* den);
     int getSMFKeySignature(const char* text, int* mode);
-    void setDynamic(long dur);
+    unsigned char computeNextVelocity(long dur, unsigned char cur);
+    unsigned char getDynAfter(struct abc_symbol* note, unsigned char base, unsigned char dflt);
+    int writeExpression (smf_track_t* track, long delta, unsigned char chan, unsigned char value);
     void writeName(smf_track_t* track, const char* l);
     void writeLyric(smf_track_t *track, const char* l);
     void writeBpmTempo(smf_track_t* track, char val);
     void writeTimeSignature(smf_track_t *track, unsigned char numerator, unsigned char denominator);
     void writeKeySignature(smf_track_t *track, unsigned char keysig, unsigned char mode);
-    void writeMidiEvent(smf_track_t* track, int delta, unsigned char ev_type, unsigned char ev_key, char ev_val);
-    void writeMetaEvent(smf_track_t* track, int delta, char ev_type);
-    void writeMetaEvent(smf_track_t* track, int delta, char ev_type, char ev_val);
-    void writeMetaEvent(smf_track_t* track, int delta, char ev_type, const char* ev_val);
+    void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type, unsigned char ev_key, unsigned char ev_val);
+    void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type);
+    void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type, unsigned char ev_val);
+    void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type, const char* ev_val);
     void writeTrack(smf_track_t *t, int voice_nr);
+
+    struct abc_symbol* findClosingDynamics(struct abc_symbol* s, long* duration);
+    long computeCut(struct abc_symbol* s);
+    void generateExpressionArray(unsigned char climax);
 
     struct abc* m_yy; /* takes ownership of yy */
     int m_x;
@@ -47,22 +56,32 @@ private:
     long m_unit_per_whole;     /* units per whole note */
     long m_tempo;              /* quarter per minute */
 
+    QList<QPair<long, unsigned char>> m_expression_array; /* list of <tick, value> */
+    const unsigned char m_expression_ticks = 24;
+    const unsigned char m_minimum_expression = 40;
+    const unsigned char m_default_expression = 80;
+    unsigned char m_cur_expression = 0;
+    int m_first_note_in_cresc = 0;
+    long m_cresc_duration = 0;
+    struct abc_symbol* m_last_note_in_cresc = nullptr;
     int m_emphasis;      /* per note temporary delta velocity */
     long m_last_tick;
-    long m_note_dur;     /* note duration */
     int m_in_slur;
-    int m_shorter;       /* [1-10] 1 is shortest, 10 is 100% duration */
+    long m_shorter;       /* [1-10] 1 is shortest, 10 is 100% duration */
     double m_grace_mod;  /* duration modified for grace notes */
     int m_in_cresc;
-    unsigned char m_mark_dyn;
-    unsigned char m_cur_dyn;
+    unsigned char m_mark_dyn = 80;
+    unsigned char m_cur_dyn = 0;
     long m_grace_tick;   /* ticks elapsed by a grace group */
-    unsigned char m_noteon;
-    unsigned char m_program;
-    unsigned char m_control;
-    int m_transpose;
-    int m_default_velocity;
-    int m_default_shorter;
+    const unsigned char m_noteon = 0x90;
+    const unsigned char m_program = 0xc0;
+    const unsigned char m_control = 0xb0;
+    long m_transpose;
+    unsigned char m_default_velocity;
+    unsigned char m_minimum_velocity = 40;
+    unsigned char m_climax_velocity = 127; /* can be pppp or ffff */
+    long m_default_shorter;
+    int m_chord_cc_done = 0;
     smf_t* m_smf;
 };
 

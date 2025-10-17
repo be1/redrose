@@ -13,15 +13,11 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, int x, QObject *parent) : Q
         m_tempo(0),
         m_emphasis(0),
         m_last_tick(0),
-        m_note_dur(0),
         m_in_slur(shorter),
         m_in_cresc(0),
         m_mark_dyn(vel),
         m_cur_dyn(vel),
         m_grace_tick(0),
-        m_noteon(0x90),
-        m_program(0xc0),
-        m_control(0xb0),
         m_transpose(0),
         m_default_velocity(vel),
         m_default_shorter(shorter),
@@ -75,20 +71,26 @@ void AbcSmf::reset() {
         m_keysig = kh->text;
         m_midi_keysig = getSMFKeySignature(m_keysig, &m_midi_mode);
     }
+
+    /* reset dynamics */
+    m_cur_dyn = m_mark_dyn = m_default_velocity;
+    m_cur_expression = 0; /* will change on track start */
 }
 
-void AbcSmf::manageDecoration(struct abc_symbol* s) {
-    if (!strcmp(s->text, "pppp")) m_mark_dyn = m_cur_dyn = 8;
-    else if (!strcmp(s->text, "ppp")) m_mark_dyn = m_cur_dyn = 16;
-    else if (!strcmp(s->text, "pp")) m_mark_dyn = m_cur_dyn = 32;
-    else if (!strcmp(s->text, "p")) m_mark_dyn = m_cur_dyn = 48;
-    else if (!strcmp(s->text, "mp")) m_mark_dyn = m_cur_dyn = 64;
-    else if (!strcmp(s->text, "mf")) m_mark_dyn = m_cur_dyn = 80;
-    else if (!strcmp(s->text, "f")) m_mark_dyn = m_cur_dyn = 96;
-    else if (!strcmp(s->text, "ff")) m_mark_dyn = m_cur_dyn = 112;
-    else if (!strcmp(s->text, "fff")) m_mark_dyn = m_cur_dyn = 124;
-    else if (!strcmp(s->text, "ffff")) m_mark_dyn = m_cur_dyn = 127;
-    else if (!strcmp(s->text, "sfz")) m_mark_dyn = m_cur_dyn = 100;
+bool AbcSmf::isDynamicEnd(const struct abc_symbol* deco) {
+    if (deco->kind == ABC_DECO) {
+        return (!strcmp(deco->text, "crescendo)") || !strcmp(deco->text, "<)") || !strcmp(deco->text, "diminuendo)") || !strcmp(deco->text, ">)"));
+    }
+
+    return false;
+}
+
+void AbcSmf::applyDecoration(struct abc_symbol* s) {
+    if (isDynamicMark(s)) {
+        m_mark_dyn = m_cur_dyn = getDynamic(s->text, m_minimum_velocity, m_cur_dyn);
+    }
+
+    if (!strcmp(s->text, "sfz")) m_mark_dyn = m_cur_dyn = 100;
     else if (!strcmp(s->text, ".")) m_shorter = 5;
     else if (!strcmp(s->text, "H")) m_shorter = 10;
     else if (!strcmp(s->text, "tenuto")) m_shorter = 10;
@@ -96,45 +98,203 @@ void AbcSmf::manageDecoration(struct abc_symbol* s) {
     else if (!strcmp(s->text, ">")) m_emphasis = 5;
     else if (!strcmp(s->text, "accent")) m_emphasis = 5;
     else if (!strcmp(s->text, "emphasis")) m_emphasis = 5;
-    else if (!strcmp(s->text, "crescendo(")) m_in_cresc = 1;
-    else if (!strcmp(s->text, "<(")) m_in_cresc = 1;
-    else if (!strcmp(s->text, "crescendo)")) m_in_cresc = 0;
-    else if (!strcmp(s->text, "<)")) m_in_cresc = 0;
-    else if (!strcmp(s->text, "diminuendo(")) m_in_cresc = -1;
-    else if (!strcmp(s->text, ">(")) m_in_cresc = -1;
-    else if (!strcmp(s->text, "diminuendo)")) m_in_cresc = 0;
-    else if (!strcmp(s->text, ">)")) m_in_cresc = 0;
+    else if (!strcmp(s->text, "crescendo(") || !strcmp(s->text, "<(")) {
+        m_in_cresc = 1;
+        m_first_note_in_cresc = 1;
+        m_cresc_duration = 0;
+    }
+    else if (!strcmp(s->text, "crescendo)") || !strcmp(s->text, "<)")) {
+        m_in_cresc = m_cresc_duration = 0;
+    }
+    else if (!strcmp(s->text, "diminuendo(") || !strcmp(s->text, ">(")) {
+        m_in_cresc = -1;
+        m_first_note_in_cresc = 1;
+        m_cresc_duration = 0;
+    }
+    else if (!strcmp(s->text, "diminuendo)") ||!strcmp(s->text, ">)")) {
+        m_in_cresc = m_cresc_duration = 0;
+    }
+
+    if (m_first_note_in_cresc) {
+        struct abc_symbol* last_note_in_cresc = findClosingDynamics(s, &m_cresc_duration);
+        m_climax_velocity = getDynAfter(last_note_in_cresc, m_minimum_velocity, m_cur_dyn);
+        unsigned char expression_climax = getDynAfter(last_note_in_cresc, m_minimum_expression, m_cur_expression);
+
+        long last_cut = computeCut(last_note_in_cresc);
+        m_cresc_duration -= last_cut;
+        /* spread at most 24 expression events over (de)crescendo. */
+        generateExpressionArray(expression_climax);
+        m_first_note_in_cresc = 0;
+    }
 }
 
-void AbcSmf::writeSingleNote(smf_track_t *track, char chan, struct abc_symbol* s) {
-    long delta_tick;
+bool AbcSmf::isDynamicMark(const struct abc_symbol* deco) {
+    if (deco->kind == ABC_DECO) {
+        return (!strncmp(deco->text, "p", 1) || !strncmp(deco->text, "f", 1) || !strncmp(deco->text, "mp", 2) || !strncmp(deco->text, "mf", 2));
+    }
+
+    return false;
+}
+
+unsigned char AbcSmf::getDynAfter(struct abc_symbol* deco, unsigned char base, unsigned char dflt) {
+    while (deco) {
+        if (isDynamicEnd(deco)) {
+            struct abc_symbol* s = deco->next;
+            while (s) {
+                if(isDynamicMark(s))
+                    return getDynamic(s->text, base, dflt);
+
+                if (s->kind == ABC_NOTE)
+                    break;
+
+                s = s->next;
+            }
+
+            /* no mark found */
+            if (m_in_cresc > 0) {
+                return dflt + 8 > 127 ? dflt : dflt + 16;
+            } else if (m_in_cresc < 0) {
+                return dflt - 8 < base ? dflt : dflt - 16;
+            } else {
+                return m_mark_dyn;
+            }
+        }
+
+        deco = deco->next;
+    }
+
+    return m_mark_dyn;
+}
+
+struct abc_symbol* AbcSmf::findClosingDynamics(struct abc_symbol* s, long* duration) {
+    /* input s must be the first note in (de)cresc */
+    struct abc_symbol *last_in_cresc = nullptr;
+    long cresc_duration = 0;
+    struct abc_symbol* same_chord = nullptr;
+
+    /* until we find a (de)crescendo end */
+    while (s && s->kind != ABC_DECO || (strcmp(s->text, "crescendo)") && strcmp(s->text, "<)") && strcmp(s->text, "diminuendo)") && strcmp(s->text, ">)"))) {
+        /* use noteOn only */
+        if (s->kind == ABC_NOTE && s->ev.value) {
+
+            /* some chords have short and long (or tied) notes.
+             * we look for the first (leftmost) note of the chord.
+             * if no chord, we take the single note duration too.
+             */
+            if (!s->of_chord || s->of_chord != same_chord) {
+                cresc_duration += m_tick_per_unit * m_unit_per_whole * (qreal) s->dur_num / (qreal) s->dur_den;
+                same_chord = s->of_chord;
+            }
+
+            last_in_cresc = s;
+        }
+
+        s = s->next;
+    }
+
+    if (duration)
+        *duration = cresc_duration;
+
+    return last_in_cresc;
+}
+
+int AbcSmf::writeExpression (smf_track_t* track, long delta, unsigned char chan, unsigned char value) {
+    if (value != m_cur_expression) {
+        writeMidiEvent(track, delta, (unsigned char) (0xb0 | chan), 11, value);
+
+        m_cur_expression = value;
+        return 1;
+    }
+
+    return 0;
+}
+
+long AbcSmf::computeCut(struct abc_symbol* s) {
+    /* this works both for noteOn and noteOff since libabc duplicates the values */
+
+    if (!s)
+        return 0;
+
+    /* use note duration stored in note to compute shortening */
+    qreal ticks_per_whole = m_tick_per_unit * m_unit_per_whole;
+    qreal smaller = ticks_per_whole * ((qreal) (s->dur_num * m_shorter) / 10) / (qreal) s->dur_den;
+    qreal cut = ticks_per_whole * (qreal) s->dur_num / (qreal) s->dur_den - smaller;
+    return cut;
+}
+
+void AbcSmf::generateExpressionArray(unsigned char climax) {
+    long cc_delta_tick = (qreal) m_cresc_duration / m_expression_ticks;
+    char diff = qAbs(climax - m_cur_expression);
+    qreal interval = (qreal) diff / (qreal) m_expression_ticks;
+
+    for (long i = 0; i < m_expression_ticks; i++) {
+        unsigned char expression = m_cur_expression + (m_in_cresc * i) * interval;
+
+        /* (should not happen) */
+        if (expression >= 127 || expression <= m_minimum_expression) /* "pppp" */
+            break;
+
+        m_expression_array.append(QPair<long, unsigned char>(cc_delta_tick, expression));
+    }
+}
+
+void AbcSmf::writeSingleNoteEvent(smf_track_t* track, unsigned char chan, struct abc_symbol* s) {
+    /* s->kind must be of ABC_NOTE. We won't check it... */
 
     if (s->text[0] == 'Z' || s->text[0] == 'z' || s->text[0] == 'X' || s->text[0] == 'x') {
-        /* no event */
+        /* silence means no event */
     } else {
-        delta_tick = m_tick_per_unit * m_unit_per_whole * ((qreal) s->ev.start_num / (qreal) s->ev.start_den) - m_last_tick;
-        m_last_tick += delta_tick;
+        /* can be noteOn or noteOff */
 
-        /* modify cur_dyn from context */
-        setDynamic(delta_tick);
+        const qreal whole_in_ticks = m_tick_per_unit * m_unit_per_whole;
+        long next_note_tick = whole_in_ticks * ((qreal) s->ev.start_num / (qreal) s->ev.start_den);
+        long next_note_delta_tick = next_note_tick - m_last_tick;
 
         /* set note lyrics if any */
-        writeLyric(track, s->lyr);
+        //writeLyric(track, s->lyr);
 
         if (s->ev.value) {
-            char vel = m_cur_dyn + m_emphasis > 127 ? 127 : m_cur_dyn + m_emphasis;
-            writeMidiEvent(track, delta_tick, m_noteon | chan, s->ev.key + m_transpose, vel * s->ev.value);
-        } else {
-            /* use note duration stored in noteoff to compute shortening */
-            qreal smaller = ((qreal) (s->dur_num * m_shorter) / 10) / (qreal) s->dur_den;
-            qreal cut = ((qreal) s->dur_num / (qreal) s->dur_den) - smaller;
-            cut *= m_tick_per_unit * m_unit_per_whole;
+            /* this 's' noteOn duration is */
+            const long note_duration = whole_in_ticks * (qreal) s->dur_num / (qreal) s->dur_den;
 
-            writeMidiEvent(track, delta_tick - cut, m_noteon | chan, s->ev.key + m_transpose, 0x00); /* note off */
-            m_last_tick -= cut;
-            /* reset after singlenote decorations */
+            /* noteOn event */
+            unsigned char vel = m_cur_dyn + m_emphasis > 127 ? 127 : m_cur_dyn + m_emphasis;
+            vel = vel < m_minimum_velocity ? m_minimum_velocity : vel;
+
+            writeMidiEvent(track, next_note_delta_tick, m_noteon | chan, s->ev.key + m_transpose, vel * s->ev.value);
+
+            /* modify next cur_dyn *after*: this allow start of (de)cresc to be smooth (even if note_duration isn't next one) */
+            m_cur_dyn = computeNextVelocity(note_duration, m_cur_dyn);
+
+            /* update last tick */
+            m_last_tick = next_note_tick;
+        } else {
+            /* noteOff cut (see user prefs) */
+            long cut = computeCut(s);
+
+            /* write a series of expression events until the current note tick */
+            while (!m_expression_array.isEmpty()) {
+                QPair<long, unsigned char> ev = m_expression_array.takeFirst();
+
+                if (ev.first >= next_note_delta_tick - cut) {
+                    m_expression_array.prepend(ev);
+                    break;
+                }
+
+                if (writeExpression(track, ev.first, chan, ev.second)) {
+                    next_note_delta_tick -= ev.first;
+                }
+            }
+
+            /* now write actual noteOff (with cut) */
+            writeMidiEvent(track, next_note_delta_tick - cut, m_noteon | chan, s->ev.key + m_transpose, 0x00); /* note off */
+
+            /* reset duration and length after singlenote decorations */
             m_shorter = m_in_slur;
-            m_emphasis = 0; /* reset to normal dynamic */
+            m_emphasis = 0;
+
+            /* update last tick */
+            m_last_tick = next_note_tick - cut;
         }
     }
 }
@@ -173,11 +333,16 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
     m_grace_tick = 0; /* grace group duration */
 
     m_grace_mod = 1.0; /* duration modified for graces */
+
+    /* by default, we are not in slurs */
     m_in_slur = m_default_shorter;
     m_shorter = m_in_slur;
 
     writeName(track, v->v); /* textual voice name */
 
+    writeExpression (track, 0, chan, m_default_expression);
+
+    /* process list of symbols */
     while (s) {
         switch (s->kind) {
         case ABC_NUP:
@@ -188,7 +353,7 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
         case ABC_GCHORD:
         case ABC_EOL:
         case ABC_SPACE: {
-                break;
+            break;
         }
         case ABC_CHANGE: {
             if (s->ev.type == EV_KEYSIG) {
@@ -209,11 +374,11 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
             break;
         }
         case ABC_NOTE: {
-            writeSingleNote(track, chan, s);
+            writeSingleNoteEvent(track, chan, s);
             break;
         }
         case ABC_DECO: {
-            manageDecoration(s);
+            applyDecoration(s);
             break;
         }
         case ABC_SLUR: {
@@ -222,7 +387,7 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
                 m_shorter = m_in_slur = 10;
             } else {
                 if (sluring < 2)
-                    m_shorter =  m_in_slur = m_default_shorter;
+                    m_shorter = m_in_slur = m_default_shorter;
 
                 if (sluring > 0)
                     sluring--;
@@ -236,11 +401,12 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
         case ABC_INST: {
             int val;
             if (sscanf(s->text, "MIDI program %d", &val)) {
-                writeMidiEvent(track, 0, m_program | chan, val, -1);
+                writeMidiEvent(track, 0, m_program | chan, val);
             } else if (sscanf(s->text, "MIDI transpose %d", &val)) {
                 m_transpose = val;
             } else if (sscanf(s->text, "MIDI channel %d", &val)) {
                 chan = val -1;
+                writeExpression (track, 0, chan, m_default_expression);
             }
             break;
         }
@@ -274,6 +440,22 @@ AbcSmf::~AbcSmf() {
         smf_track_remove_from_smf(track);
         smf_track_delete(track);
     }
+}
+
+char AbcSmf::getDynamic(const char* text, unsigned char base, unsigned char dflt)
+{
+    if (!strcmp(text, "pppp")) return base; /* 40 */
+    else if (!strcmp(text, "ppp")) return base + 16;
+    else if (!strcmp(text, "pp")) return base + 24;
+    else if (!strcmp(text, "p")) return base + 32;
+    else if (!strcmp(text, "mp")) return base + 40;
+    else if (!strcmp(text, "mf")) return base + 48;
+    else if (!strcmp(text, "f")) return base + 56;
+    else if (!strcmp(text, "ff")) return base + 64;
+    else if (!strcmp(text, "fff")) return base + 72;
+    else if (!strcmp(text, "ffff")) return base + 80;
+    else if (!strcmp(text, "sfz")) return base + 80; /* 120 */
+    return dflt;
 }
 
 /* text must be %d/%d */
@@ -349,15 +531,19 @@ int AbcSmf::getSMFKeySignature(const char* text, int* mode) {
     return 0;
 }
 
-void AbcSmf::setDynamic(long dur) {
-    /* dynamics */
-    long d = (dur > 4 * m_tick_per_unit ? 4 : dur > 2 * m_tick_per_unit ? 2 : 1);
+unsigned char AbcSmf::computeNextVelocity(long dur, unsigned char curvel) {
+    /* the more long the note duration, the more delta_dyn */
+    long delta_dyn = m_climax_velocity * (qreal) dur / (qreal) m_cresc_duration;
+
     if (m_in_cresc > 0)
-        m_cur_dyn = (m_cur_dyn + d) < 128 ? m_cur_dyn + d : 127;
+        /* in crescendo */
+        return (curvel + delta_dyn) < m_climax_velocity ? curvel + delta_dyn : m_climax_velocity;
     else if (m_in_cresc < 0)
-        m_cur_dyn = (m_cur_dyn - d) > 30 ? m_cur_dyn - d : 30;
+        /* in diminuendo */
+        return (curvel - delta_dyn) > m_climax_velocity ? curvel - delta_dyn : m_climax_velocity;
     else
-        m_cur_dyn = m_mark_dyn;
+        /* a dynamic has been explicitely marked */
+        return m_mark_dyn;
 }
 
 void AbcSmf::writeName(smf_track_t* track, const char* l) {
@@ -401,22 +587,22 @@ void AbcSmf::writeKeySignature(smf_track_t *track, unsigned char keysig, unsigne
     smf_track_add_event_delta_pulses(track, event, 0);
 }
 
-void AbcSmf::writeMidiEvent(smf_track_t *track, int delta, unsigned char ev_type, unsigned char ev_key, char ev_val) {
+void AbcSmf::writeMidiEvent(smf_track_t *track, long delta, unsigned char ev_type, unsigned char ev_key, unsigned char ev_val) {
     smf_event_t* event = smf_event_new_from_bytes(ev_type, ev_key, ev_val);
     smf_track_add_event_delta_pulses(track, event, delta);
 }
 
-void AbcSmf::writeMetaEvent(smf_track_t *track, int delta, char ev_type, char ev_val) {
+void AbcSmf::writeMidiEvent(smf_track_t *track, long delta, unsigned char ev_type, unsigned char ev_val) {
     smf_event_t* event = smf_event_new_from_bytes(ev_type, ev_val, -1);
     smf_track_add_event_delta_pulses(track, event, delta);
 }
 
-void AbcSmf::writeMetaEvent(smf_track_t *track, int delta, char ev_type) {
+void AbcSmf::writeMidiEvent(smf_track_t *track, long delta, unsigned char ev_type) {
     smf_event_t* event = smf_event_new_from_bytes(ev_type, -1, -1);
     smf_track_add_event_delta_pulses(track, event, delta);
 }
 
-void AbcSmf::writeMetaEvent(smf_track_t *track, int delta, char ev_type, const char *ev_val) {
+void AbcSmf::writeMidiEvent(smf_track_t *track, long delta, unsigned char ev_type, const char *ev_val) {
     smf_event_t* event = smf_event_new_textual(ev_type, ev_val);
     smf_track_add_event_delta_pulses(track, event, delta);
 }

@@ -87,7 +87,7 @@ struct abc_symbol {
 
     int in_alt;
     int will_tie;
-    int in_chord;
+    struct abc_symbol* of_chord; /* first note of chord or NULL */
 
     struct abc_symbol* next;
     struct abc_symbol* prev;
