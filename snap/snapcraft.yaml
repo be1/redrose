@@ -87,7 +87,7 @@ parts:
       - abcmidi
     source: http://github.com/be1/redrose.git
     source-type: git
-    source-tag: 0.5.30
+    source-tag: 0.5.40
 
   gpu-2404:
     after: [redrose]
