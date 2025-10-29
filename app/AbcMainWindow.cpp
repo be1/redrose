@@ -41,3 +41,13 @@ void AbcMainWindow::closeEvent(QCloseEvent *event)
         event->ignore();
     }
 }
+
+void AbcMainWindow::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_Home) {
+        QWidget* w = mainhsplitter.editTabWidget()->currentWidget();
+        EditWidget* ew = static_cast<EditWidget*>(w);
+        emit ew->editVBoxLayout()->positionSlider()->sliderMoved(0);
+    } else {
+        QMainWindow::keyPressEvent(event);
+    }
+}
