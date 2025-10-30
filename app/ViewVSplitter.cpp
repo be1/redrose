@@ -69,10 +69,7 @@ void ViewVSplitter::initBasename(const QString &orig, const QString &tmpbase, co
     lastpage = psWidget()->getNumberOfPages();
 }
 
-bool ViewVSplitter::requestPage(int i) {
-    int page = i + currentpage;
-    qDebug() << __func__ << page;
-
+bool ViewVSplitter::gotoPage (int page) {
     if (page > 0 && page <= lastpage) {
         currentpage = page;
         psWidget()->displayPage(page -1);
@@ -97,6 +94,13 @@ bool ViewVSplitter::requestPage(int i) {
     return false;
 }
 
+bool ViewVSplitter::turnPage(int diff) {
+    int page = diff + currentpage;
+    qDebug() << __func__ << page;
+
+    return gotoPage(page);
+}
+
 void ViewVSplitter::cleanup()
 {
     pswidget.displayPage(-1);
@@ -113,7 +117,7 @@ ScorePsWidget *ViewVSplitter::psWidget()
 
 void ViewVSplitter::prevPageClicked()
 {
-    requestPage(-1);
+    turnPage(-1);
 }
 
 void ViewVSplitter::printClicked()
@@ -173,5 +177,5 @@ void ViewVSplitter::printClicked()
 
 void ViewVSplitter::nextPageClicked()
 {
-    requestPage(1);
+    turnPage(1);
 }

@@ -43,11 +43,50 @@ void AbcMainWindow::closeEvent(QCloseEvent *event)
 }
 
 void AbcMainWindow::keyPressEvent(QKeyEvent *event) {
-    if (event->key() == Qt::Key_Home) {
-        QWidget* w = mainhsplitter.editTabWidget()->currentWidget();
-        EditWidget* ew = static_cast<EditWidget*>(w);
+    QWidget* w = mainhsplitter.editTabWidget()->currentWidget();
+    EditWidget* ew = static_cast<EditWidget*>(w);
+
+    ViewVSplitter* vvs = mainHSplitter()->viewWidget();
+
+    switch (event->key()) {
+    case Qt::Key_Home: {
         emit ew->editVBoxLayout()->positionSlider()->sliderMoved(0);
-    } else {
+        emit vvs->gotoPage(1);
+        event->accept();
+        break;
+    }
+    case Qt::Key_End: {
+        long max = ew->editVBoxLayout()->positionSlider()->maximum();
+        emit ew->editVBoxLayout()->positionSlider()->sliderMoved(max);
+        vvs->gotoPage(vvs->lastPage());
+        event->accept();
+        break;
+    }
+    case Qt::Key_Plus: {
+        if (vvs->currentPage() < vvs->lastPage()) {
+            vvs->turnPage(1);
+            event->accept();
+        }
+        break;
+    }
+    case Qt::Key_Minus: {
+        if (vvs->currentPage() > 1) {
+            vvs->turnPage(-1);
+            event->accept();
+        }
+        break;
+    }
+    case Qt::Key_Space: {
+        emit ew->editVBoxLayout()->playPushButton()->clicked();
+        event->accept();
+        break;
+    }
+    case Qt::Key_Return: {
+        emit ew->editVBoxLayout()->runPushButton()->clicked();
+        event->accept();
+        break;
+    }
+    default:
         QMainWindow::keyPressEvent(event);
     }
 }

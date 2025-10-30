@@ -384,6 +384,9 @@ void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
 
 void EditVBoxLayout::onPositionSliderChanged(int val)
 {
+    if (!synth->isPlaying())
+        positionslider.setValue(val);
+
     synth->m_tick = val;
     synth->seek(val);
 }
@@ -578,7 +581,7 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
         QString d = info.dir().absolutePath();
         a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
         a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(fileName, b, d);
-        a->mainWindow()->mainHSplitter()->viewWidget()->requestPage(1);
+        a->mainWindow()->mainHSplitter()->viewWidget()->turnPage(1);
 
     } else if (cont == AbcProcess::ContinuationConvert) /* PDF Export */ {
         /* continuation: convert to PDF */

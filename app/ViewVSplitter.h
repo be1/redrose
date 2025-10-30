@@ -16,9 +16,18 @@ public:
     ~ViewVSplitter();
 
     ScorePsWidget* psWidget();
+    QPushButton* prevButton() { return &prev; }
+    QPushButton* printButton() { return &print; }
+    QPushButton* nextButton() { return &next; }
 
     void initBasename(const QString& orig, const QString& tmpbase, const QString& tmpdir);
-    bool requestPage(int page);
+
+    long currentPage() { return currentpage; }
+    long lastPage() { return lastpage; }
+
+    bool gotoPage(int page); /* starts with 1! 0 means cleanup */
+    bool turnPage(int diff);
+
     void cleanup();
 
 protected:
@@ -51,8 +60,8 @@ private:
     QPushButton print;
     QPushButton next;
 
-    int currentpage = 0;
-    int lastpage = 0;
+    long currentpage = 0;
+    long lastpage = 0;
     QString origname;
     QString basename;
     QString basedir;
