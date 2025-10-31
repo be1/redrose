@@ -326,8 +326,10 @@ void AbcPlainTextEdit::checkDictionnary(void) {
     } else if (c && (c->model() != psModel) &&
                (line.startsWith("%%"))) {
         c->setModel(psModel);
-    } else if (c && (c->model() != dictModel)) {
+    } else if (c && (c->model() != dictModel) && cursorIsInFragmentLine()) {
         c->setModel(dictModel);
+    } else {
+        c->setModel(nullptr);
     }
 }
 
