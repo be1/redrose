@@ -565,7 +565,7 @@ void AbcSmf::writeLyric(smf_track_t* track, const char* l) {
     }
 }
 
-void AbcSmf::writeBpmTempo(smf_track_t *track, char val) {
+void AbcSmf::writeBpmTempo(smf_track_t *track, long val) {
     unsigned int ms = 60000000;
     unsigned int set = ms / val;
     unsigned char set1 = (set & 0xFF0000) >> 16, set2 = (set & 0x00FF00) >> 8, set3 = set & 0x0000FF;

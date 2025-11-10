@@ -30,7 +30,7 @@ private:
     int writeExpression (smf_track_t* track, long delta, unsigned char chan, unsigned char value);
     void writeName(smf_track_t* track, const char* l);
     void writeLyric(smf_track_t *track, const char* l);
-    void writeBpmTempo(smf_track_t* track, char val);
+    void writeBpmTempo(smf_track_t* track, long val);
     void writeTimeSignature(smf_track_t *track, unsigned char numerator, unsigned char denominator);
     void writeKeySignature(smf_track_t *track, unsigned char keysig, unsigned char mode);
     void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type, unsigned char ev_key, unsigned char ev_val);
