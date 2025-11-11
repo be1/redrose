@@ -328,7 +328,7 @@ void AbcPlainTextEdit::checkDictionnary(void) {
         c->setModel(psModel);
     } else if (c && (c->model() != dictModel) && cursorIsInFragmentLine()) {
         c->setModel(dictModel);
-    } else {
+    } else if (c) {
         c->setModel(nullptr);
     }
 }
@@ -468,7 +468,7 @@ bool AbcPlainTextEdit::cursorIsInFragmentLine()
         return false;
 
     /* in progress header or garbage */
-    if (line.at(0).isLetter() && !isPitch(line.at(0)) && !isRest(line.at(0)))
+    if (line.size() > 0 && line.at(0).isLetter() && !isPitch(line.at(0)) && !isRest(line.at(0)))
         return false;
 
     /* anything else */
