@@ -322,6 +322,10 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
     writeBpmTempo(track, m_tempo);
     writeKeySignature(track, m_midi_keysig, m_midi_mode);
 
+    long n, d;
+    getNumDen(m_metric, &n, &d);
+    writeTimeSignature(track, n, d);
+
     /* transform voice nr 'track' from tune 'm_tune' into MIDI-aware voice 'v' */
     struct abc_voice* v = abc_make_events_for_voice(m_tune, voice_nr);
 
@@ -369,6 +373,9 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
                 writeBpmTempo(track, m_tempo);
             } else if (s->ev.type == EV_METRIC) {
                 m_metric = &s->text[2];
+                long n, d;
+                getNumDen(m_metric, &n, &d);
+                writeTimeSignature(track, n, d);
             } else if (s->ev.type == EV_UNIT) {
                 m_unit_length = &s->text[2];
                 /* 'key' = numerator, 'value' = denominator */
@@ -575,13 +582,14 @@ void AbcSmf::writeBpmTempo(smf_track_t *track, long val) {
 }
 
 void AbcSmf::writeTimeSignature(smf_track_t *track, unsigned char numerator, unsigned char denominator) {
-    unsigned char pow = 0;
-    while (denominator >= 0) {
-        denominator <<= 1;
-        pow++;
+    unsigned char exp = 0;
+    long pow_of_2 = 1;
+    while (pow_of_2 < denominator) {
+        pow_of_2 <<= 1;
+        exp++;
     }
 
-    unsigned char data[7] = { 0xFF, 0x58, 0x04, numerator, pow, 24, 8 };
+    unsigned char data[7] = { 0xFF, 0x58, 0x04, numerator, exp, 24, 8 };
     smf_event_t* event = smf_event_new_from_pointer(data, 7);
     smf_track_add_event_delta_pulses(track, event, 0);
 }
