@@ -44,16 +44,21 @@ TuneBook <- Ignored* Tune TuneBook
 
 Ignored <- Ps
 	/ Text
+	/ Svg
 	/ Comment EOL
 	/ EOL
 
 Ps <- BeginPs (!EndPs .)* EndPs
-BeginPs <- "%%beginps" EOL
+BeginPs <- "%%beginps" (!EOL .)* EOL
 EndPs <- "%%endps" EOL
 
 Text <- BeginText (!EndText .)* EndText
-BeginText <- "%%begintext" EOL
+BeginText <- "%%begintext" (!EOL .)* EOL
 EndText <- "%%endtext" EOL
+
+Svg <- BeginSvg (!EndSvg .)* EndSvg
+BeginSvg <- "%%beginsvg" (!EOL .)* EOL
+EndSvg <- "%%endsvg" EOL
 
 Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL)* EOL?
 
@@ -112,7 +117,7 @@ TimeSig <- < "M:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 Part <- < "P:" [ \t]* (!EOL [^\]])+ > #ignore
 Tempo <- < "Q:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 
-Special <- "MIDI" / "beginps" / "endps" / "begintext" / "endtext"
+Special <- "MIDI" / "beginps" / "endps" / "begintext" / "endtext" / "beginsvg" / "endsvg"
 
 Comment <- "%" !"%" (!EOL .)*
 	/ "%%" !Special (!EOL .)*
