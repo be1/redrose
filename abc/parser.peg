@@ -60,7 +60,7 @@ Svg <- BeginSvg (!EndSvg .)* EndSvg
 BeginSvg <- "%%beginsvg" (!EOL .)* EOL
 EndSvg <- "%%endsvg" EOL
 
-Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL)* EOL?
+Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL?)*
 
 Words <- "W:" [ \t]* (!EOL .)*
 
@@ -85,10 +85,10 @@ VoiceDef <- "V:" (!EOL .)+
 Score <- Vheader EOL FragmentLine+ Score*
 	/ FragmentLine+
 
-FragmentLine <- "%%" MidiInstruction EOL
-	/ Comment EOL
-	/ Change EOL
-	/ "w:" Lyrics* EOL
+FragmentLine <- "%%" MidiInstruction (EOL / EOF)
+	/ Comment (EOL / EOF)
+	/ Change (EOL / EOF)
+	/ "w:" Lyrics* (EOL / EOF)
 	/ Fragment+ (LineCont EOL / LineBreak)?
 
 Fragment <- _ / "y"
