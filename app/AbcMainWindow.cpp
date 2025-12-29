@@ -6,6 +6,7 @@ AbcMainWindow::AbcMainWindow(QWidget* parent)
 {
 	setWindowTitle(tr("Redrose"));
     menuBar()->addMenu(&scoremenu);
+    menuBar()->addMenu(&navmenu);
 	menuBar()->addMenu(&preferencesmenu);
     menuBar()->addMenu(&helpmenu);
     setCentralWidget(&mainhsplitter);

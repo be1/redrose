@@ -2,8 +2,6 @@
 #include "EditVBoxLayout.h"
 #include "abcsynth.h"
 #include "AbcApplication.h"
-#include "PreferencesMenu.h"
-#include "sfloader.h"
 #include <QFileInfo>
 #include <QDebug>
 #include <QSpinBox>
@@ -12,8 +10,6 @@
 #include <QMessageBox>
 #include <QTimer>
 #include "settings.h"
-#include "../abc/abc.h"
-#include "abcsmf.h"
 #ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
 #endif
@@ -36,9 +32,11 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 
     xspinbox.setMinimum(1);
     xspinbox.setMaximum(9999);
+
     xlabel.setText(tr("X:"));
 	xlabel.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     xlabel.setBuddy(&xspinbox);
+
     progress = new QProgressIndicator();
     progress->setColor(qApp->palette().color(QPalette::Text));
     progress->startAnimation();
@@ -132,6 +130,11 @@ RunPushButton *EditVBoxLayout::runPushButton()
 QSlider *EditVBoxLayout::positionSlider()
 {
     return &positionslider;
+}
+
+QSpinBox *EditVBoxLayout::xSpinBox()
+{
+    return &xspinbox;
 }
 
 void EditVBoxLayout::setFileName(const QString &fn)

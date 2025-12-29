@@ -32,6 +32,7 @@ public:
     PlayPushButton *playPushButton();
     RunPushButton *runPushButton();
     QSlider* positionSlider();
+    QSpinBox* xSpinBox();
     void setFileName(const QString& fn);
 
     /**

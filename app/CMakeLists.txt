@@ -51,6 +51,7 @@ set(SOURCES
 	main.cpp
 	MainHSplitter.cpp
 	midigenerator.cpp
+	navmenu.cpp
 	playerprefdialog.cpp
 	PlayPushButton.cpp
 	PreferencesMenu.cpp

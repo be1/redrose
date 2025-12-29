@@ -5,6 +5,7 @@
 #include "PreferencesMenu.h"
 #include "ScoreMenu.h"
 #include "MainHSplitter.h"
+#include "navmenu.h"
 #include <QStatusBar>
 #include <QDockWidget>
 #include <QToolBar>
@@ -29,6 +30,7 @@ protected:
 
 private:
     ScoreMenu scoremenu;
+    NavMenu navmenu;
 	PreferencesMenu preferencesmenu;
     HelpMenu helpmenu;
     MainHSplitter mainhsplitter;
