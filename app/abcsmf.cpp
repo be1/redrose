@@ -1,9 +1,7 @@
 #include <QDebug>
 #include "abcsmf.h"
 
-AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, bool expr, int x, QObject *parent) : QObject(parent),
-        m_yy(yy),
-        m_x(x),
+AbcSmf::AbcSmf(int vel, int shorter, bool expr, QObject *parent) : QObject(parent),
         m_tune(nullptr),
         m_keysig(nullptr),
         m_unit_length(nullptr),
@@ -24,17 +22,25 @@ AbcSmf::AbcSmf(struct abc* yy, int vel, int shorter, bool expr, int x, QObject *
         m_manage_expression(expr),
         m_smf(nullptr)
 {
-    m_tune = abc_find_tune(yy, x);
-    if (!m_tune)
-        return;
-
     m_smf = smf_new();
     if (smf_set_ppqn(m_smf, DPQN)) {
         smf_delete(m_smf);
         return;
     }
+}
+
+bool AbcSmf::select(abc *yy, int x)
+{
+    m_yy = yy;
+    m_x = x;
+
+    m_tune = abc_find_tune(yy, x);
+    if (!m_tune)
+        return false;
 
     writeAll();
+
+    return true;
 }
 
 void AbcSmf::reset() {

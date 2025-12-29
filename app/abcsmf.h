@@ -9,7 +9,8 @@ class AbcSmf : public QObject
 {
     Q_OBJECT
 public:
-    explicit AbcSmf(struct abc* yy, int vel = 96, int shorter = 9, bool expr = 0, int x = 1, QObject *parent = nullptr);
+    explicit AbcSmf(int vel = 96, int shorter = 9, bool expr = 0, QObject *parent = nullptr);
+    bool select(struct abc* yy, int x = 1);
     void reset();
     void writeAll();
     void saveToFile(const char* filename);

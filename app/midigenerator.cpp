@@ -61,11 +61,18 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
         emit generated(1, errstr, cont);
         abc_release_yy(yy);
     } else {
-        AbcSmf *smf = new AbcSmf(yy, vel.toInt(), dur.toInt(), expr.toBool(), xopt, this);
+        AbcSmf *smf = new AbcSmf(vel.toInt(), dur.toInt(), expr.toBool(), this);
         if (!smf) {
                 emit generated(1, tr("Out of memory"), cont);
                 abc_release_yy(yy);
                 return;
+        }
+
+        if (!smf->select(yy, xopt)) {
+            delete smf;
+            emit generated(0, tr("Tune does not exist"), cont);
+            abc_release_yy(yy);
+            return;
         }
 
         if (outFile().isEmpty()) {

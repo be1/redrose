@@ -186,6 +186,7 @@ void EditVBoxLayout::onXChanged(int value)
 
     scheduleDisplay();
 
+    //positionslider.setMaximum(0);
     in_cursor_position_changed = false;
 }
 
