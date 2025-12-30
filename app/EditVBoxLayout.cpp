@@ -14,6 +14,8 @@
 #include "../abcm2ps/abcm2ps.h"
 #endif
 
+const int MAXTUNES = 9999;
+
 const QRegularExpression EditVBoxLayout::m_abcext(QStringLiteral("\\.abc$"));
 
 EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
@@ -31,7 +33,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     generationTimer.setSingleShot(true);
 
     xspinbox.setMinimum(1);
-    xspinbox.setMaximum(9999);
+    xspinbox.setMaximum(MAXTUNES);
 
     xlabel.setText(tr("X:"));
 	xlabel.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
@@ -167,27 +169,40 @@ void EditVBoxLayout::scheduleDisplay()
 
 void EditVBoxLayout::onCursorPositionChanged()
 {
-    in_cursor_position_changed = true;
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
     int x = xOfCursor(tc);
 
-    if (xspinbox.value() == x)
-        in_cursor_position_changed = false;
-    else
+    /* do something only if cursor is goes a differnt tune */
+    if (xspinbox.value() != x) {
+        QSignalBlocker blocker(xspinbox);
         xspinbox.setValue(x);
+        scheduleDisplay();
+    }
 }
 
 void EditVBoxLayout::onXChanged(int value)
 {
-    if (!in_cursor_position_changed) {
-        abcPlainTextEdit()->findX(value);
-    }
+    QSignalBlocker blocker(xspinbox);
+    bool found = true;
+    /* seek view to X */
+    found = abcplaintextedit.findX(value);
 
+    /* schedule anyway : this allow having a blank page */
     scheduleDisplay();
 
+    if (!found) {
+        /* force a small max spinbox value only if value is greater than the last existing X */
+        int x = abcplaintextedit.lastX();
+        if (value > x) {
+            xspinbox.setMaximum(x + 1);
+        }
+    } else {
+        /* reset default value */
+        xspinbox.setMaximum(MAXTUNES);
+    }
+
     //positionslider.setMaximum(0);
-    in_cursor_position_changed = false;
 }
 
 void EditVBoxLayout::onPlayClicked()

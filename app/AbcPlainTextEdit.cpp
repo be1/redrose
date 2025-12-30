@@ -441,18 +441,31 @@ QString AbcPlainTextEdit::getLastMidiProgramChange() const
     return QString();
 }
 
-void AbcPlainTextEdit::findX(int x)
+bool AbcPlainTextEdit::findX(int x)
 {
     QRegularExpression re("^X:[ \t]*" + QString::number(x) + "[ \t]*$");
     QTextCursor tc = document()->find(re);
     if (tc.isNull())
-        return;
+        return false;
 
     tc.clearSelection();
     /* go to end of area */
     verticalScrollBar()->setValue(verticalScrollBar()->maximum());
     /* go up */
     setTextCursor(tc);
+    return true;
+}
+
+int AbcPlainTextEdit::lastX()
+{
+    QRegularExpression re("^X:[ \\t]*([\\d]+)[ \\t]*$", QRegularExpression::PatternOption::MultilineOption);
+    QRegularExpressionMatchIterator matches = re.globalMatch(toPlainText());
+    int val = 0;
+    /* crawl until last X's value */
+    for (QRegularExpressionMatch m : matches) {
+        val = m.captured(1).toInt();
+    }
+    return val;
 }
 
 bool AbcPlainTextEdit::cursorIsInFragmentLine()

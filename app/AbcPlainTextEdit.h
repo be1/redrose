@@ -61,7 +61,8 @@ public:
     QString constructHeaders(int selectionIndex, int* x);
     QString getLastKeySignatureChange() const;
     QString getLastMidiProgramChange() const;
-    void findX(int x);
+    bool findX(int x);
+    int lastX();
     bool cursorIsInFragmentLine();
 
 signals:

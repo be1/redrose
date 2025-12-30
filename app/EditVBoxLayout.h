@@ -78,7 +78,6 @@ protected slots:
     void onSynthTickChanged(int tick);
 
 private:
-    bool in_cursor_position_changed = false;
     bool generating = false;
     QTimer generationTimer;
     AbcPlainTextEdit abcplaintextedit;
