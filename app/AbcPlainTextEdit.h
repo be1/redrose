@@ -77,7 +77,8 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
 
 private slots:
-    void updateLineNumberAreaWidth(int newBlockCount);
+    void updateLineNumberAreaWidth1(int newBlockCount);
+    void updateLineNumberAreaWidth0();
     void highlightCurrentLine();
     void checkDictionnary();
     void checkPlayableNote();

@@ -35,7 +35,8 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
 
     Settings settings;
 
-    connect(this, &AbcPlainTextEdit::blockCountChanged, this, &AbcPlainTextEdit::updateLineNumberAreaWidth);
+    connect(this, &AbcPlainTextEdit::blockCountChanged, this, &AbcPlainTextEdit::updateLineNumberAreaWidth1);
+    connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::updateLineNumberAreaWidth0);
     connect(this, &AbcPlainTextEdit::updateRequest, this, &AbcPlainTextEdit::updateLineNumberArea);
     connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkDictionnary);
     connect(this, &AbcPlainTextEdit::modificationChanged, this, &AbcPlainTextEdit::flagModified);
@@ -44,7 +45,7 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
         connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkPlayableNote);
     }
 
-    updateLineNumberAreaWidth(0);
+    updateLineNumberAreaWidth0();
 
     QVariant fontBase = settings.value(EDITOR_FONT_BASE);
     QFont base;
@@ -707,14 +708,27 @@ int AbcPlainTextEdit::lineNumberAreaWidth()
         ++digits;
     }
 
-    int space = 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
+    QTextCursor tc = textCursor();
+    int maxpos = qMax(1, tc.block().text().length());
+    while (maxpos >= 10) {
+        maxpos /= 10;
+        ++digits;
+    }
+
+    int sep = fontMetrics().horizontalAdvance(':');
+    int margins = 3;
+    int space = margins + sep + fontMetrics().horizontalAdvance(QLatin1Char('X')) * digits;
 
     return space;
 }
 
-void AbcPlainTextEdit::updateLineNumberAreaWidth(int /* newBlockCount */)
-{
+void AbcPlainTextEdit::updateLineNumberAreaWidth0() {
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+}
+
+void AbcPlainTextEdit::updateLineNumberAreaWidth1(int newBlockCount) {
+    (void) newBlockCount;
+    updateLineNumberAreaWidth0();
 }
 
 void AbcPlainTextEdit::updateLineNumberArea(const QRect &rect, int dy)
@@ -725,7 +739,7 @@ void AbcPlainTextEdit::updateLineNumberArea(const QRect &rect, int dy)
         lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
 
     if (rect.contains(viewport()->rect()))
-        updateLineNumberAreaWidth(0);
+        updateLineNumberAreaWidth0();
 }
 
 void AbcPlainTextEdit::resizeEvent(QResizeEvent *e)
@@ -765,10 +779,15 @@ void AbcPlainTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
     int bottom = top + qRound(blockBoundingRect(block).height());
     while (block.isValid() && top <= event->rect().bottom()) {
         if (block.isVisible() && bottom >= event->rect().top()) {
-            QString number = QString::number(blockNumber + 1);
+            QString line = QString::number(blockNumber + 1);
+
+            QTextCursor tc = textCursor();
+            if (tc.blockNumber() == blockNumber) {
+                line += ":" + QString::number(tc.positionInBlock());
+            }
             painter.setPen(Qt::black);
             painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
-                             Qt::AlignRight, number);
+                             Qt::AlignRight, line);
         }
 
         block = block.next();
