@@ -21,27 +21,27 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     p.setColor(pswidget.backgroundRole(), Qt::white);
     pswidget.setPalette(p);
     pswidget.setAutoFillBackground(true);
-    pswidget.setMinimumSize(630, 891);
+    pswidget.setMinimumHeight(297);
 
     /* configure the scroll area */
-    area = new QScrollArea();
-    area->setWidget(&pswidget);
+    pswidget.setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    pswidget.setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     /* configure the pages buttons */
-    QWidget *pagesWidget = new QWidget(this);
-    pagesWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    pagesWidget.setMinimumHeight(210);
+    pagesWidget.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     connect(&prev, &QPushButton::clicked, this, &ViewVSplitter::prevPageClicked);
     pageslayout.addWidget(&prev, 0, Qt::AlignLeft);
     connect(&print, &QPushButton::clicked, this, &ViewVSplitter::printClicked);
     pageslayout.addWidget(&print, 0, Qt::AlignCenter);
     connect(&next, &QPushButton::clicked, this, &ViewVSplitter::nextPageClicked);
     pageslayout.addWidget(&next, 0, Qt::AlignRight);
-    pagesWidget->setLayout(&pageslayout);
-    pagesWidget->setFixedHeight(pageslayout.sizeHint().height());
+    pagesWidget.setLayout(&pageslayout);
+    pagesWidget.setFixedHeight(pageslayout.sizeHint().height());
 
     /* add all in good order to the splitter */
-    addWidget(area);
-    addWidget(pagesWidget);
+    addWidget(&pswidget);
+    addWidget(&pagesWidget);
     QList<int> sizes;
     sizes.append(594);
     sizes.append(100);
@@ -85,7 +85,7 @@ bool ViewVSplitter::gotoPage (int page) {
         else
             next.setEnabled(false);
 
-        area->verticalScrollBar()->setSliderPosition(0);
+        pswidget.verticalScrollBar()->setSliderPosition(0);
         return true;
     }
 
@@ -107,7 +107,26 @@ void ViewVSplitter::cleanup()
     prev.setEnabled(false);
     print.setEnabled(false);
     next.setEnabled(false);
-    area->verticalScrollBar()->setSliderPosition(0);
+    pswidget.verticalScrollBar()->setSliderPosition(0);
+}
+
+void ViewVSplitter::resizeEvent(QResizeEvent *event) {
+    QSplitter::resizeEvent(event);
+
+    int w, h;
+    int viewportWidth = pswidget.scene()->width();
+    int viewportHeight = pswidget.scene()->height();
+
+    //viewportWidth = viewportWidth > 210 ? viewportWidth : 210;
+    if (viewportWidth * 297 > viewportHeight * 210) {
+        w = viewportWidth;
+        h = viewportWidth * 297 / 210;
+    } else {
+        w = viewportHeight * 210 / 297;
+        h = viewportHeight;
+    }
+
+    pswidget.viewport()->resize(w, h);
 }
 
 ScorePsWidget *ViewVSplitter::psWidget()

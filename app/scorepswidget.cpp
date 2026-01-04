@@ -5,8 +5,19 @@
 #include <QDebug>
 
 ScorePsWidget::ScorePsWidget(QWidget *parent):
-    QLabel(parent)
+    QGraphicsView(parent)
 {
+    initialize();
+}
+
+void ScorePsWidget::initialize()
+{
+    viewport()->installEventFilter(this);
+    setMouseTracking(true);
+
+    m_scene = new QGraphicsScene(this);
+    setScene(m_scene);
+
     m_render_context = spectre_render_context_new();
 
     m_refreshTimer.setInterval(50);
@@ -15,9 +26,9 @@ ScorePsWidget::ScorePsWidget(QWidget *parent):
 }
 
 ScorePsWidget::ScorePsWidget(const QString &filename, QWidget *parent):
-    QLabel(parent)
+    QGraphicsView(parent)
 {
-    m_render_context = spectre_render_context_new();
+    initialize();
     load(filename);
 }
 
@@ -50,12 +61,142 @@ void ScorePsWidget::refresh()
 
     int w, h;
     spectre_page_get_size(m_current_page, &w, &h);
-    //spectre_render_context_set_resolution(m_render_context, logicalDpiX(), logicalDpiY());
-    spectre_render_context_set_scale(m_render_context, (double) width() / (double) w, (double) height() / (double) h);
+
+    double item_width, item_height;
+    item_width = m_default_scale_factor * width();
+    item_height = item_width * h / w;
+
+    //spectre_render_context_set_resolution(m_render_context, 75., 75.);
+    spectre_render_context_set_scale(m_render_context, item_width / (double) w, item_height / (double) h);
     spectre_page_render(m_current_page, m_render_context, &m_page_data, &m_row_length);
 
-    QImage image(m_page_data, width(), height(), m_row_length, QImage::Format_RGBX8888);
+    QImage image(m_page_data, item_width, item_height, m_row_length, QImage::Format_RGBX8888);
+
     setPixmap(QPixmap::fromImage(image));
+    m_scene->setSceneRect(0, 0, item_width, item_height);
+
+    if (!m_window_resizing) {
+        zoomReset();
+    }
+}
+
+void ScorePsWidget::resizeEvent(QResizeEvent *event) {
+    QGraphicsView::resizeEvent(event);
+    if (event->size().width() != width() && event->size().height() != height()) {
+        if (m_refreshTimer.isActive())
+            m_refreshTimer.stop();
+    }
+
+    m_window_resizing = true;
+    m_refreshTimer.start();
+}
+
+void ScorePsWidget::keyReleaseEvent(QKeyEvent *ev) {
+    QGraphicsView::keyReleaseEvent(ev);
+    if (ev->key() == Qt::Key_Control) {
+        this->m_ctrl = false;
+        ev->accept();
+    }
+}
+
+void ScorePsWidget::keyPressEvent(QKeyEvent *ev) {
+    QGraphicsView::keyPressEvent(ev);
+    int key = ev->key();
+    if (key == Qt::Key_Control) {
+        this->m_ctrl = true;
+        ev->accept();
+    }
+
+    /* do not (un)zoom if no data displayed */
+    if (isEmpty())
+        return;
+
+    if (key == Qt::Key_Equal || key == Qt::Key_0 || key == Qt::Key_Plus || key == Qt::Key_Minus) {
+        if (m_ctrl) {
+            if (key == Qt::Key_0 || key == Qt::Key_Equal)
+                zoomReset();
+            else if (key == Qt::Key_Plus)
+                zoomIn();
+            else
+                zoomOut();
+
+            ev->accept();
+        }
+    }
+}
+
+void ScorePsWidget::wheelEvent(QWheelEvent *ev) {
+    QPoint delta = ev->angleDelta();
+    //if (!delta.isNull() && m_ctrl) {
+    if (!delta.isNull() && (ev->modifiers() & Qt::ControlModifier)) {
+
+        /* do not (un)zoom if no data displayed */
+        if (isEmpty())
+            return;
+
+        /* grab future Ctrl+= or Ctrl+0  */
+        setFocus();
+
+        int way = delta.y();
+        if (way == 0)
+            return;
+
+        if (way < 0) {
+            zoomOut();
+        } else if (way > 0) {
+            zoomIn();
+        }
+
+        QPointF newPos = mapToScene(ev->position().toPoint());
+        centerOn(newPos);
+
+        ev->accept();
+        return;
+    }
+
+    QGraphicsView::wheelEvent(ev);
+}
+
+void ScorePsWidget::zoomIn()
+{
+    if (m_scale_factor > m_max_scale_factor * (1 / m_scale_coef))
+        return;
+
+    scale(m_scale_coef, m_scale_coef);
+    m_scale_factor *= m_scale_coef;
+}
+
+void ScorePsWidget::zoomOut()
+{
+    scale(1 / m_scale_coef, 1/ m_scale_coef);
+    m_scale_factor /= m_scale_coef;
+}
+
+void ScorePsWidget::zoomReset()
+{
+    /* reset zoom to 1:1 */
+    scale (1. / m_scale_factor, 1. / m_scale_factor);
+    m_scale_factor = 1. / m_scale_factor;
+
+    /* reset zoom to 1:x */
+    scale (1. / m_default_scale_factor, 1. / m_default_scale_factor);
+    m_scale_factor = 1. / m_default_scale_factor;
+}
+
+void ScorePsWidget::setPixmap(const QPixmap &pm)
+{
+    if (m_pixmap_item) {
+        scene()->removeItem(m_pixmap_item);
+        delete m_pixmap_item;
+    }
+
+    m_pixmap_item = new QGraphicsPixmapItem(pm);
+    scene()->addItem(m_pixmap_item);
+}
+
+bool ScorePsWidget::isEmpty()
+{
+    return m_current_page == nullptr;
 }
 
 void ScorePsWidget::load(const QString &filename)
@@ -81,6 +222,7 @@ void ScorePsWidget::load(const QString &filename)
         return;
     }
 
+    m_window_resizing = false;
     displayPage(0);
 }
 
