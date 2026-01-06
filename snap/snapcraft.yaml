@@ -1,5 +1,18 @@
 name: redrose
+license: GPL-3.0+
+title: Redrose
 base: core24
+source-code:
+  - https://github.com/be1/redrose
+contact:
+  - brouits@free.fr
+website:
+  - http://brouits.free.fr/redrose/
+issues:
+  - https://github.com/be1/redrose/issues
+donation:
+  - https://paypal.me/brouits
+icon: snap/usr/local/share/icons/hicolor/scalable/apps/redrose.svg
 version: '0.5.48'
 summary: Integrated ABC music notation environment
 description: |
