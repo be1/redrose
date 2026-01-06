@@ -168,6 +168,9 @@ void ScorePsWidget::zoomIn()
 
 void ScorePsWidget::zoomOut()
 {
+    if (m_scale_factor <= 0.1)
+        return;
+
     scale(1 / m_scale_coef, 1/ m_scale_coef);
     m_scale_factor /= m_scale_coef;
 }
