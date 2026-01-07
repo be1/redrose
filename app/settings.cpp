@@ -17,7 +17,7 @@ void Settings::check()
 
     QVariant expression = value(PLAYER_EXPRESSION);
     if (!expression.isValid())
-        setValue(PLAYER_VELOCITY, false);
+        setValue(PLAYER_EXPRESSION, false);
 
     QVariant duration = value(PLAYER_DURATION);
     if (!duration.isValid() || duration.toInt() <= 0)
