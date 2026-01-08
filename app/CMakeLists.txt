@@ -29,7 +29,7 @@ if (NOT Qt6_FOUND)
 else()
 	qt_standard_project_setup(
 		I18N_SOURCE_LANGUAGE en
-		I18N_TRANSLATED_LANGUAGES en fr
+		I18N_TRANSLATED_LANGUAGES en fr pt
 	)
 endif()
 
@@ -67,7 +67,7 @@ set(SOURCES
 	wizard.cpp
 )
 
-set(TS_FILES redrose_en.ts redrose_fr.ts)
+set(TS_FILES redrose_en.ts redrose_fr.ts redrose_pt.ts)
 set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
 if (NOT Qt6_FOUND)
 	qt5_add_resources(SOURCES resources.qrc)

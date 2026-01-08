@@ -12,27 +12,27 @@
 <context>
     <name>AbcPlainTextEdit</name>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="65"/>
-        <location filename="AbcPlainTextEdit.cpp" line="234"/>
+        <location filename="AbcPlainTextEdit.cpp" line="66"/>
+        <location filename="AbcPlainTextEdit.cpp" line="235"/>
         <source>Find...</source>
         <translation>Rechercher...</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="71"/>
-        <location filename="AbcPlainTextEdit.cpp" line="248"/>
+        <location filename="AbcPlainTextEdit.cpp" line="72"/>
+        <location filename="AbcPlainTextEdit.cpp" line="249"/>
         <source>Find forward</source>
         <translation>Rechercher en avant</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="77"/>
-        <location filename="AbcPlainTextEdit.cpp" line="262"/>
+        <location filename="AbcPlainTextEdit.cpp" line="78"/>
+        <location filename="AbcPlainTextEdit.cpp" line="263"/>
         <source>Find backward</source>
         <translation>Rechercher en arrière</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="234"/>
-        <location filename="AbcPlainTextEdit.cpp" line="248"/>
-        <location filename="AbcPlainTextEdit.cpp" line="262"/>
+        <location filename="AbcPlainTextEdit.cpp" line="235"/>
+        <location filename="AbcPlainTextEdit.cpp" line="249"/>
+        <location filename="AbcPlainTextEdit.cpp" line="263"/>
         <source>Text:</source>
         <translation>Texte :</translation>
     </message>
@@ -117,98 +117,98 @@ Fermer cette partition quand-même ?</translation>
 <context>
     <name>EditVBoxLayout</name>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="103"/>
+        <location filename="EditVBoxLayout.cpp" line="105"/>
         <source>Cannot load sound font.</source>
         <translation>Impossible de charger la fonte sonore.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="210"/>
+        <location filename="EditVBoxLayout.cpp" line="226"/>
         <source>Generating MIDI for playing.</source>
         <translation>Génération du MIDI pour jouer.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="219"/>
+        <location filename="EditVBoxLayout.cpp" line="235"/>
         <source>Stopping synthesis...</source>
         <translation>Arrêt de la synthèse...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="200"/>
+        <location filename="EditVBoxLayout.cpp" line="216"/>
         <source>Please wait...</source>
         <translation>Veuillez patienter...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="292"/>
         <location filename="EditVBoxLayout.cpp" line="308"/>
+        <location filename="EditVBoxLayout.cpp" line="324"/>
         <source>Exporting score...</source>
         <translation>Export de la partition...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="332"/>
+        <location filename="EditVBoxLayout.cpp" line="348"/>
         <source>Error during MIDI generation.</source>
         <translation>Erreur pendant la génération du MIDI.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="335"/>
-        <location filename="EditVBoxLayout.cpp" line="337"/>
-        <location filename="EditVBoxLayout.cpp" line="410"/>
-        <location filename="EditVBoxLayout.cpp" line="419"/>
-        <location filename="EditVBoxLayout.cpp" line="428"/>
-        <location filename="EditVBoxLayout.cpp" line="565"/>
+        <location filename="EditVBoxLayout.cpp" line="351"/>
+        <location filename="EditVBoxLayout.cpp" line="353"/>
+        <location filename="EditVBoxLayout.cpp" line="426"/>
+        <location filename="EditVBoxLayout.cpp" line="435"/>
+        <location filename="EditVBoxLayout.cpp" line="444"/>
+        <location filename="EditVBoxLayout.cpp" line="581"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="337"/>
+        <location filename="EditVBoxLayout.cpp" line="353"/>
         <source>Parse error in selected notes.</source>
         <translation>Erreur d&apos;analyse dans les notes sélectionnées.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="345"/>
+        <location filename="EditVBoxLayout.cpp" line="361"/>
         <source>MIDI generation finished.</source>
         <translation>Génération du MIDI terminée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="365"/>
+        <location filename="EditVBoxLayout.cpp" line="381"/>
         <source>Synthesis error.</source>
         <translation>Erreur durant la synthèse sonore.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="367"/>
+        <location filename="EditVBoxLayout.cpp" line="383"/>
         <source>Synthesis finished.</source>
         <translation>Synthèse terminée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="410"/>
+        <location filename="EditVBoxLayout.cpp" line="426"/>
         <source>Could not find PS score</source>
         <translation>Impossible de trouver la partition PS</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="419"/>
+        <location filename="EditVBoxLayout.cpp" line="435"/>
         <source>Could not load PS score</source>
         <translation>Impossible de charger la partition PS</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="428"/>
+        <location filename="EditVBoxLayout.cpp" line="444"/>
         <source>Could not save to PDF</source>
         <translation>Impossible de sauvegarder en PDF</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="564"/>
+        <location filename="EditVBoxLayout.cpp" line="580"/>
         <source>Error during score generation.</source>
         <translation>Erreur pendant la génération de la partition.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="572"/>
+        <location filename="EditVBoxLayout.cpp" line="588"/>
         <source>Score generated.</source>
         <translation>Partition générée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="36"/>
+        <location filename="EditVBoxLayout.cpp" line="38"/>
         <source>X:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="568"/>
+        <location filename="EditVBoxLayout.cpp" line="584"/>
         <source>Some errors during score generation.</source>
         <translation>Des erreurs sont apparues durant la génération de la partition.</translation>
     </message>
@@ -346,13 +346,18 @@ Redrose version </source>
         <source>Out of memory</source>
         <translation>Pas assez de mémoire</translation>
     </message>
+    <message>
+        <location filename="midigenerator.cpp" line="73"/>
+        <source>Tune does not exist</source>
+        <translation>Le morceau n&apos;existe pas</translation>
+    </message>
 </context>
 <context>
     <name>NavMenu</name>
     <message>
         <location filename="navmenu.cpp" line="6"/>
         <source>Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigation</translation>
     </message>
     <message>
         <location filename="navmenu.cpp" line="8"/>
@@ -372,7 +377,7 @@ Redrose version </source>
     <message>
         <location filename="navmenu.cpp" line="11"/>
         <source>View tune</source>
-        <translation>Voir la partition</translation>
+        <translation>Voir le morceau</translation>
     </message>
 </context>
 <context>
@@ -440,7 +445,6 @@ Redrose version </source>
         <location filename="playerprefdialog.cpp" line="225"/>
         <location filename="playerprefdialog.cpp" line="227"/>
         <source>Audio sound font selection</source>
-        <oldsource>Audio sound font preference</oldsource>
         <translation>Sélection de la fonte sonore</translation>
     </message>
     <message>
@@ -558,8 +562,8 @@ Redrose version </source>
     <name>RunPushButton</name>
     <message>
         <location filename="RunPushButton.cpp" line="6"/>
-        <source>&amp;View score</source>
-        <translation>&amp;Voir la partition</translation>
+        <source>View score</source>
+        <translation>Voir la partition</translation>
     </message>
 </context>
 <context>
