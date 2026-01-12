@@ -29,6 +29,7 @@ private:
     unsigned char computeNextVelocity(long dur, unsigned char cur);
     unsigned char getDynAfter(struct abc_symbol* note, unsigned char base, unsigned char dflt);
     int writeExpression (smf_track_t* track, long delta, unsigned char chan, unsigned char value);
+    void parseVoiceHeader(const char* v);
     void writeName(smf_track_t* track, const char* l);
     void writeLyric(smf_track_t *track, const char* l);
     void writeBpmTempo(smf_track_t* track, long val);
@@ -46,6 +47,7 @@ private:
 
     struct abc* m_yy; /* takes ownership of yy */
     int m_x;
+    QString m_inst_name;     /* given in V: header */
     struct abc_tune* m_tune; /* tune selected by X */
     char* m_keysig;          /* tune's kh->text */
     int m_midi_keysig;       /* MIDI smf key signature */

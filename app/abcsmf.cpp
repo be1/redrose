@@ -1,4 +1,6 @@
 #include <QDebug>
+
+#include <QRegularExpression>
 #include "abcsmf.h"
 
 AbcSmf::AbcSmf(int vel, int shorter, bool expr, QObject *parent) : QObject(parent),
@@ -216,6 +218,25 @@ int AbcSmf::writeExpression (smf_track_t* track, long delta, unsigned char chan,
     return 0;
 }
 
+void AbcSmf::parseVoiceHeader(const char *v) {
+    QRegularExpression reClef("^\\d+ +([^ ]+)");
+    QRegularExpressionMatch matchClef = reClef.match(v);
+    if (matchClef.hasMatch() && !matchClef.captured(1).contains("=")) {
+        /* this is a clef */
+        QString clef = matchClef.captured(1);
+        if (clef.endsWith("-8"))
+            m_transpose -= 12;
+        else if (clef.endsWith("+8"))
+            m_transpose += 12;
+    }
+
+    QRegularExpression reName("nm=\"([^\"]+)\"");
+    QRegularExpressionMatch matchName = reName.match(v);
+    if (matchClef.hasMatch()) {
+        m_inst_name = matchName.captured(1);
+    }
+}
+
 long AbcSmf::computeCut(struct abc_symbol* s) {
     /* this works both for noteOn and noteOff since libabc duplicates the values */
 
@@ -351,7 +372,9 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
     m_in_slur = m_default_shorter;
     m_shorter = m_in_slur;
 
-    writeName(track, v->v); /* textual voice name */
+    parseVoiceHeader(v->v);
+    if (!m_inst_name.isEmpty())
+        writeName(track, m_inst_name.toUtf8().constData()); /* textual voice name */
 
     if (m_manage_expression)
         writeExpression (track, 0, chan, m_default_expression);
@@ -420,7 +443,7 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
             if (sscanf(s->text, "MIDI program %d", &val)) {
                 writeMidiEvent(track, 0, m_program | chan, val);
             } else if (sscanf(s->text, "MIDI transpose %d", &val)) {
-                m_transpose = val;
+                m_transpose += val;
             } else if (sscanf(s->text, "MIDI channel %d", &val)) {
                 chan = val -1;
                 if (m_manage_expression)
