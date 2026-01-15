@@ -11,7 +11,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
     Settings settings;
 
     setWindowTitle(tr("Player settings"));
-    setMinimumSize(400, 320);
+    setMinimumWidth(600);
 
     mainLayout = new QVBoxLayout;
 
@@ -127,7 +127,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
         soundfont = text;
     }
 
-    soundfontButton = new QPushButton(text);
+    soundfontButton = new QPushButton(text.mid(text.lastIndexOf(QDir::separator()) + 1));
     connect(soundfontButton, &QPushButton::clicked, this, &PlayerPrefDialog::onSoundfontButtonClicked);
     soundfontLabel->setBuddy(soundfontButton);
     QHBoxLayout* sfhbox = new QHBoxLayout;
@@ -231,7 +231,7 @@ void PlayerPrefDialog::onSoundfontButtonClicked()
         return;
 
     soundfont = sf;
-    soundfontButton->setText(sf);
+    soundfontButton->setText(sf.mid(sf.lastIndexOf(QDir::separator()) + 1));
 }
 
 void PlayerPrefDialog::onPlayerComboChanged(const QString& text)
