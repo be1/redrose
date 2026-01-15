@@ -219,21 +219,23 @@ int AbcSmf::writeExpression (smf_track_t* track, long delta, unsigned char chan,
 }
 
 void AbcSmf::parseVoiceHeader(const char *v) {
-    QRegularExpression reClef("^\\d+ +([^ ]+)");
+    QRegularExpression reClef("^\\d+ +(clef=)?([^ ]+)");
     QRegularExpressionMatch matchClef = reClef.match(v);
-    if (matchClef.hasMatch() && !matchClef.captured(1).contains("=")) {
+    int last = matchClef.lastCapturedIndex();
+    if (matchClef.hasMatch() && !matchClef.captured(last).contains("=")) {
         /* this is a clef */
-        QString clef = matchClef.captured(1);
+        QString clef = matchClef.captured(last);
         if (clef.endsWith("-8"))
             m_transpose -= 12;
         else if (clef.endsWith("+8"))
             m_transpose += 12;
     }
 
-    QRegularExpression reName("nm=\"([^\"]+)\"");
+    QRegularExpression reName("na?me?=\"([^\"]+)\"");
     QRegularExpressionMatch matchName = reName.match(v);
     if (matchClef.hasMatch()) {
-        m_inst_name = matchName.captured(1);
+        int last = matchName.lastCapturedIndex();
+        m_inst_name = matchName.captured(last);
     }
 }
 
