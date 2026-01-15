@@ -9,7 +9,7 @@ PsPrefDialog::PsPrefDialog(QWidget* parent) : QDialog (parent)
      Settings settings;
 
     setWindowTitle(tr("Postscript settings"));
-    setMinimumSize(400, 100);
+    setMinimumWidth(600);
 
     m_mainLayout = new QVBoxLayout;
 
