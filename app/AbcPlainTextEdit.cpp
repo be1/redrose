@@ -44,6 +44,7 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
         autoplay = true;
         connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkPlayableNote);
     }
+    //connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::setTickFromCursor);
 
     updateLineNumberAreaWidth0();
 
@@ -489,6 +490,19 @@ bool AbcPlainTextEdit::cursorIsInFragmentLine()
     return true;
 }
 
+void AbcPlainTextEdit::setTextCursorPosition(int n) {
+    QTextCursor c = textCursor();
+    int prevpos = c.position();
+
+    if (n > prevpos) {
+        c.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::MoveAnchor, n - prevpos);
+    } else if (n < prevpos) {
+        c.movePosition(QTextCursor::MoveOperation::Left, QTextCursor::MoveAnchor, prevpos - n);
+    }
+
+    setTextCursor(c);
+}
+
 QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
 {
     QTextCursor tc;
@@ -613,6 +627,9 @@ void AbcPlainTextEdit::checkPlayableNote()
         return;
 
     emit playableNote(note);
+}
+
+void AbcPlainTextEdit::setTickFromCursor() {
 }
 
 void AbcPlainTextEdit::focusInEvent(QFocusEvent *e)

@@ -4,12 +4,14 @@
 #include <QObject>
 #include <QDir>
 #include "AbcProcess.h"
+#include "abcmodel.h"
 
 class Generator : public QObject
 {
     Q_OBJECT
 public:
-    explicit Generator(const QString& outfile = "", QObject *parent = nullptr);
+    Generator(const AbcModel* model, const QString& outfile = "", QObject *parent = nullptr);
+    Generator(const QString& outfile = "", QObject *parent = nullptr);
     /**
      * @brief generate
      * @param input filename to process.
@@ -34,6 +36,7 @@ protected:
     void spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, \
                       const QDir& wrk, AbcProcess::Continuation cont);
     static const QRegularExpression m_abcext;
+    const AbcModel *model();
 
 protected slots:
     void onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus, AbcProcess::ProcessType, AbcProcess::Continuation cont);
@@ -52,6 +55,7 @@ private:
      * @attention this works only for abc2midi
      */
     int getGenerationError(const QString& from, QString* to = nullptr);
+    const AbcModel* m_model;
     QString outfile;
 };
 

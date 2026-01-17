@@ -64,6 +64,7 @@ public:
     bool findX(int x);
     int lastX();
     bool cursorIsInFragmentLine();
+    void setTextCursorPosition(int n);
 
 signals:
     void playableNote(const QString& note);
@@ -82,6 +83,7 @@ private slots:
     void highlightCurrentLine();
     void checkDictionnary();
     void checkPlayableNote();
+    void setTickFromCursor();
     void updateLineNumberArea(const QRect &rect, int dy);
     void insertCompletion(const QString &completion);
     void onFindActivated();

@@ -9,6 +9,7 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QTimer>
+#include <QSignalBlocker>
 #include "settings.h"
 #ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
@@ -24,7 +25,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
       progress(nullptr),
       synth(nullptr),
       psgen(nullptr),
-      midigen(nullptr)
+      m_midigen(nullptr)
 {
     QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
     tempFile.setFileTemplate(t);
@@ -49,7 +50,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     positionslider.setMinimum(0);
     positionslider.setMaximum(0);
     positionslider.setSingleStep(0);
-    connect(&positionslider, &QSlider::sliderMoved, this, &EditVBoxLayout::onPositionSliderChanged);
+    connect(&positionslider, &QSlider::sliderMoved, this, &EditVBoxLayout::onSliderMoved);
 
     hboxlayout.addWidget(&xlabel);
     hboxlayout.addWidget(&xspinbox);
@@ -59,7 +60,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 	hboxlayout.addWidget(&runpushbutton);
 
 	addWidget(&abcplaintextedit);
-	addLayout(&hboxlayout);
+    addLayout(&hboxlayout);
 
     connect(&generationTimer, &QTimer::timeout, this, &EditVBoxLayout::onDisplayClicked);
     connect(&abcplaintextedit, &QPlainTextEdit::selectionChanged, this, &EditVBoxLayout::onSelectionChanged);
@@ -171,7 +172,7 @@ void EditVBoxLayout::onCursorPositionChanged()
 {
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
-    int x = xOfCursor(tc);
+    int x = xvOfCursor('X', tc);
 
     /* do something only if cursor is goes a differnt tune */
     if (xspinbox.value() != x) {
@@ -198,6 +199,8 @@ void EditVBoxLayout::onXChanged(int value)
             xspinbox.setMaximum(x + 1);
         }
     } else {
+        m_model.selectVoiceNo(value, 1);
+
         /* reset default value */
         xspinbox.setMaximum(MAXTUNES);
     }
@@ -258,6 +261,10 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         tosave += selection.replace(QChar::ParagraphSeparator, "\n");
     }
 
+    /* refresh model */
+    m_model.fromAbcBuffer(tosave.toUtf8());
+    m_model.selectVoiceNo(xspinbox.value(), 1);
+
     /* open tempfile to init a name */
     tempFile.open();
     tempFile.write(tosave.toUtf8());
@@ -278,15 +285,10 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
     }
 
-    midigen = new MidiGenerator(filename, this);
-    connect(midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
+    m_midigen = new MidiGenerator(&m_model, filename, this);
+    connect(m_midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
 
-    if (player == LIBABC2SMF) {
-        QByteArray ba = tosave.toUtf8();
-        midigen->generate(ba, tempFile.fileName(), xspinbox.value(), cont);
-    } else {
-        midigen->generate(tempFile.fileName(), xspinbox.value(), cont);
-    }
+    m_midigen->generate(tempFile.fileName(), xspinbox.value(), cont);
 }
 
 void EditVBoxLayout::removePSFile()
@@ -371,7 +373,8 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
         }
     }
 
-    delete midigen;
+    delete m_midigen;
+    m_midigen = nullptr;
 }
 
 void EditVBoxLayout::onSynthFinished(bool err)
@@ -401,10 +404,12 @@ void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
     QMessageBox::warning(a->mainWindow(), title, text);
 }
 
-void EditVBoxLayout::onPositionSliderChanged(int val)
+/* manual move */
+void EditVBoxLayout::onSliderMoved(int val)
 {
-    if (!synth->isPlaying())
+    if (!synth->isPlaying()) {
         positionslider.setValue(val);
+    }
 
     synth->m_tick = val;
     synth->seek(val);
@@ -412,11 +417,18 @@ void EditVBoxLayout::onPositionSliderChanged(int val)
 
 void EditVBoxLayout::onSynthTickChanged(int tick)
 {
-
     if (!positionslider.maximum())
         positionslider.setMaximum(synth->getTotalTicks());
 
     positionslider.setValue(tick);
+
+    int cidx = m_model.charIndexFromMidiTick(tick);
+
+    if (cidx > 0) {
+        qDebug() << cidx;
+        QSignalBlocker blocker(abcplaintextedit);
+        abcplaintextedit.setTextCursorPosition(cidx);
+    }
 }
 
 void EditVBoxLayout::saveToPDF(const QString &outfile)
@@ -474,17 +486,20 @@ void EditVBoxLayout::onDisplayClicked()
     psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::ContinuationRender);
 }
 
-int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
+int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
+    if (h != 'X' && h != 'V')
+        return 0;
+
     int index = c.selectionStart();
     QString all = abcPlainTextEdit()->toPlainText();
     int x = 1;
     int i = 0;
     QStringList lines = all.split('\n');
 
-    /* look if line under cursor is an X: */
+    /* look if line under cursor is an X: or a V: */
     QTextCursor tc(c);
     tc.select(QTextCursor::LineUnderCursor);
-    if (tc.selectedText().startsWith("X:")) {
+    if (tc.selectedText().startsWith(QString(":").prepend (h))) {
         bool ok = false;
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
         x = tc.selectedText().midRef(2).toInt(&ok);
@@ -498,10 +513,10 @@ int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
         }
     }
 
-    /* find last X: before selectionIndex */
+    /* find last X: of V: before selectionIndex */
     for (int l = 0; l < lines.count() && i < index; l++) {
         i += lines.at(l).size() +1; /* count \n */
-        if (lines.at(l).startsWith("X:")) {
+        if (lines.at(l).startsWith(QString(":").prepend(h))) {
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
             x = lines.at(l).midRef(2).toInt();
 #else
@@ -550,7 +565,7 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
     QString abc = abcPlainTextEdit()->constructHeaders(selectionIndex, &x);
     abc.append(note);
 #if 0
-    const QDataStream* stream = midigen.generate(abc.toUtf8(), xOfCursor(abcplaintextedit.textCursor()));
+    const QDataStream* stream = midigen.generate(abc.toUtf8(), xvOfCursor('X', abcplaintextedit.textCursor()));
     QIODevice* dev = stream->device();
     dev->seek(0);
     QByteArray ba = stream->device()->readAll();

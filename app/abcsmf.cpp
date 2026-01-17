@@ -3,40 +3,43 @@
 #include <QRegularExpression>
 #include "abcsmf.h"
 
-AbcSmf::AbcSmf(int vel, int shorter, bool expr, QObject *parent) : QObject(parent),
-        m_tune(nullptr),
-        m_keysig(nullptr),
-        m_unit_length(nullptr),
-        m_metric(nullptr),
-        m_tick_per_unit(0),
-        m_unit_per_whole(0),
-        m_tempo(0),
-        m_emphasis(0),
-        m_last_tick(0),
-        m_in_slur(shorter),
-        m_in_cresc(0),
-        m_mark_dyn(vel),
-        m_cur_dyn(vel),
-        m_grace_tick(0),
-        m_transpose(0),
-        m_default_velocity(vel),
-        m_default_shorter(shorter),
-        m_manage_expression(expr),
-        m_smf(nullptr)
+AbcSmf::AbcSmf(int vel, int shorter, bool expr, const AbcModel* model, QObject *parent) : QObject(parent),
+    m_tune(nullptr),
+    m_keysig(nullptr),
+    m_unit_length(nullptr),
+    m_metric(nullptr),
+    m_tick_per_unit(0),
+    m_unit_per_whole(0),
+    m_tempo(0),
+    m_emphasis(0),
+    m_last_tick(0),
+    m_in_slur(shorter),
+    m_in_cresc(0),
+    m_mark_dyn(vel),
+    m_cur_dyn(vel),
+    m_grace_tick(0),
+    m_transpose(0),
+    m_default_velocity(vel),
+    m_default_shorter(shorter),
+    m_manage_expression(expr),
+    m_smf(nullptr),
+    m_model(model)
 {
     m_smf = smf_new();
     if (smf_set_ppqn(m_smf, DPQN)) {
         smf_delete(m_smf);
         return;
     }
+
+    if (m_model)
+        m_yy = m_model->implementation();
 }
 
-bool AbcSmf::select(abc *yy, int x)
+bool AbcSmf::select(int x)
 {
-    m_yy = yy;
     m_x = x;
 
-    m_tune = abc_find_tune(yy, x);
+    m_tune = abc_find_tune(m_yy, x);
     if (!m_tune)
         return false;
 

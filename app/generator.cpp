@@ -7,7 +7,14 @@
 
 const QRegularExpression Generator::m_abcext("\\.abc$");
 
-Generator::Generator(const QString &outfile, QObject *parent) :
+Generator::Generator(const AbcModel* model, const QString &outfile, QObject *parent) :
+    QObject(parent),
+    m_model(model),
+    outfile(outfile)
+{
+}
+
+Generator::Generator(const QString &outfile, QObject *parent):
     QObject(parent),
     outfile(outfile)
 {
@@ -91,6 +98,10 @@ void Generator::spawnProgram(const QString& prog, const QStringList& args, AbcPr
     processlist.append(process);
     qDebug() << prog << args;
     process->start(prog, args);
+}
+
+const AbcModel *Generator::model() {
+    return m_model;
 }
 
 void Generator::onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus, AbcProcess::ProcessType which, AbcProcess::Continuation cont)

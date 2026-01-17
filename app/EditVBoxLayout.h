@@ -54,7 +54,7 @@ protected:
     void spawnProgram(const QString& prog, const QStringList &args, AbcProcess::ProcessType which, const QDir &wrk, enum AbcProcess::Continuation cont);
     void removePSFile();
     void removeMIDIFile();
-    int xOfCursor(const QTextCursor& c);
+    int xvOfCursor(const char h, const QTextCursor& c);
     void cleanupProcesses();
     void cleanupThreads();
     void scheduleDisplay();
@@ -74,7 +74,7 @@ protected slots:
     void onSynthFinished(bool err);
     void saveToPDF(const QString& outfile);
     void popupWarning(const QString& title, const QString& text);
-    void onPositionSliderChanged(int val);
+    void onSliderMoved(int val);
     void onSynthTickChanged(int tick);
 
 private:
@@ -95,9 +95,10 @@ private:
     QString selection;
     int selectionIndex;
 
+    AbcModel m_model;
     AbcSynth* synth;
     PsGenerator* psgen;
-    MidiGenerator* midigen;
+    MidiGenerator* m_midigen;
     MidiGenerator autoplayer;
     SpectreDocument* spectre = nullptr;
     static const QRegularExpression m_abcext;

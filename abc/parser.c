@@ -2018,7 +2018,7 @@ static void pcc_action_Note_0(pcc_context_t *__pcc_ctx, pcc_thunk_t *__pcc_in, p
 #define _1 pcc_get_capture_string(__pcc_ctx, __pcc_in->data.leaf.capts.buf[0])
 #define _1s ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.start))
 #define _1e ((const size_t)(__pcc_ctx->pos + __pcc_in->data.leaf.capts.buf[0]->range.end))
-    abc_note_append(auxil, _0);
+    abc_note_append(auxil, _0, _0s);
 #undef _1e
 #undef _1s
 #undef _1

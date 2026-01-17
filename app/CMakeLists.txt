@@ -38,6 +38,7 @@ set(SOURCES
 	AbcMainWindow.cpp
 	AbcPlainTextEdit.cpp
 	AbcProcess.cpp
+	abcmodel.cpp
 	abcsmf.cpp
 	abcsynth.cpp
 	AbcTemporaryFile.cpp
