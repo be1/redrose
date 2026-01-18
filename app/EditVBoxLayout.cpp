@@ -425,7 +425,6 @@ void EditVBoxLayout::onSynthTickChanged(int tick)
     int cidx = m_model.charIndexFromMidiTick(tick);
 
     if (cidx > 0) {
-        qDebug() << cidx;
         QSignalBlocker blocker(abcplaintextedit);
         abcplaintextedit.setTextCursorPosition(cidx);
     }

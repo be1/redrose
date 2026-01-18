@@ -17,7 +17,8 @@ public:
     void selectVoiceNo (int tune_no, int no);
 
     void getNumDen(const char* text, long* num, long* den) const;
-    int ticksPerUnit(abc_tune* tu) const;
+    long ticksPerUnit(abc_tune *tu) const;
+    long unitsPerWhole(abc_tune *tu) const;
 
     int charIndexFromAbcEvent(int num, int den) const;
     int symbolIndexFromAbcEvent(int num, int den) const;
@@ -41,7 +42,8 @@ protected:
 private:
     int m_tune_no = 0;
     int m_voice_no = 0;
-    int m_ticks_per_unit = 0;
+    long m_ticks_per_unit = 0;
+    long m_units_per_whole = 0;
 
     abc_tune* m_tune = nullptr;
     abc_voice* m_voice = nullptr;
