@@ -2372,6 +2372,9 @@ void abc_release_voice(struct abc_voice* v) {
 
 struct abc_voice* abc_make_events_for_voice(const struct abc_tune *t, int voice)
 {
+    if (voice >= t->count)
+        return NULL;
+
     struct abc_voice* unfolded = abc_pass1_unfold_voice(t->voices[voice]);
     struct abc_voice* tiefixed = abc_pass2_0_untie_fix_voice(unfolded);
     abc_release_voice(unfolded);
