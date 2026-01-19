@@ -199,7 +199,11 @@ void EditVBoxLayout::onXChanged(int value)
             xspinbox.setMaximum(x + 1);
         }
     } else {
-        m_model.selectVoiceNo(value, 1);
+        QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
+        int v = 1; /* default */
+        if (!voice.isEmpty())
+            v = vOfVoiceHeader(voice);
+        m_model.selectVoiceNo(value, v);
 
         /* reset default value */
         xspinbox.setMaximum(MAXTUNES);
@@ -263,7 +267,13 @@ void EditVBoxLayout::exportMIDI(QString filename) {
 
     /* refresh model */
     m_model.fromAbcBuffer(tosave.toUtf8());
-    m_model.selectVoiceNo(xspinbox.value(), 1);
+    QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
+
+    int v = 1; /* default */
+    if (!voice.isEmpty())
+        v = vOfVoiceHeader(voice);
+
+    m_model.selectVoiceNo(xspinbox.value(), v);
 
     /* open tempfile to init a name */
     tempFile.open();
@@ -525,6 +535,22 @@ int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
     }
 
     return x;
+}
+
+int EditVBoxLayout::vOfVoiceHeader(const QString &vh) {
+    QRegularExpression re("^V:([\\d]+) .*$");
+    int v = 0;
+
+    QRegularExpressionMatch m = re.match(vh);
+    if (m.hasMatch()) {
+        bool ok = false;
+        v = m.captured(1).toInt(&ok);
+        if (!ok) {
+            qDebug() << __func__ << "toInt: error getting voice number in" << m.captured(1);
+        }
+    }
+
+    return v; /* it is unsafe if 0! */
 }
 
 void EditVBoxLayout::onSelectionChanged()

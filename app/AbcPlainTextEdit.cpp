@@ -503,13 +503,14 @@ void AbcPlainTextEdit::setTextCursorPosition(int n) {
     setTextCursor(c);
 }
 
-QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
+/* returns the V:... text or %%MIDI channel... text */
+QString AbcPlainTextEdit::getCurrentVoiceOrChannel(bool prefer_voice) const
 {
     QTextCursor tc;
     QTextDocument* doc = document();
     QTextCursor vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
     QTextCursor ctc = doc->find("%%MIDI channel ", textCursor(), QTextDocument::FindBackward);
-    if (ctc.position() > vtc.position())
+    if (ctc.position() > vtc.position() && !prefer_voice)
         tc = ctc;
     else
         tc = vtc;
@@ -607,7 +608,7 @@ QString AbcPlainTextEdit::playableNoteUnderCursor(QTextCursor tc)
     if (note.isEmpty())
         return QString();
 
-    QString voice = getCurrentVoiceOrChannel();
+    QString voice = getCurrentVoiceOrChannel(true);
     QString keysig = getLastKeySignatureChange();
     QString pgm = getCurrentMIDIComment("program");
     QString trp = getCurrentMIDIComment("transpose");

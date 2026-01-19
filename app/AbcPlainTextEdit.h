@@ -61,6 +61,8 @@ public:
     QString constructHeaders(int selectionIndex, int* x);
     QString getLastKeySignatureChange() const;
     QString getLastMidiProgramChange() const;
+    QString getCurrentVoiceOrChannel(bool prefer_voice) const;
+    QString getCurrentMIDIComment(const QString& com) const;
     bool findX(int x);
     int lastX();
     bool cursorIsInFragmentLine();
@@ -108,8 +110,6 @@ private:
     bool isRest(QChar car) const;
     bool isPitch(QChar car) const;
     bool isAccid(QChar car) const;
-    QString getCurrentVoiceOrChannel() const;
-    QString getCurrentMIDIComment(const QString& com) const;
 
     QString m_find;
     QAction* findaction;

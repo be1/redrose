@@ -55,6 +55,7 @@ protected:
     void removePSFile();
     void removeMIDIFile();
     int xvOfCursor(const char h, const QTextCursor& c);
+    int vOfVoiceHeader(const QString& vh);
     void cleanupProcesses();
     void cleanupThreads();
     void scheduleDisplay();
