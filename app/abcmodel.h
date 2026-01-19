@@ -4,7 +4,7 @@
 #include <QByteArray>
 #include "abc.h"
 
-#define DPQN 960 /* divisions per quarter note */
+#define DPQN 480 /* divisions per quarter note */
 
 class AbcModel
 {
