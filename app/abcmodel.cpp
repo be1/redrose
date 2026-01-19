@@ -83,11 +83,19 @@ long AbcModel::unitsPerWhole(abc_tune *tu) const {
 int AbcModel::charIndexFromMidiTick(int tick) const
 {
     const long whole_in_ticks = m_ticks_per_unit * m_units_per_whole;
-    for (struct abc_symbol* s = m_voice_events->first; s; s = s->next) {
+    struct abc_symbol* s = m_voice_events->last;
+
+    /* search backward */
+    while (s) {
         long t = whole_in_ticks * ((qreal) s->ev.start_num / (qreal) s->ev.start_den);
-        if (t >= tick) {
+        //long ticks_per_duration = DPQN * s->dur_num * 4 / s->dur_den;
+
+        /* symbols with t == 0 are not notes (num/den == 0/1) */
+        if (t && t <= tick) {
             return s->cidx;
         }
+
+        s = s->prev;
     }
 
     return 0;
