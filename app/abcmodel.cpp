@@ -29,33 +29,45 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
     return true;
 }
 
-void AbcModel::selectTuneNo(int no) {
+bool AbcModel::selectTuneNo(int no) {
+    if (no < 1)
+        return false;
+
+    abc_tune* tune = tuneOfModel(no);
+
+    if (!tune)
+        return false;
+
+    m_ticks_per_unit = ticksPerUnit(tune);
+    m_units_per_whole = unitsPerWhole(tune);
     m_tune_no = no;
-    m_tune = tuneOfModel(no);
-    m_ticks_per_unit = ticksPerUnit(m_tune);
-    m_units_per_whole = unitsPerWhole(m_tune);
+    return true;
 }
 
-void AbcModel::selectVoiceNo(int tune_no, int no)
+bool AbcModel::selectVoiceNo(int tune_no, int no)
 {
-    selectTuneNo(tune_no);
+    if (tune_no < 1 || no < 1)
+        return false;
 
-    m_voice_no = no;
-    m_voice = voiceOfTune(tune_no, no);
-    if (m_voice_events)
+    if (!selectTuneNo(tune_no))
+        return false;
+
+    abc_tune* tune = tuneOfModel(tune_no);
+    if (!tune)
+        return false;
+
+    if (no > tune->count)
+        return false;
+
+    if (m_voice_events) {
         abc_release_voice (m_voice_events);
-
-    m_voice_events = abc_make_events_for_voice(m_tune, no -1);
-}
-
-int AbcModel::symbolIndexFromAbcEvent(int num, int den) const
-{
-    for (struct abc_symbol* s = m_voice_events->first; s; s = s->next) {
-        if (s->dur_num == num && s->dur_den == den)
-            return s->index;
+        m_voice_events = nullptr;
     }
 
-    return 0;
+    m_voice_events = abc_make_events_for_voice(tune, no -1);
+    m_voice_no = no;
+
+    return true;
 }
 
 /* text must be %d/%d */
@@ -111,16 +123,6 @@ int AbcModel::charIndexFromMidiTick(int tick) const
     return 0;
 }
 
-int AbcModel::charIndexFromAbcEvent(int num, int den) const
-{
-    for (struct abc_symbol* s = m_voice_events->first; s; s = s->next) {
-        if (s->ev.start_num == num && s->ev.start_den == den)
-            return s->cidx;
-    }
-
-    return 0;
-}
-
 bool AbcModel::hasError() const {
     return m_implementation->error;
 }
@@ -138,23 +140,14 @@ abc *AbcModel::implementation() const {
 }
 
 abc_tune *AbcModel::tuneOfModel(int tune) const {
+    if (!m_implementation)
+        return nullptr;
+
     if (tune > m_implementation->count) {
         return nullptr;
     }
 
     return m_implementation->tunes[tune -1];
-}
-
-abc_voice *AbcModel::voiceOfTune(int tune, int voice) const {
-    if (tune > m_implementation->count) {
-        return nullptr;
-    }
-
-    if (voice > m_implementation->tunes[tune -1]->count) {
-        return nullptr;
-    }
-
-    return m_implementation->tunes[tune -1]->voices[voice -1];
 }
 
 void AbcModel::createCharMapping() {

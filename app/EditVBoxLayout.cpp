@@ -277,7 +277,8 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     if (!voice.isEmpty())
         v = vOfVoiceHeader(voice);
 
-    m_model.selectVoiceNo(xspinbox.value(), v);
+    if (m_model.selectVoiceNo(xspinbox.value(), v))
+        qDebug() << "selected tune and voice" << xspinbox.value() << v;
 
     /* open tempfile to init a name */
     tempFile.open();
