@@ -66,6 +66,7 @@ public slots:
     void onPlayClicked(); /* midi */
     void onDisplayClicked(); /* ps */
     void onSelectionChanged();
+    void onTextChanged();
 
 protected slots:
     void onPlayableNote(const QString& note);
@@ -96,6 +97,7 @@ private:
     QString selection;
     int selectionIndex;
 
+    bool m_invalidate_model = true;
     AbcModel m_model;
     AbcSynth* synth;
     PsGenerator* psgen;

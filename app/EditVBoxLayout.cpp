@@ -23,6 +23,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     : QVBoxLayout(parent),
       fileName(fileName),
       progress(nullptr),
+      m_invalidate_model(true),
       synth(nullptr),
       psgen(nullptr),
       m_midigen(nullptr)
@@ -66,6 +67,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     connect(&abcplaintextedit, &QPlainTextEdit::selectionChanged, this, &EditVBoxLayout::onSelectionChanged);
     connect(&abcplaintextedit, &AbcPlainTextEdit::playableNote, this, &EditVBoxLayout::onPlayableNote);
     connect(&abcplaintextedit, &AbcPlainTextEdit::cursorPositionChanged, this, &EditVBoxLayout::onCursorPositionChanged);
+    connect(&abcplaintextedit, &AbcPlainTextEdit::textChanged, this, &EditVBoxLayout::onTextChanged);
     connect(&xspinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &EditVBoxLayout::onXChanged);
     connect(&playpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onPlayClicked);
     connect(&runpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onDisplayClicked);
@@ -270,7 +272,11 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
 
     /* refresh model */
-    m_model.fromAbcBuffer(tosave.toUtf8(), follow);
+    if (m_invalidate_model) {
+        m_model.fromAbcBuffer(tosave.toUtf8(), follow);
+        m_invalidate_model = false;
+    }
+
     QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
 
     int v = 1; /* default */
@@ -587,6 +593,10 @@ void EditVBoxLayout::onSelectionChanged()
     }
 
     positionslider.setMaximum(0);
+}
+
+void EditVBoxLayout::onTextChanged() {
+    m_invalidate_model = true;
 }
 
 void EditVBoxLayout::onPlayableNote(const QString &note)
