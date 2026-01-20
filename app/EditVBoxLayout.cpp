@@ -280,11 +280,12 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
 
     int v = 1; /* default */
-    if (!voice.isEmpty())
+    if (!voice.isEmpty()) {
         v = vOfVoiceHeader(voice);
+    }
 
-    if (m_model.selectVoiceNo(xspinbox.value(), v))
-        qDebug() << "selected tune and voice" << xspinbox.value() << v;
+    if (!m_model.selectVoiceNo(xspinbox.value(), v))
+        qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
 
     /* open tempfile to init a name */
     tempFile.open();
@@ -549,7 +550,7 @@ int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
 }
 
 int EditVBoxLayout::vOfVoiceHeader(const QString &vh) {
-    QRegularExpression re("^V:([\\d]+) .*$");
+    QRegularExpression re("^V: *([\\d]+).*$");
     int v = 0;
 
     QRegularExpressionMatch m = re.match(vh);
@@ -557,7 +558,7 @@ int EditVBoxLayout::vOfVoiceHeader(const QString &vh) {
         bool ok = false;
         v = m.captured(1).toInt(&ok);
         if (!ok) {
-            qDebug() << __func__ << "toInt: error getting voice number in" << m.captured(1);
+            qWarning() << __func__ << "Error getting voice number in" << m.captured(1);
         }
     }
 
