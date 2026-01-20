@@ -5,9 +5,16 @@
 AbcModel::AbcModel() {}
 
 AbcModel::~AbcModel() {
+    if (m_charmap) {
+        delete[] m_charmap;
+    }
+
+    if (m_voice_events) {
+        abc_release_voice (m_voice_events);
+    }
+
     if (m_implementation) {
         abc_release_yy (m_implementation);
-        m_implementation = nullptr;
     }
 }
 
@@ -26,6 +33,7 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
         delete[] m_charmap;
         m_charmap = nullptr;
     }
+
     return true;
 }
 
@@ -158,7 +166,7 @@ void AbcModel::createCharMapping() {
     QString str = QString::fromUtf8(m_buffer);
 
     /* a brute force way to create byte-to-character mapping
-     * for playback follower on the ABC textedit */
+     * for playback follower on the ABC text editor */
     for (int n = 0; n < m_buffer.size(); n++) {
         int uni_index = n > str.size() ? str.size() : n;
         QByteArray ba;
