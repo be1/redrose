@@ -494,10 +494,30 @@ void AbcPlainTextEdit::setTextCursorPosition(int n) {
     QTextCursor c = textCursor();
     int prevpos = c.position();
 
-    if (n > prevpos) {
-        c.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::MoveAnchor, n - prevpos);
-    } else if (n < prevpos) {
-        c.movePosition(QTextCursor::MoveOperation::Left, QTextCursor::MoveAnchor, prevpos - n);
+    int uni_index = n;
+    QByteArray ba;
+    QTextCursor cursor = textCursor();
+
+    /* a bruteforce way to match real index when there are utf-8 chars */
+    do {
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::KeepAnchor, uni_index);
+
+        /* when coming from QTextCursor::selectedText(), LF is replaced by U+2029! */
+        QString text = cursor.selectedText().replace(QChar::ParagraphSeparator, "\n");
+        ba = text.toUtf8();
+
+        if (ba.size() == n)
+            break;
+
+        uni_index--;
+    } while (ba.size() > n);
+
+
+    if (uni_index > prevpos) {
+        c.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::MoveAnchor, uni_index - prevpos);
+    } else if (uni_index < prevpos) {
+        c.movePosition(QTextCursor::MoveOperation::Left, QTextCursor::MoveAnchor, prevpos - uni_index);
     }
 
     setTextCursor(c);

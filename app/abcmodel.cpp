@@ -88,7 +88,6 @@ int AbcModel::charIndexFromMidiTick(int tick) const
     /* search backward */
     while (s) {
         long t = whole_in_ticks * ((qreal) s->ev.start_num / (qreal) s->ev.start_den);
-        //long ticks_per_duration = DPQN * s->dur_num * 4 / s->dur_den;
 
         /* symbols with t == 0 are not notes (num/den == 0/1) */
         if (t && t <= tick) {
