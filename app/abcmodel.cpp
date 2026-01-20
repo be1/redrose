@@ -24,8 +24,10 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
 
     m_buffer = ba;
     m_implementation = abc_parse_buffer(ba.constData(), ba.size());
-    if (m_implementation->error)
+    if (m_implementation->error) {
+        qWarning() << __func__ << "Parser Error: will break playback follower";
         return false;
+    }
 
     if (with_charmap)
         createCharMapping();
@@ -109,6 +111,11 @@ long AbcModel::unitsPerWhole(abc_tune *tu) const {
 
 int AbcModel::charIndexFromMidiTick(int tick) const
 {
+    if (!m_voice_events) {
+        //qWarning() << __func__ << "Parser error made follower broken.";
+        return 0;
+    }
+
     const long whole_in_ticks = m_ticks_per_unit * m_units_per_whole;
     struct abc_symbol* s = m_voice_events->last;
 
