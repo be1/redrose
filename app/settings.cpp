@@ -61,6 +61,10 @@ void Settings::check()
     if (!highlight.isValid())
         setValue(EDITOR_HIGHLIGHT, false);
 
+    QVariant follow = value(EDITOR_FOLLOW);
+    if (!follow.isValid())
+        setValue(EDITOR_FOLLOW, false);
+
     QVariant color = value(EDITOR_BAR_COLOR);
     if (!color.isValid())
         setValue(EDITOR_BAR_COLOR, "red");
@@ -127,6 +131,8 @@ void Settings::reset()
     setValue(EDITOR_FONT_RANGE, 0);
 
     setValue(EDITOR_HIGHLIGHT, false);
+
+    setValue(EDITOR_FOLLOW, false);
 
     setValue(EDITOR_BAR_COLOR, "red");
 

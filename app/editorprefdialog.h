@@ -18,6 +18,7 @@ public:
 
     QColor getColor(QString key);
     bool getHighlight();
+    bool getFollow();
     bool getAutoplay();
     int getFontRange();
     QFont getBaseFont();
@@ -38,6 +39,9 @@ private:
 
     QLabel* highlightLabel;
     QCheckBox* highlightCheck;
+
+    QLabel* followLabel;
+    QCheckBox* followCheck;
 
     QLabel* autoplayLabel;
     QCheckBox* autoplayCheck;

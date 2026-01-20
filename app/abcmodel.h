@@ -12,7 +12,7 @@ public:
     AbcModel();
     ~AbcModel();
 
-    bool fromAbcBuffer(const QByteArray& ba);
+    bool fromAbcBuffer(const QByteArray &ba, bool with_charmap);
     void selectTuneNo (int no);
     void selectVoiceNo (int tune_no, int no);
 

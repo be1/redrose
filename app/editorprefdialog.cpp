@@ -68,6 +68,18 @@ EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
 
     mainLayout->addLayout(aphbox);
 
+    /* follow playback */
+    bool follow = settings.value(EDITOR_FOLLOW).toBool();
+    followLabel = new QLabel(tr("Follow playback"));
+    followCheck = new QCheckBox;
+    followCheck->setChecked(follow);
+    followLabel->setBuddy(followCheck);
+    QHBoxLayout* flhbox = new QHBoxLayout;
+    flhbox->addWidget(followLabel);
+    flhbox->addWidget(followCheck);
+
+    mainLayout->addLayout(flhbox);
+
     /* syntax highlighting */
     /* WARNING: labels, keys, buttons in the same order */
     colorLabels << tr("Header color") \
@@ -135,6 +147,10 @@ QColor EditorPrefDialog::getColor(QString key)
 bool EditorPrefDialog::getHighlight()
 {
     return highlightCheck->isChecked();
+}
+
+bool EditorPrefDialog::getFollow() {
+    return followCheck->isChecked();
 }
 
 bool EditorPrefDialog::getAutoplay()

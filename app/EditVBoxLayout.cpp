@@ -249,6 +249,7 @@ void EditVBoxLayout::onPlayClicked()
 }
 
 void EditVBoxLayout::exportMIDI(QString filename) {
+    Settings settings;
     QString tosave;
 
     if (selection.isEmpty()) {
@@ -265,8 +266,11 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         tosave += selection.replace(QChar::ParagraphSeparator, "\n");
     }
 
+    /* we only can follow full tune. disable mapping on partial selection */
+    bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
+
     /* refresh model */
-    m_model.fromAbcBuffer(tosave.toUtf8());
+    m_model.fromAbcBuffer(tosave.toUtf8(), follow);
     QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
 
     int v = 1; /* default */
@@ -287,7 +291,6 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         cont = AbcProcess::ContinuationNone; /* will not play, it's just an export */
     }
 
-    Settings settings;
     QVariant player = settings.value(PLAYER_KEY);
 
     if (filename.isEmpty()) {
@@ -434,6 +437,7 @@ void EditVBoxLayout::onSynthTickChanged(int tick)
 
     int cidx = m_model.charIndexFromMidiTick(tick);
 
+    /* cidx == 0 means invalid (no charmap, or tick is not in a note) */
     if (cidx > 0) {
         QSignalBlocker blocker(abcplaintextedit);
         abcplaintextedit.setTextCursorPosition(cidx);

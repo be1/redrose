@@ -11,7 +11,7 @@ AbcModel::~AbcModel() {
     }
 }
 
-bool AbcModel::fromAbcBuffer(const QByteArray &ba) {
+bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
     if (m_implementation)
         abc_release_yy(m_implementation);
 
@@ -20,7 +20,12 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba) {
     if (m_implementation->error)
         return false;
 
-    createCharMapping();
+    if (with_charmap)
+        createCharMapping();
+    else {
+        delete[] m_charmap;
+        m_charmap = nullptr;
+    }
     return true;
 }
 
@@ -93,8 +98,11 @@ int AbcModel::charIndexFromMidiTick(int tick) const
 
         /* symbols with t == 0 are not notes (num/den == 0/1) */
         if (t && t <= tick) {
-            //return s->cidx;
-            return m_charmap[s->cidx];
+            if (m_charmap)
+                return m_charmap[s->cidx];
+            else
+                return 0; /* tell idx is invalid anyway */
+                //return s->cidx;
         }
 
         s = s->prev;
