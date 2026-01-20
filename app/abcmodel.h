@@ -38,6 +38,7 @@ public:
 protected:
     abc_tune *tuneOfModel(int tune) const;
     abc_voice *voiceOfTune(int tune, int voice) const;
+    void createCharMapping(); /* bytes to character mapping in the buffer */
 
 private:
     int m_tune_no = 0;
@@ -51,8 +52,8 @@ private:
 
     QByteArray m_buffer;
     struct abc* m_implementation = nullptr;
-    int m_current_symbol_index= 0;
-    int m_current_char_index = 0;
+
+    int* m_charmap = nullptr;
 };
 
 #endif // ABCMODEL_H

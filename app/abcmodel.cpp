@@ -15,10 +15,12 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba) {
     if (m_implementation)
         abc_release_yy(m_implementation);
 
+    m_buffer = ba;
     m_implementation = abc_parse_buffer(ba.constData(), ba.size());
     if (m_implementation->error)
         return false;
 
+    createCharMapping();
     return true;
 }
 
@@ -91,7 +93,8 @@ int AbcModel::charIndexFromMidiTick(int tick) const
 
         /* symbols with t == 0 are not notes (num/den == 0/1) */
         if (t && t <= tick) {
-            return s->cidx;
+            //return s->cidx;
+            return m_charmap[s->cidx];
         }
 
         s = s->prev;
@@ -144,4 +147,30 @@ abc_voice *AbcModel::voiceOfTune(int tune, int voice) const {
     }
 
     return m_implementation->tunes[tune -1]->voices[voice -1];
+}
+
+void AbcModel::createCharMapping() {
+    if (m_charmap != nullptr)
+        delete[] m_charmap;
+
+    m_charmap = new int[m_buffer.size()];
+    QString str = QString::fromUtf8(m_buffer);
+
+    /* a brute force way to create byte-to-character mapping
+     * for playback follower on the ABC textedit */
+    for (int n = 0; n < m_buffer.size(); n++) {
+        int uni_index = n > str.size() ? str.size() : n;
+        QByteArray ba;
+        do {
+            QString sub = str.mid(0, uni_index);
+            ba = sub.toUtf8();
+
+            if (ba.size() == n)
+                break;
+
+            uni_index--;
+        } while (ba.size() > n);
+
+        m_charmap[n] = uni_index;
+    }
 }

@@ -493,7 +493,7 @@ bool AbcPlainTextEdit::cursorIsInFragmentLine()
 void AbcPlainTextEdit::setTextCursorPosition(int n) {
     QTextCursor c = textCursor();
     int prevpos = c.position();
-
+#if 0
     int uni_index = n;
     QByteArray ba;
     QTextCursor cursor = textCursor();
@@ -512,12 +512,12 @@ void AbcPlainTextEdit::setTextCursorPosition(int n) {
 
         uni_index--;
     } while (ba.size() > n);
+#endif
 
-
-    if (uni_index > prevpos) {
-        c.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::MoveAnchor, uni_index - prevpos);
-    } else if (uni_index < prevpos) {
-        c.movePosition(QTextCursor::MoveOperation::Left, QTextCursor::MoveAnchor, prevpos - uni_index);
+    if (n > prevpos) {
+        c.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::MoveAnchor, n - prevpos);
+    } else if (n < prevpos) {
+        c.movePosition(QTextCursor::MoveOperation::Left, QTextCursor::MoveAnchor, prevpos - n);
     }
 
     setTextCursor(c);

@@ -52,7 +52,7 @@ void MidiGenerator::generate(const QString &inputpath, int xopt, AbcProcess::Con
     spawnMidiCompiler(program, argv, dir, cont);
 }
 
-/* this use internal MIDI to SMF genertor */
+/* this use internal MIDI to SMF generator */
 void MidiGenerator::generateInternal(const QString &inputnamehint, int xopt, AbcProcess::Continuation cont)
 {
     Settings settings;
