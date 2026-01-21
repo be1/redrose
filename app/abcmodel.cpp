@@ -174,6 +174,11 @@ void AbcModel::createCharMapping() {
 
     /* a brute force way to create byte-to-character mapping
      * for playback follower on the ABC text editor */
+    for (int u = 0; u < str.size(); u++) {
+        QByteArray ba = str.mid(0, u).toUtf8();
+        m_charmap[ba.size()] = u;
+    }
+#if 0
     for (int n = 0; n < m_buffer.size(); n++) {
         int uni_index = n > str.size() ? str.size() : n;
         QByteArray ba;
@@ -189,4 +194,5 @@ void AbcModel::createCharMapping() {
 
         m_charmap[n] = uni_index;
     }
+#endif
 }
