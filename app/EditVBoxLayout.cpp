@@ -191,6 +191,7 @@ void EditVBoxLayout::onCursorPositionChanged()
 
     int tick = m_model.midiTickFromCharIndex(tc.position());
     synth->m_tick = tick;
+    synth->seek(tick);
     positionslider.setValue(tick);
 }
 
