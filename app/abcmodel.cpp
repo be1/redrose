@@ -48,8 +48,6 @@ bool AbcModel::selectTuneNo(int no) {
     if (!tune)
         return false;
 
-    m_ticks_per_unit = ticksPerUnit(tune);
-    m_units_per_whole = unitsPerWhole(tune);
     m_tune_no = no;
     return true;
 }
@@ -80,35 +78,6 @@ bool AbcModel::selectVoiceNo(int tune_no, int no)
     return true;
 }
 
-/* text must be %d/%d */
-void AbcModel::getNumDen(const char* text, long* num, long* den) const {
-    bool ok;
-    QString str(text);
-    QStringList sl = str.split('/');
-    if (sl.size() < 2) {
-        *num = 1;
-        *den = 8;
-        return;
-    }
-
-    *num = sl.at(0).toLong(&ok);
-    if (!ok) *num = 1;
-    *den = sl.at(1).toLong(&ok);
-    if (!ok) *den = 8;
-}
-
-long AbcModel::ticksPerUnit(abc_tune* tu) const {
-    struct abc_header* lh = abc_find_header(tu, 'L');
-    long int num = 1, den = 8;
-    getNumDen(lh ? lh->text : "1/8", &num, &den);
-    return DPQN * num * 4 / den;
-}
-
-long AbcModel::unitsPerWhole(abc_tune *tu) const {
-    struct abc_header* lh = abc_find_header(tu, 'L');
-    return abc_unit_per_measure(lh ? lh->text : "1/8", "4/4");
-}
-
 int AbcModel::charIndexFromMidiTick(int tick) const
 {
     if (!m_voice_events) {
@@ -116,7 +85,7 @@ int AbcModel::charIndexFromMidiTick(int tick) const
         return 0;
     }
 
-    const long whole_in_ticks = m_ticks_per_unit * m_units_per_whole;
+    const long whole_in_ticks = DPQN * 4;
     struct abc_symbol* s = m_voice_events->last;
 
     /* search backward */
