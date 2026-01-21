@@ -170,15 +170,24 @@ void AbcModel::createCharMapping() {
         delete[] m_charmap;
 
     m_charmap = new int[m_buffer.size()];
-    QString str = QString::fromUtf8(m_buffer);
 
-    /* a brute force way to create byte-to-character mapping
-     * for playback follower on the ABC text editor */
+    /* create byte-to-character mapping for
+     * playback follower on the ABC text editor */
+    QString str = QString::fromUtf8(m_buffer);
+#if 1
+    /* initialize with 1:1 mapping */
+    for (int i = 0; i < m_buffer.size(); i++) {
+        m_charmap[i] = i;
+    }
+    /* check we have pure ASCII or not */
+    if (str.size() == m_buffer.size())
+	    return;
+    /* some non-ascii: alter map */
     for (int u = 0; u < str.size(); u++) {
         QByteArray ba = str.mid(0, u).toUtf8();
         m_charmap[ba.size()] = u;
     }
-#if 0
+#else
     for (int n = 0; n < m_buffer.size(); n++) {
         int uni_index = n > str.size() ? str.size() : n;
         QByteArray ba;
