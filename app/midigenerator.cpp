@@ -8,10 +8,14 @@
 #include "abcsmf.h"
 #include "config.h"
 
-MidiGenerator::MidiGenerator(const QString& outfile, QObject* parent)
-    : Generator(outfile, parent)
+MidiGenerator::MidiGenerator(const QString &outfile, QObject *parent):
+    Generator(outfile, parent)
 {
+}
 
+MidiGenerator::MidiGenerator(const AbcModel *model, const QString &outfile, QObject *parent)
+    : Generator(model, outfile, parent)
+{
 }
 
 void MidiGenerator::generate(const QString &inputpath, int xopt, AbcProcess::Continuation cont)
@@ -20,6 +24,14 @@ void MidiGenerator::generate(const QString &inputpath, int xopt, AbcProcess::Con
     QVariant player = settings.value(PLAYER_KEY);
 
     QString program = player.toString();
+
+    if (player == LIBABC2SMF) {
+        /* use internal generator */
+        generateInternal(inputpath, xopt, cont);
+        return;
+    }
+
+    /* or use abc2midi */
     QStringList argv = program.split(" ");
     program = argv.at(0);
 
@@ -40,7 +52,8 @@ void MidiGenerator::generate(const QString &inputpath, int xopt, AbcProcess::Con
     spawnMidiCompiler(program, argv, dir, cont);
 }
 
-void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhint, int xopt, AbcProcess::Continuation cont)
+/* this use internal MIDI to SMF generator */
+void MidiGenerator::generateInternal(const QString &inputnamehint, int xopt, AbcProcess::Continuation cont)
 {
     Settings settings;
     QVariant vel = settings.value(PLAYER_VELOCITY);
@@ -55,37 +68,32 @@ void MidiGenerator::generate(const QByteArray &inputbuf, const QString& inputhin
         expr = false;
 
     QString errstr;
-    struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.size());
-    if (yy->error) {
-        errstr = tr("Parse error line: ") + QString::number(yy->error_line) + tr(", char: ") + QString::number(yy->error_char);
+    if (model()->hasError()) {
+        errstr = tr("Parse error line: ") + QString::number(model()->errorLine()) + tr(", char: ") + QString::number(model()->errorChar());
         emit generated(1, errstr, cont);
-        abc_release_yy(yy);
     } else {
-        AbcSmf *smf = new AbcSmf(vel.toInt(), dur.toInt(), expr.toBool(), this);
+        AbcSmf *smf = new AbcSmf(vel.toInt(), dur.toInt(), expr.toBool(), model(), this);
         if (!smf) {
-                emit generated(1, tr("Out of memory"), cont);
-                abc_release_yy(yy);
-                return;
+            emit generated(1, tr("Out of memory"), cont);
+            return;
         }
 
-        if (!smf->select(yy, xopt)) {
+        if (!smf->select(xopt)) {
             delete smf;
             emit generated(0, tr("Tune does not exist"), cont);
-            abc_release_yy(yy);
             return;
         }
 
         if (outFile().isEmpty()) {
-            QString path = inputhint;
+            QString path = inputnamehint;
             path.replace(m_abcext, QString::number(xopt) + ".mid");
             setOutFile(path);
         }
 
-        smf->saveToFile(outFile().toStdString().c_str());
+        smf->saveToFile(outFile().toUtf8().constData());
 
         delete smf;
         emit generated(0, "", cont);
-        abc_release_yy(yy);
     }
 }
 #if 0

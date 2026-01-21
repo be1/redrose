@@ -88,6 +88,7 @@ void PreferencesMenu::onEditorActionTriggered()
         settings.setValue(EDITOR_FONT_BASE, dialog->getBaseFont().family());
         settings.setValue(EDITOR_FONT_RANGE, dialog->getFontRange());
         settings.setValue(EDITOR_HIGHLIGHT, dialog->getHighlight());
+        settings.setValue(EDITOR_FOLLOW, dialog->getFollow());
         settings.setValue(EDITOR_AUTOPLAY, dialog->getAutoplay());
         settings.setValue(EDITOR_BAR_COLOR, dialog->getColor(EDITOR_BAR_COLOR));
         settings.setValue(EDITOR_COMMENT_COLOR, dialog->getColor(EDITOR_COMMENT_COLOR));

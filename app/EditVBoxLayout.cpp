@@ -9,6 +9,7 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QTimer>
+#include <QSignalBlocker>
 #include "settings.h"
 #ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
@@ -22,9 +23,10 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     : QVBoxLayout(parent),
       fileName(fileName),
       progress(nullptr),
+      m_invalidate_model(true),
       synth(nullptr),
       psgen(nullptr),
-      midigen(nullptr)
+      m_midigen(nullptr)
 {
     QString t = QDir::tempPath() + QDir::separator() + "redr-XXXXXX.abc";
     tempFile.setFileTemplate(t);
@@ -35,8 +37,8 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     xspinbox.setMinimum(1);
     xspinbox.setMaximum(MAXTUNES);
 
-    xlabel.setText(tr("X:"));
-	xlabel.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    xlabel.setText("X:");
+    xlabel.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     xlabel.setBuddy(&xspinbox);
 
     progress = new QProgressIndicator();
@@ -49,7 +51,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     positionslider.setMinimum(0);
     positionslider.setMaximum(0);
     positionslider.setSingleStep(0);
-    connect(&positionslider, &QSlider::sliderMoved, this, &EditVBoxLayout::onPositionSliderChanged);
+    connect(&positionslider, &QSlider::sliderMoved, this, &EditVBoxLayout::onSliderMoved);
 
     hboxlayout.addWidget(&xlabel);
     hboxlayout.addWidget(&xspinbox);
@@ -59,12 +61,13 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
 	hboxlayout.addWidget(&runpushbutton);
 
 	addWidget(&abcplaintextedit);
-	addLayout(&hboxlayout);
+    addLayout(&hboxlayout);
 
     connect(&generationTimer, &QTimer::timeout, this, &EditVBoxLayout::onDisplayClicked);
     connect(&abcplaintextedit, &QPlainTextEdit::selectionChanged, this, &EditVBoxLayout::onSelectionChanged);
     connect(&abcplaintextedit, &AbcPlainTextEdit::playableNote, this, &EditVBoxLayout::onPlayableNote);
     connect(&abcplaintextedit, &AbcPlainTextEdit::cursorPositionChanged, this, &EditVBoxLayout::onCursorPositionChanged);
+    connect(&abcplaintextedit, &AbcPlainTextEdit::textChanged, this, &EditVBoxLayout::onTextChanged);
     connect(&xspinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &EditVBoxLayout::onXChanged);
     connect(&playpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onPlayClicked);
     connect(&runpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onDisplayClicked);
@@ -171,14 +174,25 @@ void EditVBoxLayout::onCursorPositionChanged()
 {
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
-    int x = xOfCursor(tc);
+    int x = xvOfCursor('X', tc);
 
-    /* do something only if cursor is goes a differnt tune */
+    /* reset things only if cursor goes a different tune */
     if (xspinbox.value() != x) {
         QSignalBlocker blocker(xspinbox);
         xspinbox.setValue(x);
         scheduleDisplay();
+
+        synth->stop();
+        synth->m_tick = 0;
     }
+
+    int v = xvOfCursor('V', tc);
+    m_model.selectVoiceNo(x, v);
+
+    int tick = m_model.midiTickFromCharIndex(tc.position());
+    synth->m_tick = tick;
+    synth->seek(tick);
+    positionslider.setValue(tick);
 }
 
 void EditVBoxLayout::onXChanged(int value)
@@ -198,6 +212,12 @@ void EditVBoxLayout::onXChanged(int value)
             xspinbox.setMaximum(x + 1);
         }
     } else {
+        QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
+        int v = 1; /* default */
+        if (!voice.isEmpty())
+            v = numberFromHeader(voice, 'V');
+        m_model.selectVoiceNo(value, v);
+
         /* reset default value */
         xspinbox.setMaximum(MAXTUNES);
     }
@@ -242,6 +262,7 @@ void EditVBoxLayout::onPlayClicked()
 }
 
 void EditVBoxLayout::exportMIDI(QString filename) {
+    Settings settings;
     QString tosave;
 
     if (selection.isEmpty()) {
@@ -258,6 +279,25 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         tosave += selection.replace(QChar::ParagraphSeparator, "\n");
     }
 
+    /* we only can follow full tune. disable mapping on partial selection */
+    bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
+
+    /* refresh model */
+    if (m_invalidate_model) {
+        m_model.fromAbcBuffer(tosave.toUtf8(), follow);
+        m_invalidate_model = false;
+    }
+
+    QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
+
+    int v = 1; /* default */
+    if (!voice.isEmpty()) {
+        v = numberFromHeader(voice, 'V');
+    }
+
+    if (!m_model.selectVoiceNo(xspinbox.value(), v))
+        qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
+
     /* open tempfile to init a name */
     tempFile.open();
     tempFile.write(tosave.toUtf8());
@@ -270,7 +310,6 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         cont = AbcProcess::ContinuationNone; /* will not play, it's just an export */
     }
 
-    Settings settings;
     QVariant player = settings.value(PLAYER_KEY);
 
     if (filename.isEmpty()) {
@@ -278,15 +317,10 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
     }
 
-    midigen = new MidiGenerator(filename, this);
-    connect(midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
+    m_midigen = new MidiGenerator(&m_model, filename, this);
+    connect(m_midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
 
-    if (player == LIBABC2SMF) {
-        QByteArray ba = tosave.toUtf8();
-        midigen->generate(ba, tempFile.fileName(), xspinbox.value(), cont);
-    } else {
-        midigen->generate(tempFile.fileName(), xspinbox.value(), cont);
-    }
+    m_midigen->generate(tempFile.fileName(), xspinbox.value(), cont);
 }
 
 void EditVBoxLayout::removePSFile()
@@ -368,10 +402,13 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             QString midifile(tempFile.fileName());
             midifile.replace(m_abcext, QString::number(xspinbox.value())  + ".mid");
             synth->play(midifile);
+            /* show cursor following playback */
+            abcplaintextedit.setFocus();
         }
     }
 
-    delete midigen;
+    delete m_midigen;
+    m_midigen = nullptr;
 }
 
 void EditVBoxLayout::onSynthFinished(bool err)
@@ -401,10 +438,12 @@ void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
     QMessageBox::warning(a->mainWindow(), title, text);
 }
 
-void EditVBoxLayout::onPositionSliderChanged(int val)
+/* manual move */
+void EditVBoxLayout::onSliderMoved(int val)
 {
-    if (!synth->isPlaying())
+    if (!synth->isPlaying()) {
         positionslider.setValue(val);
+    }
 
     synth->m_tick = val;
     synth->seek(val);
@@ -412,11 +451,16 @@ void EditVBoxLayout::onPositionSliderChanged(int val)
 
 void EditVBoxLayout::onSynthTickChanged(int tick)
 {
-
-    if (!positionslider.maximum())
-        positionslider.setMaximum(synth->getTotalTicks());
-
+    positionslider.setMaximum(synth->getTotalTicks());
     positionslider.setValue(tick);
+
+    int cidx = m_model.charIndexFromMidiTick(tick);
+
+    /* cidx == 0 means invalid (not configured, no charmap, or tick is not in a note) */
+    if (cidx > 0) {
+        QSignalBlocker blocker(abcplaintextedit);
+        abcplaintextedit.setTextCursorPosition(cidx);
+    }
 }
 
 void EditVBoxLayout::saveToPDF(const QString &outfile)
@@ -474,43 +518,63 @@ void EditVBoxLayout::onDisplayClicked()
     psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::ContinuationRender);
 }
 
-int EditVBoxLayout::xOfCursor(const QTextCursor& c) {
+int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
+    if (h != 'X' && h != 'V')
+        return 0;
+
     int index = c.selectionStart();
     QString all = abcPlainTextEdit()->toPlainText();
     int x = 1;
     int i = 0;
     QStringList lines = all.split('\n');
 
-    /* look if line under cursor is an X: */
+    /* look if line under cursor is an X: or a V: */
     QTextCursor tc(c);
     tc.select(QTextCursor::LineUnderCursor);
-    if (tc.selectedText().startsWith("X:")) {
-        bool ok = false;
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-        x = tc.selectedText().midRef(2).toInt(&ok);
-#else
-        x = tc.selectedText().mid(2).toInt(&ok);
-#endif
-        if (ok) {
-            return x;
-        } else {
-            x = 1;
-        }
+    if (tc.selectedText().startsWith(QString(":").prepend (h))) {
+        x = numberFromHeader(tc.selectedText(), h);
     }
 
-    /* find last X: before selectionIndex */
+    /* find last X: or V: before selectionIndex */
+    bool xBeforeV = false; /* if we search for V, we must enter a tune */
     for (int l = 0; l < lines.count() && i < index; l++) {
-        i += lines.at(l).size() +1; /* count \n */
-        if (lines.at(l).startsWith("X:")) {
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-            x = lines.at(l).midRef(2).toInt();
-#else
-            x = lines.at(l).mid(2).toInt();
-#endif
+        QString line = lines.at(l);
+        i += line.size() +1; /* count \n */
+
+        if (line.startsWith("X:"))
+            xBeforeV = true;
+
+        if (line.startsWith(QString(":").prepend(h))) {
+            x = numberFromHeader(line, h);
+            if (h == 'V')
+                xBeforeV = false;
+
+            /* continue until last X or V before selection index */
         }
     }
 
+    if (h == 'V' && xBeforeV)
+        return 1; /* retrun 1st voice */
+
+    /* return voice or tune found */
     return x;
+}
+
+int EditVBoxLayout::numberFromHeader(const QString &hs, char h) {
+    QString rs(": *([\\d]+).*$");
+    QRegularExpression re("^" + rs.prepend(h));
+    int ret = 0;
+
+    QRegularExpressionMatch m = re.match(hs);
+    if (m.hasMatch()) {
+        bool ok = false;
+        ret = m.captured(1).toInt(&ok);
+        if (!ok) {
+            qWarning() << __func__ << "Error getting number in" << m.captured(1);
+        }
+    }
+
+    return ret; /* it may be is unsafe if 0! */
 }
 
 void EditVBoxLayout::onSelectionChanged()
@@ -529,7 +593,7 @@ void EditVBoxLayout::onSelectionChanged()
         selectionIndex = c.selectionStart();
     } else {
         /* if just one click : reset */
-        synth->m_tick = 0;
+        //synth->m_tick = 0;
 
         if (!selection.isEmpty()) {
             if (synth->isPlaying())
@@ -541,7 +605,11 @@ void EditVBoxLayout::onSelectionChanged()
         selectionIndex = c.selectionStart();
     }
 
-    positionslider.setMaximum(0);
+    //positionslider.setMaximum(0);
+}
+
+void EditVBoxLayout::onTextChanged() {
+    m_invalidate_model = true;
 }
 
 void EditVBoxLayout::onPlayableNote(const QString &note)
@@ -550,7 +618,7 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
     QString abc = abcPlainTextEdit()->constructHeaders(selectionIndex, &x);
     abc.append(note);
 #if 0
-    const QDataStream* stream = midigen.generate(abc.toUtf8(), xOfCursor(abcplaintextedit.textCursor()));
+    const QDataStream* stream = midigen.generate(abc.toUtf8(), xvOfCursor('X', abcplaintextedit.textCursor()));
     QIODevice* dev = stream->device();
     dev->seek(0);
     QByteArray ba = stream->device()->readAll();

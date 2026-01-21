@@ -83,6 +83,7 @@ struct abc_symbol {
     long dur_num; /* duration */
     long dur_den;
     int index; /* symbol index in parser */
+    int cidx; /* symbol's character index in buffer */
     struct abc_event ev;
 
     int in_alt;
@@ -112,7 +113,7 @@ void abc_eol_append(struct abc* yy, const char* yytext);
 
 void abc_space_append(struct abc* yy, const char* yytext);
 
-void abc_note_append(struct abc* yy, const char* yytext);
+void abc_note_append(struct abc* yy, const char* yytext, int pos);
 
 void abc_frac_add(long* num, long* den, long from_num, long from_den);
 

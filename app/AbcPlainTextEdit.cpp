@@ -489,13 +489,47 @@ bool AbcPlainTextEdit::cursorIsInFragmentLine()
     return true;
 }
 
-QString AbcPlainTextEdit::getCurrentVoiceOrChannel() const
+void AbcPlainTextEdit::setTextCursorPosition(int n) {
+    QTextCursor c = textCursor();
+    int prevpos = c.position();
+#if 0
+    int uni_index = n;
+    QByteArray ba;
+    QTextCursor cursor = textCursor();
+
+    /* a bruteforce way to match real index when there are utf-8 chars */
+    do {
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::KeepAnchor, uni_index);
+
+        /* when coming from QTextCursor::selectedText(), LF is replaced by U+2029! */
+        QString text = cursor.selectedText().replace(QChar::ParagraphSeparator, "\n");
+        ba = text.toUtf8();
+
+        if (ba.size() == n)
+            break;
+
+        uni_index--;
+    } while (ba.size() > n);
+#endif
+
+    if (n > prevpos) {
+        c.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::MoveAnchor, n - prevpos);
+    } else if (n < prevpos) {
+        c.movePosition(QTextCursor::MoveOperation::Left, QTextCursor::MoveAnchor, prevpos - n);
+    }
+
+    setTextCursor(c);
+}
+
+/* returns the V:... text or %%MIDI channel... text */
+QString AbcPlainTextEdit::getCurrentVoiceOrChannel(bool prefer_voice) const
 {
     QTextCursor tc;
     QTextDocument* doc = document();
     QTextCursor vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
     QTextCursor ctc = doc->find("%%MIDI channel ", textCursor(), QTextDocument::FindBackward);
-    if (ctc.position() > vtc.position())
+    if (ctc.position() > vtc.position() && !prefer_voice)
         tc = ctc;
     else
         tc = vtc;
@@ -593,7 +627,7 @@ QString AbcPlainTextEdit::playableNoteUnderCursor(QTextCursor tc)
     if (note.isEmpty())
         return QString();
 
-    QString voice = getCurrentVoiceOrChannel();
+    QString voice = getCurrentVoiceOrChannel(true);
     QString keysig = getLastKeySignatureChange();
     QString pgm = getCurrentMIDIComment("program");
     QString trp = getCurrentMIDIComment("transpose");

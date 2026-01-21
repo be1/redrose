@@ -641,7 +641,7 @@ void abc_space_append(struct abc* yy, const char* yytext)
     new->text = strdup(yytext);
 }
 
-void abc_note_append(struct abc* yy, const char* yytext)
+void abc_note_append(struct abc* yy, const char* yytext, int pos)
 {
     struct abc_symbol* new = abc_new_symbol(yy);
     struct abc_tune* cur_tune = yy->tunes[yy->count-1];
@@ -657,6 +657,8 @@ void abc_note_append(struct abc* yy, const char* yytext)
         /* fix numerator */
         new->dur_num = abc_unit_per_measure(cur_voice->ul, cur_voice->mm);
     }
+
+    new->cidx = pos;
 }
 
 void abc_chordpunct_set(struct abc* yy, const char* yytext)
@@ -2370,6 +2372,9 @@ void abc_release_voice(struct abc_voice* v) {
 
 struct abc_voice* abc_make_events_for_voice(const struct abc_tune *t, int voice)
 {
+    if (voice >= t->count)
+        return NULL;
+
     struct abc_voice* unfolded = abc_pass1_unfold_voice(t->voices[voice]);
     struct abc_voice* tiefixed = abc_pass2_0_untie_fix_voice(unfolded);
     abc_release_voice(unfolded);

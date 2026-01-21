@@ -4,21 +4,20 @@
 #include <QObject>
 #include <smf.h>
 #include "../abc/abc.h"
+#include "abcmodel.h"
 
 class AbcSmf : public QObject
 {
     Q_OBJECT
 public:
-    explicit AbcSmf(int vel = 96, int shorter = 9, bool expr = 0, QObject *parent = nullptr);
-    bool select(struct abc* yy, int x = 1);
+    explicit AbcSmf(int vel = 96, int shorter = 9, bool expr = 0, const AbcModel *model = nullptr, QObject *parent = nullptr);
+    bool select(int x = 1);
     void reset();
     void writeAll();
     void saveToFile(const char* filename);
     ~AbcSmf();
 
 private:
-#define DPQN 960 /* divisions per quarter note */
-
     bool isDynamicMark(const struct abc_symbol* deco);
     bool isDynamicEnd(const abc_symbol *deco);
     char getDynamic(const char* mark, unsigned char base, unsigned char dflt);
@@ -45,10 +44,10 @@ private:
     long computeCut(struct abc_symbol* s);
     void generateExpressionArray(unsigned char climax);
 
-    struct abc* m_yy; /* takes ownership of yy */
-    int m_x;
+    struct abc* m_yy = nullptr; /* unowned */
+    int m_x = 0;
     QString m_inst_name;     /* given in V: header */
-    struct abc_tune* m_tune; /* tune selected by X */
+    struct abc_tune* m_tune = nullptr; /* tune selected by X */
     char* m_keysig;          /* tune's kh->text */
     int m_midi_keysig;       /* MIDI smf key signature */
     int m_midi_mode;         /* MIDI smf mode (maj/min) */
@@ -86,6 +85,7 @@ private:
     long m_default_shorter;
     int m_chord_cc_done = 0;
     bool m_manage_expression = false;
+    const AbcModel* m_model; /* unowned */
     smf_t* m_smf;
 };
 
