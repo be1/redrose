@@ -111,7 +111,7 @@ int AbcModel::charIndexFromMidiTick(long tick) const
 long AbcModel::midiTickFromCharIndex(int uidx) const
 {
     if (!m_voice_events || !m_charmap)
-        return 0;
+        return -1;
 
     int cidx = searchIdx(m_charmap, m_buffer.size(), uidx);
 
@@ -122,7 +122,7 @@ long AbcModel::midiTickFromCharIndex(int uidx) const
         }
     }
 
-    return 0;
+    return -1;
 }
 
 bool AbcModel::hasError() const {

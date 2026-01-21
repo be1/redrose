@@ -190,9 +190,11 @@ void EditVBoxLayout::onCursorPositionChanged()
     m_model.selectVoiceNo(x, v);
 
     int tick = m_model.midiTickFromCharIndex(tc.position());
-    synth->m_tick = tick;
-    synth->seek(tick);
-    positionslider.setValue(tick);
+    if (tick >= 0) {
+        synth->m_tick = tick;
+        synth->seek(tick);
+        positionslider.setValue(tick);
+    }
 }
 
 void EditVBoxLayout::onXChanged(int value)
