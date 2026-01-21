@@ -248,7 +248,7 @@ Fermer cette partition quand-même ?</translation>
     <message>
         <location filename="editorprefdialog.cpp" line="73"/>
         <source>Follow playback</source>
-	<translatio>Suivre la lecture</translation>
+	<translation>Suivre la lecture</translation>
     </message>
     <message>
         <location filename="editorprefdialog.cpp" line="85"/>
