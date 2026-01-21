@@ -12,27 +12,27 @@
 <context>
     <name>AbcPlainTextEdit</name>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="66"/>
-        <location filename="AbcPlainTextEdit.cpp" line="235"/>
+        <location filename="AbcPlainTextEdit.cpp" line="67"/>
+        <location filename="AbcPlainTextEdit.cpp" line="236"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="72"/>
-        <location filename="AbcPlainTextEdit.cpp" line="249"/>
+        <location filename="AbcPlainTextEdit.cpp" line="73"/>
+        <location filename="AbcPlainTextEdit.cpp" line="250"/>
         <source>Find forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="78"/>
-        <location filename="AbcPlainTextEdit.cpp" line="263"/>
+        <location filename="AbcPlainTextEdit.cpp" line="79"/>
+        <location filename="AbcPlainTextEdit.cpp" line="264"/>
         <source>Find backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="235"/>
-        <location filename="AbcPlainTextEdit.cpp" line="249"/>
-        <location filename="AbcPlainTextEdit.cpp" line="263"/>
+        <location filename="AbcPlainTextEdit.cpp" line="236"/>
+        <location filename="AbcPlainTextEdit.cpp" line="250"/>
+        <location filename="AbcPlainTextEdit.cpp" line="264"/>
         <source>Text:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -115,98 +115,98 @@ Close this score anyway?</source>
 <context>
     <name>EditVBoxLayout</name>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="38"/>
+        <location filename="EditVBoxLayout.cpp" line="40"/>
         <source>X:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="105"/>
+        <location filename="EditVBoxLayout.cpp" line="108"/>
         <source>Cannot load sound font.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="226"/>
+        <location filename="EditVBoxLayout.cpp" line="235"/>
         <source>Generating MIDI for playing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="235"/>
+        <location filename="EditVBoxLayout.cpp" line="244"/>
         <source>Stopping synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="216"/>
+        <location filename="EditVBoxLayout.cpp" line="225"/>
         <source>Please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="308"/>
-        <location filename="EditVBoxLayout.cpp" line="324"/>
+        <location filename="EditVBoxLayout.cpp" line="331"/>
+        <location filename="EditVBoxLayout.cpp" line="347"/>
         <source>Exporting score...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="348"/>
+        <location filename="EditVBoxLayout.cpp" line="371"/>
         <source>Error during MIDI generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="351"/>
-        <location filename="EditVBoxLayout.cpp" line="353"/>
-        <location filename="EditVBoxLayout.cpp" line="426"/>
-        <location filename="EditVBoxLayout.cpp" line="435"/>
-        <location filename="EditVBoxLayout.cpp" line="444"/>
-        <location filename="EditVBoxLayout.cpp" line="581"/>
+        <location filename="EditVBoxLayout.cpp" line="374"/>
+        <location filename="EditVBoxLayout.cpp" line="376"/>
+        <location filename="EditVBoxLayout.cpp" line="459"/>
+        <location filename="EditVBoxLayout.cpp" line="468"/>
+        <location filename="EditVBoxLayout.cpp" line="477"/>
+        <location filename="EditVBoxLayout.cpp" line="637"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="353"/>
+        <location filename="EditVBoxLayout.cpp" line="376"/>
         <source>Parse error in selected notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="361"/>
+        <location filename="EditVBoxLayout.cpp" line="384"/>
         <source>MIDI generation finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="381"/>
+        <location filename="EditVBoxLayout.cpp" line="405"/>
         <source>Synthesis error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="383"/>
+        <location filename="EditVBoxLayout.cpp" line="407"/>
         <source>Synthesis finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="426"/>
+        <location filename="EditVBoxLayout.cpp" line="459"/>
         <source>Could not find PS score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="435"/>
+        <location filename="EditVBoxLayout.cpp" line="468"/>
         <source>Could not load PS score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="444"/>
+        <location filename="EditVBoxLayout.cpp" line="477"/>
         <source>Could not save to PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="580"/>
+        <location filename="EditVBoxLayout.cpp" line="636"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="584"/>
+        <location filename="EditVBoxLayout.cpp" line="640"/>
         <source>Some errors during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="588"/>
+        <location filename="EditVBoxLayout.cpp" line="644"/>
         <source>Score generated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -245,36 +245,41 @@ Close this score anyway?</source>
     </message>
     <message>
         <location filename="editorprefdialog.cpp" line="73"/>
+        <source>Follow playback</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorprefdialog.cpp" line="85"/>
         <source>Header color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="74"/>
+        <location filename="editorprefdialog.cpp" line="86"/>
         <source>Comment color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="75"/>
+        <location filename="editorprefdialog.cpp" line="87"/>
         <source>Extra instruction color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="76"/>
+        <location filename="editorprefdialog.cpp" line="88"/>
         <source>Measure bar color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="77"/>
+        <location filename="editorprefdialog.cpp" line="89"/>
         <source>Decoration color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="78"/>
+        <location filename="editorprefdialog.cpp" line="90"/>
         <source>Guitar chord color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorprefdialog.cpp" line="79"/>
+        <location filename="editorprefdialog.cpp" line="91"/>
         <source>Lyric color</source>
         <translation type="unfinished"></translation>
     </message>
@@ -330,22 +335,22 @@ Redrose version </source>
 <context>
     <name>MidiGenerator</name>
     <message>
-        <location filename="midigenerator.cpp" line="60"/>
+        <location filename="midigenerator.cpp" line="72"/>
         <source>Parse error line: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="60"/>
+        <location filename="midigenerator.cpp" line="72"/>
         <source>, char: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="66"/>
+        <location filename="midigenerator.cpp" line="77"/>
         <source>Out of memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="73"/>
+        <location filename="midigenerator.cpp" line="83"/>
         <source>Tune does not exist</source>
         <translation type="unfinished"></translation>
     </message>
