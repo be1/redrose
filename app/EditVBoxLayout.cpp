@@ -391,6 +391,8 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             QString midifile(tempFile.fileName());
             midifile.replace(m_abcext, QString::number(xspinbox.value())  + ".mid");
             synth->play(midifile);
+            /* show cursor following playback */
+            abcplaintextedit.setFocus();
         }
     }
 
@@ -445,7 +447,7 @@ void EditVBoxLayout::onSynthTickChanged(int tick)
 
     int cidx = m_model.charIndexFromMidiTick(tick);
 
-    /* cidx == 0 means invalid (no charmap, or tick is not in a note) */
+    /* cidx == 0 means invalid (not configured, no charmap, or tick is not in a note) */
     if (cidx > 0) {
         QSignalBlocker blocker(abcplaintextedit);
         abcplaintextedit.setTextCursorPosition(cidx);
