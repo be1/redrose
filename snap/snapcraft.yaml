@@ -13,7 +13,7 @@ issues:
 donation:
   - https://paypal.me/brouits
 icon: snap/usr/local/share/icons/hicolor/scalable/apps/redrose.svg
-version: '0.6'
+version: '0.6.1'
 summary: Integrated ABC music notation environment
 description: |
   Redrose lets you write ABC musical scores in ABC notation and, with
@@ -100,7 +100,7 @@ parts:
       - abcmidi
     source: http://github.com/be1/redrose.git
     source-type: git
-    source-tag: 0.6
+    source-tag: 0.6.1
 
   gpu-2404:
     after: [redrose]
