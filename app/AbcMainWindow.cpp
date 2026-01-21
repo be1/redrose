@@ -47,6 +47,9 @@ void AbcMainWindow::keyPressEvent(QKeyEvent *event) {
     QWidget* w = mainhsplitter.editTabWidget()->currentWidget();
     EditWidget* ew = static_cast<EditWidget*>(w);
 
+    if (!ew)
+        return;
+
     ViewVSplitter* vvs = mainHSplitter()->viewWidget();
 
     switch (event->key()) {
