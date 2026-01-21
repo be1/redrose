@@ -37,8 +37,8 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     xspinbox.setMinimum(1);
     xspinbox.setMaximum(MAXTUNES);
 
-    xlabel.setText(tr("X:"));
-	xlabel.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    xlabel.setText("X:");
+    xlabel.setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     xlabel.setBuddy(&xspinbox);
 
     progress = new QProgressIndicator();
