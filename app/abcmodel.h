@@ -15,8 +15,8 @@ public:
     bool fromAbcBuffer(const QByteArray &ba, bool with_charmap);
     bool selectTuneNo(int no);
     bool selectVoiceNo (int tune_no, int no);
-    int charIndexFromMidiTick(int tick) const;
-    //int midiTickFromCharIndex(int cidx) const;
+    int charIndexFromMidiTick(long tick) const;
+    long midiTickFromCharIndex(int uidx) const;
 
     bool hasError() const;
     int errorLine() const;
@@ -39,6 +39,7 @@ private:
     struct abc* m_implementation = nullptr;
 
     int* m_charmap = nullptr;
+    int searchIdx(int *ordered, int siz, int needle) const;
 };
 
 #endif // ABCMODEL_H

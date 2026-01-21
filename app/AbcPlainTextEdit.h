@@ -85,7 +85,6 @@ private slots:
     void highlightCurrentLine();
     void checkDictionnary();
     void checkPlayableNote();
-    void setTickFromCursor();
     void updateLineNumberArea(const QRect &rect, int dy);
     void insertCompletion(const QString &completion);
     void onFindActivated();

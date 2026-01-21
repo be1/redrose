@@ -44,7 +44,6 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
         autoplay = true;
         connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkPlayableNote);
     }
-    //connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::setTickFromCursor);
 
     updateLineNumberAreaWidth0();
 
@@ -648,9 +647,6 @@ void AbcPlainTextEdit::checkPlayableNote()
         return;
 
     emit playableNote(note);
-}
-
-void AbcPlainTextEdit::setTickFromCursor() {
 }
 
 void AbcPlainTextEdit::focusInEvent(QFocusEvent *e)

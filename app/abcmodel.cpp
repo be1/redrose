@@ -78,7 +78,7 @@ bool AbcModel::selectVoiceNo(int tune_no, int no)
     return true;
 }
 
-int AbcModel::charIndexFromMidiTick(int tick) const
+int AbcModel::charIndexFromMidiTick(long tick) const
 {
     if (!m_voice_events) {
         //qWarning() << __func__ << "Parser error made follower broken.";
@@ -86,9 +86,9 @@ int AbcModel::charIndexFromMidiTick(int tick) const
     }
 
     const long whole_in_ticks = DPQN * 4;
-    struct abc_symbol* s = m_voice_events->last;
 
-    /* search backward */
+    /* search back from last symbol to avoid finding matching past event */
+    struct abc_symbol* s = m_voice_events->last;
     while (s) {
         long t = whole_in_ticks * ((qreal) s->ev.start_num / (qreal) s->ev.start_den);
 
@@ -102,6 +102,24 @@ int AbcModel::charIndexFromMidiTick(int tick) const
         }
 
         s = s->prev;
+    }
+
+    return 0;
+}
+
+/*this takes the QChar index in the Document */
+long AbcModel::midiTickFromCharIndex(int uidx) const
+{
+    if (!m_voice_events || !m_charmap)
+        return 0;
+
+    int cidx = searchIdx(m_charmap, m_buffer.size(), uidx);
+
+    for (struct abc_symbol* s = m_voice_events->first; s; s = s->next) {
+        if (s->cidx >= cidx) {
+            long tick = DPQN * 4 * s->ev.start_num / s->ev.start_den;
+            return tick;
+        }
     }
 
     return 0;
@@ -143,7 +161,7 @@ void AbcModel::createCharMapping() {
     /* create byte-to-character mapping for
      * playback follower on the ABC text editor */
     QString str = QString::fromUtf8(m_buffer);
-#if 1
+
     /* initialize with 1:1 mapping */
     for (int i = 0; i < m_buffer.size(); i++) {
         m_charmap[i] = i;
@@ -156,21 +174,28 @@ void AbcModel::createCharMapping() {
         QByteArray ba = str.mid(0, u).toUtf8();
         m_charmap[ba.size()] = u;
     }
+}
+
+int AbcModel::searchIdx(int* ordered, int siz, int needle) const
+{
+#if 1
+    /* dichotomic search */
+    int s = 0, e = siz;
+    while (s <= e) {
+        int m = s + (e - s) / 2;
+        if (ordered[m] == needle)
+            return m;
+
+        if (ordered[m] < needle)
+            s = m + 1;
+        else
+            e = m - 1;
+    }
 #else
-    for (int n = 0; n < m_buffer.size(); n++) {
-        int uni_index = n > str.size() ? str.size() : n;
-        QByteArray ba;
-        do {
-            QString sub = str.mid(0, uni_index);
-            ba = sub.toUtf8();
-
-            if (ba.size() == n)
-                break;
-
-            uni_index--;
-        } while (ba.size() > n);
-
-        m_charmap[n] = uni_index;
+    for (int i = 0; i < siz; i++) {
+        if (ordered[i] == needle)
+            return i;
     }
 #endif
+    return -1;
 }

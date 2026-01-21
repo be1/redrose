@@ -176,12 +176,22 @@ void EditVBoxLayout::onCursorPositionChanged()
     QTextCursor tc = te->textCursor();
     int x = xvOfCursor('X', tc);
 
-    /* do something only if cursor is goes a differnt tune */
+    /* reset things only if cursor goes a different tune */
     if (xspinbox.value() != x) {
         QSignalBlocker blocker(xspinbox);
         xspinbox.setValue(x);
         scheduleDisplay();
+
+        synth->stop();
+        synth->m_tick = 0;
     }
+
+    int v = xvOfCursor('V', tc);
+    m_model.selectVoiceNo(x, v);
+
+    int tick = m_model.midiTickFromCharIndex(tc.position());
+    synth->m_tick = tick;
+    positionslider.setValue(tick);
 }
 
 void EditVBoxLayout::onXChanged(int value)
@@ -204,7 +214,7 @@ void EditVBoxLayout::onXChanged(int value)
         QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
         int v = 1; /* default */
         if (!voice.isEmpty())
-            v = vOfVoiceHeader(voice);
+            v = numberFromHeader(voice, 'V');
         m_model.selectVoiceNo(value, v);
 
         /* reset default value */
@@ -281,7 +291,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
 
     int v = 1; /* default */
     if (!voice.isEmpty()) {
-        v = vOfVoiceHeader(voice);
+        v = numberFromHeader(voice, 'V');
     }
 
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
@@ -440,9 +450,7 @@ void EditVBoxLayout::onSliderMoved(int val)
 
 void EditVBoxLayout::onSynthTickChanged(int tick)
 {
-    if (!positionslider.maximum())
-        positionslider.setMaximum(synth->getTotalTicks());
-
+    positionslider.setMaximum(synth->getTotalTicks());
     positionslider.setValue(tick);
 
     int cidx = m_model.charIndexFromMidiTick(tick);
@@ -523,48 +531,49 @@ int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
     QTextCursor tc(c);
     tc.select(QTextCursor::LineUnderCursor);
     if (tc.selectedText().startsWith(QString(":").prepend (h))) {
-        bool ok = false;
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-        x = tc.selectedText().midRef(2).toInt(&ok);
-#else
-        x = tc.selectedText().mid(2).toInt(&ok);
-#endif
-        if (ok) {
-            return x;
-        } else {
-            x = 1;
-        }
+        x = numberFromHeader(tc.selectedText(), h);
     }
 
-    /* find last X: of V: before selectionIndex */
+    /* find last X: or V: before selectionIndex */
+    bool xBeforeV = false; /* if we search for V, we must enter a tune */
     for (int l = 0; l < lines.count() && i < index; l++) {
-        i += lines.at(l).size() +1; /* count \n */
-        if (lines.at(l).startsWith(QString(":").prepend(h))) {
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-            x = lines.at(l).midRef(2).toInt();
-#else
-            x = lines.at(l).mid(2).toInt();
-#endif
+        QString line = lines.at(l);
+        i += line.size() +1; /* count \n */
+
+        if (line.startsWith("X:"))
+            xBeforeV = true;
+
+        if (line.startsWith(QString(":").prepend(h))) {
+            x = numberFromHeader(line, h);
+            if (h == 'V')
+                xBeforeV = false;
+
+            /* continue until last X or V before selection index */
         }
     }
 
+    if (h == 'V' && xBeforeV)
+        return 1; /* retrun 1st voice */
+
+    /* return voice or tune found */
     return x;
 }
 
-int EditVBoxLayout::vOfVoiceHeader(const QString &vh) {
-    QRegularExpression re("^V: *([\\d]+).*$");
-    int v = 0;
+int EditVBoxLayout::numberFromHeader(const QString &hs, char h) {
+    QString rs(": *([\\d]+).*$");
+    QRegularExpression re("^" + rs.prepend(h));
+    int ret = 0;
 
-    QRegularExpressionMatch m = re.match(vh);
+    QRegularExpressionMatch m = re.match(hs);
     if (m.hasMatch()) {
         bool ok = false;
-        v = m.captured(1).toInt(&ok);
+        ret = m.captured(1).toInt(&ok);
         if (!ok) {
-            qWarning() << __func__ << "Error getting voice number in" << m.captured(1);
+            qWarning() << __func__ << "Error getting number in" << m.captured(1);
         }
     }
 
-    return v; /* it is unsafe if 0! */
+    return ret; /* it may be is unsafe if 0! */
 }
 
 void EditVBoxLayout::onSelectionChanged()
@@ -583,7 +592,7 @@ void EditVBoxLayout::onSelectionChanged()
         selectionIndex = c.selectionStart();
     } else {
         /* if just one click : reset */
-        synth->m_tick = 0;
+        //synth->m_tick = 0;
 
         if (!selection.isEmpty()) {
             if (synth->isPlaying())
@@ -595,7 +604,7 @@ void EditVBoxLayout::onSelectionChanged()
         selectionIndex = c.selectionStart();
     }
 
-    positionslider.setMaximum(0);
+    //positionslider.setMaximum(0);
 }
 
 void EditVBoxLayout::onTextChanged() {
