@@ -62,6 +62,13 @@ void MidiGenerator::generateInternal(const QString &inputnamehint, int xopt, Abc
 
     if (!vel.isValid())
         vel = 80;
+
+    /* fix old dur value for redrose version < 0.5 */
+    if (dur.isValid() && dur.toInt() <= 10) {
+        dur = dur.toInt() * 10;
+        settings.setValue(PLAYER_DURATION, dur);
+    }
+
     if (!dur.isValid())
         dur = 95;
     if (!expr.isValid())
