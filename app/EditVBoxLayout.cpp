@@ -258,7 +258,8 @@ void EditVBoxLayout::onPlayClicked()
             synth->stop();
 
             /* pre seek for next play */
-            synth->m_tick = positionslider.value();
+            if (positionSlider()->value() > 0)
+                synth->m_tick = positionslider.value();
         }
     }
 }
@@ -290,12 +291,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         m_invalidate_model = false;
     }
 
-    QString voice = abcplaintextedit.getCurrentVoiceOrChannel(true);
-
-    int v = 1; /* default */
-    if (!voice.isEmpty()) {
-        v = numberFromHeader(voice, 'V');
-    }
+    int v = xvOfCursor('V', abcplaintextedit.textCursor());
 
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
         qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
@@ -453,7 +449,10 @@ void EditVBoxLayout::onSliderMoved(int val)
 
 void EditVBoxLayout::onSynthTickChanged(int tick)
 {
-    positionslider.setMaximum(synth->getTotalTicks());
+    long total = synth->getTotalTicks();
+    if (total > 0)
+        positionslider.setMaximum(total);
+
     positionslider.setValue(tick);
 
     int cidx = m_model.charIndexFromMidiTick(tick);
@@ -537,26 +536,29 @@ int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
         x = numberFromHeader(tc.selectedText(), h);
     }
 
-    /* find last X: or V: before selectionIndex */
-    bool xBeforeV = false; /* if we search for V, we must enter a tune */
+    /* find last X: or V: before selection index */
+    bool xBeforeV = false; /* if we search for V, we must enter in a tune */
     for (int l = 0; l < lines.count() && i < index; l++) {
         QString line = lines.at(l);
         i += line.size() +1; /* count \n */
 
-        if (line.startsWith("X:"))
+        if (line.startsWith("X:")) {
             xBeforeV = true;
+        }
 
         if (line.startsWith(QString(":").prepend(h))) {
             x = numberFromHeader(line, h);
-            if (h == 'V')
+            if (h == 'V') {
                 xBeforeV = false;
+            }
 
             /* continue until last X or V before selection index */
         }
     }
 
-    if (h == 'V' && xBeforeV)
-        return 1; /* retrun 1st voice */
+    if (h == 'V' && xBeforeV) {
+        return 1; /* return 1st voice */
+    }
 
     /* return voice or tune found */
     return x;
@@ -607,7 +609,8 @@ void EditVBoxLayout::onSelectionChanged()
         selectionIndex = c.selectionStart();
     }
 
-    //positionslider.setMaximum(0);
+    /* selecting yields to generate small sub-tune */
+    m_invalidate_model = true;
 }
 
 void EditVBoxLayout::onTextChanged() {
