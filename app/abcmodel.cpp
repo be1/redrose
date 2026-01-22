@@ -144,12 +144,16 @@ abc *AbcModel::implementation() const {
 abc_tune *AbcModel::tuneOfModel(int tune) const {
     if (!m_implementation)
         return nullptr;
-
+#if 0
     if (tune > m_implementation->count) {
         return nullptr;
     }
 
     return m_implementation->tunes[tune -1];
+#else
+    /* X: field can not follow exact tune order */
+    return abc_find_tune(m_implementation, tune);
+#endif
 }
 
 void AbcModel::createCharMapping() {
