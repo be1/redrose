@@ -249,7 +249,7 @@ long AbcSmf::computeCut(struct abc_symbol* s) {
         return 0;
 
     /* use note duration stored in note to compute shortening */
-    qreal ticks_per_whole = m_tick_per_unit * m_unit_per_whole;
+    qreal ticks_per_whole = DPQN * 4;
     qreal smaller = ticks_per_whole * ((qreal) (s->dur_num * m_shorter) / 100) / (qreal) s->dur_den;
     qreal cut = ticks_per_whole * (qreal) s->dur_num / (qreal) s->dur_den - smaller;
     return cut;
@@ -279,7 +279,7 @@ void AbcSmf::writeSingleNoteEvent(smf_track_t* track, unsigned char chan, struct
     } else {
         /* can be noteOn or noteOff */
 
-        const qreal whole_in_ticks = m_tick_per_unit * m_unit_per_whole;
+        const qreal whole_in_ticks = DPQN * 4;
         long next_note_tick = whole_in_ticks * ((qreal) s->ev.start_num / (qreal) s->ev.start_den);
         long next_note_delta_tick = next_note_tick - m_last_tick;
 
