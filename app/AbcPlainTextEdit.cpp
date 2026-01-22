@@ -527,8 +527,15 @@ QString AbcPlainTextEdit::getCurrentVoiceOrChannel(bool prefer_voice) const
 {
     QTextCursor tc;
     QTextDocument* doc = document();
+
+    QTextCursor xtc = doc->find("X:", textCursor(), QTextDocument::FindBackward);
     QTextCursor vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
     QTextCursor ctc = doc->find("%%MIDI channel ", textCursor(), QTextDocument::FindBackward);
+    if (xtc.position() > vtc.position())
+        /* if X is before V, the V found belongs to the previous tune
+         * so, now check our V forward */
+        vtc = doc->find("V:", textCursor());
+
     if (ctc.position() > vtc.position() && !prefer_voice)
         tc = ctc;
     else
