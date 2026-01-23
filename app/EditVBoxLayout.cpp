@@ -404,7 +404,9 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
                 synth->m_tick = 0;
             else {
                 long charidx = abcPlainTextEdit()->textCursor().position();
-                synth->m_tick = m_model.midiTickFromCharIndex(charidx);
+                long tick = m_model.midiTickFromCharIndex(charidx);
+                if (tick >= 0)
+                    synth->m_tick = tick;
             }
 
             synth->play(midifile);
