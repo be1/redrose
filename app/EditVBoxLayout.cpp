@@ -308,8 +308,6 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         cont = AbcProcess::ContinuationNone; /* will not play, it's just an export */
     }
 
-    QVariant player = settings.value(PLAYER_KEY);
-
     if (filename.isEmpty()) {
         filename = tempFile.fileName();
         filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
@@ -399,7 +397,12 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             /* midi file can change from tune (xspinbox) index */
             QString midifile(tempFile.fileName());
             midifile.replace(m_abcext, QString::number(xspinbox.value())  + ".mid");
+
+            /* rewind synth if we selected a portion */
+            if (!selection.isEmpty())
+                synth->m_tick = 0;
             synth->play(midifile);
+
             /* show cursor following playback */
             abcplaintextedit.setFocus();
         }
