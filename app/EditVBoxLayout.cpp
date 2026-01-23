@@ -189,6 +189,7 @@ void EditVBoxLayout::onCursorPositionChanged()
     int v = xvOfCursor('V', tc);
     m_model.selectVoiceNo(x, v);
 
+    /* follow mouse click while playing */
     int tick = m_model.midiTickFromCharIndex(tc.position());
     if (tick >= 0) {
         synth->m_tick = tick;
@@ -401,6 +402,11 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             /* rewind synth if we selected a portion */
             if (!selection.isEmpty())
                 synth->m_tick = 0;
+            else {
+                long charidx = abcPlainTextEdit()->textCursor().position();
+                synth->m_tick = m_model.midiTickFromCharIndex(charidx);
+            }
+
             synth->play(midifile);
 
             /* show cursor following playback */
