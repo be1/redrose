@@ -12,27 +12,27 @@
 <context>
     <name>AbcPlainTextEdit</name>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="67"/>
-        <location filename="AbcPlainTextEdit.cpp" line="236"/>
+        <location filename="AbcPlainTextEdit.cpp" line="66"/>
+        <location filename="AbcPlainTextEdit.cpp" line="235"/>
         <source>Find...</source>
         <translation>Rechercher...</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="73"/>
-        <location filename="AbcPlainTextEdit.cpp" line="250"/>
+        <location filename="AbcPlainTextEdit.cpp" line="72"/>
+        <location filename="AbcPlainTextEdit.cpp" line="249"/>
         <source>Find forward</source>
         <translation>Rechercher en avant</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="79"/>
-        <location filename="AbcPlainTextEdit.cpp" line="264"/>
+        <location filename="AbcPlainTextEdit.cpp" line="78"/>
+        <location filename="AbcPlainTextEdit.cpp" line="263"/>
         <source>Find backward</source>
         <translation>Rechercher en arrière</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="236"/>
-        <location filename="AbcPlainTextEdit.cpp" line="250"/>
-        <location filename="AbcPlainTextEdit.cpp" line="264"/>
+        <location filename="AbcPlainTextEdit.cpp" line="235"/>
+        <location filename="AbcPlainTextEdit.cpp" line="249"/>
+        <location filename="AbcPlainTextEdit.cpp" line="263"/>
         <source>Text:</source>
         <translation>Texte :</translation>
     </message>
@@ -122,88 +122,88 @@ Fermer cette partition quand-même ?</translation>
         <translation>Impossible de charger la fonte sonore.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="235"/>
+        <location filename="EditVBoxLayout.cpp" line="249"/>
         <source>Generating MIDI for playing.</source>
         <translation>Génération du MIDI pour jouer.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="244"/>
+        <location filename="EditVBoxLayout.cpp" line="258"/>
         <source>Stopping synthesis...</source>
         <translation>Arrêt de la synthèse...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="225"/>
+        <location filename="EditVBoxLayout.cpp" line="239"/>
         <source>Please wait...</source>
         <translation>Veuillez patienter...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="331"/>
-        <location filename="EditVBoxLayout.cpp" line="347"/>
+        <location filename="EditVBoxLayout.cpp" line="339"/>
+        <location filename="EditVBoxLayout.cpp" line="355"/>
         <source>Exporting score...</source>
         <translation>Export de la partition...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="371"/>
+        <location filename="EditVBoxLayout.cpp" line="379"/>
         <source>Error during MIDI generation.</source>
         <translation>Erreur pendant la génération du MIDI.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="374"/>
-        <location filename="EditVBoxLayout.cpp" line="376"/>
-        <location filename="EditVBoxLayout.cpp" line="459"/>
-        <location filename="EditVBoxLayout.cpp" line="468"/>
-        <location filename="EditVBoxLayout.cpp" line="477"/>
-        <location filename="EditVBoxLayout.cpp" line="637"/>
+        <location filename="EditVBoxLayout.cpp" line="382"/>
+        <location filename="EditVBoxLayout.cpp" line="384"/>
+        <location filename="EditVBoxLayout.cpp" line="482"/>
+        <location filename="EditVBoxLayout.cpp" line="491"/>
+        <location filename="EditVBoxLayout.cpp" line="500"/>
+        <location filename="EditVBoxLayout.cpp" line="665"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="376"/>
+        <location filename="EditVBoxLayout.cpp" line="384"/>
         <source>Parse error in selected notes.</source>
         <translation>Erreur d&apos;analyse dans les notes sélectionnées.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="384"/>
+        <location filename="EditVBoxLayout.cpp" line="392"/>
         <source>MIDI generation finished.</source>
         <translation>Génération du MIDI terminée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="405"/>
+        <location filename="EditVBoxLayout.cpp" line="427"/>
         <source>Synthesis error.</source>
         <translation>Erreur durant la synthèse sonore.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="407"/>
+        <location filename="EditVBoxLayout.cpp" line="429"/>
         <source>Synthesis finished.</source>
         <translation>Synthèse terminée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="459"/>
+        <location filename="EditVBoxLayout.cpp" line="482"/>
         <source>Could not find PS score</source>
         <translation>Impossible de trouver la partition PS</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="468"/>
+        <location filename="EditVBoxLayout.cpp" line="491"/>
         <source>Could not load PS score</source>
         <translation>Impossible de charger la partition PS</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="477"/>
+        <location filename="EditVBoxLayout.cpp" line="500"/>
         <source>Could not save to PDF</source>
         <translation>Impossible de sauvegarder en PDF</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="636"/>
+        <location filename="EditVBoxLayout.cpp" line="664"/>
         <source>Error during score generation.</source>
         <translation>Erreur pendant la génération de la partition.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="644"/>
+        <location filename="EditVBoxLayout.cpp" line="672"/>
         <source>Score generated.</source>
         <translation>Partition générée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="640"/>
+        <location filename="EditVBoxLayout.cpp" line="668"/>
         <source>Some errors during score generation.</source>
         <translation>Des erreurs sont apparues durant la génération de la partition.</translation>
     </message>
@@ -305,20 +305,38 @@ Fermer cette partition quand-même ?</translation>
     </message>
     <message>
         <location filename="HelpMenu.cpp" line="23"/>
-        <location filename="HelpMenu.cpp" line="29"/>
+        <source>
+
+Thank you for using Redrose. I hope you enjoy this software to write your musical scores. Redrose is free software: you can contribute to the code, design or translations if you are interested. </source>
+        <translation>Merci d'utiliser Redrose. J'espère que ce logiciel vous convient pour l'écriture de vos partitions musicales. Redrose est un logiciel libre : vous pouvez y contribuer par le code, le design ou la traduction si vous êtes intéressés. </translation>
+    </message>
+    <message>
+        <location filename="HelpMenu.cpp" line="24"/>
+        <source>You can send me an email to tell what kind of music you are writing with Redrose. I would be happy to know it. </source>
+        <translation>Vous pouvez m'envoyer un email pour me dire quel genre de musique vous écrivez. Cela me fera plaisir de le savoir. </translation>
+    </message>
+    <message>
+        <location filename="HelpMenu.cpp" line="25"/>
+        <source>If you want, you can also make a small donation to me by reaching my paypal page &lt;https://paypal.me/brouits&gt;.
+</source>
+<translation>Si vous voulez, vous pouvez aussi me faire une petite donation en accédant à ma page paypal &lt;https://paypal.me/brouits&gt;.</translation>
+    </message>
+    <message>
+        <location filename="HelpMenu.cpp" line="26"/>
+        <location filename="HelpMenu.cpp" line="32"/>
         <source>ABC score editor</source>
         <translation>Éditeur de partition ABC</translation>
     </message>
     <message>
-        <location filename="HelpMenu.cpp" line="23"/>
+        <location filename="HelpMenu.cpp" line="26"/>
         <source>
 Redrose version </source>
-        <translation>Redrose version</translation>
+        <translation>Redrose version </translation>
     </message>
     <message>
-        <location filename="HelpMenu.cpp" line="23"/>
+        <location filename="HelpMenu.cpp" line="26"/>
         <source>Copyright © 2021 Benoît Rouits &lt;brouits@free.fr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Copyright © 2021 Benoît Rouits &lt;brouits@free.fr&gt;</translation>
     </message>
 </context>
 <context>
@@ -332,22 +350,22 @@ Redrose version </source>
 <context>
     <name>MidiGenerator</name>
     <message>
-        <location filename="midigenerator.cpp" line="72"/>
+        <location filename="midigenerator.cpp" line="79"/>
         <source>Parse error line: </source>
         <translation>Erreur d&apos;analyse ligne : </translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="72"/>
+        <location filename="midigenerator.cpp" line="79"/>
         <source>, char: </source>
         <translation>, caractère : </translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="77"/>
+        <location filename="midigenerator.cpp" line="84"/>
         <source>Out of memory</source>
         <translation>Pas assez de mémoire</translation>
     </message>
     <message>
-        <location filename="midigenerator.cpp" line="83"/>
+        <location filename="midigenerator.cpp" line="90"/>
         <source>Tune does not exist</source>
         <translation>Le morceau n&apos;existe pas</translation>
     </message>

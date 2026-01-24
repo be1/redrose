@@ -20,7 +20,10 @@ HelpMenu::~HelpMenu()
 void HelpMenu::onAboutActionTriggered()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
-    QMessageBox::about(a->mainWindow(), tr("ABC score editor"), tr("\nRedrose version ") + VERSION + " (" + REVISION + ")\n" +tr( "Copyright © 2021 Benoît Rouits <brouits@free.fr>"));
+    QString paragraph = tr("\n\nThank you for using Redrose. I hope you enjoy this software to write your musical scores. Redrose is free software: you can contribute to the code, design or translations if you are interested. ");
+    paragraph += tr("You can send me an email to tell what kind of music you are writing with Redrose. I would be happy to know it. ");
+    paragraph += tr("If you want, you can also make a small donation to me by reaching my paypal page <https://paypal.me/brouits>.\n");
+    QMessageBox::about(a->mainWindow(), tr("ABC score editor"), tr("\nRedrose version ") + VERSION + " (" + REVISION + ")\n" + tr( "Copyright © 2021 Benoît Rouits <brouits@free.fr>") + paragraph);
 }
 
 void HelpMenu::onAboutQtActionTriggered()
