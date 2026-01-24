@@ -308,18 +308,20 @@ Fermer cette partition quand-même ?</translation>
         <source>
 
 Thank you for using Redrose. I hope you enjoy this software to write your musical scores. Redrose is free software: you can contribute to the code, design or translations if you are interested. </source>
-        <translation>Merci d'utiliser Redrose. J'espère que ce logiciel vous convient pour l'écriture de vos partitions musicales. Redrose est un logiciel libre : vous pouvez y contribuer par le code, le design ou la traduction si vous êtes intéressés. </translation>
+        <translation>
+
+Merci d&apos;utiliser Redrose. J&apos;espère que ce logiciel vous convient pour l&apos;écriture de vos partitions musicales. Redrose est un logiciel libre : vous pouvez y contribuer par le code, le design ou la traduction si vous êtes intéressés. </translation>
     </message>
     <message>
         <location filename="HelpMenu.cpp" line="24"/>
         <source>You can send me an email to tell what kind of music you are writing with Redrose. I would be happy to know it. </source>
-        <translation>Vous pouvez m'envoyer un email pour me dire quel genre de musique vous écrivez. Cela me fera plaisir de le savoir. </translation>
+        <translation>Vous pouvez m&apos;envoyer un email pour me dire quel genre de musique vous écrivez. Cela me fera plaisir de le savoir. </translation>
     </message>
     <message>
         <location filename="HelpMenu.cpp" line="25"/>
         <source>If you want, you can also make a small donation to me by reaching my paypal page &lt;https://paypal.me/brouits&gt;.
 </source>
-<translation>Si vous voulez, vous pouvez aussi me faire une petite donation en accédant à ma page paypal &lt;https://paypal.me/brouits&gt;.</translation>
+        <translation>Si vous voulez, vous pouvez aussi me faire une petite donation en accédant à ma page paypal &lt;https://paypal.me/brouits&gt;.</translation>
     </message>
     <message>
         <location filename="HelpMenu.cpp" line="26"/>
