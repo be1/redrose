@@ -525,6 +525,23 @@ void abc_voice_append(struct abc* yy, const char* yytext)
     tune->count++;
 }
 
+struct abc_symbol *abc_note_before(struct abc_symbol *s)
+{
+    while (s && s->kind != ABC_NOTE)
+        s = s->prev;
+
+    return s;
+}
+
+struct abc_symbol* abc_voice_last_note(struct abc_voice* v)
+{
+    struct abc_symbol* s = v->last;
+    while (s && s->kind != ABC_NOTE)
+        s = s->prev;
+
+    return s;
+}
+
 struct abc_symbol* abc_last_symbol(struct abc* yy)
 {
     struct abc_tune* tune = yy->tunes[yy->count-1];
@@ -2238,13 +2255,13 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                                       continue;
                                   }
                               } else if (!strcmp("dacapo", s->text)) {
-                                  if (dacapo_met == 1) {
+                                  /* immediate dacapo or reported */
+                                  if ((dacapo_met == 0 && abc_voice_last_note(v) == abc_note_before(s)) ||
+                                      (dacapo_met == 1 && abc_voice_last_note(v) != abc_note_before(s))) {
                                       s = v->first;
-                                      dacapo_met = 2;
+                                      dacapo_met++;
                                       continue;
                                   }
-
-                                  dacapo_met++;
                               } else {
                                   new = abc_dup_symbol(s);
                               }
@@ -2398,4 +2415,3 @@ void abc_debug_headers(struct abc* yy)
         h = h->next;
     }
 }
-

@@ -1,10 +1,6 @@
 #ifndef ABC_H
 #define ABC_H
 
-#include <ctype.h>	/* isdigit */
-#include <stdlib.h>	/* atoi */
-#include <stdio.h>	/* asprintf */
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -100,6 +96,10 @@ void abc_tune_append(struct abc* yy, const char* yytext);
 void abc_header_append(struct abc* yy, const char* yytext, const char which);
 
 void abc_voice_append(struct abc* yy, const char* yytext);
+
+struct abc_symbol* abc_voice_last_note(struct abc_voice* v);
+
+struct abc_symbol* abc_note_before(struct abc_symbol* s);
 
 struct abc_symbol* abc_last_symbol(struct abc* yy);
 
