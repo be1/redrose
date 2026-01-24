@@ -1579,7 +1579,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                            struct abc_symbol* dup = abc_dup_symbol(s);
                                            starts[start_count - 1] = *dup;
                                            starts[start_count - 1].ev.value = 1;
-                                           starts[start_count - 1].of_chord == starts;
+                                           starts[start_count - 1].of_chord = starts;
 
                                            free(dup);
                                        } else {
@@ -1600,7 +1600,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                        struct abc_symbol* dup = abc_dup_symbol(&starts[i]);
                                        stops[i] = *dup;
                                        stops[i].ev.value = 0;
-                                       stops[i].of_chord == starts;
+                                       stops[i].of_chord = starts;
 
                                        free(dup);
                                    }
@@ -1620,7 +1620,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                    for (int i = 0; i < start_count; i++) {
                                        struct abc_symbol* dup = abc_dup_symbol(&starts[i]);
                                        events[i] = *dup;
-                                       events[i].of_chord == events;
+                                       events[i].of_chord = events;
 
                                        free(dup);
                                    }
@@ -1636,7 +1636,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                    for (int i = 0; i < stop_count; i++) {
                                        struct abc_symbol* dup = abc_dup_symbol(&stops[i]);
                                        events[i + start_count] = *dup;
-                                       events[i].of_chord == events;
+                                       events[i].of_chord = events;
 
                                        free(dup);
                                    }
