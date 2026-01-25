@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "abc.h"
 
 int main() {

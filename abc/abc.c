@@ -523,6 +523,7 @@ void abc_voice_append(struct abc* yy, const char* yytext)
     tune->voices = realloc(tune->voices, sizeof (struct abc_voice*) * (tune->count + 1));
     tune->voices[tune->count] = new;
     tune->count++;
+    new->tune = tune;
 }
 
 struct abc_symbol *abc_note_before(struct abc_symbol *s)
@@ -576,6 +577,7 @@ struct abc_symbol* abc_new_symbol(struct abc* yy)
         new->index = s->index + 1;
     }
 
+    new->voice = voice;
     return new;
 }
 
@@ -676,6 +678,7 @@ void abc_note_append(struct abc* yy, const char* yytext, int pos)
     }
 
     new->cidx = pos;
+    new->measure = cur_voice->measure;
 }
 
 void abc_chordpunct_set(struct abc* yy, const char* yytext)
@@ -959,13 +962,15 @@ void abc_bar_append(struct abc* yy, const char* yytext)
     new->text = strdup(yytext);
     memset(cur_voice->measure_accid, 0, sizeof(cur_voice->measure_accid));
 
-    struct abc_tune* t = yy->tunes[yy->count-1];
-    struct abc_voice* v = t->voices[t->count-1];
     if (abc_is_endbar(new) || abc_is_repeat(new)) {
-        v->in_alt = 0;
+        cur_voice->in_alt = 0;
     }
     // for now, only bars and have 'in_alt' field set.
-    new->in_alt = v->in_alt;
+    new->in_alt = cur_voice->in_alt;
+
+    /* ignore leftmost measure bar if any */
+    if (abc_note_before (new))
+        cur_voice->measure++;
 }
 
 int abc_alt_is_of(const struct abc_symbol* s, int alt) {
@@ -1489,6 +1494,10 @@ void abc_voice_append_symbol(struct abc_voice* voice, struct abc_symbol* s) {
             s->prev = l;
             s->index = l->index + 1;
         }
+
+	/* use new voice ? FIXME
+	 * s->voice = voice;
+	 */
     }
 }
 

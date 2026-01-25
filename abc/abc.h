@@ -37,6 +37,7 @@ struct abc_header {
 };
 
 struct abc_tune {
+    struct abc* abc; /* parent */
     int x;
     struct abc_header* headers;
 
@@ -47,9 +48,11 @@ struct abc_tune {
 };
 
 struct abc_voice {
+    struct abc_tune* tune; /* parent */
     char* v;
     struct abc_symbol* first;
     struct abc_symbol* last;
+    int measure;
     int in_alt;
     int measure_accid['h']; /* 'g' + 1 */
     char* i_ks; /* initial key signature */
@@ -73,18 +76,20 @@ struct abc_event {
 };
 
 struct abc_symbol {
+    struct abc_voice* voice; /* parent */
     enum abc_type kind;
     char* lyr;
     char* text;
     long dur_num; /* duration */
     long dur_den;
-    int index; /* symbol index in parser */
+    long measure; /* measure nr. */
+    int index; /* symbol index in all parsed symbols of voice */
     int cidx; /* symbol's character index in buffer */
     struct abc_event ev;
 
     int in_alt;
     int will_tie;
-    struct abc_symbol* of_chord; /* first note of chord or NULL */
+    struct abc_symbol* of_chord; /* first note of chord of this note, or NULL */
 
     struct abc_symbol* next;
     struct abc_symbol* prev;
