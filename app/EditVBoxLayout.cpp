@@ -67,7 +67,8 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     connect(&abcplaintextedit, &QPlainTextEdit::selectionChanged, this, &EditVBoxLayout::onSelectionChanged);
     connect(&abcplaintextedit, &AbcPlainTextEdit::playableNote, this, &EditVBoxLayout::onPlayableNote);
     connect(&abcplaintextedit, &AbcPlainTextEdit::cursorPositionChanged, this, &EditVBoxLayout::onCursorPositionChanged);
-    connect(&abcplaintextedit, &AbcPlainTextEdit::textChanged, this, &EditVBoxLayout::onTextChanged);
+    connect(&abcplaintextedit, &AbcPlainTextEdit::modificationChanged, this, &EditVBoxLayout::onModificationChanged);
+    connect(&abcplaintextedit, &AbcPlainTextEdit::plainTextSet, this, &EditVBoxLayout::onTextLoaded);
     connect(&xspinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &EditVBoxLayout::onXChanged);
     connect(&playpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onPlayClicked);
     connect(&runpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onDisplayClicked);
@@ -95,7 +96,6 @@ EditVBoxLayout::~EditVBoxLayout()
 void EditVBoxLayout::finalize()
 {
    cleanupThreads();
-   cleanupProcesses();
 }
 
 void EditVBoxLayout::onSynthInited(bool err) {
@@ -147,13 +147,6 @@ void EditVBoxLayout::setFileName(const QString &fn)
     fileName = fn;
 }
 
-void EditVBoxLayout::cleanupProcesses()
-{
-    /* early kill in case we quit the app brutally */
-    for (int i = 0; i < processlist.length(); i++)
-        processlist.at(i)->kill();
-}
-
 void EditVBoxLayout::cleanupThreads()
 {
     if (synth->isLoading())
@@ -187,10 +180,12 @@ void EditVBoxLayout::onCursorPositionChanged()
     }
 
     int v = xvOfCursor('V', tc);
+    qDebug() << __func__ << "tune" << x << "voice" << v;
     m_model.selectVoiceNo(x, v);
 
-    /* follow mouse click while playing */
+    /* follow mouse click or kbd arrows */
     int tick = m_model.midiTickFromCharIndex(tc.position());
+    qDebug() << "tick" << tick;
     if (tick >= 0) {
         synth->m_tick = tick;
         synth->seek(tick);
@@ -269,9 +264,19 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     Settings settings;
     QString tosave;
 
-    if (selection.isEmpty()) {
+    /* what text to save */
+
+    if (selection.isEmpty()) { /* full tune: */
+        if (m_invalidate_model == false) {
+            qDebug() << "no need to regenerate MIDI";
+            onGenerateMIDIFinished(0, "", AbcProcess::ContinuationRender);
+            return;
+        }
+
+        /* regenerate memory model and MIDI file */
         tosave = abcPlainTextEdit()->toPlainText();
-    } else {
+    } else { /* selection only: */
+        /* regenerate anyway */
         int x = 0;
         tosave = abcPlainTextEdit()->constructHeaders(selectionIndex, &x);
         xspinbox.setValue(x);
@@ -287,11 +292,10 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
 
     /* refresh model */
-    if (m_invalidate_model) {
-        m_model.fromAbcBuffer(tosave.toUtf8(), follow);
-        m_invalidate_model = false;
-    }
+    m_model.fromAbcBuffer(tosave.toUtf8(), follow);
+    m_invalidate_model = false;
 
+    /* and MIDI file */
     int v = xvOfCursor('V', abcplaintextedit.textCursor());
 
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
@@ -314,6 +318,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
     }
 
+    qDebug() << "regenerate MIDI";
     m_midigen = new MidiGenerator(&m_model, filename, this);
     connect(m_midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
 
@@ -403,16 +408,22 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             if (!selection.isEmpty())
                 synth->m_tick = 0;
             else {
+                Settings settings;
                 long charidx = abcPlainTextEdit()->textCursor().position();
                 long tick = m_model.midiTickFromCharIndex(charidx);
-                if (tick >= 0)
-                    synth->m_tick = tick;
+                /* if we follow, and position outside of music */
+                if (tick < 0 && settings.value(EDITOR_FOLLOW).toBool()) {
+                    synth->m_tick = 0;
+                }
+
+                /* if we don't follow: let the tick as is */
             }
 
             synth->play(midifile);
 
             /* show cursor following playback */
-            abcplaintextedit.setFocus();
+            // AARGH this triggers textChanged()!
+            abcplaintextedit.setFocus(Qt::OtherFocusReason);
         }
     }
 
@@ -432,11 +443,13 @@ void EditVBoxLayout::onSynthFinished(bool err)
     if (positionslider.value() == positionslider.maximum()) {
         synth->m_tick = 0;
     }
-
+#if 0
+    /* remove midi file after play */
     int x = xspinbox.value();
     QString midi (tempFile.fileName());
     midi.replace(m_abcext, QString::number(x) + ".mid");
     QFile::remove(midi);
+#endif
 
     playpushbutton.flip();
     xspinbox.setEnabled(true);
@@ -465,11 +478,10 @@ void EditVBoxLayout::onSynthTickChanged(int tick)
         positionslider.setMaximum(total);
 
     positionslider.setValue(tick);
-
     int cidx = m_model.charIndexFromMidiTick(tick);
 
-    /* cidx == 0 means invalid (not configured, no charmap, or tick is not in a note) */
-    if (cidx > 0) {
+    /* cidx < means invalid (not configured, no charmap, or tick is not in a note) */
+    if (cidx >= 0) {
         QSignalBlocker blocker(abcplaintextedit);
         abcplaintextedit.setTextCursorPosition(cidx);
     }
@@ -606,6 +618,9 @@ void EditVBoxLayout::onSelectionChanged()
 
         selection = c.selectedText();
         selectionIndex = c.selectionStart();
+        /* selecting yields to generate small sub-tune */
+        qDebug() << "selecting";
+        m_invalidate_model = true;
     } else {
         /* if just one click : reset */
         //synth->m_tick = 0;
@@ -615,17 +630,38 @@ void EditVBoxLayout::onSelectionChanged()
                 synth->stop();
 
             selection.clear();
+
+            /* unselecting yields to generate small sub-tune */
+            qDebug() << "unselecting";
+            m_invalidate_model = true;
         }
 
         selectionIndex = c.selectionStart();
     }
+}
 
-    /* selecting yields to generate small sub-tune */
+void EditVBoxLayout::onModificationChanged(bool yup) {
+    qDebug() << "modification changed";
     m_invalidate_model = true;
 }
 
-void EditVBoxLayout::onTextChanged() {
-    m_invalidate_model = true;
+void EditVBoxLayout::onTextLoaded()
+{
+#if 0
+    Settings settings;
+    bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
+
+    QString tunetext = abcplaintextedit.toPlainText();
+    //qDebug() << "tune string is size:" << tunetext.size();
+    m_model.fromAbcBuffer(tunetext.toUtf8(), follow);
+    m_invalidate_model = false;
+
+    int v = xvOfCursor('V', abcplaintextedit.textCursor());
+    if (!m_model.selectVoiceNo(xspinbox.value(), v))
+        qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
+#else
+    /* DO NOT RUN the CODE ABOVE since it makes model valid *before* first MIDI file generation */
+#endif
 }
 
 void EditVBoxLayout::onPlayableNote(const QString &note)

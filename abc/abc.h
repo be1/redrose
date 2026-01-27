@@ -44,6 +44,9 @@ struct abc_tune {
     struct abc_voice** voices;
     int count;
 
+    long coda_measure; /* measure number of the coda symbol */
+    long dacoda_measure; /* dacoda was met at the end of this measure number */
+
     char lbc; /* linebreak char (usually '$') */
 };
 
@@ -52,7 +55,7 @@ struct abc_voice {
     char* v;
     struct abc_symbol* first;
     struct abc_symbol* last;
-    int measure;
+    long measure;
     int in_alt;
     int measure_accid['h']; /* 'g' + 1 */
     char* i_ks; /* initial key signature */

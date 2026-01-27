@@ -22,10 +22,15 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
     if (m_implementation)
         abc_release_yy(m_implementation);
 
+    m_tune_no = 0;
+    m_voice_no = 0;
+
     m_buffer = ba;
     m_implementation = abc_parse_buffer(ba.constData(), ba.size());
     if (m_implementation->error) {
         qWarning() << __func__ << "Parser Error: will break playback follower";
+        abc_release_yy(m_implementation);
+        m_implementation = nullptr;
         return false;
     }
 
@@ -40,13 +45,17 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
 }
 
 bool AbcModel::selectTuneNo(int no) {
-    if (no < 1)
+    if (no < 1) {
+        qDebug() << "selecting wrong tune" << no;
         return false;
+    }
 
     abc_tune* tune = tuneOfModel(no);
 
-    if (!tune)
+    if (!tune) {
+        qDebug() << "tune not found" << no;
         return false;
+    }
 
     m_tune_no = no;
     return true;
@@ -54,15 +63,26 @@ bool AbcModel::selectTuneNo(int no) {
 
 bool AbcModel::selectVoiceNo(int tune_no, int no)
 {
-    if (tune_no < 1 || no < 1)
-        return false;
+    if (tune_no == m_tune_no && no == m_voice_no) {
+        qDebug() << "already selected";
+        return true;
+    }
 
-    if (!selectTuneNo(tune_no))
+    if (tune_no < 1 || no < 1) {
+        qDebug () << "wrong tune or voice" << tune_no << no;
         return false;
+    }
+
+    if (!selectTuneNo(tune_no)) {
+        qDebug() << "cannot select tune" << tune_no;
+        return false;
+    }
 
     abc_tune* tune = tuneOfModel(tune_no);
-    if (!tune)
+    if (!tune) {
+        qDebug () << "cannot find wrong tune" << tune_no;
         return false;
+    }
 
     if (no > tune->count)
         return false;
@@ -72,6 +92,7 @@ bool AbcModel::selectVoiceNo(int tune_no, int no)
         m_voice_events = nullptr;
     }
 
+    qDebug() << "making events list for voice" << no;
     m_voice_events = abc_make_events_for_voice(tune, no -1);
     m_voice_no = no;
 
@@ -82,41 +103,44 @@ int AbcModel::charIndexFromMidiTick(long tick) const
 {
     if (!m_voice_events) {
         //qWarning() << __func__ << "Parser error made follower broken.";
-        return 0;
+        return -1;
     }
 
-    const long whole_in_ticks = DPQN * 4;
-
-    /* search back from last symbol to avoid finding matching past event */
+    /* search back from last symbol to get latest match */
     struct abc_symbol* s = m_voice_events->last;
-    while (s) {
-        long t = whole_in_ticks * ((qreal) s->ev.start_num / (qreal) s->ev.start_den);
+    for (; s; s = s->prev) {
+        if (s->kind != ABC_NOTE)
+            continue;
 
-        /* symbols with t == 0 are not notes (num/den == 0/1) */
-        if (t && t <= tick) {
-            if (m_charmap)
+        long note_tick = DPQN * 4 * s->ev.start_num / s->ev.start_den;
+
+        /* symbols with negative note_tick are invalid */
+        if (note_tick >= 0 && note_tick <= tick) {
+            if (m_charmap) {
+                //qDebug() << note_tick << tick << s->cidx << m_charmap[s->cidx];
                 return m_charmap[s->cidx];
+            }
             else
-                return 0; /* tell idx is invalid anyway */
+                return -1; /* tell idx is invalid anyway */
                 //return s->cidx;
         }
-
-        s = s->prev;
     }
 
-    return 0;
+    return -1;
 }
 
-/*this takes the QChar index in the Document */
+/* this takes the QChar index in the Document */
 long AbcModel::midiTickFromCharIndex(int uidx) const
 {
-    if (!m_voice_events || !m_charmap)
+    if (!m_voice_events || !m_charmap) {
+        qDebug() << m_voice_events << m_charmap;
         return -1;
+    }
 
     int cidx = searchIdx(m_charmap, m_buffer.size(), uidx);
 
     for (struct abc_symbol* s = m_voice_events->first; s; s = s->next) {
-        if (s->cidx >= cidx) {
+        if (s->cidx == cidx) {
             long tick = DPQN * 4 * s->ev.start_num / s->ev.start_den;
             return tick;
         }
@@ -142,8 +166,10 @@ abc *AbcModel::implementation() const {
 }
 
 abc_tune *AbcModel::tuneOfModel(int tune) const {
-    if (!m_implementation)
+    if (!m_implementation) {
+        qDebug() << "no implementation. probably while file load (cursor pos change).";
         return nullptr;
+    }
 #if 0
     if (tune > m_implementation->count) {
         return nullptr;

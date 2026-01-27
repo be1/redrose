@@ -49,6 +49,7 @@ class AbcPlainTextEdit: public QPlainTextEdit
 public:
 	AbcPlainTextEdit(QWidget* parent = nullptr);
     ~AbcPlainTextEdit();
+    void setPlainText(const QString& plaintext); /* oveload QPlaintextEdit's */
 
     void lineNumberAreaPaintEvent(QPaintEvent *event);
     int lineNumberAreaWidth();
@@ -70,6 +71,7 @@ public:
 
 signals:
     void playableNote(const QString& note);
+    void plainTextSet();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;

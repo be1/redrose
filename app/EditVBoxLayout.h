@@ -66,7 +66,8 @@ public slots:
     void onPlayClicked(); /* midi */
     void onDisplayClicked(); /* ps */
     void onSelectionChanged();
-    void onTextChanged();
+    void onModificationChanged(bool yup);
+    void onTextLoaded();
 
 protected slots:
     void onPlayableNote(const QString& note);
@@ -92,7 +93,6 @@ private:
     QString fileName; /* original abc file name */
     QString pdfFileName; /* needed for PDF export */
     AbcTemporaryFile tempFile;
-    QList<AbcProcess*> processlist;
     QProgressIndicator* progress;
     QString selection;
     int selectionIndex;

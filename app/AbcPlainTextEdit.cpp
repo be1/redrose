@@ -40,6 +40,7 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     connect(this, &AbcPlainTextEdit::updateRequest, this, &AbcPlainTextEdit::updateLineNumberArea);
     connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkDictionnary);
     connect(this, &AbcPlainTextEdit::modificationChanged, this, &AbcPlainTextEdit::flagModified);
+
     if (settings.value(EDITOR_AUTOPLAY).toBool()) {
         autoplay = true;
         connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkPlayableNote);
@@ -87,6 +88,12 @@ AbcPlainTextEdit::~AbcPlainTextEdit()
     delete dictModel;
     delete psModel;
     delete gmModel;
+}
+
+void AbcPlainTextEdit::setPlainText(const QString &plaintext)
+{
+    QPlainTextEdit::setPlainText(plaintext);
+    emit plainTextSet();
 }
 
 void AbcPlainTextEdit::setCompleter(QCompleter *completer)

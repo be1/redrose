@@ -379,7 +379,7 @@ unsigned char note2key(const char* keysig, const char* note, int* measure_accid)
 
         if (accid == ACCID_NATURAL) {
             pitch = pitch_diff_0x3c("Cmaj", *c) + 0 + (octava * 12);
-        } else if (!accid) { /* no explicit acid */
+        } else if (!accid) { /* no explicit accid */
             /* test if measure_accid was set */
             if (measure_accid[(int)*c] == ACCID_NATURAL) {
                 pitch = pitch_diff_0x3c("Cmaj", *c) + 0 + (octava * 12);
@@ -554,11 +554,18 @@ struct abc_symbol* abc_last_symbol(struct abc* yy)
     return voice->last;
 }
 
+void abc_symbol_initialize(struct abc_symbol* s)
+{
+    s->cidx = -1;
+    s->dur_den = 1;
+    s->ev.start_num = -1;
+    s->ev.start_den = 1;
+}
+
 struct abc_symbol* abc_new_symbol(struct abc* yy)
 {
     struct abc_symbol* new = calloc(1, sizeof (struct abc_symbol));
-    new->ev.start_den = 1;
-    new->dur_den = 1;
+    abc_symbol_initialize(new);
 
     struct abc_tune* tune = yy->tunes[yy->count-1];
     if (tune->count == 0) /* voice 1 can be implicit */
@@ -577,6 +584,7 @@ struct abc_symbol* abc_new_symbol(struct abc* yy)
         new->index = s->index + 1;
     }
 
+    new->measure = voice->measure;
     new->voice = voice;
     return new;
 }
@@ -669,6 +677,7 @@ void abc_note_append(struct abc* yy, const char* yytext, int pos)
     new->kind = ABC_NOTE;
     new->dur_num = 1;
     new->dur_den = 1;
+    new->ev.start_num = 0; /* validate event */
     new->text = strdup(yytext);
 
     new->ev.key = note2key(cur_voice->ks, new->text, cur_voice->measure_accid);
@@ -678,7 +687,6 @@ void abc_note_append(struct abc* yy, const char* yytext, int pos)
     }
 
     new->cidx = pos;
-    new->measure = cur_voice->measure;
 }
 
 void abc_chordpunct_set(struct abc* yy, const char* yytext)
@@ -955,22 +963,32 @@ int abc_is_repeat(const struct abc_symbol* s) {
 void abc_bar_append(struct abc* yy, const char* yytext)
 {
     struct abc_symbol* new = abc_new_symbol(yy);
-    struct abc_tune* cur_tune = yy->tunes[yy->count-1];
-    struct abc_voice* cur_voice = cur_tune->voices[cur_tune->count-1];
 
     new->kind = ABC_BAR;
     new->text = strdup(yytext);
-    memset(cur_voice->measure_accid, 0, sizeof(cur_voice->measure_accid));
+    memset(new->voice->measure_accid, 0, sizeof(new->voice->measure_accid));
 
     if (abc_is_endbar(new) || abc_is_repeat(new)) {
-        cur_voice->in_alt = 0;
+        new->voice->in_alt = 0;
     }
     // for now, only bars and have 'in_alt' field set.
-    new->in_alt = cur_voice->in_alt;
+    new->in_alt = new->voice->in_alt;
 
-    /* ignore leftmost measure bar if any */
-    if (abc_note_before (new))
-        cur_voice->measure++;
+    struct abc_symbol* first_music = new->voice->first;
+    while (first_music) {
+        if (first_music->kind != ABC_INST && first_music->kind != ABC_SPACE)
+            break;
+        first_music = first_music->next;
+    }
+
+    /* increment current measure number for voice */
+    /* start at 0 and ignore first leftmost bar if any */
+    if (first_music != new)
+        new->voice->measure++;
+
+    /* the new bar itself is the last symbol of the previous measure
+     * we do not increment it */
+    //fprintf(stderr, "added bar %ld\n", new->measure);
 }
 
 int abc_alt_is_of(const struct abc_symbol* s, int alt) {
@@ -1266,7 +1284,7 @@ struct abc_symbol* abc_find_next_alt(struct abc_symbol* s, int alt) {
     return s->next;
 }
 
-struct abc_symbol* abc_find_coda_near(struct abc_symbol* s) {
+struct abc_symbol* abc_find_coda_next_to(struct abc_symbol* s) {
     while (s->next) {
         s = s->next;
         if (s->kind == ABC_DECO && !strcmp(s->text, "coda"))
@@ -1472,6 +1490,7 @@ void abc_compute_pqr(int* p, int* q, int* r, const char* m) {
 
 static struct abc_symbol* abc_dup_symbol(const struct abc_symbol* from) {
     struct abc_symbol* to = calloc(1, sizeof (struct abc_symbol));
+    /* abc_symbol_initialize(to) <- useless here */
     to = memcpy(to, from, sizeof (*from));
     to->prev = NULL;
     to->next = NULL;
@@ -2196,7 +2215,7 @@ static void abc_append_inline_changes(struct abc_voice* v, struct abc_symbol* s)
         sym = abc_dup_symbol(sym);
     } else {
         sym = calloc(1, sizeof (struct abc_symbol));
-        sym->ev.start_den = 1;
+        abc_symbol_initialize(sym);
         sym->kind = ABC_CHANGE;
         sym->ev.type = EV_UNIT;
         long num, den;
@@ -2218,7 +2237,7 @@ static void abc_append_inline_changes(struct abc_voice* v, struct abc_symbol* s)
         sym = abc_dup_symbol(sym);
     } else {
         sym = calloc(1, sizeof (struct abc_symbol));
-        sym->ev.start_den = 1;
+        abc_symbol_initialize(sym);
         sym->kind = ABC_CHANGE;
         sym->ev.type = EV_TEMPO;
         sym->ev.value = abc_tempo(v->i_qq);
@@ -2257,10 +2276,19 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
 
         switch (s->kind) {
             case ABC_DECO: {
-                              if (!strcmp("dacoda", s->text)) {
-                                  /* go to coda if found */
+                              /* on first voice: */
+                              if (!strcmp("coda", s->text)) {
+                                      ; //v->tune->coda = coda = s; too late! (see below in ABC_BAR)
+                              } else if (!strcmp("dacoda", s->text)) {
+                                  /* we are in the beginning of the dacoda measure */
+                                  v->tune->dacoda_measure = s->measure; /* dacoda measure on other voices will match this */
+
+                                  /* on the first voice, go to coda now */
                                   if (coda) {
-                                      s = coda->next;
+#ifdef EBUG
+                                      fprintf(stderr, "'dacoda' decoration found (measure %ld): jump to coda %ld\n", s->measure, coda->measure);
+#endif
+                                      s = coda->next; /* next symbol of 'coda' decoration */
                                       continue;
                                   }
                               } else if (!strcmp("dacapo", s->text)) {
@@ -2277,16 +2305,42 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                               break;
                            }
             case ABC_BAR: {
+                              /* dacoda may be virutally now */
+                              if (coda && v->tune->coda_measure && s->measure == v->tune->dacoda_measure) {
+#ifdef EBUG
+                                  fprintf (stderr, "dacoda measure found (%ld): jump to coda %ld\n", s->measure, coda->measure);
+#endif
+                                  s = coda->next; /* next symbol of virtual coda bar */
+                                  continue;
+                              }
+
                               /* will always append a bar */
                               new = calloc(1, sizeof (struct abc_symbol));
+                              abc_symbol_initialize(new);
                               new->kind = ABC_BAR;
                               new->text = strdup("|");
-                              new->ev.start_den = 1;
-                              new->dur_den = 1;
+                              new->measure = s->measure;
 
                               if (abc_is_repeat(s)) {
-                                  /* check for coda just after s */
-                                  coda = abc_find_coda_near(s); /* can be NULL */
+				  if (!v->tune->coda_measure) {
+                                      /* we need to look forward "!coda!" because voice will unfold here */
+                                      coda = abc_find_coda_next_to(s); /* can be NULL */
+                                      if (coda)
+                                         v->tune->coda_measure = coda->measure;
+                                      //else
+                                      //   v->tune->coda_measure = 0;
+#ifdef EBUG
+                                      fprintf(stderr, "may have found !coda! @ %ld\n", v->tune->coda_measure);
+#endif
+				  }
+
+				  /* non-first voice: check if a coda was set by first voice */
+				  if (!coda && v->tune->coda_measure && s->measure +1 == v->tune->coda_measure) {
+                                          coda = s; /* we will use the next symbol from this bar */
+#ifdef EBUG
+                                          fprintf(stderr, "found coda_measure @ %ld\n", s->measure +1);
+#endif
+				  }
 
                                   if (cur_repeat == s) {
                                       /* reached end of this repetition */

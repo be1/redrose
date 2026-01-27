@@ -46,6 +46,9 @@ void EditTabWidget::removeTab(int index)
 
 void EditTabWidget::removeTabs()
 {
+    /* avoid tab score refresh on tab change */
+    QSignalBlocker blocker(this);
+
     for (int i = count() -1; i >= 0; i-- ) {
         removeTab(i);
     }
