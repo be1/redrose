@@ -2286,9 +2286,12 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                                   /* on the first voice, go to coda now */
                                   if (coda) {
 #ifdef EBUG
-                                      fprintf(stderr, "'dacoda' decoration found (measure %ld): jump to coda %ld\n", s->measure, coda->measure);
+                                      fprintf(stderr, "'dacoda' decoration found (measure %ld): jump to coda @ measure %ld\n", s->measure, coda->measure);
 #endif
-                                      s = coda->next; /* next symbol of 'coda' decoration */
+                                      s = coda->next; /* next symbol after 'coda' decoration */
+#ifdef EBUG
+				      fprintf(stderr, "jump to note %s:%ld\n", s->text, s->measure);
+#endif
                                       continue;
                                   }
                               } else if (!strcmp("dacapo", s->text)) {
@@ -2305,12 +2308,15 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                               break;
                            }
             case ABC_BAR: {
-                              /* dacoda may be virutally now */
+                              /* dacoda may be virutally just now */
                               if (coda && v->tune->coda_measure && s->measure == v->tune->dacoda_measure) {
 #ifdef EBUG
-                                  fprintf (stderr, "dacoda measure found (%ld): jump to coda %ld\n", s->measure, coda->measure);
+                                  fprintf (stderr, "dacoda measure found (%ld): jump to coda @ measure %ld\n", s->measure, v->tune->coda_measure);
 #endif
                                   s = coda->next; /* next symbol of virtual coda bar */
+#ifdef EBUG
+				  fprintf(stderr, "jump to note %s:%ld\n", s->text, s->measure);
+#endif
                                   continue;
                               }
 
