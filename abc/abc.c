@@ -2311,7 +2311,7 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                               /* dacoda may be virutally just now */
                               if (coda && v->tune->coda_measure && s->measure == v->tune->dacoda_measure) {
 #ifdef EBUG
-                                  fprintf (stderr, "dacoda measure found (%ld): jump to coda @ measure %ld\n", s->measure, v->tune->coda_measure);
+                                  fprintf (stderr, "dacoda measure found (measure %ld): jump to coda @ measure %ld\n", s->measure, v->tune->coda_measure);
 #endif
                                   s = coda->next; /* next symbol of virtual coda bar */
 #ifdef EBUG
