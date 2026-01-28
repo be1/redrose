@@ -678,6 +678,10 @@ void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
     if (!textCursor().selectedText().isEmpty())
         return QPlainTextEdit::keyPressEvent(e);
 
+    /* avoid reaction on selecting whole text with kbd shortcut */
+    if (e->modifiers().testFlag(Qt::ControlModifier) && QChar::toUpper(e->key()) == 'A')
+        return QPlainTextEdit::keyPressEvent(e);
+
     /* bad hack to play octavied input note */
     if (autoplay && (e->key() == ',' || e->key() == '\'')) {
         QPlainTextEdit::keyPressEvent(e);
