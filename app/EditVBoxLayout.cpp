@@ -58,9 +58,9 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     hboxlayout.addWidget(&positionslider);
     hboxlayout.addWidget(progress);
     hboxlayout.addWidget(&playpushbutton);
-	hboxlayout.addWidget(&runpushbutton);
+    hboxlayout.addWidget(&runpushbutton);
 
-	addWidget(&abcplaintextedit);
+    addWidget(&abcplaintextedit);
     addLayout(&hboxlayout);
 
     connect(&generationTimer, &QTimer::timeout, this, &EditVBoxLayout::onDisplayClicked);
@@ -119,12 +119,12 @@ void EditVBoxLayout::removeMIDIFile(int x) {
 
 AbcPlainTextEdit *EditVBoxLayout::abcPlainTextEdit()
 {
-	return &abcplaintextedit;
+    return &abcplaintextedit;
 }
 
 PlayPushButton *EditVBoxLayout::playPushButton()
 {
-	return &playpushbutton;
+    return &playpushbutton;
 }
 
 RunPushButton *EditVBoxLayout::runPushButton()
@@ -171,7 +171,7 @@ void EditVBoxLayout::onCursorPositionChanged()
 
     /* reset things only if cursor goes a different tune */
     if (xspinbox.value() != x) {
-	removeMIDIFile(xspinbox.value());
+        removeMIDIFile(xspinbox.value());
         m_invalidate_model = true;
 
         QSignalBlocker blocker(xspinbox);
