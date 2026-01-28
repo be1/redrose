@@ -198,6 +198,9 @@ void EditVBoxLayout::onCursorPositionChanged()
 
 void EditVBoxLayout::onXChanged(int value)
 {
+    QTextCursor tc = abcplaintextedit.textCursor();
+    int prevX = xvOfCursor('X', tc);
+
     QSignalBlocker blocker(xspinbox);
     bool found = true;
     /* seek view to X */
@@ -223,6 +226,7 @@ void EditVBoxLayout::onXChanged(int value)
         xspinbox.setMaximum(MAXTUNES);
     }
 
+    removeMIDIFile(prevX);
     m_invalidate_model = true;
     //positionslider.setMaximum(0);
 }
