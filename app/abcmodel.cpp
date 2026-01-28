@@ -203,6 +203,7 @@ void AbcModel::createCharMapping() {
     for (int u = 0; u < str.size(); u++) {
         QByteArray ba = str.mid(0, u).toUtf8();
         m_charmap[ba.size()] = u;
+	qDebug() << ba.size() << u;
     }
 }
 
@@ -213,8 +214,12 @@ int AbcModel::searchIdx(int* ordered, int siz, int needle) const
     int s = 0, e = siz;
     while (s <= e) {
         int m = s + (e - s) / 2;
-        if (ordered[m] == needle)
+        if (ordered[m] == needle) {
+            /* for double-byte chars, take the first byte (m-1) */
+            if (m > 0 && ordered[m-1] == needle)
+                 return m-1;
             return m;
+	}
 
         if (ordered[m] < needle)
             s = m + 1;
