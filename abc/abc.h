@@ -44,6 +44,7 @@ struct abc_tune {
     struct abc_voice** voices;
     int count;
 
+    /* stateful (WARNING!) variables */
     long coda_measure; /* measure number of the coda symbol */
     long dacoda_measure; /* dacoda was met at the end of this measure number */
 
@@ -98,8 +99,9 @@ struct abc_symbol {
     struct abc_symbol* prev;
 };
 
-/* internal parser API */
 void abc_tune_append(struct abc* yy, const char* yytext);
+
+void abc_tune_reset(struct abc_tune* tune);
 
 void abc_header_append(struct abc* yy, const char* yytext, const char which);
 

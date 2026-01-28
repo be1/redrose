@@ -471,11 +471,15 @@ void abc_tune_append(struct abc* yy, const char* yytext)
 {
     struct abc_tune* new = calloc(1, sizeof (struct abc_tune));
     new->x = atoi(yytext);
-    new->lbc = '\n';
+    abc_tune_reset(new);
 
     yy->tunes = realloc(yy->tunes, sizeof (struct abc_tune*) * (yy->count + 1));
     yy->tunes[yy->count] = new;
     yy->count++;
+}
+void abc_tune_reset(struct abc_tune* tune) {
+    tune->dacoda_measure = tune->coda_measure = -1;
+    tune->lbc = '\n';
 }
 
 void abc_header_append(struct abc* yy, const char* yytext, const char which)
@@ -2309,7 +2313,7 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                            }
             case ABC_BAR: {
                               /* dacoda may be virutally just now */
-                              if (coda && v->tune->coda_measure && s->measure == v->tune->dacoda_measure) {
+                              if (coda && v->tune->coda_measure >= 0 && s->measure == v->tune->dacoda_measure) {
 #ifdef EBUG
                                   fprintf (stderr, "dacoda measure found (measure %ld): jump to coda @ measure %ld\n", s->measure, v->tune->coda_measure);
 #endif
@@ -2328,20 +2332,18 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                               new->measure = s->measure;
 
                               if (abc_is_repeat(s)) {
-				  if (!v->tune->coda_measure) {
+				  if (v->tune->coda_measure < 0) {
                                       /* we need to look forward "!coda!" because voice will unfold here */
                                       coda = abc_find_coda_next_to(s); /* can be NULL */
                                       if (coda)
                                          v->tune->coda_measure = coda->measure;
-                                      //else
-                                      //   v->tune->coda_measure = 0;
 #ifdef EBUG
                                       fprintf(stderr, "may have found !coda! @ %ld\n", v->tune->coda_measure);
 #endif
 				  }
 
 				  /* non-first voice: check if a coda was set by first voice */
-				  if (!coda && v->tune->coda_measure && s->measure +1 == v->tune->coda_measure) {
+				  if (!coda && v->tune->coda_measure >= 0 && s->measure +1 == v->tune->coda_measure) {
                                           coda = s; /* we will use the next symbol from this bar */
 #ifdef EBUG
                                           fprintf(stderr, "found coda_measure @ %ld\n", s->measure +1);

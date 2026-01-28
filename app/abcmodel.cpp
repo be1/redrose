@@ -41,6 +41,9 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
         m_charmap = nullptr;
     }
 
+    /* force tune state initialization */
+    selectTuneNo(1);
+
     return true;
 }
 
@@ -56,6 +59,8 @@ bool AbcModel::selectTuneNo(int no) {
         qDebug() << "tune not found" << no;
         return false;
     }
+
+    abc_tune_reset(tune); /* reset tune state to defaults */
 
     /* generate *border effects* on tune yy->tunes[no -1] state
      * due to *first* voice specific instructions, if any. */
