@@ -171,6 +171,7 @@ void EditVBoxLayout::onCursorPositionChanged()
 
     /* reset things only if cursor goes a different tune */
     if (xspinbox.value() != x) {
+        m_invalidate_model = true;
         QSignalBlocker blocker(xspinbox);
         xspinbox.setValue(x);
         scheduleDisplay();
@@ -220,6 +221,7 @@ void EditVBoxLayout::onXChanged(int value)
         xspinbox.setMaximum(MAXTUNES);
     }
 
+    m_invalidate_model = true;
     //positionslider.setMaximum(0);
 }
 
