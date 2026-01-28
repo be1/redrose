@@ -57,7 +57,7 @@ bool AbcModel::selectTuneNo(int no) {
         return false;
     }
 
-    /* generate *border effects* on tune state
+    /* generate *border effects* on tune yy->tunes[no -1] state
      * due to *first* voice specific instructions, if any. */
     struct abc_voice* first_voice = abc_make_events_for_voice (tune, 0);
     abc_release_voice(first_voice);
