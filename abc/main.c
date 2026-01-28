@@ -16,7 +16,7 @@ int main() {
 	
 	struct abc* yy = abc_parse_buffer(buf, count);
 	if (yy->error) {
-		printf("Parse error line %d, char %d\n", yy->error_line, yy->error_char);
+		printf("Parse error line %d, char %d\n", yy->error_line_nr, yy->error_char_nr);
         return 1;
     }
 

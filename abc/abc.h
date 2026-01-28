@@ -48,7 +48,8 @@ struct abc_tune {
 
     /* stateful (WARNING!) variables */
     long coda_measure; /* measure number of the coda symbol */
-    long dacoda_measure; /* dacoda was met at the end of this measure number */
+    long dacoda_measure; /* !dacoda! was met at the end of this measure number */
+    long dacapo_measure; /* measure nr. where !dacapo! has been met */
 
     char lbc; /* linebreak char (usually '$') */
 };

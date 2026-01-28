@@ -472,14 +472,14 @@ void abc_tune_append(struct abc* yy, const char* yytext)
     struct abc_tune* new = calloc(1, sizeof (struct abc_tune));
     new->x = atoi(yytext);
     abc_tune_reset(new);
+    new->lbc = '\n';
 
     yy->tunes = realloc(yy->tunes, sizeof (struct abc_tune*) * (yy->count + 1));
     yy->tunes[yy->count] = new;
     yy->count++;
 }
 void abc_tune_reset(struct abc_tune* tune) {
-    tune->dacoda_measure = tune->coda_measure = -1;
-    tune->lbc = '\n';
+    tune->dacoda_measure = tune->coda_measure = tune->dacapo_measure = -1;
 }
 
 void abc_header_append(struct abc* yy, const char* yytext, const char which)
@@ -1518,9 +1518,9 @@ void abc_voice_append_symbol(struct abc_voice* voice, struct abc_symbol* s) {
             s->index = l->index + 1;
         }
 
-	/* use new voice ? FIXME
-	 * s->voice = voice;
-	 */
+        /* use new voice ? FIXME
+         * s->voice = voice;
+         */
     }
 }
 
@@ -1562,7 +1562,7 @@ static int event_cmp(const void* a, const void* b) {
 
     /* if the tick is the same, place noteoff first */
     if (s1->ev.start_num == s2->ev.start_num
-           && s1->ev.start_den == s2->ev.start_den) {
+            && s1->ev.start_den == s2->ev.start_den) {
         return s1->ev.value - s2->ev.value;
     }
 
@@ -1660,7 +1660,7 @@ static struct abc_voice* abc_pass3_ungroup_voice(const struct abc_voice* v) {
                                        abc_frac_add(&e->ev.start_num, &e->ev.start_den, e->dur_num, e->dur_den);
 
                                        /* we do not erase note duration in noteoff event.
-                                        this allow note managment to be on/off agnostic */
+                                          this allow note managment to be on/off agnostic */
                                    }
 
                                    struct abc_symbol* events = NULL;
@@ -2280,38 +2280,63 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
 
         switch (s->kind) {
             case ABC_DECO: {
-                              /* on first voice: */
-                              if (!strcmp("coda", s->text)) {
-                                      ; //v->tune->coda = coda = s; too late! (see below in ABC_BAR)
-                              } else if (!strcmp("dacoda", s->text)) {
-                                  /* we are in the beginning of the dacoda measure */
-                                  v->tune->dacoda_measure = s->measure; /* dacoda measure on other voices will match this */
+                               /* on first voice: */
+                               if (!strcmp("coda", s->text)) {
+                                   ; //v->tune->coda = coda = s; too late! (see below in ABC_BAR)
+                               } else if (!strcmp("dacoda", s->text)) {
+                                   /* we are in the beginning of the dacoda measure */
+                                   v->tune->dacoda_measure = s->measure; /* dacoda measure on other voices will match this */
 
-                                  /* on the first voice, go to coda now */
-                                  if (coda) {
+                                   /* on the first voice, go to coda now */
+                                   if (coda) {
 #ifdef EBUG
-                                      fprintf(stderr, "'dacoda' decoration found (measure %ld): jump to coda @ measure %ld\n", s->measure, coda->measure);
+                                       fprintf(stderr, "'dacoda' decoration found (measure %ld): jump to coda @ measure %ld\n", s->measure, coda->measure);
 #endif
-                                      s = coda->next; /* next symbol after 'coda' decoration */
+                                       s = coda->next; /* next symbol after 'coda' decoration */
 #ifdef EBUG
-				      fprintf(stderr, "jump to note %s:%ld\n", s->text, s->measure);
+                                       fprintf(stderr, "jump to note %s:%ld\n", s->text, s->measure);
 #endif
-                                      continue;
-                                  }
-                              } else if (!strcmp("dacapo", s->text)) {
-                                  /* immediate dacapo or reported */
-                                  if ((dacapo_met == 0 && abc_voice_last_note(v) == abc_note_before(s)) ||
-                                      (dacapo_met == 1 && abc_voice_last_note(v) != abc_note_before(s))) {
-                                      s = v->first;
-                                      dacapo_met++;
-                                      continue;
-                                  }
-                              } else {
-                                  new = abc_dup_symbol(s);
-                              }
-                              break;
+                                       continue;
+                                   }
+                               } else if (!strcmp("dacapo", s->text)) {
+                                   /* immediate dacapo (jump on first encounter) or reported (jump on second encounter)
+                                    * will be decided on next bar */
+                                   if (!dacapo_met && abc_note_before(s) == abc_voice_last_note(v)) {
+                                       s = v->first;
+
+                                       dacapo_met++;
+                                       continue;
+                                   }
+
+                                   if (dacapo_met == 1 && abc_note_before(s) != abc_voice_last_note(v)) {
+                                       s = v->first;
+
+                                       dacapo_met++;
+                                       continue;
+                                   }
+
+                                   /* default */
+                                   v->tune->dacapo_measure = s->measure;
+                               } else {
+                                   new = abc_dup_symbol(s);
+                               }
+                               break;
                            }
             case ABC_BAR: {
+                              /* dacapo may virtually be just now */
+                              if (v->tune->dacapo_measure == s->measure) {
+                                  if (!dacapo_met && abc_voice_last_note(v) == abc_note_before(s) ||
+                                          dacapo_met == 1 && abc_voice_last_note(v) != abc_note_before(s)) {
+
+                                      s = v->first;
+
+                                      dacapo_met++; /* avoid loop */
+                                      continue;
+                                  }
+
+                                  dacapo_met = 1;
+                              }
+
                               /* dacoda may be virutally just now */
                               if (coda && v->tune->coda_measure >= 0 && s->measure == v->tune->dacoda_measure) {
 #ifdef EBUG
@@ -2319,7 +2344,7 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
 #endif
                                   s = coda->next; /* next symbol of virtual coda bar */
 #ifdef EBUG
-				  fprintf(stderr, "jump to note %s:%ld\n", s->text, s->measure);
+                                  fprintf(stderr, "jump to note %s:%ld\n", s->text, s->measure);
 #endif
                                   continue;
                               }
@@ -2332,23 +2357,24 @@ static struct abc_voice* abc_pass1_unfold_voice(struct abc_voice* v) {
                               new->measure = s->measure;
 
                               if (abc_is_repeat(s)) {
-				  if (v->tune->coda_measure < 0) {
+                                  if (v->tune->coda_measure < 0) {
                                       /* we need to look forward "!coda!" because voice will unfold here */
                                       coda = abc_find_coda_next_to(s); /* can be NULL */
-                                      if (coda)
-                                         v->tune->coda_measure = coda->measure;
+                                      if (coda) {
+                                          v->tune->coda_measure = coda->measure;
 #ifdef EBUG
-                                      fprintf(stderr, "may have found !coda! @ %ld\n", v->tune->coda_measure);
+                                          fprintf(stderr, "may have found !coda! @ %ld\n", v->tune->coda_measure);
 #endif
-				  }
+                                      }
+                                  }
 
-				  /* non-first voice: check if a coda was set by first voice */
-				  if (!coda && v->tune->coda_measure >= 0 && s->measure +1 == v->tune->coda_measure) {
-                                          coda = s; /* we will use the next symbol from this bar */
+                                  /* non-first voice: check if a coda was set by first voice */
+                                  if (!coda && v->tune->coda_measure >= 0 && s->measure +1 == v->tune->coda_measure) {
+                                      coda = s; /* we will use the next symbol from this bar */
 #ifdef EBUG
-                                          fprintf(stderr, "found coda_measure @ %ld\n", s->measure +1);
+                                      fprintf(stderr, "found coda_measure @ %ld\n", s->measure +1);
 #endif
-				  }
+                                  }
 
                                   if (cur_repeat == s) {
                                       /* reached end of this repetition */
@@ -2486,3 +2512,5 @@ void abc_debug_headers(struct abc* yy)
         h = h->next;
     }
 }
+
+// vim:ts=4:sw=4:et:
