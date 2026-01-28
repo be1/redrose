@@ -21,8 +21,10 @@ struct abc {
     struct abc_buffer* buffer;
 
     int error; /* boolean */
-    int error_line;
-    int error_char;
+    int error_line_index; /* line index in buffer */
+    int error_char_index; /* char index in buffer */
+    int error_line_nr;
+    int error_char_nr;
 
     char* ks; /* first key signature */
     char* ul; /* first unit length */

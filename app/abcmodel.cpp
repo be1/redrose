@@ -167,13 +167,18 @@ bool AbcModel::hasError() const {
 int AbcModel::errorLine() const {
     if (!m_implementation)
         return 0;
-    return m_implementation->error_line;
+
+    return m_implementation->error_line_nr;
 }
 
 int AbcModel::errorChar() const {
     if (!m_implementation)
         return 0;
-    return m_implementation->error_char;
+
+    if (m_charmap)
+        return m_charmap[m_implementation->error_char_index] - m_charmap[m_implementation->error_line_index];
+
+    return m_implementation->error_char_nr;
 }
 
 abc *AbcModel::implementation() const {

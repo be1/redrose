@@ -41,8 +41,11 @@ static void gen_error(struct abc* auxil) {
         }
 
         auxil->error = 1;
-        auxil->error_line = line;
-        auxil->error_char = auxil->buffer->index - l;
+        auxil->error_line_index = l;
+        auxil->error_char_index = auxil->buffer->index;
+
+        auxil->error_line_nr = line;
+        auxil->error_char_nr = auxil->buffer->index - l;
 }
 
 #if !defined __has_attribute || defined _MSC_VER

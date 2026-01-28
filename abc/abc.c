@@ -1144,7 +1144,7 @@ struct abc* abc_parse_buffer(const char* buffer, int size) {
     while (pcc_parse(ctx, NULL)) {
         if (yy->error) {
 #ifdef EBUG
-            fprintf(stderr, "abc parse error line:char %d:%d\n", yy->error_line, yy->error_char);
+            fprintf(stderr, "abc parse error line:char %d:%d\n", yy->error_line_nr, yy->error_char_nr);
 #endif
 #if 0
             FILE* out = fopen("out.abc", "w");
