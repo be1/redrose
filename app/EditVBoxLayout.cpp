@@ -188,7 +188,6 @@ void EditVBoxLayout::onCursorPositionChanged()
 
     /* follow mouse click or kbd arrows */
     int tick = m_model.midiTickFromCharIndex(tc.position());
-    qDebug() << "tick" << tick;
     if (tick >= 0) {
         synth->m_tick = tick;
         synth->seek(tick);

@@ -218,7 +218,6 @@ void AbcModel::createCharMapping() {
     for (int u = 0; u < str.size(); u++) {
         QByteArray ba = str.mid(0, u).toUtf8();
         m_charmap[ba.size()] = u;
-	qDebug() << ba.size() << u;
     }
 }
 
