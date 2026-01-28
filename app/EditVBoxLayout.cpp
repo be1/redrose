@@ -89,7 +89,7 @@ EditVBoxLayout::~EditVBoxLayout()
 
     delete synth;
 
-    removeMIDIFile();
+    removeMIDIFile(xspinbox.value());
     removePSFile();
 }
 
@@ -108,11 +108,11 @@ void EditVBoxLayout::onSynthInited(bool err) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load sound font."));
 }
 
-void EditVBoxLayout::removeMIDIFile() {
+void EditVBoxLayout::removeMIDIFile(int x) {
     /* cleanup files manually */
     QString temp(tempFile.fileName());
-    qDebug() << "cleaning MIDI for" << temp;
-    temp.replace(m_abcext, QString::number(xspinbox.value())  + ".mid");
+    qDebug() << "cleaning MIDI for" << temp << x;
+    temp.replace(m_abcext, QString::number(x) + ".mid");
     if (QFileInfo::exists(temp))
         QFile::remove(temp);
 }
@@ -171,7 +171,9 @@ void EditVBoxLayout::onCursorPositionChanged()
 
     /* reset things only if cursor goes a different tune */
     if (xspinbox.value() != x) {
+	removeMIDIFile(xspinbox.value());
         m_invalidate_model = true;
+
         QSignalBlocker blocker(xspinbox);
         xspinbox.setValue(x);
         scheduleDisplay();

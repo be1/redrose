@@ -53,7 +53,7 @@ signals:
 protected:
     void spawnProgram(const QString& prog, const QStringList &args, AbcProcess::ProcessType which, const QDir &wrk, enum AbcProcess::Continuation cont);
     void removePSFile();
-    void removeMIDIFile();
+    void removeMIDIFile(int x);
     int xvOfCursor(const char h, const QTextCursor& c);
     int numberFromHeader(const QString& hs, char h);
     void cleanupProcesses();
