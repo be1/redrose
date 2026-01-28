@@ -29,8 +29,6 @@ bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
     m_implementation = abc_parse_buffer(ba.constData(), ba.size());
     if (m_implementation->error) {
         qWarning() << __func__ << "Parser Error: will break playback follower";
-        abc_release_yy(m_implementation);
-        m_implementation = nullptr;
         return false;
     }
 
@@ -161,7 +159,7 @@ long AbcModel::midiTickFromCharIndex(int uidx) const
 
 bool AbcModel::hasError() const {
     if (!m_implementation)
-        return false;
+        return true;
 
     return m_implementation->error;
 }

@@ -20,7 +20,7 @@ struct abc {
 
     struct abc_buffer* buffer;
 
-    int error;
+    int error; /* boolean */
     int error_line;
     int error_char;
 

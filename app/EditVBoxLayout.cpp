@@ -300,8 +300,9 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
 
     /* refresh model */
-    m_model.fromAbcBuffer(tosave.toUtf8(), follow);
-    m_invalidate_model = false;
+    if (m_model.fromAbcBuffer(tosave.toUtf8(), follow)) {
+        m_invalidate_model = false;
+    }
 
     /* and MIDI file */
     int v = xvOfCursor('V', abcplaintextedit.textCursor());

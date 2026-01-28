@@ -1160,9 +1160,6 @@ struct abc* abc_parse_buffer(const char* buffer, int size) {
 }
 
 struct abc_tune* abc_find_tune(const struct abc *yy, int x) {
-    if (!yy)
-        return NULL;
-
     struct abc_tune* t = NULL;
     for (int i = 0; i < yy->count; i++) {
         if (yy->tunes[i]->x == x) {
