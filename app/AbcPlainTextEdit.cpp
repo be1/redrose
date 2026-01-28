@@ -522,11 +522,13 @@ void AbcPlainTextEdit::setTextCursorPosition(int n) {
 
     if (n > prevpos) {
         c.movePosition(QTextCursor::MoveOperation::Right, QTextCursor::MoveAnchor, n - prevpos);
+        setTextCursor(c);
     } else if (n < prevpos) {
         c.movePosition(QTextCursor::MoveOperation::Left, QTextCursor::MoveAnchor, prevpos - n);
+        setTextCursor(c);
     }
 
-    setTextCursor(c);
+    /* do absolutely nothing if position looks the same */
 }
 
 /* returns the V:... text or %%MIDI channel... text */
