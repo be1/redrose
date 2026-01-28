@@ -75,6 +75,10 @@ void MidiGenerator::generateInternal(const QString &inputnamehint, int xopt, Abc
         expr = false;
 
     QString errstr;
+    if (model() == nullptr) {
+	    emit generated(1, tr("Unknown error"), cont);
+    }
+
     if (model()->hasError()) {
         errstr = tr("Parse error line: ") + QString::number(model()->errorLine()) + tr(", char: ") + QString::number(model()->errorChar());
         emit generated(1, errstr, cont);

@@ -66,7 +66,7 @@ public slots:
     void onPlayClicked(); /* midi */
     void onDisplayClicked(); /* ps */
     void onSelectionChanged();
-    void onModificationChanged(bool yup);
+    void onTextChanged();
     void onTextLoaded();
 
 protected slots:

@@ -160,14 +160,21 @@ long AbcModel::midiTickFromCharIndex(int uidx) const
 }
 
 bool AbcModel::hasError() const {
+    if (!m_implementation)
+        return false;
+
     return m_implementation->error;
 }
 
 int AbcModel::errorLine() const {
+    if (!m_implementation)
+        return 0;
     return m_implementation->error_line;
 }
 
 int AbcModel::errorChar() const {
+    if (!m_implementation)
+        return 0;
     return m_implementation->error_char;
 }
 

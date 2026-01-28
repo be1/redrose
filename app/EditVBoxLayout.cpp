@@ -67,7 +67,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     connect(&abcplaintextedit, &QPlainTextEdit::selectionChanged, this, &EditVBoxLayout::onSelectionChanged);
     connect(&abcplaintextedit, &AbcPlainTextEdit::playableNote, this, &EditVBoxLayout::onPlayableNote);
     connect(&abcplaintextedit, &AbcPlainTextEdit::cursorPositionChanged, this, &EditVBoxLayout::onCursorPositionChanged);
-    connect(&abcplaintextedit, &AbcPlainTextEdit::modificationChanged, this, &EditVBoxLayout::onModificationChanged);
+    connect(&abcplaintextedit, &AbcPlainTextEdit::textChanged, this, &EditVBoxLayout::onTextChanged);
     connect(&abcplaintextedit, &AbcPlainTextEdit::plainTextSet, this, &EditVBoxLayout::onTextLoaded);
     connect(&xspinbox, QOverload<int>::of(&QSpinBox::valueChanged), this, &EditVBoxLayout::onXChanged);
     connect(&playpushbutton, &QPushButton::clicked, this, &EditVBoxLayout::onPlayClicked);
@@ -648,8 +648,8 @@ void EditVBoxLayout::onSelectionChanged()
     }
 }
 
-void EditVBoxLayout::onModificationChanged(bool yup) {
-    qDebug() << "modification changed";
+void EditVBoxLayout::onTextChanged() {
+    qDebug() << "text changed";
     m_invalidate_model = true;
 }
 
