@@ -10,11 +10,11 @@ AbcModel::~AbcModel() {
     }
 
     if (m_voice_events) {
-        abc_release_voice (m_voice_events);
+        abc_release_voice(m_voice_events);
     }
 
     if (m_implementation) {
-        abc_release_yy (m_implementation);
+        abc_release_yy(m_implementation);
     }
 }
 
@@ -56,6 +56,11 @@ bool AbcModel::selectTuneNo(int no) {
         qDebug() << "tune not found" << no;
         return false;
     }
+
+    /* generate *border effects* on tune state
+     * due to *first* voice specific instructions, if any. */
+    struct abc_voice* first_voice = abc_make_events_for_voice (tune, 0);
+    abc_release_voice(first_voice);
 
     m_tune_no = no;
     return true;
