@@ -50,6 +50,7 @@ struct abc_tune {
     long coda_measure; /* measure number of the coda symbol */
     long dacoda_measure; /* !dacoda! was met at the end of this measure number */
     long dacapo_measure; /* measure nr. where !dacapo! has been met */
+    long fine_measure; /* measure number of the fine symbol */
 
     char lbc; /* linebreak char (usually '$') */
 };
