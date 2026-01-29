@@ -54,7 +54,6 @@ bool AbcModel::selectTuneNo(int no) {
     abc_tune* tune = tuneOfModel(no);
 
     if (!tune) {
-        qDebug() << "tune not found" << no;
         return false;
     }
 
@@ -72,7 +71,6 @@ bool AbcModel::selectTuneNo(int no) {
 bool AbcModel::selectVoiceNo(int tune_no, int no)
 {
     if (tune_no == m_tune_no && no == m_voice_no) {
-        qDebug() << "already selected";
         return true;
     }
 
@@ -82,7 +80,6 @@ bool AbcModel::selectVoiceNo(int tune_no, int no)
     }
 
     if (!selectTuneNo(tune_no)) {
-        qDebug() << "cannot select tune" << tune_no;
         return false;
     }
 
@@ -100,7 +97,6 @@ bool AbcModel::selectVoiceNo(int tune_no, int no)
         m_voice_events = nullptr;
     }
 
-    qDebug() << "making events list for voice" << no;
     m_voice_events = abc_make_events_for_voice(tune, no -1);
     m_voice_no = no;
 
@@ -141,7 +137,6 @@ int AbcModel::charIndexFromMidiTick(long tick) const
 long AbcModel::midiTickFromCharIndex(int uidx) const
 {
     if (!m_voice_events || !m_charmap) {
-        qDebug() << m_voice_events << m_charmap;
         return -1;
     }
 
@@ -187,7 +182,7 @@ abc *AbcModel::implementation() const {
 
 abc_tune *AbcModel::tuneOfModel(int tune) const {
     if (!m_implementation) {
-        qDebug() << "no implementation. probably while file load (cursor pos change).";
+        qDebug() << "no implementation yet.";
         return nullptr;
     }
 #if 0

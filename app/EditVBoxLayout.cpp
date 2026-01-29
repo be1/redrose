@@ -183,7 +183,6 @@ void EditVBoxLayout::onCursorPositionChanged()
     }
 
     int v = xvOfCursor('V', tc);
-    qDebug() << __func__ << "tune" << x << "voice" << v;
     m_model.selectVoiceNo(x, v);
 
     /* follow mouse click or kbd arrows */
@@ -655,20 +654,18 @@ void EditVBoxLayout::onTextChanged() {
 
 void EditVBoxLayout::onTextLoaded()
 {
-#if 0
+#if 1
     Settings settings;
     bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
 
     QString tunetext = abcplaintextedit.toPlainText();
-    //qDebug() << "tune string is size:" << tunetext.size();
+    qDebug() << "tune string is size:" << tunetext.size();
     m_model.fromAbcBuffer(tunetext.toUtf8(), follow);
-    m_invalidate_model = false;
+    m_invalidate_model = true; /* will regenerate on first MIDI playabck */
 
     int v = xvOfCursor('V', abcplaintextedit.textCursor());
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
         qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
-#else
-    /* DO NOT RUN the CODE ABOVE since it makes model valid *before* first MIDI file generation */
 #endif
 }
 
