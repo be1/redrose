@@ -97,6 +97,7 @@ private:
     QString selection;
     int selectionIndex;
 
+    bool m_autoplay = false;
     bool m_invalidate_model = true;
     AbcModel m_model;
     AbcSynth* synth;

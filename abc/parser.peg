@@ -45,11 +45,12 @@ static void gen_error(struct abc* auxil) {
 TuneBook <- Ignored* Tune TuneBook
 	/ EOF
 
-Ignored <- Ps
+Ignored <- < "%abc" (!EOL .)* >
+	/ Ps
 	/ Text
 	/ Svg
-	/ Comment EOL
-	/ EOL
+	/ EarlyComment EOL
+	/ EOL { abc_ignored_append(auxil, $0s, $0e); }
 
 Ps <- BeginPs (!EndPs .)* EndPs
 BeginPs <- "%%beginps" (!EOL .)* EOL
@@ -63,12 +64,12 @@ Svg <- BeginSvg (!EndSvg .)* EndSvg
 BeginSvg <- "%%beginsvg" (!EOL .)* EOL
 EndSvg <- "%%endsvg" EOL
 
-Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (Comment EOL)* Score (Words EOL?)*
+Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (TuneComment EOL)* Score (Words EOL?)*
 
 Words <- "W:" [ \t]* (!EOL .)*
 
 Header <- Oheader
-	/ Comment
+	/ TuneComment
 
 Xheader <- "X:" [ \t]* Xvalue
 
@@ -89,10 +90,10 @@ Score <- Vheader EOL FragmentLine+ Score*
 	/ FragmentLine+
 
 FragmentLine <- "%%" MidiInstruction (EOL / EOF)
-	/ Comment (EOL / EOF)
+	/ TuneComment (EOL / EOF)
 	/ Change (EOL / EOF)
 	/ "w:" Lyrics* (EOL / EOF)
-	/ Fragment+ (LineCont? Comment? EOL / LineBreak)?
+	/ Fragment+ (LineCont? TuneComment? EOL / LineBreak)?
 
 Fragment <- _ / "y"
 	/ InlineChange
@@ -110,7 +111,7 @@ Fragment <- _ / "y"
 	/ Bar SimpleAlter
 	/ Bar
 	/ Alternative
-	/ Comment
+	/ TuneComment
 
 InlineChange <- "[" Change "]"
 Change <- KeySig / Unit / TimeSig / Tempo / Part
@@ -121,9 +122,13 @@ TimeSig <- < "M:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 Part <- < "P:" [ \t]* (!EOL [^\]])+ > #ignore
 Tempo <- < "Q:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 
-Special <- "MIDI" / "beginps" / "endps" / "begintext" / "endtext" / "beginsvg" / "endsvg"
+Special <- "beginps" / "endps" / "begintext" / "endtext" / "beginsvg" / "endsvg"
+
+TuneComment <- Comment { abc_comment_append(auxil, $0s, $0e); }
+EarlyComment <- Comment
 
 Comment <- "%" !"%" (!EOL .)*
+	/ "%%" !"MIDI" (!EOL .)*
 	/ "%%" !Special (!EOL .)*
 
 Vheader <- "V:" [ \t]* Vvalue
@@ -179,7 +184,7 @@ NoteDuration <- < [0-9]*"/" > { abc_duration_num_set(auxil, $0); } < [1-9][0-9]*
 	/ < [0-9]+ > { abc_duration_num_set(auxil, $0); }
 	/ < "/"+ > { abc_duration_den_set(auxil, $0); }
 
-Note <- < ([_=^]*[A-Ga-g][,']* / [XxZz]) > { abc_note_append(auxil, $0, $0s); }
+Note <- < ([_=^]*[A-Ga-g][,']* / [XxZz]) > { abc_note_append(auxil, $0, $0s, $0e); }
 
 EOL <- "\r\n" / "\r" / "\n"
 

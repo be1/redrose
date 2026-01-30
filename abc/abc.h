@@ -14,6 +14,11 @@ struct abc_buffer {
     int index;
 };
 
+struct abc_ignored {
+	int start_pos;
+	int end_pos;
+};
+
 struct abc {
     struct abc_tune** tunes;
     int count;
@@ -30,6 +35,8 @@ struct abc {
     char* ul; /* first unit length */
     char* mm; /* first measure metric */
     char* qq; /* first measure tempo */
+
+    struct abc_ignored** ignored; /* NULL-terminated array of pairs of char indexes */
 };
 
 struct abc_header {
@@ -46,11 +53,13 @@ struct abc_tune {
     struct abc_voice** voices;
     int count;
 
+    struct abc_ignored** comments; /* NULL-terminated array of pairs of char indexes */
+
     /* stateful (WARNING!) variables */
-    long coda_measure; /* measure number of the coda symbol */
+    long coda_measure; /* measure number of the !coda! symbol */
     long dacoda_measure; /* !dacoda! was met at the end of this measure number */
     long dacapo_measure; /* measure nr. where !dacapo! has been met */
-    long fine_measure; /* measure number of the fine symbol */
+    long fine_measure; /* measure number of the !fine! symbol */
 
     char lbc; /* linebreak char (usually '$') */
 };
@@ -92,7 +101,8 @@ struct abc_symbol {
     long dur_den;
     long measure; /* measure nr. */
     int index; /* symbol index in all parsed symbols of voice */
-    int cidx; /* symbol's character index in buffer */
+    int start_pos; /* symbol's fisrt character index in buffer */
+    int end_pos; /* symbol's last character index in buffer */
     struct abc_event ev;
 
     int in_alt;
@@ -102,6 +112,10 @@ struct abc_symbol {
     struct abc_symbol* next;
     struct abc_symbol* prev;
 };
+
+void abc_ignored_append(struct abc* yy, int start, int end);
+
+void abc_comment_append(struct abc* yy, int start, int end);
 
 void abc_tune_append(struct abc* yy, const char* yytext);
 
@@ -127,7 +141,7 @@ void abc_eol_append(struct abc* yy, const char* yytext);
 
 void abc_space_append(struct abc* yy, const char* yytext);
 
-void abc_note_append(struct abc* yy, const char* yytext, int pos);
+void abc_note_append(struct abc* yy, const char* yytext, int start_pos, int end_pos);
 
 void abc_frac_add(long* num, long* den, long from_num, long from_den);
 

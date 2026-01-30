@@ -122,7 +122,7 @@ int AbcModel::charIndexFromMidiTick(long tick) const
         if (note_tick >= 0 && note_tick <= tick) {
             if (m_charmap) {
                 //qDebug() << note_tick << tick << s->cidx << m_charmap[s->cidx];
-                return m_charmap[s->cidx];
+                return m_charmap[s->end_pos];
             }
             else
                 return -1; /* tell idx is invalid anyway */
@@ -143,9 +143,25 @@ long AbcModel::midiTickFromCharIndex(int uidx) const
     int cidx = searchIdx(m_charmap, m_buffer.size(), uidx);
 
     for (struct abc_symbol* s = m_voice_events->first; s; s = s->next) {
-        if (s->cidx == cidx) {
+        if (s->start_pos + 1 == cidx) {
             long tick = DPQN * 4 * s->ev.start_num / s->ev.start_den;
             return tick;
+        }
+    }
+
+    return -1;
+}
+
+int AbcModel::midiKeyFromCharIndex(int uidx) const {
+    if (!m_voice_events || !m_charmap) {
+        return -1;
+    }
+
+    int cidx = searchIdx(m_charmap, m_buffer.size(), uidx);
+
+    for (struct abc_symbol* s = m_voice_events->first; s; s = s->next) {
+        if (s->start_pos +1 == cidx) {
+            return s->ev.key;
         }
     }
 
@@ -248,3 +264,57 @@ int AbcModel::searchIdx(int* ordered, int siz, int needle) const
 #endif
     return -1;
 }
+
+#if 0 //TOO SLOW
+int AbcModel::xvFromCharIndex(char XorV, int uidx) const
+{
+    if (XorV != 'x' && XorV != 'X' && XorV != 'v' && XorV != 'V')
+        return -1;
+
+    if (!m_implementation || !m_charmap) {
+        return -1;
+    }
+
+    int cidx = searchIdx(m_charmap, m_buffer.size(), uidx);
+
+    for (int t = 0; t < m_implementation->count; t++) {
+        /* check in comments */
+        struct abc_tune* tune = m_implementation->tunes[t];
+        for (int c = 0; tune->comments[c]; c++) {
+            if (tune->comments[c]->start_pos <= cidx && tune->comments[c]->end_pos >= cidx) {
+                bool ok = false;
+                if (XorV == 'x' || XorV == 'X') {
+                    qDebug() << __func__ << tune->x;
+                    return tune->x;
+                } else if (XorV == 'v' || XorV == 'V') {
+                    // FIXME
+                    return 1;
+                }
+            }
+        }
+        /* check in notes */
+        for (int v = 0; v < m_implementation->tunes[t]->count; v++) {
+            struct abc_voice* voice = abc_make_events_for_voice (m_implementation->tunes[t], v);
+            for (struct abc_symbol* s = voice->first; s; s = s->next) {
+                if (s->start_pos <= cidx && s->end_pos >= cidx) {
+                    bool ok = false;
+                    if (XorV == 'x' || XorV == 'X') {
+                        qDebug() << __func__ << s->voice->tune->x;
+                        return s->voice->tune->x;
+                    } else if (XorV == 'v' || XorV == 'V') {
+                        int v = QString(s->voice->v).toInt(&ok);
+                        if (ok)
+                            return v;
+                        qDebug() << "cannot parse V header";
+                        return -1;
+                    }
+                }
+            }
+        }
+    }
+
+    return -1;
+}
+#endif
+
+// vim:ts=4:sw=4:et

@@ -14,7 +14,6 @@
 #ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
 #endif
-
 const int MAXTUNES = 9999;
 
 const QRegularExpression EditVBoxLayout::m_abcext(QStringLiteral("\\.abc$"));
@@ -81,6 +80,11 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     connect(synth, &AbcSynth::synthFinished, this, &EditVBoxLayout::onSynthFinished);
     connect(synth, &AbcSynth::tickChanged, this, &EditVBoxLayout::onSynthTickChanged);
     playpushbutton.setEnabled(false);
+
+    Settings settings;
+    if (settings.value(EDITOR_AUTOPLAY).toBool()) {
+        m_autoplay = true;
+    }
 }
 
 EditVBoxLayout::~EditVBoxLayout()
@@ -167,7 +171,12 @@ void EditVBoxLayout::onCursorPositionChanged()
 {
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
+
+#ifndef XV_MODEL_VERSION
     int x = xvOfCursor('X', tc);
+#else
+    int x = m_model.xvFromCharIndex('X', tc.position());
+#endif
 
     /* reset things only if cursor goes a different tune */
     if (xspinbox.value() != x) {
@@ -192,13 +201,23 @@ void EditVBoxLayout::onCursorPositionChanged()
         synth->seek(tick);
         positionslider.setValue(tick);
     }
+
+    /* check if we can fire a note */
+    if (!synth->isPlaying() && m_autoplay) {
+	int key = m_model.midiKeyFromCharIndex(tc.position());
+	if (key > 0)
+		synth->fire(0, 0, key, 80);
+    }
 }
 
 void EditVBoxLayout::onXChanged(int value)
 {
     QTextCursor tc = abcplaintextedit.textCursor();
+#ifndef XV_MODEL_VERSION
     int prevX = xvOfCursor('X', tc);
-
+#else
+    int prevX = m_model.xvFromCharIndex('X', tc.position());
+#endif
     QSignalBlocker blocker(xspinbox);
     bool found = true;
     /* seek view to X */
@@ -654,7 +673,6 @@ void EditVBoxLayout::onTextChanged() {
 
 void EditVBoxLayout::onTextLoaded()
 {
-#if 1
     Settings settings;
     bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
 
@@ -666,7 +684,6 @@ void EditVBoxLayout::onTextLoaded()
     int v = xvOfCursor('V', abcplaintextedit.textCursor());
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
         qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
-#endif
 }
 
 void EditVBoxLayout::onPlayableNote(const QString &note)
@@ -736,3 +753,5 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
     runpushbutton.setEnabled(true);
     generating = false;
 }
+
+// vim:sw=4:ts=4:et

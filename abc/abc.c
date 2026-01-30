@@ -470,6 +470,7 @@ struct abc_symbol* abc_chord_rewind(struct abc_symbol* s) {
 void abc_tune_append(struct abc* yy, const char* yytext)
 {
     struct abc_tune* new = calloc(1, sizeof (struct abc_tune));
+    new->comments = calloc(1, sizeof (*new->comments));
     new->x = atoi(yytext);
     abc_tune_reset(new);
     new->lbc = '\n';
@@ -478,6 +479,7 @@ void abc_tune_append(struct abc* yy, const char* yytext)
     yy->tunes[yy->count] = new;
     yy->count++;
 }
+
 void abc_tune_reset(struct abc_tune* tune) {
     tune->dacoda_measure = tune->coda_measure = tune->dacapo_measure = tune->fine_measure = -1;
 }
@@ -560,7 +562,8 @@ struct abc_symbol* abc_last_symbol(struct abc* yy)
 
 void abc_symbol_initialize(struct abc_symbol* s)
 {
-    s->cidx = -1;
+    s->start_pos = -1;
+    s->end_pos = -1;
     s->dur_den = 1;
     s->ev.start_num = -1;
     s->ev.start_den = 1;
@@ -672,7 +675,7 @@ void abc_space_append(struct abc* yy, const char* yytext)
     new->text = strdup(yytext);
 }
 
-void abc_note_append(struct abc* yy, const char* yytext, int pos)
+void abc_note_append(struct abc* yy, const char* yytext, int start_pos, int end_pos)
 {
     struct abc_symbol* new = abc_new_symbol(yy);
     struct abc_tune* cur_tune = yy->tunes[yy->count-1];
@@ -690,7 +693,8 @@ void abc_note_append(struct abc* yy, const char* yytext, int pos)
         new->dur_num = abc_unit_per_measure(cur_voice->ul, cur_voice->mm);
     }
 
-    new->cidx = pos;
+    new->start_pos = start_pos;
+    new->end_pos = end_pos;
 }
 
 void abc_chordpunct_set(struct abc* yy, const char* yytext)
@@ -1096,10 +1100,41 @@ void abc_change_append(struct abc* yy, const char* yytext)
     }
 }
 
+void abc_ignored_append(struct abc* yy, int start, int end)
+{
+    int i = 0;
+    while (yy->ignored[i++]);
+
+    yy->ignored = realloc(yy->ignored, sizeof (*yy->ignored) * (i + 1));
+    yy->ignored[i] = NULL;
+
+    struct abc_ignored* ign = calloc(1, sizeof (*ign));
+    ign->start_pos = start;
+    ign->end_pos = end;
+    yy->ignored[i-1] = ign; /* i is reserved fot the NULL terminator */
+}
+
+void abc_comment_append(struct abc* yy, int start, int end)
+{
+    struct abc_tune* tune = yy->tunes[yy->count-1];
+
+    int i = 0;
+    while (tune->comments[i++]);
+
+    tune->comments = realloc(tune->comments, sizeof (struct abc_ignored*) * (i + 1));
+    tune->comments[i] = NULL;
+
+    struct abc_ignored* ign = calloc(1, sizeof (*ign));
+    ign->start_pos = start;
+    ign->end_pos = end;
+    tune->comments[i-1] = ign; /* i is reserved for the NULL terminator */
+}
+
 struct abc* abc_alloc_yy(void)
 {
 
     struct abc* yy = calloc(1, sizeof (*yy));
+    yy->ignored = calloc(1, sizeof (*yy->ignored)); /* NULL termination */
     yy->buffer = calloc(1, sizeof (*yy->buffer));
     return yy;
 }
@@ -1111,6 +1146,13 @@ void abc_release_yy(struct abc* yy)
 
     for (int i = 0; i < yy->count; i++) {
         struct abc_tune* t = yy->tunes[i];
+
+        for (int c = 0; t->comments[c]; c++) {
+            free(t->comments[c]);
+        }
+
+        free(t->comments);
+
         struct abc_header* h = t->headers;
         while (h) {
             struct abc_header* hn = h->next;
@@ -1129,6 +1171,12 @@ void abc_release_yy(struct abc* yy)
     }
 
     free(yy->tunes);
+
+    for (int i = 0; yy->ignored[i]; i++) {
+        free(yy->ignored[i]);
+    }
+
+    free(yy->ignored);
     free(yy);
 }
 
