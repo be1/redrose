@@ -16,7 +16,7 @@ public:
     ViewVSplitter *viewWidget();
 
 private:
-	EditTabWidget edittabwidget;
+    EditTabWidget edittabwidget;
     ViewVSplitter viewwidget;
 };
 #endif

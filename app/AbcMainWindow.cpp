@@ -2,12 +2,12 @@
 #include "AbcApplication.h"
 
 AbcMainWindow::AbcMainWindow(QWidget* parent)
-	: QMainWindow(parent)
+    : QMainWindow(parent)
 {
-	setWindowTitle(tr("Redrose"));
+    setWindowTitle(tr("Redrose"));
     menuBar()->addMenu(&scoremenu);
     menuBar()->addMenu(&navmenu);
-	menuBar()->addMenu(&preferencesmenu);
+    menuBar()->addMenu(&preferencesmenu);
     menuBar()->addMenu(&helpmenu);
     setCentralWidget(&mainhsplitter);
     statusBar()->show();
@@ -53,44 +53,34 @@ void AbcMainWindow::keyPressEvent(QKeyEvent *event) {
     ViewVSplitter* vvs = mainHSplitter()->viewWidget();
 
     switch (event->key()) {
-    case Qt::Key_Home: {
-        emit ew->editVBoxLayout()->positionSlider()->sliderMoved(0);
-        emit vvs->gotoPage(1);
-        event->accept();
-        break;
-    }
-    case Qt::Key_End: {
-        long max = ew->editVBoxLayout()->positionSlider()->maximum();
-        emit ew->editVBoxLayout()->positionSlider()->sliderMoved(max);
-        vvs->gotoPage(vvs->lastPage());
-        event->accept();
-        break;
-    }
-    case Qt::Key_Plus: {
-        if (vvs->currentPage() < vvs->lastPage()) {
-            vvs->turnPage(1);
-            event->accept();
-        }
-        break;
-    }
-    case Qt::Key_Minus: {
-        if (vvs->currentPage() > 1) {
-            vvs->turnPage(-1);
-            event->accept();
-        }
-        break;
-    }
-    case Qt::Key_Space: {
-        emit ew->editVBoxLayout()->playPushButton()->clicked();
-        event->accept();
-        break;
-    }
-    case Qt::Key_Return: {
-        emit ew->editVBoxLayout()->runPushButton()->clicked();
-        event->accept();
-        break;
-    }
-    default:
-        QMainWindow::keyPressEvent(event);
+        case Qt::Key_Home: {
+                               emit ew->editVBoxLayout()->positionSlider()->sliderMoved(0);
+                               emit vvs->gotoPage(1);
+                               event->accept();
+                               break;
+                           }
+
+        case Qt::Key_End: {
+                              long max = ew->editVBoxLayout()->positionSlider()->maximum();
+                              emit ew->editVBoxLayout()->positionSlider()->sliderMoved(max);
+                              vvs->gotoPage(vvs->lastPage());
+                              event->accept();
+                              break;
+                          }
+
+        case Qt::Key_Space: {
+                                emit ew->editVBoxLayout()->playPushButton()->clicked();
+                                event->accept();
+                                break;
+                            }
+        case Qt::Key_Return: {
+                                 emit ew->editVBoxLayout()->runPushButton()->clicked();
+                                 event->accept();
+                                 break;
+                             }
+        default:
+                             QMainWindow::keyPressEvent(event);
     }
 }
+
+// vim::ts=4:sw=4:et
