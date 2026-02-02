@@ -1068,6 +1068,11 @@ void abc_delete_symbols(struct abc_symbol* s) {
 
 void abc_change_append(struct abc* yy, const char* yytext)
 {
+    /* do not report false positive K change */
+    if(strcmp(&yytext[2], " clef")) {
+        return;
+    }
+
     struct abc_symbol* new = abc_new_symbol(yy);
     struct abc_tune* cur_tune = yy->tunes[yy->count-1];
     struct abc_voice* cur_voice = cur_tune->voices[cur_tune->count-1];
