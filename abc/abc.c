@@ -961,11 +961,15 @@ int abc_is_endbar(const struct abc_symbol* s) {
 }
 
 int abc_is_start(const struct abc_symbol* s) {
-    return (strstr(s->text, "|:") != NULL);
+    if (s->kind == ABC_BAR)
+        return (strstr(s->text, "|:") != NULL);
+    return 0;
 }
 
 int abc_is_repeat(const struct abc_symbol* s) {
-    return (strstr(s->text, ":|") != NULL);
+    if (s->kind == ABC_BAR)
+        return (strstr(s->text, ":|") != NULL || strstr(s->text, "::"));
+    return 0;
 }
 
 void abc_bar_append(struct abc* yy, const char* yytext)
