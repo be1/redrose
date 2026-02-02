@@ -668,7 +668,16 @@ void EditVBoxLayout::onSelectionChanged()
 
 void EditVBoxLayout::onTextChanged() {
     qDebug() << "text changed";
-    m_invalidate_model = true;
+    m_invalidate_model = true; /* for now MIDI generator needs it */
+
+    Settings settings;
+    QString tosave = abcplaintextedit.toPlainText();
+
+    /* we only can follow full tune. disable mapping on partial selection */
+    bool follow = settings.value(EDITOR_FOLLOW).toBool();
+
+    /* refresh model */
+    m_model.fromAbcBuffer(tosave.toUtf8(), follow);
 }
 
 void EditVBoxLayout::onTextLoaded()
