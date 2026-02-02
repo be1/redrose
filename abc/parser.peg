@@ -86,8 +86,10 @@ Oheader <- Iheader
 
 VoiceDef <- "V:" (!EOL .)+
 
-Score <- Vheader EOL FragmentLine+ Score*
-	/ FragmentLine+
+Score <- Vheader EOL FragmentLine Score
+	/ FragmentLine Score
+	/ EOL
+	/ EOF
 
 FragmentLine <- "%%" MidiInstruction (EOL / EOF)
 	/ TuneComment (EOL / EOF)

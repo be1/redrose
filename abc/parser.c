@@ -1647,7 +1647,7 @@ static void pcc_action_Chord_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pcc_
 #define pcc_capture__1 pcc_ref_leaf_capture_(pcc_ctx, pcc_in, 0)
 #define pcc_capture__1s pcc_ref_leaf_capture_s_(pcc_ctx, pcc_in, 0)
 #define pcc_capture__1e pcc_ref_leaf_capture_e_(pcc_ctx, pcc_in, 0)
-    abc_chord_append(auxil, pcc_capture__0);
+    abc_chord_append(auxil, "[");
 #undef pcc_capture__1e
 #undef pcc_capture__1s
 #undef pcc_capture__1
@@ -1670,7 +1670,7 @@ static void pcc_action_Chord_1(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pcc_
 #define pcc_capture__2 pcc_ref_leaf_capture_(pcc_ctx, pcc_in, 1)
 #define pcc_capture__2s pcc_ref_leaf_capture_s_(pcc_ctx, pcc_in, 1)
 #define pcc_capture__2e pcc_ref_leaf_capture_e_(pcc_ctx, pcc_in, 1)
-    abc_chord_append(auxil, pcc_capture__2);
+    abc_chord_append(auxil, "]");
 #undef pcc_capture__2e
 #undef pcc_capture__2s
 #undef pcc_capture__2
@@ -3624,65 +3624,24 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Score(pcc_context_t *ctx) {
         const size_t n = chunk->thunks.n;
         if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Vheader, &(chunk->thunks), NULL)) goto L0002;
         if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0002;
-        {
-            const size_t p0 = ctx->cur;
-            const size_t n0 = chunk->thunks.n;
-            int i;
-            for (i = 0;; i++) {
-                const size_t p = ctx->cur;
-                const size_t n = chunk->thunks.n;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_FragmentLine, &(chunk->thunks), NULL)) goto L0003;
-                if (ctx->cur == p) break;
-                continue;
-            L0003:;
-                ctx->cur = p;
-                pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-                break;
-            }
-            if (i < 1) {
-                ctx->cur = p0;
-                pcc_thunk_array__revert(ctx, &(chunk->thunks), n0);
-                goto L0002;
-            }
-        }
-        {
-            for (;;) {
-                const size_t p = ctx->cur;
-                const size_t n = chunk->thunks.n;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Score, &(chunk->thunks), NULL)) goto L0004;
-                if (ctx->cur == p) break;
-                continue;
-            L0004:;
-                ctx->cur = p;
-                pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-                break;
-            }
-        }
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_FragmentLine, &(chunk->thunks), NULL)) goto L0002;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Score, &(chunk->thunks), NULL)) goto L0002;
         goto L0001;
     L0002:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-        {
-            const size_t p0 = ctx->cur;
-            const size_t n0 = chunk->thunks.n;
-            int i;
-            for (i = 0;; i++) {
-                const size_t p = ctx->cur;
-                const size_t n = chunk->thunks.n;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_FragmentLine, &(chunk->thunks), NULL)) goto L0006;
-                if (ctx->cur == p) break;
-                continue;
-            L0006:;
-                ctx->cur = p;
-                pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-                break;
-            }
-            if (i < 1) {
-                ctx->cur = p0;
-                pcc_thunk_array__revert(ctx, &(chunk->thunks), n0);
-                goto L0005;
-            }
-        }
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_FragmentLine, &(chunk->thunks), NULL)) goto L0003;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Score, &(chunk->thunks), NULL)) goto L0003;
+        goto L0001;
+    L0003:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0004;
+        goto L0001;
+    L0004:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOF, &(chunk->thunks), NULL)) goto L0005;
         goto L0001;
     L0005:;
         ctx->cur = p;
@@ -5637,11 +5596,16 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Chord(pcc_context_t *ctx) {
     {
         const size_t p = ctx->cur;
         size_t q;
-        if (
-            pcc_refill_buffer(ctx, 1) < 1 ||
-            ctx->buffer.p[ctx->cur] != '['
-        ) goto L0000;
-        ctx->cur++;
+        {
+            int u;
+            const size_t n = pcc_get_char_as_utf32(ctx, &u);
+            if (n == 0) goto L0000;
+            if (!(
+                u == 0x00002b ||
+                u == 0x00005b
+            )) goto L0000;
+            ctx->cur += n;
+        }
         q = ctx->cur;
         chunk->capts.p[0].range.start = p;
         chunk->capts.p[0].range.end = q;
@@ -5679,11 +5643,16 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Chord(pcc_context_t *ctx) {
     {
         const size_t p = ctx->cur;
         size_t q;
-        if (
-            pcc_refill_buffer(ctx, 1) < 1 ||
-            ctx->buffer.p[ctx->cur] != ']'
-        ) goto L0000;
-        ctx->cur++;
+        {
+            int u;
+            const size_t n = pcc_get_char_as_utf32(ctx, &u);
+            if (n == 0) goto L0000;
+            if (!(
+                u == 0x00002b ||
+                u == 0x00005d
+            )) goto L0000;
+            ctx->cur += n;
+        }
         q = ctx->cur;
         chunk->capts.p[1].range.start = p;
         chunk->capts.p[1].range.end = q;
