@@ -149,7 +149,7 @@ Tie <- < "-" > { abc_tie_append(auxil, $0); }
 
 Grace <- < "{/" / "{" > { abc_grace_append(auxil, $0); } NoteConstruct+ < "}" > { abc_grace_append(auxil, $2); }
 
-Chord <- < "[" > { abc_chord_append(auxil, $0); } NoteConstruct+ < "]" > { abc_chord_append(auxil, $2); } ChordDuration?
+Chord <- < [\+\[] > { abc_chord_append(auxil, "["); } NoteConstruct+ < [\+\]] > { abc_chord_append(auxil, "]"); } ChordDuration?
 
 _ <- < [ \t] > { abc_space_append(auxil, $0); }
 
