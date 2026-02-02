@@ -1,5 +1,6 @@
 #include "abcmodel.h"
 #include <QDebug>
+#include <QElapsedTimer>
 #include "abc.h"
 
 AbcModel::AbcModel() {}
@@ -19,29 +20,37 @@ AbcModel::~AbcModel() {
 }
 
 bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
+    QElapsedTimer et;
+    et.start();
     if (m_implementation)
         abc_release_yy(m_implementation);
-
+    qDebug() << "abc_release_yy" << et.elapsed() << "ms";
     m_tune_no = 0;
     m_voice_no = 0;
 
     m_buffer = ba;
+    et.start();
     m_implementation = abc_parse_buffer(ba.constData(), ba.size());
+    qDebug() << "abc_parse_buffer" << et.elapsed() << "ms";
+
     if (m_implementation->error) {
         qWarning() << __func__ << "Parser Error: will break playback follower";
         return false;
     }
 
-    if (with_charmap)
+    if (with_charmap) {
+        et.start();
         createCharMapping();
-    else {
+        qDebug() << "createCharMapping" << et.elapsed() << "ms";
+    } else {
         delete[] m_charmap;
         m_charmap = nullptr;
     }
 
     /* force tune state initialization */
+    et.start();
     selectTuneNo(1);
-
+    qDebug() << "selectTuneNo (make_voice_events)" << et.elapsed() << "ms";
     return true;
 }
 
@@ -62,7 +71,8 @@ bool AbcModel::selectTuneNo(int no) {
     /* generate *border effects* on tune yy->tunes[no -1] state
      * due to *first* voice specific instructions, if any. */
     struct abc_voice* first_voice = abc_make_events_for_voice (tune, 0);
-    abc_release_voice(first_voice);
+    if (first_voice)
+        abc_release_voice(first_voice);
 
     m_tune_no = no;
     return true;
