@@ -451,7 +451,7 @@ QString AbcPlainTextEdit::getLastMidiProgramChange() const
 
 bool AbcPlainTextEdit::gotoX(int x)
 {
-    QRegularExpression re("^X:[ \t]*" + QString::number(x) + "[ \t]*$");
+    QRegularExpression re("^X:[ \\t]*" + QString::number(x) + "[ \\t]*$");
     QTextCursor tc = document()->find(re);
     if (tc.isNull())
         return false;
@@ -468,12 +468,13 @@ int AbcPlainTextEdit::lastX()
 {
     QRegularExpression re("^X:[ \\t]*([\\d]+)[ \\t]*$", QRegularExpression::PatternOption::MultilineOption);
     QRegularExpressionMatchIterator matches = re.globalMatch(toPlainText());
-    int val = 0;
-    /* crawl until last X's value */
-    for (QRegularExpressionMatch m : matches) {
-        val = m.captured(1).toInt();
-    }
-    return val;
+    QStringList m = match.capturedTexts();
+    bool ok;
+    int val;
+    val = m.captured(m.size() -1).toInt(&ok);
+    if (ok)
+        return val;
+    return 0;
 }
 
 bool AbcPlainTextEdit::cursorIsInFragmentLine()
@@ -592,7 +593,7 @@ int AbcPlainTextEdit::currentXV(char xv)
         return 1; /* X or V are 1 */
 
     if (xv == 'X') {
-        QRegularExpression re("^X:[ \t]*(\\d*)");
+        QRegularExpression re("^X:[ \\t]*(\\d*)");
         QString x = matchUnderCursor(xtc, re);
         bool ok;
         int ret = x.toInt(&ok);
@@ -605,7 +606,7 @@ int AbcPlainTextEdit::currentXV(char xv)
     /* V header lookup */
     QTextCursor vtc = document()->find(QRegularExpression("^V:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
     if (vtc.position() > xtc.position()) {
-        QRegularExpression re("^V:[ \t]*(\\d*)");
+        QRegularExpression re("^V:[ \\t]*(\\d*)");
         QString v = matchUnderCursor(vtc, re);
         bool ok;
         int ret = v.toInt(&ok);
@@ -1033,3 +1034,5 @@ QAbstractItemModel *AbcPlainTextEdit::modelFromFile(const QString& fileName)
 #endif
     return new QStringListModel(words, c);
 }
+
+// vim:ts=4:sw=4:et
