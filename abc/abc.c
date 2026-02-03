@@ -4,6 +4,7 @@
 #include <stdio.h>  /* asprintf */
 #include <string.h>
 #include <math.h>   /* pow */
+#include <regex.h>   /* reg* */
 #include "abc.h"
 #include "parser.h"
 
@@ -1070,10 +1071,33 @@ void abc_delete_symbols(struct abc_symbol* s) {
     }
 }
 
+static int regmatch(const char* regex, const char* string)
+{
+    regex_t *re;
+    int m;
+
+    re = malloc(sizeof (regex_t));
+    if (regcomp(re, regex, REG_NOSUB|REG_EXTENDED) != 0) {
+        perror("regcomp");
+        free(re);
+        return(-1);
+    }
+
+    m = regexec(re, string, 0, 0, 0);
+    regfree(re);
+    free(re);
+
+    if (m == 0)
+        return 1;
+
+    return 0;
+}
+
+
 void abc_change_append(struct abc* yy, const char* yytext)
 {
     /* do not report false positive K change */
-    if(strcmp(&yytext[2], " clef")) {
+    if (regmatch("K: *clef", yytext)) {
         return;
     }
 
