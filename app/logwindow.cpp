@@ -3,6 +3,7 @@
 LogWindow::LogWindow(QWidget *parent)
     : QWidget(parent)
 {
+    setMinimumWidth(600);
     m_layout = new QVBoxLayout;
     m_textedit = new QTextEdit;
     m_clearbutton = new QPushButton;

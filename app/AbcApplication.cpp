@@ -56,6 +56,8 @@ AbcApplication::AbcApplication(int& argc, char **argv)
             delete_fluid_settings(fluid_settings);
         }
     }
+
+    logwindow = new LogWindow;
 }
 
 AbcApplication::~AbcApplication()
@@ -72,6 +74,8 @@ AbcApplication::~AbcApplication()
             pw_deinit();
         }
     }
+
+    delete logwindow;
 }
 
 void AbcApplication::setMainWindow(AbcMainWindow* w)
