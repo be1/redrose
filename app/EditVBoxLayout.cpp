@@ -10,7 +10,6 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QSignalBlocker>
-#include "settings.h"
 #ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
 #endif
@@ -81,7 +80,6 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     connect(synth, &AbcSynth::tickChanged, this, &EditVBoxLayout::onSynthTickChanged);
     playpushbutton.setEnabled(false);
 
-    Settings settings;
     if (settings.value(EDITOR_AUTOPLAY).toBool()) {
         m_autoplay = true;
     }
@@ -286,7 +284,6 @@ void EditVBoxLayout::onPlayClicked()
 }
 
 void EditVBoxLayout::exportMIDI(QString filename) {
-    Settings settings;
     QString tosave;
 
     /* what text to save */
@@ -313,11 +310,9 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         tosave += selection.replace(QChar::ParagraphSeparator, "\n");
     }
 
-    /* we only can follow full tune. disable mapping on partial selection */
-    bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
-
     /* refresh model */
-    if (m_model.fromAbcBuffer(tosave.toUtf8(), follow)) {
+    /* we only can follow full tune. disable mapping on partial selection */
+    if (m_model.fromAbcBuffer(tosave.toUtf8(), selection.isEmpty())) {
         m_invalidate_model = false;
     }
 
@@ -434,21 +429,17 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             if (!selection.isEmpty())
                 synth->m_tick = 0;
             else {
-                Settings settings;
                 long charidx = abcPlainTextEdit()->textCursor().position();
                 long tick = m_model.midiTickFromCharIndex(charidx);
-                /* if we follow, and position outside of music */
-                if (tick < 0 && settings.value(EDITOR_FOLLOW).toBool()) {
+                /* if we position is outside of music */
+                if (tick < 0) {
                     synth->m_tick = 0;
                 }
-
-                /* if we don't follow: let the tick as is */
             }
 
             synth->play(midifile);
 
             /* show cursor following playback */
-            // AARGH this triggers textChanged()!
             abcplaintextedit.setFocus(Qt::OtherFocusReason);
         }
     }
@@ -504,12 +495,14 @@ void EditVBoxLayout::onSynthTickChanged(int tick)
         positionslider.setMaximum(total);
 
     positionslider.setValue(tick);
-    int cidx = m_model.charIndexFromMidiTick(tick);
 
-    /* cidx < means invalid (not configured, no charmap, or tick is not in a note) */
-    if (cidx >= 0) {
-        QSignalBlocker blocker(abcplaintextedit);
-        abcplaintextedit.setTextCursorPosition(cidx);
+    bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
+    if (follow) {
+        int cidx = m_model.charIndexFromMidiTick(tick);
+        if (cidx >= 0) {
+            QSignalBlocker blocker(abcplaintextedit);
+            abcplaintextedit.setTextCursorPosition(cidx);
+        }
     }
 }
 
@@ -670,24 +663,17 @@ void EditVBoxLayout::onTextChanged() {
     qDebug() << "text changed";
     m_invalidate_model = true; /* for now MIDI generator needs it */
 
-    Settings settings;
-    QString tosave = abcplaintextedit.toPlainText();
-
-    /* we only can follow full tune. disable mapping on partial selection */
-    bool follow = settings.value(EDITOR_FOLLOW).toBool();
+    QString tunestext = abcplaintextedit.toPlainText();
 
     /* refresh model */
-    m_model.fromAbcBuffer(tosave.toUtf8(), follow);
+    m_model.fromAbcBuffer(tunestext.toUtf8(), selection.isEmpty());
 }
 
 void EditVBoxLayout::onTextLoaded()
 {
-    Settings settings;
-    bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
+    QString tunestext = abcplaintextedit.toPlainText();
 
-    QString tunetext = abcplaintextedit.toPlainText();
-    qDebug() << "tune string is size:" << tunetext.size();
-    m_model.fromAbcBuffer(tunetext.toUtf8(), follow);
+    m_model.fromAbcBuffer(tunestext.toUtf8(), selection.isEmpty());
     m_invalidate_model = true; /* will regenerate on first MIDI playabck */
 
     int v = xvOfCursor('V', abcplaintextedit.textCursor());

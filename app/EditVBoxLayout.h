@@ -9,6 +9,7 @@
 #include "abcsynth.h"
 #include "psgenerator.h"
 #include "midigenerator.h"
+#include "settings.h"
 #include "QProgressIndicator.h"
 #include <QVBoxLayout>
 #include <QSpinBox>
@@ -97,6 +98,7 @@ private:
     QString selection;
     int selectionIndex;
 
+    Settings settings;
     bool m_autoplay = false;
     bool m_invalidate_model = true;
     AbcModel m_model;
