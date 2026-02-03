@@ -121,8 +121,7 @@ int AbcModel::charIndexFromMidiTick(long tick) const
     }
 
     /* search back from last symbol to get latest match */
-    struct abc_symbol* s = m_voice_events->last;
-    for (; s; s = s->prev) {
+    for (struct abc_symbol* s = m_voice_events->last; s; s = s->prev) {
         if (s->kind != ABC_NOTE)
             continue;
 
@@ -144,7 +143,7 @@ int AbcModel::charIndexFromMidiTick(long tick) const
 }
 
 /* this takes the QChar index in the Document */
-long AbcModel::midiTickFromCharIndex(int uidx) const
+long AbcModel::midiTickFromCharIndex(int uidx, bool exact) const
 {
     if (!m_voice_events || !m_charmap) {
         return -1;
@@ -153,8 +152,15 @@ long AbcModel::midiTickFromCharIndex(int uidx) const
     int cidx = searchIdx(m_charmap, m_buffer.size(), uidx);
 
     for (struct abc_symbol* s = m_voice_events->first; s; s = s->next) {
-        if (s->start_pos + 1 == cidx) {
-            long tick = DPQN * 4 * s->ev.start_num / s->ev.start_den;
+        if (s->kind != ABC_NOTE)
+            continue;
+
+
+        long tick = DPQN * 4 * s->ev.start_num / s->ev.start_den;
+
+        if (exact && s->start_pos +1 == cidx) {
+            return tick;
+        } else if (!exact && s->start_pos +1 >= cidx) {
             return tick;
         }
     }

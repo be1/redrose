@@ -16,7 +16,7 @@ public:
     bool selectTuneNo(int no);
     bool selectVoiceNo (int tune_no, int no);
     int charIndexFromMidiTick(long tick) const;
-    long midiTickFromCharIndex(int uidx) const;
+    long midiTickFromCharIndex(int uidx, bool exact = false) const;
     int midiKeyFromCharIndex(int uidx) const;
     //int xvFromCharIndex(char XorV, int uidx) const;
 
