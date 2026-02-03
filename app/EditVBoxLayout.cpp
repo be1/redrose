@@ -670,9 +670,14 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
         QMessageBox::warning(a->mainWindow(), tr("Error"), errstr);
         return;
     } else if (exitCode) {
-        a->mainWindow()->statusBar()->showMessage(tr("Some errors during score generation."));
         /* abcm2ps can return 1 on warnings, but ps is generated yet
          * so we must display it anyway. */
+        if (abcplaintextedit.lastX() >= xspinbox.value()) {
+            /* display error message only if the tune exists */
+            a->mainWindow()->statusBar()->showMessage(tr("Some errors during score generation. See log Window."));
+        } else {
+            a->mainWindow()->statusBar()->clearMessage();
+        }
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("Score generated."));
     }
@@ -690,7 +695,6 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, A
         a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
         a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(fileName, b, d);
         a->mainWindow()->mainHSplitter()->viewWidget()->turnPage(1);
-
     } else if (cont == AbcProcess::ContinuationConvert) /* PDF Export */ {
         /* continuation: convert to PDF */
         saveToPDF(pdfFileName);

@@ -115,93 +115,93 @@ Close this score anyway?</source>
 <context>
     <name>EditVBoxLayout</name>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="112"/>
+        <location filename="EditVBoxLayout.cpp" line="110"/>
         <source>Cannot load sound font.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="269"/>
+        <location filename="EditVBoxLayout.cpp" line="262"/>
         <source>Generating MIDI for playing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="278"/>
+        <location filename="EditVBoxLayout.cpp" line="271"/>
         <source>Stopping synthesis...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="259"/>
+        <location filename="EditVBoxLayout.cpp" line="252"/>
         <source>Please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="370"/>
-        <location filename="EditVBoxLayout.cpp" line="386"/>
+        <location filename="EditVBoxLayout.cpp" line="361"/>
+        <location filename="EditVBoxLayout.cpp" line="377"/>
         <source>Exporting score...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="410"/>
+        <location filename="EditVBoxLayout.cpp" line="401"/>
         <source>Error during MIDI generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="413"/>
-        <location filename="EditVBoxLayout.cpp" line="415"/>
-        <location filename="EditVBoxLayout.cpp" line="520"/>
-        <location filename="EditVBoxLayout.cpp" line="529"/>
-        <location filename="EditVBoxLayout.cpp" line="538"/>
-        <location filename="EditVBoxLayout.cpp" line="723"/>
+        <location filename="EditVBoxLayout.cpp" line="404"/>
+        <location filename="EditVBoxLayout.cpp" line="406"/>
+        <location filename="EditVBoxLayout.cpp" line="509"/>
+        <location filename="EditVBoxLayout.cpp" line="518"/>
+        <location filename="EditVBoxLayout.cpp" line="527"/>
+        <location filename="EditVBoxLayout.cpp" line="670"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="415"/>
+        <location filename="EditVBoxLayout.cpp" line="406"/>
         <source>Parse error in selected notes.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="423"/>
+        <location filename="EditVBoxLayout.cpp" line="414"/>
         <source>MIDI generation finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="464"/>
+        <location filename="EditVBoxLayout.cpp" line="451"/>
         <source>Synthesis error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="466"/>
+        <location filename="EditVBoxLayout.cpp" line="453"/>
         <source>Synthesis finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="520"/>
+        <location filename="EditVBoxLayout.cpp" line="509"/>
         <source>Could not find PS score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="529"/>
+        <location filename="EditVBoxLayout.cpp" line="518"/>
         <source>Could not load PS score</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="538"/>
+        <location filename="EditVBoxLayout.cpp" line="527"/>
         <source>Could not save to PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="722"/>
+        <location filename="EditVBoxLayout.cpp" line="669"/>
         <source>Error during score generation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="726"/>
-        <source>Some errors during score generation.</source>
+        <location filename="EditVBoxLayout.cpp" line="677"/>
+        <source>Some errors during score generation. See log Window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="730"/>
+        <location filename="EditVBoxLayout.cpp" line="682"/>
         <source>Score generated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -340,7 +340,7 @@ Redrose version </source>
 <context>
     <name>LogWindow</name>
     <message>
-        <location filename="logwindow.cpp" line="15"/>
+        <location filename="logwindow.cpp" line="16"/>
         <source>Clear Log</source>
         <translation type="unfinished"></translation>
     </message>
