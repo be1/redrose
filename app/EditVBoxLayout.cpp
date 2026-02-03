@@ -170,11 +170,7 @@ void EditVBoxLayout::onCursorPositionChanged()
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
 
-#if 0
-    int x = xvOfCursor('X', tc);
-#else
     int x = abcplaintextedit.currentXV('X');
-#endif
 
     /* reset things only if cursor goes a different tune */
     if (xspinbox.value() != x) {
@@ -189,11 +185,7 @@ void EditVBoxLayout::onCursorPositionChanged()
         synth->m_tick = 0;
     }
 
-#if 0
-    int v = xvOfCursor('V', tc);
-#else
     int v = abcplaintextedit.currentXV('V');
-#endif
 
     m_model.selectVoiceNo(x, v);
 
@@ -216,11 +208,9 @@ void EditVBoxLayout::onCursorPositionChanged()
 void EditVBoxLayout::onXChanged(int value)
 {
     QTextCursor tc = abcplaintextedit.textCursor();
-#if 0
-    int prevX = xvOfCursor('X', tc);
-#else
+
     int prevX = abcplaintextedit.currentXV('X');
-#endif
+
     QSignalBlocker blocker(xspinbox);
     bool found = true;
     /* seek view to X */
@@ -322,11 +312,9 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     }
 
     /* and MIDI file */
-#if 0
-    int v = xvOfCursor('V', abcplaintextedit.textCursor());
-#else
+
     int v = abcplaintextedit.currentXV('V');
-#endif
+
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
         qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
 
@@ -568,52 +556,6 @@ void EditVBoxLayout::onDisplayClicked()
     connect(psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
     psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::ContinuationRender);
 }
-#if 0
-int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
-    if (h != 'X' && h != 'V')
-        return 0;
-
-    int index = c.selectionStart();
-    QString all = abcPlainTextEdit()->toPlainText();
-    int x = 1;
-    int i = 0;
-    QStringList lines = all.split('\n');
-
-    /* look if line under cursor is an X: or a V: */
-    QTextCursor tc(c);
-    tc.select(QTextCursor::LineUnderCursor);
-    if (tc.selectedText().startsWith(QString(":").prepend (h))) {
-        x = numberFromHeader(tc.selectedText(), h);
-    }
-
-    /* find last X: or V: before selection index */
-    bool xBeforeV = false; /* if we search for V, we must enter in a tune */
-    for (int l = 0; l < lines.count() && i < index; l++) {
-        QString line = lines.at(l);
-        i += line.size() +1; /* count \n */
-
-        if (line.startsWith("X:")) {
-            xBeforeV = true;
-        }
-
-        if (line.startsWith(QString(":").prepend(h))) {
-            x = numberFromHeader(line, h);
-            if (h == 'V') {
-                xBeforeV = false;
-            }
-
-            /* continue until last X or V before selection index */
-        }
-    }
-
-    if (h == 'V' && xBeforeV) {
-        return 1; /* return 1st voice */
-    }
-
-    /* return voice or tune found */
-    return x;
-}
-#endif
 
 int EditVBoxLayout::numberFromHeader(const QString &hs, char h) {
     QString rs(": *([\\d]+).*$");
@@ -684,11 +626,9 @@ void EditVBoxLayout::onTextLoaded()
 
     m_model.fromAbcBuffer(tunestext.toUtf8(), selection.isEmpty());
     m_invalidate_model = true; /* will regenerate on first MIDI playabck */
-#if 0
-    int v = xvOfCursor('V', abcplaintextedit.textCursor());
-#else
+
     int v = abcplaintextedit.currentXV('V');
-#endif
+
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
         qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
 }
