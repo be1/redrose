@@ -64,7 +64,8 @@ public:
     QString getLastMidiProgramChange() const;
     QString getCurrentVoiceOrChannel(bool prefer_voice) const;
     QString getCurrentMIDIComment(const QString& com) const;
-    bool findX(int x);
+    int currentXV(char xv); /* 'X' or 'V' */
+    bool gotoX(int x);
     int lastX();
     bool cursorIsInFragmentLine();
     void setTextCursorPosition(int n);

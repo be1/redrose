@@ -409,10 +409,10 @@ QString AbcPlainTextEdit::getLastKeySignatureChange() const
     QTextDocument* doc = document();
     QTextCursor tc, vtc, ktc;
 
-    vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
+    vtc =  doc->find(QRegularExpression("^V:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
 
     /* search inline change */
-    tc = doc->find("[K:", textCursor(), QTextDocument::FindBackward);
+    tc = doc->find("[K:", textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
     /* give KS only if it changed after "V:" */
     if (tc.position() > vtc.position()) {
         tc.movePosition(QTextCursor::Right);
@@ -421,8 +421,8 @@ QString AbcPlainTextEdit::getLastKeySignatureChange() const
     }
 
     /* search also for non-inline change */
-    tc = doc->find(QRegularExpression("^K:"), textCursor(), QTextDocument::FindBackward);
-    ktc = doc->find(QRegularExpression("^K:"), tc, QTextDocument::FindBackward);
+    tc = doc->find(QRegularExpression("^K:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+    ktc = doc->find(QRegularExpression("^K:"), tc, QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
     /* we must avoid initial KS */
     if (tc.position() > ktc.position() && tc.position() > vtc.position()) {
         tc.select(QTextCursor::LineUnderCursor);
@@ -437,10 +437,10 @@ QString AbcPlainTextEdit::getLastMidiProgramChange() const
     QTextDocument* doc = document();
     QTextCursor tc, vtc;
 
-    vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
+    vtc =  doc->find(QRegularExpression("^V:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
 
     /* search %%MIDI program N */
-    tc = doc->find("%%MIDI program", textCursor(), QTextDocument::FindBackward);
+    tc = doc->find("%%MIDI program", textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
     if (tc.position() > vtc.position()) {
         tc.select(QTextCursor::LineUnderCursor);
         return tc.selectedText() + "\n";
@@ -449,7 +449,7 @@ QString AbcPlainTextEdit::getLastMidiProgramChange() const
     return QString();
 }
 
-bool AbcPlainTextEdit::findX(int x)
+bool AbcPlainTextEdit::gotoX(int x)
 {
     QRegularExpression re("^X:[ \t]*" + QString::number(x) + "[ \t]*$");
     QTextCursor tc = document()->find(re);
@@ -537,13 +537,13 @@ QString AbcPlainTextEdit::getCurrentVoiceOrChannel(bool prefer_voice) const
     QTextCursor tc;
     QTextDocument* doc = document();
 
-    QTextCursor xtc = doc->find("X:", textCursor(), QTextDocument::FindBackward);
-    QTextCursor vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
-    QTextCursor ctc = doc->find("%%MIDI channel ", textCursor(), QTextDocument::FindBackward);
+    QTextCursor xtc = doc->find(QRegularExpression("^X:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+    QTextCursor vtc =  doc->find(QRegularExpression("^V:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+    QTextCursor ctc = doc->find(QRegularExpression("^%%MIDI channel "), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
     if (xtc.position() > vtc.position())
         /* if X is before V, the V found belongs to the previous tune
          * so, now check our V forward */
-        vtc = doc->find("V:", textCursor());
+        vtc = doc->find(QRegularExpression("^V:"), textCursor(), QTextDocument::FindCaseSensitively);
 
     if (ctc.position() > vtc.position() && !prefer_voice)
         tc = ctc;
@@ -563,14 +563,59 @@ QString AbcPlainTextEdit::getCurrentMIDIComment(const QString& com) const
 {
     QTextCursor tc;
     QTextDocument* doc = document();
-    QTextCursor vtc =  doc->find("V:", textCursor(), QTextDocument::FindBackward);
-    tc =  doc->find(QString("%%MIDI %1 ").arg(com), textCursor(), QTextDocument::FindBackward);
+    QTextCursor vtc =  doc->find(QRegularExpression("^V:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+    tc =  doc->find(QString("%%MIDI %1 ").arg(com), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
 
     tc.select(QTextCursor::LineUnderCursor);
     if (tc.position() > vtc.position())
         return tc.selectedText() + "\n";
 
     return QString();
+}
+
+static QString matchUnderCursor(QTextCursor tc, QRegularExpression re) {
+    tc.select(tc.LineUnderCursor);
+    QString line = tc.selectedText();
+    QRegularExpressionMatch match = re.match(line);
+    QStringList m = match.capturedTexts();
+    /* do not report whole match (0) if there is a specific one */
+    if (m.length())
+        return m.at(m.length()-1);
+
+    return QString();
+}
+
+int AbcPlainTextEdit::currentXV(char xv)
+{
+    QTextCursor xtc = document()->find(QRegularExpression("^X:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+    if (xtc.isNull())
+        return 1; /* X or V are 1 */
+
+    if (xv == 'X') {
+        QRegularExpression re("^X:[ \t]*(\\d*)");
+        QString x = matchUnderCursor(xtc, re);
+        bool ok;
+        int ret = x.toInt(&ok);
+        if (ok)
+            return ret;
+        qDebug() << "could not find current X";
+        return 1;
+    }
+
+    /* V header lookup */
+    QTextCursor vtc = document()->find(QRegularExpression("^V:"), textCursor(), QTextDocument::FindBackward|QTextDocument::FindCaseSensitively);
+    if (vtc.position() > xtc.position()) {
+        QRegularExpression re("^V:[ \t]*(\\d*)");
+        QString v = matchUnderCursor(vtc, re);
+        bool ok;
+        int ret = v.toInt(&ok);
+        if (ok)
+            return ret;
+        qDebug () << "could not find current V";
+        return 1;
+    }
+
+    return 1;
 }
 
 QString AbcPlainTextEdit::playableNoteUnderCursor(QTextCursor tc)

@@ -170,10 +170,10 @@ void EditVBoxLayout::onCursorPositionChanged()
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
 
-#ifndef XV_MODEL_VERSION
+#if 0
     int x = xvOfCursor('X', tc);
 #else
-    int x = m_model.xvFromCharIndex('X', tc.position());
+    int x = abcplaintextedit.currentXV('X');
 #endif
 
     /* reset things only if cursor goes a different tune */
@@ -189,7 +189,12 @@ void EditVBoxLayout::onCursorPositionChanged()
         synth->m_tick = 0;
     }
 
+#if 0
     int v = xvOfCursor('V', tc);
+#else
+    int v = abcplaintextedit.currentXV('V');
+#endif
+
     m_model.selectVoiceNo(x, v);
 
     /* follow mouse click or kbd arrows */
@@ -211,15 +216,15 @@ void EditVBoxLayout::onCursorPositionChanged()
 void EditVBoxLayout::onXChanged(int value)
 {
     QTextCursor tc = abcplaintextedit.textCursor();
-#ifndef XV_MODEL_VERSION
+#if 0
     int prevX = xvOfCursor('X', tc);
 #else
-    int prevX = m_model.xvFromCharIndex('X', tc.position());
+    int prevX = abcplaintextedit.currentXV('X');
 #endif
     QSignalBlocker blocker(xspinbox);
     bool found = true;
     /* seek view to X */
-    found = abcplaintextedit.findX(value);
+    found = abcplaintextedit.gotoX(value);
 
     /* schedule anyway : this allow having a blank page */
     scheduleDisplay();
@@ -317,8 +322,11 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     }
 
     /* and MIDI file */
+#if 0
     int v = xvOfCursor('V', abcplaintextedit.textCursor());
-
+#else
+    int v = abcplaintextedit.currentXV('V');
+#endif
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
         qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
 
@@ -560,7 +568,7 @@ void EditVBoxLayout::onDisplayClicked()
     connect(psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
     psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::ContinuationRender);
 }
-
+#if 0
 int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
     if (h != 'X' && h != 'V')
         return 0;
@@ -605,6 +613,7 @@ int EditVBoxLayout::xvOfCursor(const char h, const QTextCursor& c) {
     /* return voice or tune found */
     return x;
 }
+#endif
 
 int EditVBoxLayout::numberFromHeader(const QString &hs, char h) {
     QString rs(": *([\\d]+).*$");
@@ -675,8 +684,11 @@ void EditVBoxLayout::onTextLoaded()
 
     m_model.fromAbcBuffer(tunestext.toUtf8(), selection.isEmpty());
     m_invalidate_model = true; /* will regenerate on first MIDI playabck */
-
+#if 0
     int v = xvOfCursor('V', abcplaintextedit.textCursor());
+#else
+    int v = abcplaintextedit.currentXV('V');
+#endif
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
         qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
 }
