@@ -466,14 +466,19 @@ bool AbcPlainTextEdit::gotoX(int x)
 
 int AbcPlainTextEdit::lastX()
 {
+    int val = 0;
+    bool ok = false;
     QRegularExpression re("^X:[ \\t]*([\\d]+)[ \\t]*$", QRegularExpression::PatternOption::MultilineOption);
     QRegularExpressionMatchIterator matches = re.globalMatch(toPlainText());
-    QStringList m = match.capturedTexts();
-    bool ok;
-    int val;
-    val = m.captured(m.size() -1).toInt(&ok);
-    if (ok)
+    for (QRegularExpressionMatch match : matches) {
+        QStringList m = match.capturedTexts();
+        val = m.at(m.size() -1).toInt(&ok);
+    }
+
+    if (ok) {
         return val;
+    }
+
     return 0;
 }
 
