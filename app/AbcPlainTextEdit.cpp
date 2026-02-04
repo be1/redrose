@@ -468,18 +468,20 @@ int AbcPlainTextEdit::lastX()
 {
     int val = 0;
     bool ok = false;
-    QRegularExpression re("^X:[ \\t]*([\\d]+)[ \\t]*$", QRegularExpression::PatternOption::MultilineOption);
-    QRegularExpressionMatchIterator matches = re.globalMatch(toPlainText());
-    for (QRegularExpressionMatch match : matches) {
-        QStringList m = match.capturedTexts();
-        val = m.at(m.size() -1).toInt(&ok);
-    }
-
-    if (ok) {
+    QRegularExpression re("X:[ \\t]*([\\d]+)"); /* dunno why "^X" fails. Use "X" */
+    QRegularExpressionMatch match;
+    int i = toPlainText().lastIndexOf(re, -1, &match);
+    if (i < 0) {
+        qWarning() << "could not find last X of text";
         return val;
     }
 
-    return 0;
+    QString last = match.capturedTexts().last();
+    val = last.toInt(&ok);
+    if (!ok)
+        qWarning() << "unparseable match for last X of text";
+
+    return val;
 }
 
 bool AbcPlainTextEdit::cursorIsInFragmentLine()
@@ -586,7 +588,7 @@ static QString matchUnderCursor(QTextCursor tc, QRegularExpression re) {
     QStringList m = match.capturedTexts();
     /* do not report whole match (0) if there is a specific one */
     if (m.length())
-        return m.at(m.length()-1);
+        return m.last();
 
     return QString();
 }
