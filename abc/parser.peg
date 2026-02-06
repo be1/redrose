@@ -124,14 +124,13 @@ TimeSig <- < "M:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 Part <- < "P:" [ \t]* (!EOL [^\]])+ > #ignore
 Tempo <- < "Q:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 
-Special <- "beginps" / "endps" / "begintext" / "endtext" / "beginsvg" / "endsvg"
+Special <- "beginps" / "endps" / "begintext" / "endtext" / "beginsvg" / "endsvg" / "MIDI"
 
 TuneComment <- Comment { abc_comment_append(auxil, $0s, $0e); }
 EarlyComment <- Comment
 
-Comment <- "%" !"%" (!EOL .)*
-	/ "%%" !"MIDI" (!EOL .)*
-	/ "%%" !Special (!EOL .)*
+Comment <- "%" ! "%" (!EOL .)*
+	/ "%%" ! Special (!EOL .)*
 
 Vheader <- "V:" [ \t]* Vvalue
 
