@@ -40,7 +40,7 @@ void PreferencesMenu::onPlayerActionTriggered()
         settings.setValue(PLAYER_VELOCITY, dialog->getVelocity());
         settings.setValue(PLAYER_EXPRESSION, dialog->getExpression());
         settings.setValue(VOLUME_KEY, dialog->getVolume());
-#if 0
+#if 1
         settings.setValue(REVERB_KEY, dialog->getReverb());
 #endif
         settings.sync();

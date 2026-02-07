@@ -25,7 +25,7 @@ public:
     int getDuration();
     double getVolume();
 
-#if 0
+#if 1
     double getReverb();
 #endif
 protected slots:
@@ -57,7 +57,7 @@ private:
     QLabel* volumeLabel;
     QDoubleSpinBox* volumeDoubleSpinBox;
 
-#if 0
+#if 1
     QLabel* reverbLabel;
     QDoubleSpinBox* reverbDoubleSpinBox;
 #endif

@@ -106,13 +106,13 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
     playback_monitor.setInterval(500);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
-#if 0
+#if 1
     qreal reverb = settings.value(REVERB_KEY).toDouble();
     if (reverb > 0.) {
         qDebug() << fluid_synth_reverb_on(fluid_synth, -1, TRUE);
-        qDebug() << fluid_synth_set_reverb_group_roomsize(fluid_synth, -1, 0.2);
-        qDebug() << fluid_synth_set_reverb_group_width(fluid_synth, -1, 0.5);
-        qDebug() << fluid_synth_set_reverb_group_damp(fluid_synth, -1, 0.);
+        qDebug() << fluid_synth_set_reverb_group_roomsize(fluid_synth, -1, 0.33);
+        qDebug() << fluid_synth_set_reverb_group_width(fluid_synth, -1, 0.33);
+        qDebug() << fluid_synth_set_reverb_group_damp(fluid_synth, -1, 0.33);
         qDebug() << fluid_synth_set_reverb_group_level(fluid_synth, -1, reverb);
     } else {
         fluid_synth_reverb_on(fluid_synth, -1, FALSE);
