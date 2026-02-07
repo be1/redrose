@@ -59,6 +59,7 @@ protected:
     void cleanupProcesses();
     void cleanupThreads();
     void scheduleDisplay();
+    void manageTextOrCursorChange(const QTextCursor& tc);
 
 public slots:
     void onCursorPositionChanged();
@@ -79,6 +80,7 @@ protected slots:
     void popupWarning(const QString& title, const QString& text);
     void onSliderMoved(int val);
     void onSynthTickChanged(int tick);
+    void fireNoteUnderCursor();
 
 private:
     bool generating = false;
@@ -99,7 +101,7 @@ private:
 
     Settings settings;
     bool m_autoplay = false;
-    bool m_invalidate_model = true;
+    bool m_regenerate = true; /* wether to regenerate MIDI for playback */
     AbcModel m_model;
     AbcSynth* synth;
     PsGenerator* psgen;

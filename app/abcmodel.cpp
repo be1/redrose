@@ -155,7 +155,6 @@ long AbcModel::midiTickFromCharIndex(int uidx, bool exact) const
         if (s->kind != ABC_NOTE)
             continue;
 
-
         long tick = DPQN * 4 * s->ev.start_num / s->ev.start_den;
 
         if (exact && s->start_pos +1 == cidx) {

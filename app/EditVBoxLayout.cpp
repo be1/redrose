@@ -21,7 +21,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     : QVBoxLayout(parent),
       fileName(fileName),
       progress(nullptr),
-      m_invalidate_model(true),
+      m_regenerate(true),
       synth(nullptr),
       psgen(nullptr),
       m_midigen(nullptr)
@@ -165,17 +165,21 @@ void EditVBoxLayout::scheduleDisplay()
     generationTimer.start();
 }
 
-void EditVBoxLayout::onCursorPositionChanged()
-{
+void EditVBoxLayout::onCursorPositionChanged() {
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
 
+    manageTextOrCursorChange(tc);
+}
+
+void EditVBoxLayout::manageTextOrCursorChange(const QTextCursor& tc)
+{
     int x = abcplaintextedit.currentXV('X');
 
     /* reset things only if cursor goes a different tune */
     if (xspinbox.value() != x) {
         removeMIDIFile(xspinbox.value());
-        m_invalidate_model = true;
+        m_regenerate = true;
 
         QSignalBlocker blocker(xspinbox);
         xspinbox.setValue(x);
@@ -197,11 +201,15 @@ void EditVBoxLayout::onCursorPositionChanged()
         positionslider.setValue(tick);
     }
 
-    /* check if we can fire a note */
+    fireNoteUnderCursor();
+}
+
+void EditVBoxLayout::fireNoteUnderCursor() {
     if (!synth->isPlaying() && m_autoplay) {
-	int key = m_model.midiKeyFromCharIndex(tc.position());
-	if (key > 0)
-		synth->fire(0, 0, key, 80);
+        QTextCursor tc = abcplaintextedit.textCursor();
+        int key = m_model.midiKeyFromCharIndex(tc.position());
+        if (key > 0)
+            synth->fire(0, 0, key, 80);
     }
 }
 
@@ -237,7 +245,7 @@ void EditVBoxLayout::onXChanged(int value)
     }
 
     removeMIDIFile(prevX);
-    m_invalidate_model = true;
+    m_regenerate = true;
     //positionslider.setMaximum(0);
 }
 
@@ -284,7 +292,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     /* what text to save */
 
     if (selection.isEmpty()) { /* full tune: */
-        if (m_invalidate_model == false) {
+        if (m_regenerate == false) {
             qDebug() << "no need to regenerate MIDI";
             onGenerateMIDIFinished(0, "", AbcProcess::ContinuationRender);
             return;
@@ -307,8 +315,9 @@ void EditVBoxLayout::exportMIDI(QString filename) {
 
     /* refresh model */
     /* we only can follow full tune. disable mapping on partial selection */
+    qDebug() << __func__ << "making model" << tosave.size();
     if (m_model.fromAbcBuffer(tosave.toUtf8(), selection.isEmpty())) {
-        m_invalidate_model = false;
+        m_regenerate = false;
     }
 
     /* and MIDI file */
@@ -427,7 +436,7 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             else {
                 long charidx = abcPlainTextEdit()->textCursor().position();
                 long tick = m_model.midiTickFromCharIndex(charidx);
-                /* if we position is outside of music */
+                /* if we position cursor outside of music */
                 if (tick < 0) {
                     synth->m_tick = 0;
                 }
@@ -589,21 +598,17 @@ void EditVBoxLayout::onSelectionChanged()
         selection = c.selectedText();
         selectionIndex = c.selectionStart();
         /* selecting yields to generate small sub-tune */
-        qDebug() << "selecting";
-        m_invalidate_model = true;
+        m_regenerate = true;
     } else {
-        /* if just one click : reset */
-        //synth->m_tick = 0;
-
+        /* if just one click : reset selection */
         if (!selection.isEmpty()) {
             if (synth->isPlaying())
                 synth->stop();
 
             selection.clear();
 
-            /* unselecting yields to generate small sub-tune */
-            qDebug() << "unselecting";
-            m_invalidate_model = true;
+            /* unselecting yields to generate all tune */
+            m_regenerate = true;
         }
 
         selectionIndex = c.selectionStart();
@@ -611,26 +616,28 @@ void EditVBoxLayout::onSelectionChanged()
 }
 
 void EditVBoxLayout::onTextChanged() {
-    qDebug() << "text changed";
-    m_invalidate_model = true; /* for now MIDI generator needs it */
+    m_regenerate = true;
 
-    QString tunestext = abcplaintextedit.toPlainText();
+    QString abctext = abcplaintextedit.toPlainText();
+    m_model.fromAbcBuffer(abctext.toUtf8(), true);
 
-    /* refresh model */
-    m_model.fromAbcBuffer(tunestext.toUtf8(), selection.isEmpty());
+    AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
+    QTextCursor tc = te->textCursor();
+
+    manageTextOrCursorChange(tc);
 }
 
 void EditVBoxLayout::onTextLoaded()
 {
-    QString tunestext = abcplaintextedit.toPlainText();
+    m_regenerate = true;
 
-    m_model.fromAbcBuffer(tunestext.toUtf8(), selection.isEmpty());
-    m_invalidate_model = true; /* will regenerate on first MIDI playabck */
+    QString abctext = abcplaintextedit.toPlainText();
+    m_model.fromAbcBuffer(abctext.toUtf8(), true);
 
-    int v = abcplaintextedit.currentXV('V');
+    AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
+    QTextCursor tc = te->textCursor();
 
-    if (!m_model.selectVoiceNo(xspinbox.value(), v))
-        qWarning() << __func__ << "Error selecting tune and voice" << xspinbox.value() << v;
+    manageTextOrCursorChange(tc);
 }
 
 void EditVBoxLayout::onPlayableNote(const QString &note)
