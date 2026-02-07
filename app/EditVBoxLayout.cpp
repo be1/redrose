@@ -292,13 +292,15 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     /* what text to save */
 
     if (selection.isEmpty()) { /* full tune: */
-        if (m_regenerate == false) {
+        if (m_regenerate == false && filename.isEmpty()) {
+            /* if filename is empty, playback will be requested */
             qDebug() << "no need to regenerate MIDI";
             onGenerateMIDIFinished(0, "", AbcProcess::ContinuationRender);
             return;
         }
 
-        /* regenerate memory model and MIDI file */
+        /* if filename is not empty, or regenerate is requested,
+         * we regenerate either for MIDI export or playabck */
         tosave = abcPlainTextEdit()->toPlainText();
     } else { /* selection only: */
         /* regenerate anyway */
@@ -316,9 +318,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     /* refresh model */
     /* we only can follow full tune. disable mapping on partial selection */
     qDebug() << __func__ << "making model" << tosave.size();
-    if (m_model.fromAbcBuffer(tosave.toUtf8(), selection.isEmpty())) {
-        m_regenerate = false;
-    }
+    m_model.fromAbcBuffer(tosave.toUtf8(), selection.isEmpty());
 
     /* and MIDI file */
 
@@ -422,6 +422,9 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
     } else {
         a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
         if (cont == AbcProcess::ContinuationRender) {
+            /* don't regenerate on next rendering */
+            m_regenerate = false;
+
             if (synth->isPlaying()) {
                 synth->stop();
             }
