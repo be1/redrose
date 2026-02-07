@@ -1256,7 +1256,7 @@ static void pcc_action_Ignored_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pc
 #undef auxil
 }
 
-static void pcc_action_Xvalue_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pcc_value_t *pcc_out) {
+static void pcc_action_Xheader_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pcc_value_t *pcc_out) {
 #define auxil pcc_ref_auxil_(pcc_ctx)
 #define pcc_action_out (*pcc_out)
 #define pcc_capture__0 pcc_ref_leaf_capture_0_(pcc_ctx, pcc_in)
@@ -1265,7 +1265,7 @@ static void pcc_action_Xvalue_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pcc
 #define pcc_capture__1 pcc_ref_leaf_capture_(pcc_ctx, pcc_in, 0)
 #define pcc_capture__1s pcc_ref_leaf_capture_s_(pcc_ctx, pcc_in, 0)
 #define pcc_capture__1e pcc_ref_leaf_capture_e_(pcc_ctx, pcc_in, 0)
-    abc_tune_append(auxil, pcc_capture__0);
+    abc_tune_append(auxil, pcc_capture__1);
 #undef pcc_capture__1e
 #undef pcc_capture__1s
 #undef pcc_capture__1
@@ -1472,7 +1472,7 @@ static void pcc_action_TuneComment_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in
 #undef auxil
 }
 
-static void pcc_action_Vvalue_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pcc_value_t *pcc_out) {
+static void pcc_action_Vheader_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pcc_value_t *pcc_out) {
 #define auxil pcc_ref_auxil_(pcc_ctx)
 #define pcc_action_out (*pcc_out)
 #define pcc_capture__0 pcc_ref_leaf_capture_0_(pcc_ctx, pcc_in)
@@ -1481,7 +1481,7 @@ static void pcc_action_Vvalue_0(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, pcc
 #define pcc_capture__1 pcc_ref_leaf_capture_(pcc_ctx, pcc_in, 0)
 #define pcc_capture__1s pcc_ref_leaf_capture_s_(pcc_ctx, pcc_in, 0)
 #define pcc_capture__1e pcc_ref_leaf_capture_e_(pcc_ctx, pcc_in, 0)
-    abc_voice_append(auxil, pcc_capture__0);
+    abc_voice_append(auxil, pcc_capture__1);
 #undef pcc_capture__1e
 #undef pcc_capture__1s
 #undef pcc_capture__1
@@ -2201,7 +2201,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Tune(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Words(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Header(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Xheader(pcc_context_t *ctx);
-static pcc_thunk_chunk_t *pcc_evaluate_rule_Xvalue(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Kheader(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Iheader(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_HeaderKey(pcc_context_t *ctx);
@@ -2222,7 +2221,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_TuneComment(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_EarlyComment(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Comment(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Vheader(pcc_context_t *ctx);
-static pcc_thunk_chunk_t *pcc_evaluate_rule_Vvalue(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_ChordPunct(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_NotePunct(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_NoteConstruct(pcc_context_t *ctx);
@@ -2964,6 +2962,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Xheader(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Xheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->buffer.n - chunk->pos));
     ctx->level++;
+    pcc_capture_table__resize(ctx->auxil, &(chunk->capts), 1);
     if (
         pcc_refill_buffer(ctx, 1) < 1 || (ctx->buffer.p + ctx->cur)[0] != 'X' ||
         pcc_refill_buffer(ctx, 2) < 2 || (ctx->buffer.p + ctx->cur)[1] != ':'
@@ -2991,23 +2990,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Xheader(pcc_context_t *ctx) {
             break;
         }
     }
-    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Xvalue, &(chunk->thunks), NULL)) goto L0000;
-    ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Xheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
-    return chunk;
-L0000:;
-    ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Xheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
-    pcc_thunk_chunk__destroy(ctx, chunk);
-    return NULL;
-}
-
-static pcc_thunk_chunk_t *pcc_evaluate_rule_Xvalue(pcc_context_t *ctx) {
-    pcc_thunk_chunk_t *const chunk = pcc_thunk_chunk__create(ctx);
-    chunk->pos = ctx->cur;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Xvalue", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->buffer.n - chunk->pos));
-    ctx->level++;
-    pcc_capture_table__resize(ctx->auxil, &(chunk->capts), 1);
     {
         const size_t p = ctx->cur;
         size_t q;
@@ -3027,15 +3009,15 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Xvalue(pcc_context_t *ctx) {
                 {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
-                    if (n == 0) goto L0001;
+                    if (n == 0) goto L0002;
                     if (!(
                         (u >= 0x000030 && u <= 0x000039)
-                    )) goto L0001;
+                    )) goto L0002;
                     ctx->cur += n;
                 }
                 if (ctx->cur == p) break;
                 continue;
-            L0001:;
+            L0002:;
                 ctx->cur = p;
                 pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
                 break;
@@ -3047,7 +3029,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Xvalue(pcc_context_t *ctx) {
         pcc_char_array__resize(ctx->auxil, &(chunk->capts.p[0].string), 0);
     }
     {
-        pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx, pcc_action_Xvalue_0, 0, 1);
+        pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx, pcc_action_Xheader_0, 0, 1);
         thunk->data.leaf.capts.p[0] = &(chunk->capts.p[0]);
         thunk->data.leaf.capt0.range.start = chunk->pos;
         thunk->data.leaf.capt0.range.end = ctx->cur;
@@ -3055,11 +3037,11 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Xvalue(pcc_context_t *ctx) {
         pcc_thunk_array__add(ctx, &(chunk->thunks), thunk);
     }
     ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Xvalue", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
+    PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Xheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
     return chunk;
 L0000:;
     ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Xvalue", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
+    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Xheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
     pcc_thunk_chunk__destroy(ctx, chunk);
     return NULL;
 }
@@ -4850,6 +4832,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Vheader(pcc_context_t *ctx) {
     chunk->pos = ctx->cur;
     PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Vheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->buffer.n - chunk->pos));
     ctx->level++;
+    pcc_capture_table__resize(ctx->auxil, &(chunk->capts), 1);
     if (
         pcc_refill_buffer(ctx, 1) < 1 || (ctx->buffer.p + ctx->cur)[0] != 'V' ||
         pcc_refill_buffer(ctx, 2) < 2 || (ctx->buffer.p + ctx->cur)[1] != ':'
@@ -4877,23 +4860,6 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Vheader(pcc_context_t *ctx) {
             break;
         }
     }
-    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Vvalue, &(chunk->thunks), NULL)) goto L0000;
-    ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Vheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
-    return chunk;
-L0000:;
-    ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Vheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
-    pcc_thunk_chunk__destroy(ctx, chunk);
-    return NULL;
-}
-
-static pcc_thunk_chunk_t *pcc_evaluate_rule_Vvalue(pcc_context_t *ctx) {
-    pcc_thunk_chunk_t *const chunk = pcc_thunk_chunk__create(ctx);
-    chunk->pos = ctx->cur;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Vvalue", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->buffer.n - chunk->pos));
-    ctx->level++;
-    pcc_capture_table__resize(ctx->auxil, &(chunk->capts), 1);
     {
         const size_t p = ctx->cur;
         size_t q;
@@ -4906,21 +4872,21 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Vvalue(pcc_context_t *ctx) {
                 const size_t n = chunk->thunks.n;
                 {
                     const size_t p = ctx->cur;
-                    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0002;
+                    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0003;
                     ctx->cur = p;
-                    goto L0001;
-                L0002:;
+                    goto L0002;
+                L0003:;
                     ctx->cur = p;
                 }
                 {
                     int u;
                     const size_t n = pcc_get_char_as_utf32(ctx, &u);
-                    if (n == 0) goto L0001;
+                    if (n == 0) goto L0002;
                     ctx->cur += n;
                 }
                 if (ctx->cur == p) break;
                 continue;
-            L0001:;
+            L0002:;
                 ctx->cur = p;
                 pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
                 break;
@@ -4937,7 +4903,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Vvalue(pcc_context_t *ctx) {
         pcc_char_array__resize(ctx->auxil, &(chunk->capts.p[0].string), 0);
     }
     {
-        pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx, pcc_action_Vvalue_0, 0, 1);
+        pcc_thunk_t *const thunk = pcc_thunk__create_leaf(ctx, pcc_action_Vheader_0, 0, 1);
         thunk->data.leaf.capts.p[0] = &(chunk->capts.p[0]);
         thunk->data.leaf.capt0.range.start = chunk->pos;
         thunk->data.leaf.capt0.range.end = ctx->cur;
@@ -4945,11 +4911,11 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Vvalue(pcc_context_t *ctx) {
         pcc_thunk_array__add(ctx, &(chunk->thunks), thunk);
     }
     ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Vvalue", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
+    PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Vheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
     return chunk;
 L0000:;
     ctx->level--;
-    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Vvalue", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
+    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Vheader", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
     pcc_thunk_chunk__destroy(ctx, chunk);
     return NULL;
 }

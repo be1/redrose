@@ -71,10 +71,7 @@ Words <- "W:" [ \t]* (!EOL .)*
 Header <- Oheader
 	/ TuneComment
 
-Xheader <- "X:" [ \t]* Xvalue
-
-Xvalue <- < [1-9][0-9]* > { abc_tune_append(auxil, $0); }
-
+Xheader <- "X:" [ \t]* < [1-9][0-9]* > { abc_tune_append(auxil, $1); }
 Kheader <- "K:" [ \t]* < (!EOL .)+ > { abc_header_append(auxil, $1, 'K'); }
 
 Iheader <- "I:" [ \t]* < !"linebreak" (!EOL .)* > { abc_header_append(auxil, $1, 'I'); }
@@ -132,9 +129,7 @@ EarlyComment <- Comment
 Comment <- "%" ! "%" (!EOL .)*
 	/ "%%" ! Special (!EOL .)*
 
-Vheader <- "V:" [ \t]* Vvalue
-
-Vvalue <- < (!EOL .)+ > { abc_voice_append(auxil, $0); }
+Vheader <- "V:" [ \t]* < (!EOL .)+ > { abc_voice_append(auxil, $1); }
 
 ChordPunct <- Chord Tie? _* < (">" / "<")+ > _* Chord Tie? { abc_chordpunct_set(auxil, $1); }
 
