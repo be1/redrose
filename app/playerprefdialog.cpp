@@ -150,7 +150,7 @@ PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
 
     mainLayout->addLayout(vhbox);
 
-#if 1
+#ifndef NO_REVERB
     /* reverb */
     QVariant reverb = settings.value(REVERB_KEY);
     reverbLabel = new QLabel(tr("Reverb level"));
@@ -209,7 +209,7 @@ double PlayerPrefDialog::getVolume()
     return volumeDoubleSpinBox->value();
 }
 
-#if 1
+#ifndef NO_REVERB
 double PlayerPrefDialog::getReverb()
 {
     return reverbDoubleSpinBox->value();

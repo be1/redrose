@@ -106,7 +106,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
 
     playback_monitor.setInterval(500);
     connect(&playback_monitor, &QTimer::timeout, this, &AbcSynth::monitorPlayback);
-#if 1
+#ifndef NO_REVERB
     qreal reverb = settings.value(REVERB_KEY).toDouble();
     if (reverb > 0.) {
         fluid_synth_reverb_on(fluid_synth, -1, TRUE);
