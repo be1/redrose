@@ -272,7 +272,6 @@ void EditVBoxLayout::onPlayClicked()
         return;
 
     if (playpushbutton.isPlay()) {
-        a->mainWindow()->statusBar()->showMessage(tr("Generating MIDI for playing."));
         playpushbutton.flip();
         xspinbox.setEnabled(false);
         playpushbutton.setEnabled(false);
@@ -281,7 +280,6 @@ void EditVBoxLayout::onPlayClicked()
       } else { /* stop */
         if (synth->isPlaying()) {
             dot.clear();
-            a->mainWindow()->statusBar()->showMessage(tr("Stopping synthesis..."));
             synth->stop();
 
             /* pre seek for next play */
@@ -292,6 +290,7 @@ void EditVBoxLayout::onPlayClicked()
 }
 
 void EditVBoxLayout::exportMIDI(QString filename) {
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
     QString tosave;
 
     /* what text to save */
@@ -322,8 +321,11 @@ void EditVBoxLayout::exportMIDI(QString filename) {
 
     /* refresh model */
     /* we only can follow full tune. disable mapping on partial selection */
-    qDebug() << __func__ << "making model" << tosave.size();
     m_parse_success = m_model.fromAbcBuffer(tosave.toUtf8(), selection.isEmpty());
+
+    if (!m_parse_success && settings.value(EDITOR_FOLLOW).toBool()) {
+        a->mainWindow()->statusBar()->showMessage(tr("Internal ABC parser error: playback following will not work!"));
+    }
 
     /* and MIDI file */
 
@@ -425,7 +427,9 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
         }
         return;
     } else {
-        a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
+        if (a->mainWindow()->statusBar()->currentMessage().isEmpty() && cont == AbcProcess::ContinuationNone)
+            a->mainWindow()->statusBar()->showMessage(tr("MIDI generation finished."));
+
         if (cont == AbcProcess::ContinuationRender) {
             /* don't regenerate on next rendering */
             m_regenerate = false;
@@ -466,8 +470,6 @@ void EditVBoxLayout::onSynthFinished(bool err)
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     if (err)
         a->mainWindow()->statusBar()->showMessage(tr("Synthesis error."));
-    else
-        a->mainWindow()->statusBar()->showMessage(tr("Synthesis finished."));
 
     /* end reached : reset to start */
     if (positionslider.value() == positionslider.maximum()) {
@@ -563,8 +565,6 @@ void EditVBoxLayout::onDisplayClicked()
 
     removePSFile();
 
-    //if (a->mainWindow()->statusBar()->currentMessage().isEmpty())
-    //    a->mainWindow()->statusBar()->showMessage(tr("Generating score..."));
     QString tosave = abcPlainTextEdit()->toPlainText();
     tempFile.open();
     tempFile.write(tosave.toUtf8());

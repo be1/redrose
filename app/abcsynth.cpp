@@ -156,17 +156,17 @@ void AbcSynth::monitorPlayback()
         switch (fluid_player_get_status(fluid_player)) {
         case FLUID_PLAYER_READY:
             m_mutex.unlock();
-            a->mainWindow()->statusBar()->showMessage(tr("Ready."));
+            //a->mainWindow()->statusBar()->showMessage(tr("Ready."));
             break;
         case FLUID_PLAYER_PLAYING:
             m_mutex.unlock();
             m_msecs += mon->interval();
-            a->mainWindow()->statusBar()->showMessage(tr("Playing ") + QString::number(m_msecs / 1000) + "s.");
+            //a->mainWindow()->statusBar()->showMessage(tr("Playing ") + QString::number(m_msecs / 1000) + "s.");
             break;
 #if (FLUIDSYNTH_VERSION_MAJOR == 2 && FLUIDSYNTH_VERSION_MINOR >= 3)
         case FLUID_PLAYER_STOPPING:
             m_mutex.unlock();
-            a->mainWindow()->statusBar()->showMessage(tr("Stopping."));
+            //a->mainWindow()->statusBar()->showMessage(tr("Stopping."));
             break;
 #endif
         case FLUID_PLAYER_DONE:
@@ -175,7 +175,7 @@ void AbcSynth::monitorPlayback()
             /* cleanup and trigger synthFinished */
             stop();
             mon->stop();
-            a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_msecs / 1000) + "s.");
+            //a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_msecs / 1000) + "s.");
             emit synthFinished(m_err);
             break;
         }
@@ -183,7 +183,7 @@ void AbcSynth::monitorPlayback()
         m_mutex.unlock();
         /* stopped before ending: player has been freed and nulled */
         mon->stop();
-        a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_msecs / 1000) + "s.");
+        //a->mainWindow()->statusBar()->showMessage(tr("Done: ") + QString::number(m_msecs / 1000) + "s.");
         emit synthFinished(m_err);
     }
 }
@@ -259,7 +259,6 @@ void AbcSynth::play(const QString& midifile) {
         qWarning() << "Cannot load MIDI file: " << midifile;
     } else {
         qDebug() << "Starting file playback with SoundFont " << sf;
-        a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
 
         /* start synthesizer thread */
         fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
@@ -292,8 +291,6 @@ void AbcSynth::play(const QByteArray& ba)
         qWarning() << "Cannot load MIDI buffer." ;
     } else {
         qDebug() << "Starting buffer playback with SoundFont " << sf;
-
-        a->mainWindow()->statusBar()->showMessage(tr("Starting synthesis..."));
 
         /* start synthesizer thread */
         fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
