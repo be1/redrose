@@ -40,7 +40,7 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     connect(this, &AbcPlainTextEdit::updateRequest, this, &AbcPlainTextEdit::updateLineNumberArea);
     connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkDictionnary);
     connect(this, &AbcPlainTextEdit::modificationChanged, this, &AbcPlainTextEdit::flagModified);
-#if 0
+#ifndef NEW_AUTOPLAY
     if (settings.value(EDITOR_AUTOPLAY).toBool()) {
         autoplay = true;
         connect(this, &AbcPlainTextEdit::cursorPositionChanged, this, &AbcPlainTextEdit::checkPlayableNote);

@@ -13,6 +13,7 @@
 #ifdef USE_LIBABCM2PS
 #include "../abcm2ps/abcm2ps.h"
 #endif
+
 const int MAXTUNES = 9999;
 
 const QRegularExpression EditVBoxLayout::m_abcext(QStringLiteral("\\.abc$"));
@@ -200,8 +201,12 @@ void EditVBoxLayout::manageTextOrCursorChange(const QTextCursor& tc)
         synth->seek(tick);
         positionslider.setValue(tick);
     }
-
+#ifdef NEW_AUTOPLAY
+    //FIXME midiKeyFromCharIndex is too restrictive!
+    //FIXME2 if parser failed, no fire!
+    //for now, prefer abcplaintextedit's method
     fireNoteUnderCursor();
+#endif
 }
 
 void EditVBoxLayout::fireNoteUnderCursor() {
@@ -648,19 +653,10 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
     int x = 0;
     QString abc = abcPlainTextEdit()->constructHeaders(selectionIndex, &x);
     abc.append(note);
-#if 0
-    const QDataStream* stream = midigen.generate(abc.toUtf8(), xvOfCursor('X', abcplaintextedit.textCursor()));
-    QIODevice* dev = stream->device();
-    dev->seek(0);
-    QByteArray ba = stream->device()->readAll();
-    synth->play(ba);
-    delete stream;
-#else
     int c = -1, p = 0, k = -1;
     if (autoplayer.genFirstNote(abc, &c, &p, &k)) {
         synth->fire(c, p, k, 80);
     }
-#endif
 }
 
 void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, AbcProcess::Continuation cont)
