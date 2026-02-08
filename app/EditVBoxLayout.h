@@ -102,6 +102,7 @@ private:
     Settings settings;
     bool m_autoplay = false;
     bool m_regenerate = true; /* wether to regenerate MIDI for playback */
+    bool m_parse_success = false; /* internal parser for playback following */
     AbcModel m_model;
     AbcSynth* synth;
     PsGenerator* psgen;

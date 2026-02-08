@@ -318,7 +318,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     /* refresh model */
     /* we only can follow full tune. disable mapping on partial selection */
     qDebug() << __func__ << "making model" << tosave.size();
-    m_model.fromAbcBuffer(tosave.toUtf8(), selection.isEmpty());
+    m_parse_success = m_model.fromAbcBuffer(tosave.toUtf8(), selection.isEmpty());
 
     /* and MIDI file */
 
@@ -440,7 +440,7 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
                 long charidx = abcPlainTextEdit()->textCursor().position();
                 long tick = m_model.midiTickFromCharIndex(charidx);
                 /* if we position cursor outside of music */
-                if (tick < 0) {
+                if (m_parse_success && tick < 0) {
                     synth->m_tick = 0;
                 }
             }
@@ -622,7 +622,7 @@ void EditVBoxLayout::onTextChanged() {
     m_regenerate = true;
 
     QString abctext = abcplaintextedit.toPlainText();
-    m_model.fromAbcBuffer(abctext.toUtf8(), true);
+    m_parse_success = m_model.fromAbcBuffer(abctext.toUtf8(), true);
 
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
@@ -635,7 +635,7 @@ void EditVBoxLayout::onTextLoaded()
     m_regenerate = true;
 
     QString abctext = abcplaintextedit.toPlainText();
-    m_model.fromAbcBuffer(abctext.toUtf8(), true);
+    m_parse_success = m_model.fromAbcBuffer(abctext.toUtf8(), true);
 
     AbcPlainTextEdit* te = qobject_cast<AbcPlainTextEdit*>(sender());
     QTextCursor tc = te->textCursor();
