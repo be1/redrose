@@ -345,7 +345,7 @@ void AbcSynth::stop()
         fluid_adriver = NULL;
         delete_fluid_player(fluid_player);
         fluid_player = NULL;
-        /* we can play another tune:
+        /* if we play another tune,
          * reset the original state. */
         fluid_synth_system_reset(fluid_synth);
     }

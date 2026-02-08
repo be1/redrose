@@ -511,6 +511,7 @@ void EditVBoxLayout::onSynthTickChanged(int tick)
 
     positionslider.setValue(tick);
 
+    /* follow only if full tune (no partial selection) */
     bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
     if (follow) {
         int cidx = m_model.charIndexFromMidiTick(tick);
