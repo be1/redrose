@@ -5,6 +5,7 @@
 #include "EditWidget.h"
 #include "settings.h"
 #include "wizard.h"
+#include "config.h"
 #include <QMessageBox>
 #include <QApplication>
 #include <QFileDialog>
@@ -45,9 +46,10 @@ ScoreMenu::ScoreMenu(QWidget* parent)
     addAction(tr("Save"), QKeySequence::Save, this, &ScoreMenu::onSaveActionTriggered);
     addAction(tr("Save as"), QKeySequence::SaveAs, this, &ScoreMenu::onSaveAsActionTriggered);
 #endif
-    addAction(tr("Export to MIDI"), this, &ScoreMenu::onExportActionTriggered);
+    addAction(tr("Export to MIDI"), this, &ScoreMenu::onExportMidiActionTriggered);
+    addAction(tr("Export to WAV"), this, &ScoreMenu::onExportWavActionTriggered);
     addAction(tr("Export to Postscript"), this, &ScoreMenu::onExportPsActionTriggered);
-    addAction(tr("Export to PDF"), this, &ScoreMenu::onExportPdfActionTriggered); //FIXME libspectre export fails.
+    addAction(tr("Export to PDF"), this, &ScoreMenu::onExportPdfActionTriggered);
 #if (QT_VERSION < QT_VERSION_CHECK(6, 3, 0))
     addAction(tr("Close"), this, &ScoreMenu::onCloseActionTriggered, QKeySequence::Close);
     addAction(tr("Quit"), this, &ScoreMenu::onQuitActionTriggered, QKeySequence::Quit);
@@ -236,6 +238,18 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
     }
 }
 
+EditWidget *ScoreMenu::getCurrentEditWidget()
+{
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    AbcMainWindow* w = a->mainWindow();
+    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
+    int cur = edittabs->currentIndex();
+    if (cur < 0)
+        return nullptr;
+
+    return qobject_cast<EditWidget*>(edittabs->currentWidget());
+}
+
 void ScoreMenu::updateRecentFileActions()
 {
     Settings settings;
@@ -314,13 +328,13 @@ void ScoreMenu::onSaveActionTriggered()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
-    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
 
-    int cur = edittabs->currentIndex();
-    if (cur < 0)
+    EditWidget* ew = getCurrentEditWidget();
+
+    if (!ew)
         return;
 
-    QString fileName = *qobject_cast<EditWidget*>(edittabs->currentWidget())->fileName();
+    QString fileName = *ew->fileName();
     if (fileName.isEmpty()) {
         QMessageBox::warning(w, tr("Warning"), tr("Could not save an untitled ABC file!"));
         return;
@@ -328,10 +342,7 @@ void ScoreMenu::onSaveActionTriggered()
 
     QFile file(fileName);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
-        AbcApplication* a = static_cast<AbcApplication*>(qApp);
-        EditTabWidget *edittabs = a->mainWindow()->mainHSplitter()->editTabWidget();
-        EditWidget* widget = static_cast<EditWidget*>(edittabs->currentWidget());
-        AbcPlainTextEdit *edit = widget->editVBoxLayout()->abcPlainTextEdit();
+        AbcPlainTextEdit *edit = ew->editVBoxLayout()->abcPlainTextEdit();
         QString tosave = edit->toPlainText();
         file.write(tosave.toUtf8());
         file.close();
@@ -348,8 +359,9 @@ void ScoreMenu::onSaveAsActionTriggered()
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
     EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
-    int cur = edittabs->currentIndex();
-    if (cur < 0)
+
+    EditWidget* ew = getCurrentEditWidget();
+    if (!ew)
         return;
 
     QString  home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
@@ -364,29 +376,22 @@ void ScoreMenu::onSaveAsActionTriggered()
 
     QFileInfo info(fileName);
     edittabs->setTabText(edittabs->currentIndex(), info.baseName());
-    EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
     ew->setFileName(fileName);
     return onSaveActionTriggered();
 }
 
-void ScoreMenu::onExportActionTriggered()
+void ScoreMenu::onExportMidiActionTriggered()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
-    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
-    int cur = edittabs->currentIndex();
-    if (cur < 0)
+
+    EditWidget* ew = getCurrentEditWidget();
+    if (!ew)
         return;
 
-    EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
-#if 0
-    if (!ew->editVBoxLayout()->abcPlainTextEdit()->isSaved()) {
-        QMessageBox::warning(w, tr("Warning"), tr("Please save score before to export."));
-        return;
-    }
-#endif
     QString exp = *ew->fileName();
-    exp.replace(m_abcext, ".mid");
+    int x = ew->editVBoxLayout()->xSpinBox()->value();
+    exp.replace(m_abcext, QString::number(x) + ".mid");
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export MIDI file"), exp, tr("MIDI file (*.mid)"));
     if (fileName.isEmpty())
         return; /* cancelled */
@@ -394,24 +399,43 @@ void ScoreMenu::onExportActionTriggered()
     ew->editVBoxLayout()->exportMIDI(fileName);
 }
 
-void ScoreMenu::onExportPsActionTriggered()
+void ScoreMenu::onExportWavActionTriggered()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
-    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
-    int cur = edittabs->currentIndex();
-    if (cur < 0)
+
+    EditWidget* ew = getCurrentEditWidget();
+    if (!ew)
         return;
 
-    EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
-#if 0
-    if (!ew->editVBoxLayout()->abcPlainTextEdit()->isSaved()) {
-        QMessageBox::warning(w, tr("Warning"), tr("Please save score before to export."));
-        return;
-    }
-#endif
     QString exp = *ew->fileName();
-    exp.replace(m_abcext, ".ps");
+    int x = ew->editVBoxLayout()->xSpinBox()->value();
+    exp.replace(m_abcext, QString::number(x) + ".wav");
+    QString fileName = QFileDialog::getSaveFileName(w, tr("Export WAV file"), exp, tr("WAV file (*.wav)"));
+    if (fileName.isEmpty())
+        return; /* cancelled */
+
+    ew->editVBoxLayout()->exportWAV(fileName);
+}
+
+void ScoreMenu::onExportPsActionTriggered()
+{
+    Settings settings;
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    AbcMainWindow* w = a->mainWindow();
+
+    EditWidget* ew = getCurrentEditWidget();
+    if (!ew)
+        return;
+
+    QString exp = *ew->fileName();
+    int x = ew->editVBoxLayout()->xSpinBox()->value();
+
+    if (settings.value(PSTUNES_KEY) == TUNES_SELECTED)
+        exp.replace(m_abcext, QString::number(x) + ".ps");
+    else
+        exp.replace(m_abcext, ".ps");
+
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export Postscript file"), exp, tr("Postscript file (*.ps)"));
     if (fileName.isEmpty())
         return; /* cancelled */
@@ -421,22 +445,22 @@ void ScoreMenu::onExportPsActionTriggered()
 
 void ScoreMenu::onExportPdfActionTriggered()
 {
+    Settings settings;
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
-    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
-    int cur = edittabs->currentIndex();
-    if (cur < 0)
+
+    EditWidget* ew = getCurrentEditWidget();
+    if (!ew)
         return;
 
-    EditWidget* ew = qobject_cast<EditWidget*>(edittabs->currentWidget());
-#if 0
-    if (!ew->editVBoxLayout()->abcPlainTextEdit()->isSaved()) {
-        QMessageBox::warning(w, tr("Warning"), tr("Please save score before to export."));
-        return;
-    }
-#endif
     QString exp = *ew->fileName();
-    exp.replace(m_abcext, ".pdf");
+    int x = ew->editVBoxLayout()->xSpinBox()->value();
+
+    if (settings.value(PSTUNES_KEY) == TUNES_SELECTED)
+        exp.replace(m_abcext, QString::number(x) + ".pdf");
+    else
+        exp.replace(m_abcext, ".pdf");
+
     QString fileName = QFileDialog::getSaveFileName(w, tr("Export PDF file"), exp, tr("PDF file (*.pdf)"));
     if (fileName.isEmpty())
         return; /* cancelled */
@@ -459,7 +483,7 @@ void ScoreMenu::onCloseActionTriggered()
 
 void ScoreMenu::onNewActionTriggered()
 {
-#if 0
+#if 0 /* old no-wizard version */
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
     EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();

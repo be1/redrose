@@ -3,6 +3,7 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include "EditWidget.h"
 #include "wizard.h"
 
 class ScoreMenu: public QMenu
@@ -21,13 +22,16 @@ protected:
     QString strippedName(const QString &fullFileName);
     void generateTemplate(QString &abc, Wizard::Template tmpl);
 
+    EditWidget* getCurrentEditWidget();
+
 protected slots:
     void onQuitActionTriggered();
     void onOpenActionTriggered();
     void onOpenRecentActionTriggered();
     void onSaveActionTriggered();
     void onSaveAsActionTriggered();
-    void onExportActionTriggered();
+    void onExportMidiActionTriggered();
+    void onExportWavActionTriggered();
     void onExportPsActionTriggered();
     void onExportPdfActionTriggered();
     void onCloseActionTriggered();
