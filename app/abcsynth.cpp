@@ -313,6 +313,49 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
     QTimer::singleShot(500, this, [this, chan, key] () { fluid_synth_noteoff(fluid_synth_auto, chan, key); });
 }
 
+void AbcSynth::render(const QString& wav_filename, const QString &midifile)
+{
+    Settings settings;
+
+    fluid_settings_t* fsettings;
+    fluid_synth_t* fsynth;
+    fluid_player_t* fplayer;
+    fluid_file_renderer_t* frenderer;
+
+    fsettings = new_fluid_settings();
+    fluid_settings_setstr(fsettings, "audio.file.name", wav_filename.toUtf8().constData());
+    fluid_settings_setstr(fsettings, "player.timing-source", "sample");
+    fluid_settings_setint(fsettings, "synth.lock-memory", 0);
+    fsynth = new_fluid_synth(fsettings);
+
+    QVariant soundfont = settings.value(SOUNDFONT_KEY);
+    QString sf = soundfont.toString();
+
+    fluid_synth_sfload(fsynth, sf.toUtf8().constData(), 0);
+    fplayer = new_fluid_player(fsynth);
+    fluid_player_add(fplayer, midifile.toUtf8().constData());
+    fluid_player_play(fplayer);
+
+    frenderer = new_fluid_file_renderer(fsynth);
+    while (fluid_player_get_status(fplayer) == FLUID_PLAYER_PLAYING) {
+        if (fluid_file_renderer_process_block(frenderer) != FLUID_OK)
+            break;
+    }
+
+    fluid_player_stop (fplayer);
+    fluid_player_join(fplayer);
+
+    delete_fluid_file_renderer(frenderer);
+    delete_fluid_player(fplayer);
+    delete_fluid_synth(fsynth);
+    delete_fluid_settings(fsettings);
+}
+
+void AbcSynth::render(const QString &wav_filename, const QByteArray &ba)
+{
+// FIXME with fluid_player_add_mem(fplayer, buf, len);
+}
+
 void AbcSynth::seek(int tick)
 {
     QMutexLocker locker(&m_mutex);

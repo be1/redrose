@@ -18,6 +18,8 @@ public:
     void play(const QString& midifile);
     void play(const QByteArray& ba);
     void fire(int chan, int pgm, int key, int vel);
+    void render(const QString& wav_filename, const QString& midifile);
+    void render(const QString& wav_filename, const QByteArray& ba);
     void seek(int tick);
     int getTotalTicks();
     void stop(void); /* synchronous */
