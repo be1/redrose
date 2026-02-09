@@ -289,14 +289,14 @@ void EditVBoxLayout::onPlayClicked()
     }
 }
 
-void EditVBoxLayout::exportMIDI(QString filename) {
+void EditVBoxLayout::exportMIDI(QString outfilename) {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     QString tosave;
 
     /* what text to save */
 
     if (selection.isEmpty()) { /* full tune: */
-        if (m_regenerate == false && filename.isEmpty()) {
+        if (m_regenerate == false && outfilename.isEmpty()) {
             /* if filename is empty, playback will be requested */
             qDebug() << "no need to regenerate MIDI";
             onGenerateMIDIFinished(0, "", AbcProcess::ContinuationRender);
@@ -339,25 +339,25 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     tempFile.close();
 
     AbcProcess::Continuation cont;
-    if (filename.isEmpty()) {
+    if (outfilename.isEmpty()) {
         cont = AbcProcess::ContinuationRender; /* continue to playback */
     } else {
         cont = AbcProcess::ContinuationNone; /* just export */
     }
 
-    if (filename.isEmpty()) {
-        filename = tempFile.fileName();
-        filename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
+    if (outfilename.isEmpty()) {
+        outfilename = tempFile.fileName();
+        outfilename.replace(m_abcext, QString::number(xspinbox.value()) + ".mid");
     }
 
     qDebug() << "regenerate MIDI";
-    m_midigen = new MidiGenerator(&m_model, filename, this);
+    m_midigen = new MidiGenerator(&m_model, outfilename, this);
     connect(m_midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
 
     m_midigen->generate(tempFile.fileName(), xspinbox.value(), cont);
 }
 
-void EditVBoxLayout::exportWAV(QString filename)
+void EditVBoxLayout::exportWAV(QString outfilename)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
@@ -369,7 +369,7 @@ void EditVBoxLayout::exportWAV(QString filename)
     tempFile.open();
     tempFile.write(tosave.toUtf8());
     tempFile.close();
-    wavFileName = filename;
+    wavFileName = outfilename;
 
     /* we will generate a _temporary_ MIDI file */
     m_midigen = new MidiGenerator(&m_model, QString(), this);
@@ -387,7 +387,7 @@ void EditVBoxLayout::removePSFile()
         QFile::remove(temp);
 }
 
-void EditVBoxLayout::exportPS(QString filename)
+void EditVBoxLayout::exportPS(QString outfilename)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
@@ -398,12 +398,12 @@ void EditVBoxLayout::exportPS(QString filename)
     tempFile.open();
     tempFile.write(tosave.toUtf8());
     tempFile.close();
-    psgen = new PsGenerator(filename, this);
+    psgen = new PsGenerator(outfilename, this);
     connect(psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
     psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::Continuation::ContinuationNone);
 }
 
-void EditVBoxLayout::exportPDF(QString filename)
+void EditVBoxLayout::exportPDF(QString outfilename)
 {
     AbcApplication *a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
@@ -414,7 +414,7 @@ void EditVBoxLayout::exportPDF(QString filename)
     tempFile.open();
     tempFile.write(tosave.toUtf8());
     tempFile.close();
-    pdfFileName = filename;
+    pdfFileName = outfilename;
     /* we will generate a _temporary_ PS file */
     psgen = new PsGenerator(QString(), this);
     connect(psgen, &PsGenerator::generated, this, &EditVBoxLayout::onGeneratePSFinished);
@@ -478,8 +478,10 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
             /* show cursor following playback */
             abcplaintextedit.setFocus(Qt::OtherFocusReason);
         } else if (cont == AbcProcess::ContinuationConvert) /* WAV Export */ {
-            //FIXME with wavFilename member.
-            qDebug() << wavFileName;
+            QString midifile(tempFile.fileName());
+            midifile.replace(m_abcext, QString::number(xspinbox.value())  + ".mid");
+
+            synth->render(wavFileName, midifile);
         }
     }
 

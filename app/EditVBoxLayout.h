@@ -40,17 +40,17 @@ public:
      * @brief exportPostscript
      * @param filename Output file path. Can be empty (has defaults).
      */
-    void exportPS(QString filename);
+    void exportPS(QString outfilename);
 
-    void exportPDF(QString filename);
+    void exportPDF(QString outfilename);
 
     /**
      * @brief exportMIDI
      * @param filename Output file path. Can be emtpy (has defaults).
      */
-    void exportMIDI(QString filename);
+    void exportMIDI(QString outfilename);
 
-    void exportWAV(QString filename);
+    void exportWAV(QString outfilename);
 
 signals:
     void doExportMIDI(const QString& outfilename);
