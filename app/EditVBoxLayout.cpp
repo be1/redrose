@@ -327,8 +327,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
         a->mainWindow()->statusBar()->showMessage(tr("Internal ABC parser error: playback following will not work!"));
     }
 
-    /* and MIDI file */
-
+    /* and export MIDI file */
     int v = abcplaintextedit.currentXV('V');
 
     if (!m_model.selectVoiceNo(xspinbox.value(), v))
@@ -343,7 +342,7 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     if (filename.isEmpty()) {
         cont = AbcProcess::ContinuationRender; /* continue to playback */
     } else {
-        cont = AbcProcess::ContinuationNone; /* will not play, it's just an export */
+        cont = AbcProcess::ContinuationNone; /* just export */
     }
 
     if (filename.isEmpty()) {
@@ -356,6 +355,26 @@ void EditVBoxLayout::exportMIDI(QString filename) {
     connect(m_midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
 
     m_midigen->generate(tempFile.fileName(), xspinbox.value(), cont);
+}
+
+void EditVBoxLayout::exportWAV(QString filename)
+{
+    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    if (a->isQuit())
+        return;
+
+    a->mainWindow()->statusBar()->showMessage(tr("Exporting WAV..."));
+    QString tosave = selection.isEmpty() ? abcPlainTextEdit()->toPlainText() : selection;
+
+    tempFile.open();
+    tempFile.write(tosave.toUtf8());
+    tempFile.close();
+    wavFileName = filename;
+
+    /* we will generate a _temporary_ MIDI file */
+    m_midigen = new MidiGenerator(&m_model, QString(), this);
+    connect(m_midigen, &MidiGenerator::generated, this, &EditVBoxLayout::onGenerateMIDIFinished);
+    m_midigen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::Continuation::ContinuationConvert);
 }
 
 void EditVBoxLayout::removePSFile()
@@ -374,7 +393,7 @@ void EditVBoxLayout::exportPS(QString filename)
     if (a->isQuit())
         return;
 
-    a->mainWindow()->statusBar()->showMessage(tr("Exporting score..."));
+    a->mainWindow()->statusBar()->showMessage(tr("Exporting PS..."));
     QString tosave = abcPlainTextEdit()->toPlainText();
     tempFile.open();
     tempFile.write(tosave.toUtf8());
@@ -390,7 +409,7 @@ void EditVBoxLayout::exportPDF(QString filename)
     if (a->isQuit())
         return;
 
-    a->mainWindow()->statusBar()->showMessage(tr("Exporting score..."));
+    a->mainWindow()->statusBar()->showMessage(tr("Exporting PDF..."));
     QString tosave = abcPlainTextEdit()->toPlainText();
     tempFile.open();
     tempFile.write(tosave.toUtf8());
@@ -458,6 +477,9 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
 
             /* show cursor following playback */
             abcplaintextedit.setFocus(Qt::OtherFocusReason);
+        } else if (cont == AbcProcess::ContinuationConvert) /* WAV Export */ {
+            //FIXME with wavFilename member.
+            qDebug() << wavFileName;
         }
     }
 

@@ -41,12 +41,16 @@ public:
      * @param filename Output file path. Can be empty (has defaults).
      */
     void exportPS(QString filename);
+
     void exportPDF(QString filename);
+
     /**
      * @brief exportMIDI
      * @param filename Output file path. Can be emtpy (has defaults).
      */
     void exportMIDI(QString filename);
+
+    void exportWAV(QString filename);
 
 signals:
     void doExportMIDI(const QString& outfilename);
@@ -94,7 +98,8 @@ private:
     QLabel xlabel;
     QString fileName; /* original abc file name */
     QString pdfFileName; /* needed for PDF export */
-    AbcTemporaryFile tempFile;
+    QString wavFileName; /* needed for WAV export */
+    AbcTemporaryFile tempFile; /* temporary abc file name we work on */
     QProgressIndicator* progress;
     QString selection;
     int selectionIndex;
