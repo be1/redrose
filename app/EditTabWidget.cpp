@@ -19,7 +19,7 @@ EditTabWidget::~EditTabWidget()
     }
 }
 
-int EditTabWidget::addTab(EditWidget *swidget)
+int EditTabWidget::addTab(EditWidget* swidget)
 {
     QFileInfo info(*(swidget->fileName()));
     int ret = QTabWidget::addTab(swidget, info.baseName());
@@ -39,7 +39,7 @@ void EditTabWidget::removeTab(int index)
     m->mainHSplitter()->viewWidget()->cleanup();
     m->mainHSplitter()->viewWidget()->psWidget()->load(QString()); /* the only way to clear view */
 
-    EditWidget *w = qobject_cast<EditWidget*>(widget(index));
+    EditWidget* w = qobject_cast<EditWidget*>(widget(index));
     QTabWidget::removeTab(index);
     delete w;
 }
@@ -59,7 +59,7 @@ void EditTabWidget::askRemoveTab(int index)
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* m = a->mainWindow();
 
-    EditWidget *w = qobject_cast<EditWidget*>(widget(index));
+    EditWidget* w = qobject_cast<EditWidget*>(widget(index));
     if (!w->editVBoxLayout()->abcPlainTextEdit()->isSaved() &&
             (QMessageBox::StandardButton::No == QMessageBox::question(m, tr("Really close?"),
                                                                       tr("Current score not saved!\nClose this score anyway?"))))

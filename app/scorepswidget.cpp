@@ -4,7 +4,7 @@
 #include <QFileInfo>
 #include <QDebug>
 
-ScorePsWidget::ScorePsWidget(QWidget *parent):
+ScorePsWidget::ScorePsWidget(QWidget* parent):
     QGraphicsView(parent)
 {
     initialize();
@@ -25,7 +25,7 @@ void ScorePsWidget::initialize()
     connect(&m_refreshTimer, &QTimer::timeout, this, &ScorePsWidget::refresh);
 }
 
-ScorePsWidget::ScorePsWidget(const QString &filename, QWidget *parent):
+ScorePsWidget::ScorePsWidget(const QString& filename, QWidget* parent):
     QGraphicsView(parent)
 {
     initialize();
@@ -80,7 +80,7 @@ void ScorePsWidget::refresh()
     }
 }
 
-void ScorePsWidget::resizeEvent(QResizeEvent *event) {
+void ScorePsWidget::resizeEvent(QResizeEvent* event) {
     QGraphicsView::resizeEvent(event);
     if (event->size().width() != width() && event->size().height() != height()) {
         if (m_refreshTimer.isActive())
@@ -91,7 +91,7 @@ void ScorePsWidget::resizeEvent(QResizeEvent *event) {
     m_refreshTimer.start();
 }
 
-void ScorePsWidget::keyReleaseEvent(QKeyEvent *ev) {
+void ScorePsWidget::keyReleaseEvent(QKeyEvent* ev) {
     QGraphicsView::keyReleaseEvent(ev);
     if (ev->key() == Qt::Key_Control) {
         this->m_ctrl = false;
@@ -99,7 +99,7 @@ void ScorePsWidget::keyReleaseEvent(QKeyEvent *ev) {
     }
 }
 
-void ScorePsWidget::keyPressEvent(QKeyEvent *ev) {
+void ScorePsWidget::keyPressEvent(QKeyEvent* ev) {
     QGraphicsView::keyPressEvent(ev);
     int key = ev->key();
     if (key == Qt::Key_Control) {
@@ -125,7 +125,7 @@ void ScorePsWidget::keyPressEvent(QKeyEvent *ev) {
     }
 }
 
-void ScorePsWidget::wheelEvent(QWheelEvent *ev) {
+void ScorePsWidget::wheelEvent(QWheelEvent* ev) {
     QPoint delta = ev->angleDelta();
     //if (!delta.isNull() && m_ctrl) {
     if (!delta.isNull() && (ev->modifiers() & Qt::ControlModifier)) {
@@ -186,7 +186,7 @@ void ScorePsWidget::zoomReset()
     m_scale_factor = 1. / m_default_scale_factor;
 }
 
-void ScorePsWidget::setPixmap(const QPixmap &pm)
+void ScorePsWidget::setPixmap(const QPixmap& pm)
 {
     if (m_pixmap_item) {
         scene()->removeItem(m_pixmap_item);
@@ -202,7 +202,7 @@ bool ScorePsWidget::isEmpty()
     return m_current_page == nullptr;
 }
 
-void ScorePsWidget::load(const QString &filename)
+void ScorePsWidget::load(const QString& filename)
 {
     spectre_document_free(m_document);
     m_document = nullptr;

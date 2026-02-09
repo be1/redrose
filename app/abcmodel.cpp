@@ -19,7 +19,7 @@ AbcModel::~AbcModel() {
     }
 }
 
-bool AbcModel::fromAbcBuffer(const QByteArray &ba, bool with_charmap) {
+bool AbcModel::fromAbcBuffer(const QByteArray& ba, bool with_charmap) {
     QElapsedTimer et;
     et.start();
     if (m_implementation)
@@ -207,11 +207,11 @@ int AbcModel::errorChar() const {
     return m_implementation->error_char_nr;
 }
 
-abc *AbcModel::implementation() const {
+struct abc* AbcModel::implementation() const {
     return m_implementation;
 }
 
-abc_tune *AbcModel::tuneOfModel(int tune) const {
+struct abc_tune* AbcModel::tuneOfModel(int tune) const {
     if (!m_implementation) {
         qDebug() << "no implementation yet.";
         return nullptr;

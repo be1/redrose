@@ -6,7 +6,7 @@
 #include "AbcApplication.h"
 #include "settings.h"
 
-PlayerPrefDialog::PlayerPrefDialog(QWidget *parent): QDialog(parent)
+PlayerPrefDialog::PlayerPrefDialog(QWidget* parent): QDialog(parent)
 {
     Settings settings;
 

@@ -102,7 +102,7 @@ void EditVBoxLayout::finalize()
 }
 
 void EditVBoxLayout::onSynthInited(bool err) {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     progress->stopAnimation();
     progress->deleteLater();
     progress = nullptr;
@@ -120,32 +120,32 @@ void EditVBoxLayout::removeMIDIFile(int x) {
         QFile::remove(temp);
 }
 
-AbcPlainTextEdit *EditVBoxLayout::abcPlainTextEdit()
+AbcPlainTextEdit* EditVBoxLayout::abcPlainTextEdit()
 {
     return &abcplaintextedit;
 }
 
-PlayPushButton *EditVBoxLayout::playPushButton()
+PlayPushButton* EditVBoxLayout::playPushButton()
 {
     return &playpushbutton;
 }
 
-RunPushButton *EditVBoxLayout::runPushButton()
+RunPushButton* EditVBoxLayout::runPushButton()
 {
     return &runpushbutton;
 }
 
-QSlider *EditVBoxLayout::positionSlider()
+QSlider* EditVBoxLayout::positionSlider()
 {
     return &positionslider;
 }
 
-QSpinBox *EditVBoxLayout::xSpinBox()
+QSpinBox* EditVBoxLayout::xSpinBox()
 {
     return &xspinbox;
 }
 
-void EditVBoxLayout::setFileName(const QString &fn)
+void EditVBoxLayout::setFileName(const QString& fn)
 {
     fileName = fn;
 }
@@ -257,7 +257,7 @@ void EditVBoxLayout::onXChanged(int value)
 void EditVBoxLayout::onPlayClicked()
 {
     static QString dot;
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
         return;
 
@@ -290,7 +290,7 @@ void EditVBoxLayout::onPlayClicked()
 }
 
 void EditVBoxLayout::exportMIDI(QString outfilename) {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     QString tosave;
 
     /* what text to save */
@@ -359,7 +359,7 @@ void EditVBoxLayout::exportMIDI(QString outfilename) {
 
 void EditVBoxLayout::exportWAV(QString outfilename)
 {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
         return;
 
@@ -389,7 +389,7 @@ void EditVBoxLayout::removePSFile()
 
 void EditVBoxLayout::exportPS(QString outfilename)
 {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
         return;
 
@@ -405,7 +405,7 @@ void EditVBoxLayout::exportPS(QString outfilename)
 
 void EditVBoxLayout::exportPDF(QString outfilename)
 {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
         return;
 
@@ -424,7 +424,7 @@ void EditVBoxLayout::exportPDF(QString outfilename)
 void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr, AbcProcess::Continuation cont)
 {
     playpushbutton.setEnabled(true);
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
         return;
 
@@ -491,7 +491,7 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
 
 void EditVBoxLayout::onSynthFinished(bool err)
 {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     if (err)
         a->mainWindow()->statusBar()->showMessage(tr("Synthesis error."));
 
@@ -512,7 +512,7 @@ void EditVBoxLayout::onSynthFinished(bool err)
 }
 
 void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     QMessageBox::warning(a->mainWindow(), title, text);
 }
 
@@ -546,7 +546,7 @@ void EditVBoxLayout::onSynthTickChanged(int tick)
     }
 }
 
-void EditVBoxLayout::saveToPDF(const QString &outfile)
+void EditVBoxLayout::saveToPDF(const QString& outfile)
 {
     QFileInfo info(psgen->outFile());
     if (!info.exists()) {
@@ -584,7 +584,7 @@ void EditVBoxLayout::onDisplayClicked()
 
     /* do not disable/enable xspinbox because Play manages it for audio rendering! */
 
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
         return;
 
@@ -599,7 +599,7 @@ void EditVBoxLayout::onDisplayClicked()
     psgen->generate(tempFile.fileName(), xspinbox.value(), AbcProcess::ContinuationRender);
 }
 
-int EditVBoxLayout::numberFromHeader(const QString &hs, char h) {
+int EditVBoxLayout::numberFromHeader(const QString& hs, char h) {
     QString rs(": *([\\d]+).*$");
     QRegularExpression re("^" + rs.prepend(h));
     int ret = 0;
@@ -673,7 +673,7 @@ void EditVBoxLayout::onTextLoaded()
     manageTextOrCursorChange(tc);
 }
 
-void EditVBoxLayout::onPlayableNote(const QString &note)
+void EditVBoxLayout::onPlayableNote(const QString& note)
 {
     int x = 0;
     QString abc = abcPlainTextEdit()->constructHeaders(selectionIndex, &x);
@@ -684,9 +684,9 @@ void EditVBoxLayout::onPlayableNote(const QString &note)
     }
 }
 
-void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString &errstr, AbcProcess::Continuation cont)
+void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString& errstr, AbcProcess::Continuation cont)
 {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
     if (a->isQuit())
         return;
 

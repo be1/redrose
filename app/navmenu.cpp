@@ -1,7 +1,7 @@
 #include "navmenu.h"
 #include "AbcApplication.h"
 
-NavMenu::NavMenu(QWidget *parent) : QMenu(parent)
+NavMenu::NavMenu(QWidget* parent) : QMenu(parent)
 {
     setTitle(tr("Navigation"));
 
@@ -78,7 +78,7 @@ void NavMenu::onViewActionTriggered()
     evl->runPushButton()->click();
 }
 
-EditVBoxLayout *NavMenu::getCurrentLayout()
+EditVBoxLayout* NavMenu::getCurrentLayout()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
@@ -92,7 +92,7 @@ EditVBoxLayout *NavMenu::getCurrentLayout()
     return evl;
 }
 
-ViewVSplitter *NavMenu::getViewWidget() {
+ViewVSplitter* NavMenu::getViewWidget() {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
     MainHSplitter* mhs = w->mainHSplitter();

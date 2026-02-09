@@ -16,12 +16,12 @@ MainHSplitter::~MainHSplitter()
 {
 }
 
-EditTabWidget *MainHSplitter::editTabWidget()
+EditTabWidget* MainHSplitter::editTabWidget()
 {
     return &edittabwidget;
 }
 
-ViewVSplitter *MainHSplitter::viewWidget()
+ViewVSplitter* MainHSplitter::viewWidget()
 {
     return &viewwidget;
 }

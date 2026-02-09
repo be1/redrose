@@ -10,8 +10,8 @@ class Generator : public QObject
 {
     Q_OBJECT
 public:
-    Generator(const AbcModel* model, const QString& outfile = "", QObject *parent = nullptr);
-    Generator(const QString& outfile = "", QObject *parent = nullptr);
+    Generator(const AbcModel* model, const QString& outfile = "", QObject* parent = nullptr);
+    Generator(const QString& outfile = "", QObject* parent = nullptr);
     /**
      * @brief generate
      * @param input filename to process.
@@ -36,7 +36,7 @@ protected:
     void spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, \
                       const QDir& wrk, AbcProcess::Continuation cont);
     static const QRegularExpression m_abcext;
-    const AbcModel *model();
+    const AbcModel* model();
 
 protected slots:
     void onProgramFinished(int exitCode, QProcess::ExitStatus exitStatus, AbcProcess::ProcessType, AbcProcess::Continuation cont);

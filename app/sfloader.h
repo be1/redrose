@@ -8,7 +8,7 @@
 class SFLoader : public QThread {
     Q_OBJECT
 public:
-    explicit SFLoader(fluid_synth_t *synth, const char* soundfont_path, QObject *parent);
+    explicit SFLoader(fluid_synth_t* synth, const char* soundfont_path, QObject* parent);
     int sfid();
 
 protected:

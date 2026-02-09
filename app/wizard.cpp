@@ -6,7 +6,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 
-Wizard::Wizard(QWidget *parent) :
+Wizard::Wizard(QWidget* parent) :
     QDialog(parent)
 {
     setWindowTitle(tr("New score"));

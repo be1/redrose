@@ -30,7 +30,7 @@ public:
     void cleanup();
 
 protected:
-    void resizeEvent(QResizeEvent *event) override;
+    void resizeEvent(QResizeEvent* event) override;
 
 protected slots:
     void prevPageClicked();

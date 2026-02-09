@@ -14,7 +14,7 @@ public:
 	EditTabWidget(QWidget* parent = nullptr);
     ~EditTabWidget();
 
-    int addTab(EditWidget *swidget);
+    int addTab(EditWidget* swidget);
     void removeTab(int index);
     void removeTabs(void);
     void askRemoveTab(int index);

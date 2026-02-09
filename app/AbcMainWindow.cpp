@@ -20,17 +20,17 @@ AbcMainWindow::~AbcMainWindow()
 {
 }
 
-MainHSplitter *AbcMainWindow::mainHSplitter()
+MainHSplitter* AbcMainWindow::mainHSplitter()
 {
     return &mainhsplitter;
 }
 
-ScoreMenu *AbcMainWindow::scoreMenu()
+ScoreMenu* AbcMainWindow::scoreMenu()
 {
     return &scoremenu;
 }
 
-void AbcMainWindow::closeEvent(QCloseEvent *event)
+void AbcMainWindow::closeEvent(QCloseEvent* event)
 {
     if (QMessageBox::StandardButton::Yes == scoremenu.gracefulQuit()) {
         AbcApplication* a = static_cast<AbcApplication*>(qApp);
@@ -43,7 +43,7 @@ void AbcMainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void AbcMainWindow::keyPressEvent(QKeyEvent *event) {
+void AbcMainWindow::keyPressEvent(QKeyEvent* event) {
     QWidget* w = mainhsplitter.editTabWidget()->currentWidget();
     EditWidget* ew = static_cast<EditWidget*>(w);
 

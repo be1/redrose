@@ -11,10 +11,10 @@ class AbcHighlighter : public QSyntaxHighlighter
     Q_OBJECT
 
 public:
-    AbcHighlighter(QTextDocument *parent = 0);
+    AbcHighlighter(QTextDocument* parent = 0);
 
 protected:
-    void highlightBlock(const QString &text) override;
+    void highlightBlock(const QString& text) override;
 
 private:
     struct AbcHighlightingRule
@@ -51,11 +51,11 @@ public:
     ~AbcPlainTextEdit();
     void setPlainText(const QString& plaintext); /* oveload QPlaintextEdit's */
 
-    void lineNumberAreaPaintEvent(QPaintEvent *event);
+    void lineNumberAreaPaintEvent(QPaintEvent* event);
     int lineNumberAreaWidth();
 
-    void setCompleter(QCompleter *c);
-    QCompleter *completer() const;
+    void setCompleter(QCompleter* c);
+    QCompleter* completer() const;
 
     bool isSaved();
     void setSaved();
@@ -75,12 +75,12 @@ signals:
     void plainTextSet();
 
 protected:
-    void resizeEvent(QResizeEvent *event) override;
-    void keyPressEvent(QKeyEvent *e) override;
-    void focusInEvent(QFocusEvent *e) override;
+    void resizeEvent(QResizeEvent* event) override;
+    void keyPressEvent(QKeyEvent* e) override;
+    void focusInEvent(QFocusEvent* e) override;
     void flagModified(bool enable);
-    virtual void contextMenuEvent(QContextMenuEvent *e) override;
-    virtual void mouseDoubleClickEvent(QMouseEvent *e) override;
+    virtual void contextMenuEvent(QContextMenuEvent* e) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* e) override;
 
 private slots:
     void updateLineNumberAreaWidth1(int newBlockCount);
@@ -88,21 +88,21 @@ private slots:
     void highlightCurrentLine();
     void checkDictionnary();
     void checkPlayableNote();
-    void updateLineNumberArea(const QRect &rect, int dy);
-    void insertCompletion(const QString &completion);
+    void updateLineNumberArea(const QRect& rect, int dy);
+    void insertCompletion(const QString& completion);
     void onFindActivated();
     void onFindForwardActivated();
     void onFindBackwardActivated();
 
 private:
-    QAbstractItemModel *modelFromFile(const QString &fileName);
-    QAbstractItemModel *dictModel; /* normal dictionnary */
-    QAbstractItemModel *psModel;   /* Rendering dictionnary */
-    QAbstractItemModel *gmModel;   /* General MIDI dictionary */
+    QAbstractItemModel* modelFromFile(const QString& fileName);
+    QAbstractItemModel* dictModel; /* normal dictionnary */
+    QAbstractItemModel* psModel;   /* Rendering dictionnary */
+    QAbstractItemModel* gmModel;   /* General MIDI dictionary */
     static const QString delimiter;
 
-    QWidget *lineNumberArea;
-    AbcHighlighter *highlighter;
+    QWidget* lineNumberArea;
+    AbcHighlighter* highlighter;
     QString playableNoteUnderCursor(QTextCursor tc);
     QString textUnderCursor() const;
     QString lineUnderCursor() const;
@@ -118,7 +118,7 @@ private:
     QAction* findnextaction;
     QAction* findprevaction;
 
-    QCompleter *c = nullptr;
+    QCompleter* c = nullptr;
     bool saved;
     bool autoplay;
 };
@@ -126,7 +126,7 @@ private:
 class LineNumberArea : public QWidget
 {
 public:
-    LineNumberArea(AbcPlainTextEdit *editor) : QWidget(editor), abcplaintextedit(editor)
+    LineNumberArea(AbcPlainTextEdit* editor) : QWidget(editor), abcplaintextedit(editor)
     {}
 
     QSize sizeHint() const override
@@ -135,13 +135,13 @@ public:
     }
 
 protected:
-    void paintEvent(QPaintEvent *event) override
+    void paintEvent(QPaintEvent* event) override
     {
         abcplaintextedit->lineNumberAreaPaintEvent(event);
     }
 
 private:
-    AbcPlainTextEdit *abcplaintextedit;
+    AbcPlainTextEdit* abcplaintextedit;
 };
 
 #endif

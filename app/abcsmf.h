@@ -10,7 +10,7 @@ class AbcSmf : public QObject
 {
     Q_OBJECT
 public:
-    explicit AbcSmf(int vel = 96, int shorter = 9, bool expr = 0, const AbcModel *model = nullptr, QObject *parent = nullptr);
+    explicit AbcSmf(int vel = 96, int shorter = 9, bool expr = 0, const AbcModel* model = nullptr, QObject* parent = nullptr);
     bool select(int x = 1);
     void reset();
     void writeAll();
@@ -19,7 +19,7 @@ public:
 
 private:
     bool isDynamicMark(const struct abc_symbol* deco);
-    bool isDynamicEnd(const abc_symbol *deco);
+    bool isDynamicEnd(const abc_symbol* deco);
     char getDynamic(const char* mark, unsigned char base, unsigned char dflt);
     void applyDecoration(struct abc_symbol* s);
     void writeSingleNoteEvent(smf_track_t* track, unsigned char voice_nr, struct abc_symbol* s);
@@ -30,15 +30,15 @@ private:
     int writeExpression (smf_track_t* track, long delta, unsigned char chan, unsigned char value);
     void parseVoiceHeader(const char* v);
     void writeName(smf_track_t* track, const char* l);
-    void writeLyric(smf_track_t *track, const char* l);
+    void writeLyric(smf_track_t* track, const char* l);
     void writeBpmTempo(smf_track_t* track, long val);
-    void writeTimeSignature(smf_track_t *track, unsigned char numerator, unsigned char denominator);
-    void writeKeySignature(smf_track_t *track, unsigned char keysig, unsigned char mode);
+    void writeTimeSignature(smf_track_t* track, unsigned char numerator, unsigned char denominator);
+    void writeKeySignature(smf_track_t* track, unsigned char keysig, unsigned char mode);
     void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type, unsigned char ev_key, unsigned char ev_val);
     void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type);
     void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type, unsigned char ev_val);
     void writeMidiEvent(smf_track_t* track, long int delta, unsigned char ev_type, const char* ev_val);
-    void writeTrack(smf_track_t *t, int voice_nr);
+    void writeTrack(smf_track_t* t, int voice_nr);
 
     struct abc_symbol* findClosingDynamics(struct abc_symbol* s, long* duration);
     long computeCut(struct abc_symbol* s);

@@ -18,7 +18,7 @@
 #ifdef EBUG
 void handler(int sig) {
   int fd = open("/tmp/redrose.trace", O_CREAT|O_RDWR|O_TRUNC, S_IRUSR|S_IWUSR);
-  void *array[30];
+  void* array[30];
   size_t size;
 
   // get void*'s for all entries on the stack

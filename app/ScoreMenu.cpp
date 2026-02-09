@@ -113,7 +113,7 @@ QString ScoreMenu::strippedName(const QString& fullFileName)
     return QFileInfo(fullFileName).fileName();
 }
 
-void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
+void ScoreMenu::generateTemplate(QString& abc, Wizard::Template tmpl)
 {
     int voices = 1;
     QString grouping;
@@ -238,11 +238,11 @@ void ScoreMenu::generateTemplate(QString &abc, Wizard::Template tmpl)
     }
 }
 
-EditWidget *ScoreMenu::getCurrentEditWidget()
+EditWidget* ScoreMenu::getCurrentEditWidget()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
-    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
+    EditTabWidget* edittabs = w->mainHSplitter()->editTabWidget();
     int cur = edittabs->currentIndex();
     if (cur < 0)
         return nullptr;
@@ -292,11 +292,11 @@ bool ScoreMenu::loadFile(const QString& fileName)
 
     QFile file(fileName);
     if (file.open(QFile::ReadOnly | QFile::Text)) {
-        EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
+        EditTabWidget* edittabs = w->mainHSplitter()->editTabWidget();
 
         EditWidget* widget = new EditWidget(fileName, edittabs);
 
-        AbcPlainTextEdit *edit = widget->editVBoxLayout()->abcPlainTextEdit();
+        AbcPlainTextEdit* edit = widget->editVBoxLayout()->abcPlainTextEdit();
         edit->setPlainText(file.readAll());
         file.close();
         edit->setSaved();
@@ -316,7 +316,7 @@ void ScoreMenu::onOpenRecentActionTriggered()
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
 
-    QAction *action = qobject_cast<QAction *>(sender());
+    QAction* action = qobject_cast<QAction*>(sender());
     if (action) {
         if (!loadFile(action->data().toString())) {
             QMessageBox::warning(w, tr("Warning"), tr("Could not open score!"));
@@ -342,7 +342,7 @@ void ScoreMenu::onSaveActionTriggered()
 
     QFile file(fileName);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
-        AbcPlainTextEdit *edit = ew->editVBoxLayout()->abcPlainTextEdit();
+        AbcPlainTextEdit* edit = ew->editVBoxLayout()->abcPlainTextEdit();
         QString tosave = edit->toPlainText();
         file.write(tosave.toUtf8());
         file.close();
@@ -358,7 +358,7 @@ void ScoreMenu::onSaveAsActionTriggered()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
-    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
+    EditTabWidget* edittabs = w->mainHSplitter()->editTabWidget();
 
     EditWidget* ew = getCurrentEditWidget();
     if (!ew)
@@ -472,7 +472,7 @@ void ScoreMenu::onCloseActionTriggered()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
-    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
+    EditTabWidget* edittabs = w->mainHSplitter()->editTabWidget();
 
     int cur = edittabs->currentIndex();
     if (cur < 0)
@@ -486,7 +486,7 @@ void ScoreMenu::onNewActionTriggered()
 #if 0 /* old no-wizard version */
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
-    EditTabWidget *edittabs = w->mainHSplitter()->editTabWidget();
+    EditTabWidget* edittabs = w->mainHSplitter()->editTabWidget();
 
     QString empty;
     EditWidget* swidget = new EditWidget(empty, nullptr);
@@ -525,7 +525,7 @@ void ScoreMenu::onNewActionTriggered()
         generateTemplate(abc, wiz->templat());
     }
 
-    EditTabWidget *edittabs = a->mainWindow()->mainHSplitter()->editTabWidget();
+    EditTabWidget* edittabs = a->mainWindow()->mainHSplitter()->editTabWidget();
     EditWidget* widget = new EditWidget(QString(), nullptr);
     widget->editVBoxLayout()->abcPlainTextEdit()->setPlainText(abc);
     edittabs->addTab(widget);

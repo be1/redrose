@@ -12,7 +12,7 @@ PsGenerator::PsGenerator(const QString& outfile, QObject* parent)
 {
 }
 
-void PsGenerator::generate(const QString &input, int xopt, AbcProcess::Continuation cont)
+void PsGenerator::generate(const QString& input, int xopt, AbcProcess::Continuation cont)
 {
     Settings settings;
     QVariant param = settings.value(PSTUNES_KEY);
@@ -36,7 +36,7 @@ void PsGenerator::generate(const QString &input, int xopt, AbcProcess::Continuat
 #ifdef USE_LIBABCM2PS
     QString s;
     QByteArray ba;
-    char **av = (char**)malloc(argv.length() * sizeof (char*));
+    char** av = (char**)malloc(argv.length() * sizeof (char*));
     for (int i = 0; i < argv.length(); i++) {
         s = argv.at(i);
         ba = s.toUtf8();
@@ -65,7 +65,7 @@ void PsGenerator::generate(const QString &input, int xopt, AbcProcess::Continuat
 }
 
 
-void PsGenerator::spawnPsCompiler(const QString &prog, const QStringList& args, const QDir &wrk, AbcProcess::Continuation cont)
+void PsGenerator::spawnPsCompiler(const QString& prog, const QStringList& args, const QDir& wrk, AbcProcess::Continuation cont)
 {
     return spawnProgram(prog, args, AbcProcess::ProcessCompiler, wrk, cont);
 }

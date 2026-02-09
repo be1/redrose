@@ -13,8 +13,8 @@ public:
     explicit EditWidget(const QString& fileName, QWidget* parent = nullptr);
     ~EditWidget();
 
-    EditVBoxLayout *editVBoxLayout();
-    QString *fileName();
+    EditVBoxLayout* editVBoxLayout();
+    QString* fileName();
     void setFileName(const QString& fileName);
 
 private:

@@ -12,8 +12,8 @@ public:
     MainHSplitter(QWidget* parent = nullptr);
     ~MainHSplitter();
 
-    EditTabWidget *editTabWidget();
-    ViewVSplitter *viewWidget();
+    EditTabWidget* editTabWidget();
+    ViewVSplitter* viewWidget();
 
 private:
     EditTabWidget edittabwidget;

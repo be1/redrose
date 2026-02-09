@@ -48,13 +48,13 @@ private:
     fluid_audio_driver_t* fluid_adriver;
     fluid_audio_driver_t* fluid_adriver_auto = NULL; /* for note autoplay */
     fluid_player_t* fluid_player;
-    SFLoader *sfloader;
-    SFLoader *sfloader_auto; /* for note autoplay */
+    SFLoader* sfloader;
+    SFLoader* sfloader_auto; /* for note autoplay */
     QString curSFont;
     int sfid;
-    char *id; /* jack identifier */
-    char *drv; /* "alsa" or "pulseaudio" or "jack" */
-    char *sf; /* soundfont file name */
+    char* id; /* jack identifier */
+    char* drv; /* "alsa" or "pulseaudio" or "jack" */
+    char* sf; /* soundfont file name */
     bool inited;
     bool m_err;
     int m_msecs; /* elapsed miliseconds */

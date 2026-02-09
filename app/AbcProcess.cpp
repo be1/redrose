@@ -1,7 +1,7 @@
 #include "AbcProcess.h"
 #include <QDebug>
 
-AbcProcess::AbcProcess(ProcessType which, QObject *parent, Continuation cont)
+AbcProcess::AbcProcess(ProcessType which, QObject* parent, Continuation cont)
     : QProcess(parent),
       type(which),
       cont(cont)
@@ -22,7 +22,7 @@ AbcProcess::ProcessType AbcProcess::which()
     return type;
 }
 
-QByteArray *AbcProcess::log()
+QByteArray* AbcProcess::log()
 {
    return &stdlog;
 }

@@ -1,7 +1,7 @@
 #include "sfloader.h"
 
 
-SFLoader::SFLoader(fluid_synth_t *synth, const char *soundfont_path, QObject *parent)
+SFLoader::SFLoader(fluid_synth_t* synth, const char* soundfont_path, QObject* parent)
     : QThread(parent),
       fid(FLUID_FAILED)
 {

@@ -11,8 +11,8 @@ class MidiGenerator : public Generator
     Q_OBJECT
 public:
 
-    MidiGenerator(const QString &outfile = "", QObject* parent = nullptr);
-    MidiGenerator(const AbcModel* model, const QString &outfile = "", QObject* parent = nullptr);
+    MidiGenerator(const QString& outfile = "", QObject* parent = nullptr);
+    MidiGenerator(const AbcModel* model, const QString& outfile = "", QObject* parent = nullptr);
     /**
      * @brief generate.
      * @param inpputhint Input filename hint.
@@ -27,8 +27,8 @@ public:
 #endif
 
 protected:
-    void generateInternal(const QString &inputnamehint, int xopt, AbcProcess::Continuation cont);
-    void spawnMidiCompiler(const QString &prog, const QStringList& args, const QDir &wrk, AbcProcess::Continuation cont);
+    void generateInternal(const QString& inputnamehint, int xopt, AbcProcess::Continuation cont);
+    void spawnMidiCompiler(const QString& prog, const QStringList& args, const QDir& wrk, AbcProcess::Continuation cont);
 
 };
 

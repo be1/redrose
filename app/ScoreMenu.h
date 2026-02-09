@@ -19,8 +19,8 @@ public:
 protected:
     void setRecentFile(const QString& fileName, bool ok);
     void updateRecentFileActions();
-    QString strippedName(const QString &fullFileName);
-    void generateTemplate(QString &abc, Wizard::Template tmpl);
+    QString strippedName(const QString& fullFileName);
+    void generateTemplate(QString& abc, Wizard::Template tmpl);
 
     EditWidget* getCurrentEditWidget();
 
@@ -39,7 +39,7 @@ protected slots:
 
 private:
     enum { MaxRecentFiles = 5 };
-    QAction *recentFileActs[MaxRecentFiles];
+    QAction* recentFileActs[MaxRecentFiles];
 
     static const QRegularExpression m_abcext;
 };

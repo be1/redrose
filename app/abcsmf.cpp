@@ -3,7 +3,7 @@
 #include <QRegularExpression>
 #include "abcsmf.h"
 
-AbcSmf::AbcSmf(int vel, int shorter, bool expr, const AbcModel* model, QObject *parent) : QObject(parent),
+AbcSmf::AbcSmf(int vel, int shorter, bool expr, const AbcModel* model, QObject* parent) : QObject(parent),
     m_tune(nullptr),
     m_keysig(nullptr),
     m_unit_length(nullptr),
@@ -180,7 +180,7 @@ unsigned char AbcSmf::getDynAfter(struct abc_symbol* deco, unsigned char base, u
 
 struct abc_symbol* AbcSmf::findClosingDynamics(struct abc_symbol* s, long* duration) {
     /* input s must be the first note in (de)cresc */
-    struct abc_symbol *last_in_cresc = nullptr;
+    struct abc_symbol* last_in_cresc = nullptr;
     long cresc_duration = 0;
     struct abc_symbol* same_chord = nullptr;
 
@@ -221,7 +221,7 @@ int AbcSmf::writeExpression (smf_track_t* track, long delta, unsigned char chan,
     return 0;
 }
 
-void AbcSmf::parseVoiceHeader(const char *v) {
+void AbcSmf::parseVoiceHeader(const char* v) {
     QRegularExpression reClef("^\\d+ +(clef=)?([^ ]+)");
     QRegularExpressionMatch matchClef = reClef.match(v);
     int last = matchClef.lastCapturedIndex();
@@ -467,7 +467,7 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
     abc_release_voice(v);
 }
 
-void AbcSmf::saveToFile(const char *filename) {
+void AbcSmf::saveToFile(const char* filename) {
     if (smf_save(m_smf, filename))
         ;
 }
@@ -606,7 +606,7 @@ void AbcSmf::writeLyric(smf_track_t* track, const char* l) {
     }
 }
 
-void AbcSmf::writeBpmTempo(smf_track_t *track, long val) {
+void AbcSmf::writeBpmTempo(smf_track_t* track, long val) {
     unsigned int ms = 60000000;
     unsigned int set = ms / val;
     unsigned char set1 = (set & 0xFF0000) >> 16, set2 = (set & 0x00FF00) >> 8, set3 = set & 0x0000FF;
@@ -615,7 +615,7 @@ void AbcSmf::writeBpmTempo(smf_track_t *track, long val) {
     smf_track_add_event_delta_pulses(track, event, 0);
 }
 
-void AbcSmf::writeTimeSignature(smf_track_t *track, unsigned char numerator, unsigned char denominator) {
+void AbcSmf::writeTimeSignature(smf_track_t* track, unsigned char numerator, unsigned char denominator) {
     unsigned char exp = 0;
     long pow_of_2 = 1;
     while (pow_of_2 < denominator) {
@@ -628,28 +628,28 @@ void AbcSmf::writeTimeSignature(smf_track_t *track, unsigned char numerator, uns
     smf_track_add_event_delta_pulses(track, event, 0);
 }
 
-void AbcSmf::writeKeySignature(smf_track_t *track, unsigned char keysig, unsigned char mode) {
+void AbcSmf::writeKeySignature(smf_track_t* track, unsigned char keysig, unsigned char mode) {
     unsigned char data[5] = { 0xFF, 0x59, 0x02, keysig, mode };
     smf_event_t* event = smf_event_new_from_pointer(data, 5);
     smf_track_add_event_delta_pulses(track, event, 0);
 }
 
-void AbcSmf::writeMidiEvent(smf_track_t *track, long delta, unsigned char ev_type, unsigned char ev_key, unsigned char ev_val) {
+void AbcSmf::writeMidiEvent(smf_track_t* track, long delta, unsigned char ev_type, unsigned char ev_key, unsigned char ev_val) {
     smf_event_t* event = smf_event_new_from_bytes(ev_type, ev_key, ev_val);
     smf_track_add_event_delta_pulses(track, event, delta);
 }
 
-void AbcSmf::writeMidiEvent(smf_track_t *track, long delta, unsigned char ev_type, unsigned char ev_val) {
+void AbcSmf::writeMidiEvent(smf_track_t* track, long delta, unsigned char ev_type, unsigned char ev_val) {
     smf_event_t* event = smf_event_new_from_bytes(ev_type, ev_val, -1);
     smf_track_add_event_delta_pulses(track, event, delta);
 }
 
-void AbcSmf::writeMidiEvent(smf_track_t *track, long delta, unsigned char ev_type) {
+void AbcSmf::writeMidiEvent(smf_track_t* track, long delta, unsigned char ev_type) {
     smf_event_t* event = smf_event_new_from_bytes(ev_type, -1, -1);
     smf_track_add_event_delta_pulses(track, event, delta);
 }
 
-void AbcSmf::writeMidiEvent(smf_track_t *track, long delta, unsigned char ev_type, const char *ev_val) {
+void AbcSmf::writeMidiEvent(smf_track_t* track, long delta, unsigned char ev_type, const char* ev_val) {
     smf_event_t* event = smf_event_new_textual(ev_type, ev_val);
     smf_track_add_event_delta_pulses(track, event, delta);
 }

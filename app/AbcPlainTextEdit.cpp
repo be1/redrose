@@ -26,7 +26,7 @@ AbcPlainTextEdit::AbcPlainTextEdit(QWidget* parent)
     psModel = modelFromFile(":ps.txt");
     gmModel = modelFromFile(":gm.txt");
 
-    QCompleter *com = new QCompleter(this);
+    QCompleter* com = new QCompleter(this);
     com->setModel(dictModel);
     com->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
     com->setCaseSensitivity(Qt::CaseInsensitive);
@@ -90,13 +90,13 @@ AbcPlainTextEdit::~AbcPlainTextEdit()
     delete gmModel;
 }
 
-void AbcPlainTextEdit::setPlainText(const QString &plaintext)
+void AbcPlainTextEdit::setPlainText(const QString& plaintext)
 {
     QPlainTextEdit::setPlainText(plaintext);
     emit plainTextSet();
 }
 
-void AbcPlainTextEdit::setCompleter(QCompleter *completer)
+void AbcPlainTextEdit::setCompleter(QCompleter* completer)
 {
     if (c)
         c->disconnect(this);
@@ -109,11 +109,11 @@ void AbcPlainTextEdit::setCompleter(QCompleter *completer)
     c->setWidget(this);
     c->setCompletionMode(QCompleter::PopupCompletion);
     c->setFilterMode(Qt::MatchContains);
-    QObject::connect(c, QOverload<const QString &>::of(&QCompleter::activated),
+    QObject::connect(c, QOverload<const QString&>::of(&QCompleter::activated),
                      this, &AbcPlainTextEdit::insertCompletion);
 }
 
-QCompleter *AbcPlainTextEdit::completer() const
+QCompleter* AbcPlainTextEdit::completer() const
 {
     return c;
 }
@@ -123,7 +123,7 @@ void AbcPlainTextEdit::flagModified(bool enable)
     this->saved = !enable;
 }
 
-void AbcPlainTextEdit::contextMenuEvent(QContextMenuEvent *e)
+void AbcPlainTextEdit::contextMenuEvent(QContextMenuEvent* e)
 {
     QMenu* menu = createStandardContextMenu(e->globalPos());
     menu->setParent(this);
@@ -134,7 +134,7 @@ void AbcPlainTextEdit::contextMenuEvent(QContextMenuEvent *e)
     delete menu;
 }
 
-void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent *e)
+void AbcPlainTextEdit::mouseDoubleClickEvent(QMouseEvent* e)
 {
     QTextDocument* doc = document();
     QTextCursor tc = textCursor();
@@ -209,7 +209,7 @@ QString AbcPlainTextEdit::constructHeaders(int selectionIndex, int* x)
     return headers;
 }
 
-void AbcPlainTextEdit::insertCompletion(const QString &completion)
+void AbcPlainTextEdit::insertCompletion(const QString& completion)
 {
     if (c->widget() != this)
         return;
@@ -718,14 +718,14 @@ void AbcPlainTextEdit::checkPlayableNote()
     emit playableNote(note);
 }
 
-void AbcPlainTextEdit::focusInEvent(QFocusEvent *e)
+void AbcPlainTextEdit::focusInEvent(QFocusEvent* e)
 {
     if (c)
         c->setWidget(this);
     QPlainTextEdit::focusInEvent(e);
 }
 
-void AbcPlainTextEdit::keyPressEvent(QKeyEvent *e)
+void AbcPlainTextEdit::keyPressEvent(QKeyEvent* e)
 {
     /* avoid reaction when some text is selected */
     if (!textCursor().selectedText().isEmpty())
@@ -838,7 +838,7 @@ void AbcPlainTextEdit::updateLineNumberAreaWidth1(int newBlockCount) {
     updateLineNumberAreaWidth0();
 }
 
-void AbcPlainTextEdit::updateLineNumberArea(const QRect &rect, int dy)
+void AbcPlainTextEdit::updateLineNumberArea(const QRect& rect, int dy)
 {
     if (dy)
         lineNumberArea->scroll(0, dy);
@@ -849,7 +849,7 @@ void AbcPlainTextEdit::updateLineNumberArea(const QRect &rect, int dy)
         updateLineNumberAreaWidth0();
 }
 
-void AbcPlainTextEdit::resizeEvent(QResizeEvent *e)
+void AbcPlainTextEdit::resizeEvent(QResizeEvent* e)
 {
     QPlainTextEdit::resizeEvent(e);
 
@@ -876,7 +876,7 @@ void AbcPlainTextEdit::highlightCurrentLine()
     setExtraSelections(extraSelections);
 }
 
-void AbcPlainTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
+void AbcPlainTextEdit::lineNumberAreaPaintEvent(QPaintEvent* event)
 {
     QPainter painter(lineNumberArea);
     painter.fillRect(event->rect(), Qt::lightGray);
@@ -904,7 +904,7 @@ void AbcPlainTextEdit::lineNumberAreaPaintEvent(QPaintEvent *event)
     }
 }
 
-AbcHighlighter::AbcHighlighter(QTextDocument *parent)
+AbcHighlighter::AbcHighlighter(QTextDocument* parent)
     : QSyntaxHighlighter(parent)
 {
     Settings settings;
@@ -972,7 +972,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
         QStringLiteral("^X:[^\n]+"), QStringLiteral("^Z:[^\n]+"), QStringLiteral("\\[[KLMPQ]:[^\\]]+\\]")
     };
 
-    for (const QString &pattern : keywordPatterns) {
+    for (const QString& pattern : keywordPatterns) {
         rule.pattern = QRegularExpression(pattern);
         rule.format = headerFormat;
         highlightingRules.append(rule);
@@ -986,9 +986,9 @@ AbcHighlighter::AbcHighlighter(QTextDocument *parent)
 #endif
 }
 
-void AbcHighlighter::highlightBlock(const QString &text)
+void AbcHighlighter::highlightBlock(const QString& text)
 {
-    for (const AbcHighlightingRule &rule : std::as_const(highlightingRules)) {
+    for (const AbcHighlightingRule& rule : std::as_const(highlightingRules)) {
         QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
         while (matchIterator.hasNext()) {
             QRegularExpressionMatch match = matchIterator.next();
@@ -1019,7 +1019,7 @@ void AbcHighlighter::highlightBlock(const QString &text)
 #endif
 }
 
-QAbstractItemModel *AbcPlainTextEdit::modelFromFile(const QString& fileName)
+QAbstractItemModel* AbcPlainTextEdit::modelFromFile(const QString& fileName)
 {
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))

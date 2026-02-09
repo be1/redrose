@@ -13,7 +13,7 @@ class EditorPrefDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit EditorPrefDialog(QWidget *parent = nullptr);
+    explicit EditorPrefDialog(QWidget* parent = nullptr);
     ~EditorPrefDialog();
 
     QColor getColor(QString key);

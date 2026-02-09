@@ -9,7 +9,7 @@
 #endif
 #include "settings.h"
 
-AbcApplication::AbcApplication(int& argc, char **argv)
+AbcApplication::AbcApplication(int& argc, char** argv)
     : QApplication(argc, argv),
       logwindow(nullptr)
 {
@@ -83,12 +83,12 @@ void AbcApplication::setMainWindow(AbcMainWindow* w)
 	abcmainwindow = w;
 }
 
-AbcMainWindow *AbcApplication::mainWindow()
+AbcMainWindow* AbcApplication::mainWindow()
 {
 	return abcmainwindow;
 }
 
-void AbcApplication::openFileNames(const QStringList &fileNames)
+void AbcApplication::openFileNames(const QStringList& fileNames)
 {
     ScoreMenu* menu = mainWindow()->scoreMenu();
     for (int i = 0; i < fileNames.length(); i++) {
@@ -106,12 +106,12 @@ void AbcApplication::quit()
     QApplication::quit();
 }
 
-LogWindow *AbcApplication::logWindow() const
+LogWindow* AbcApplication::logWindow() const
 {
     return logwindow;
 }
 
-void AbcApplication::setLogWindow(LogWindow *newLogwindow)
+void AbcApplication::setLogWindow(LogWindow* newLogwindow)
 {
     logwindow = newLogwindow;
 }

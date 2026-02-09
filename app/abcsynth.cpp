@@ -7,7 +7,7 @@
 #include "settings.h"
 
 #if (FLUIDSYNTH_VERSION_MAJOR == 2 && FLUIDSYNTH_VERSION_MINOR < 3)
-static int handle_midi_event(void *data, fluid_midi_event_t *event) {
+static int handle_midi_event(void* data, fluid_midi_event_t* event) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
     if (self->m_tick == fluid_player_get_current_tick(self->player())) {
         ;
@@ -19,7 +19,7 @@ static int handle_midi_event(void *data, fluid_midi_event_t *event) {
     return fluid_synth_handle_midi_event(self->synth(), event);
 }
 #else
-static int handle_midi_tick(void *data, int tick) {
+static int handle_midi_tick(void* data, int tick) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
 
     if (self->m_tick == tick)
@@ -80,7 +80,7 @@ AbcSynth::AbcSynth(const QString& name, QObject* parent)
     fluid_synth_set_gain(fluid_synth, settings.value(VOLUME_KEY).toDouble());
 
     /* early soundfont load */
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
 
     QVariant soundfont = settings.value(SOUNDFONT_KEY);
     curSFont = soundfont.toString();
@@ -148,7 +148,7 @@ AbcSynth::~AbcSynth()
 void AbcSynth::monitorPlayback()
 {
     QTimer* mon = qobject_cast<QTimer*>(sender());
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
 
     m_mutex.lock();
 
@@ -211,7 +211,7 @@ void AbcSynth::abortSFLoad()
 void AbcSynth::onSFontFinished() {
     SFLoader* sfl = static_cast<SFLoader*>(sender());
     int fid = sfl->sfid();
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
 
     if (fid == FLUID_FAILED) {
         a->mainWindow()->statusBar()->showMessage(tr("Cannot load sound font: ") + sf);
@@ -229,7 +229,7 @@ void AbcSynth::onSFontFinished() {
 void AbcSynth::onSFontAutoFinished() {
     SFLoader* sfl = static_cast<SFLoader*>(sender());
     int fid = sfl->sfid();
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
 
     if (fid != FLUID_FAILED) {
         a->mainWindow()->statusBar()->showMessage(tr("Sound font loaded."));
@@ -240,7 +240,7 @@ void AbcSynth::onSFontAutoFinished() {
 
 
 void AbcSynth::play(const QString& midifile) {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
 
     if (isPlaying()) {
         qDebug() << "Synth is playing. Stopping it.";
@@ -274,7 +274,7 @@ void AbcSynth::play(const QString& midifile) {
 
 void AbcSynth::play(const QByteArray& ba)
 {
-    AbcApplication *a = static_cast<AbcApplication*>(qApp);
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
 
     if (isPlaying()) {
         qDebug() << "Synth is playing. Stopping it.";
@@ -313,7 +313,7 @@ void AbcSynth::fire(int chan, int pgm, int key, int vel)
     QTimer::singleShot(500, this, [this, chan, key] () { fluid_synth_noteoff(fluid_synth_auto, chan, key); });
 }
 
-void AbcSynth::render(const QString& wav_filename, const QString &midifile)
+void AbcSynth::render(const QString& wav_filename, const QString& midifile)
 {
     Settings settings;
 
@@ -351,7 +351,7 @@ void AbcSynth::render(const QString& wav_filename, const QString &midifile)
     delete_fluid_settings(fsettings);
 }
 
-void AbcSynth::render(const QString &wav_filename, const QByteArray &ba)
+void AbcSynth::render(const QString& wav_filename, const QByteArray& ba)
 {
 // FIXME with fluid_player_add_mem(fplayer, buf, len);
 }

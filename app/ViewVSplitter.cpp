@@ -58,7 +58,7 @@ ViewVSplitter::~ViewVSplitter()
 {
 }
 
-void ViewVSplitter::initBasename(const QString &orig, const QString &tmpbase, const QString &tmpdir)
+void ViewVSplitter::initBasename(const QString& orig, const QString& tmpbase, const QString& tmpdir)
 {
     qDebug() << __func__ << tmpbase;
     origname = orig;
@@ -110,7 +110,7 @@ void ViewVSplitter::cleanup()
     pswidget.verticalScrollBar()->setSliderPosition(0);
 }
 
-void ViewVSplitter::resizeEvent(QResizeEvent *event) {
+void ViewVSplitter::resizeEvent(QResizeEvent* event) {
     QSplitter::resizeEvent(event);
 
     int w, h;
@@ -129,7 +129,7 @@ void ViewVSplitter::resizeEvent(QResizeEvent *event) {
     pswidget.viewport()->resize(w, h);
 }
 
-ScorePsWidget *ViewVSplitter::psWidget()
+ScorePsWidget* ViewVSplitter::psWidget()
 {
     return &pswidget;
 }

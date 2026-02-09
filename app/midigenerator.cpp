@@ -8,17 +8,17 @@
 #include "abcsmf.h"
 #include "config.h"
 
-MidiGenerator::MidiGenerator(const QString &outfile, QObject *parent):
+MidiGenerator::MidiGenerator(const QString& outfile, QObject* parent):
     Generator(outfile, parent)
 {
 }
 
-MidiGenerator::MidiGenerator(const AbcModel *model, const QString &outfile, QObject *parent)
+MidiGenerator::MidiGenerator(const AbcModel* model, const QString& outfile, QObject* parent)
     : Generator(model, outfile, parent)
 {
 }
 
-void MidiGenerator::generate(const QString &inputpath, int xopt, AbcProcess::Continuation cont)
+void MidiGenerator::generate(const QString& inputpath, int xopt, AbcProcess::Continuation cont)
 {
     Settings settings;
     QVariant player = settings.value(PLAYER_KEY);
@@ -53,7 +53,7 @@ void MidiGenerator::generate(const QString &inputpath, int xopt, AbcProcess::Con
 }
 
 /* this use internal MIDI to SMF generator */
-void MidiGenerator::generateInternal(const QString &inputnamehint, int xopt, AbcProcess::Continuation cont)
+void MidiGenerator::generateInternal(const QString& inputnamehint, int xopt, AbcProcess::Continuation cont)
 {
     Settings settings;
     QVariant vel = settings.value(PLAYER_VELOCITY);
@@ -83,7 +83,7 @@ void MidiGenerator::generateInternal(const QString &inputnamehint, int xopt, Abc
         errstr = tr("Parse error line: ") + QString::number(model()->errorLine()) + tr(", char: ") + QString::number(model()->errorChar());
         emit generated(1, errstr, cont);
     } else {
-        AbcSmf *smf = new AbcSmf(vel.toInt(), dur.toInt(), expr.toBool(), model(), this);
+        AbcSmf* smf = new AbcSmf(vel.toInt(), dur.toInt(), expr.toBool(), model(), this);
         if (!smf) {
             emit generated(1, tr("Out of memory"), cont);
             return;
@@ -108,14 +108,14 @@ void MidiGenerator::generateInternal(const QString &inputnamehint, int xopt, Abc
     }
 }
 #if 0
-const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
+const QDataStream* MidiGenerator::generate(const QByteArray& inputbuf, int xopt)
 {
     struct abc* yy = abc_parse_buffer(inputbuf.constData(), inputbuf.size());
     if (yy->error) {
         abc_release_yy(yy);
         return nullptr;
     } else {
-        AbcSmf *smf = new AbcSmf(yy, 80, 10, xopt, this);
+        AbcSmf* smf = new AbcSmf(yy, 80, 10, xopt, this);
         if (!smf) {
             abc_release_yy(yy);
             return nullptr;
@@ -130,7 +130,7 @@ const QDataStream* MidiGenerator::generate(const QByteArray &inputbuf, int xopt)
     }
 }
 #endif
-void MidiGenerator::spawnMidiCompiler(const QString& prog, const QStringList &args, const QDir &wrk, AbcProcess::Continuation cont)
+void MidiGenerator::spawnMidiCompiler(const QString& prog, const QStringList& args, const QDir& wrk, AbcProcess::Continuation cont)
 {
     return spawnProgram(prog, args, AbcProcess::ProcessPlayer, wrk, cont);
 }

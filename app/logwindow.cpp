@@ -1,6 +1,6 @@
 #include "logwindow.h"
 
-LogWindow::LogWindow(QWidget *parent)
+LogWindow::LogWindow(QWidget* parent)
     : QWidget(parent)
 {
     setMinimumWidth(600);

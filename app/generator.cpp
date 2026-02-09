@@ -7,30 +7,30 @@
 
 const QRegularExpression Generator::m_abcext("\\.abc$");
 
-Generator::Generator(const AbcModel* model, const QString &outfile, QObject *parent) :
+Generator::Generator(const AbcModel* model, const QString& outfile, QObject* parent) :
     QObject(parent),
     m_model(model),
     outfile(outfile)
 {
 }
 
-Generator::Generator(const QString &outfile, QObject *parent):
+Generator::Generator(const QString& outfile, QObject* parent):
     QObject(parent),
     outfile(outfile)
 {
 }
 
-const QString &Generator::outFile()
+const QString& Generator::outFile()
 {
     return outfile;
 }
 
-void Generator::setOutFile(const QString &outfile)
+void Generator::setOutFile(const QString& outfile)
 {
     this->outfile = outfile;
 }
 
-bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* key)
+bool Generator::genFirstNote(const QString& abcbuf, int* chan, int* pgm, int* key)
 {
     QByteArray ba = abcbuf.toUtf8();
     struct abc* abc = abc_parse_buffer(ba.constData(), ba.size());
@@ -91,7 +91,7 @@ bool Generator::genFirstNote(const QString &abcbuf, int* chan, int* pgm, int* ke
 
 void Generator::spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, const QDir& wrk, AbcProcess::Continuation cont)
 {
-    AbcProcess *process = new AbcProcess(which, this, cont);
+    AbcProcess* process = new AbcProcess(which, this, cont);
     process->setWorkingDirectory(wrk.absolutePath());
     connect(process, QOverload<int, QProcess::ExitStatus, AbcProcess::ProcessType, AbcProcess::Continuation>::of(&AbcProcess::finished), this, &Generator::onProgramFinished);
     connect(process, &AbcProcess::errorOccurred, this, &Generator::onProgramError);
@@ -100,7 +100,7 @@ void Generator::spawnProgram(const QString& prog, const QStringList& args, AbcPr
     process->start(prog, args);
 }
 
-const AbcModel *Generator::model() {
+const AbcModel* Generator::model() {
     return m_model;
 }
 

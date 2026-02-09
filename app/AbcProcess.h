@@ -10,7 +10,7 @@ public:
     enum ProcessType {ProcessUnknown, ProcessCompiler, ProcessPlayer};
     enum Continuation {ContinuationNone, ContinuationRender, ContinuationConvert};
 
-    explicit AbcProcess(ProcessType which, QObject *parent, Continuation cont);
+    explicit AbcProcess(ProcessType which, QObject* parent, Continuation cont);
     ProcessType which();
     QByteArray* log();
 

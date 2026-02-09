@@ -21,12 +21,12 @@ public:
 	AbcMainWindow(QWidget* parent = nullptr);
     ~AbcMainWindow();
 
-    MainHSplitter *mainHSplitter();
-    ScoreMenu *scoreMenu();
+    MainHSplitter* mainHSplitter();
+    ScoreMenu* scoreMenu();
 
 protected:
-    void closeEvent(QCloseEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
+    void closeEvent(QCloseEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
 
 private:
     ScoreMenu scoremenu;

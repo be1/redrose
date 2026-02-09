@@ -5,7 +5,7 @@
 #include "config.h"
 #include "settings.h"
 
-EditorPrefDialog::EditorPrefDialog(QWidget *parent) : QDialog(parent)
+EditorPrefDialog::EditorPrefDialog(QWidget* parent) : QDialog(parent)
 {
     Settings settings;
 

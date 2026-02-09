@@ -29,9 +29,9 @@ public:
 	~EditVBoxLayout();
 
     void finalize(void);
-    AbcPlainTextEdit *abcPlainTextEdit();
-    PlayPushButton *playPushButton();
-    RunPushButton *runPushButton();
+    AbcPlainTextEdit* abcPlainTextEdit();
+    PlayPushButton* playPushButton();
+    RunPushButton* runPushButton();
     QSlider* positionSlider();
     QSpinBox* xSpinBox();
     void setFileName(const QString& fn);
@@ -56,7 +56,7 @@ signals:
     void doExportMIDI(const QString& outfilename);
 
 protected:
-    void spawnProgram(const QString& prog, const QStringList &args, AbcProcess::ProcessType which, const QDir &wrk, enum AbcProcess::Continuation cont);
+    void spawnProgram(const QString& prog, const QStringList& args, AbcProcess::ProcessType which, const QDir& wrk, enum AbcProcess::Continuation cont);
     void removePSFile();
     void removeMIDIFile(int x);
     int numberFromHeader(const QString& hs, char h);

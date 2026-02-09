@@ -12,7 +12,7 @@ public:
     void generate(const QString& input, int xopt, AbcProcess::Continuation cont) override;
 
 protected:
-    void spawnPsCompiler(const QString &prog, const QStringList& args, const QDir &wrk, AbcProcess::Continuation cont);
+    void spawnPsCompiler(const QString& prog, const QStringList& args, const QDir& wrk, AbcProcess::Continuation cont);
 };
 
 #endif // PSGENERATOR_H
