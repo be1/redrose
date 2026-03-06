@@ -830,7 +830,7 @@ Voulez-vous quitter malgré tout ?</translation>
     <message>
         <location filename="wizard.cpp" line="20"/>
         <source>Composer / Lyricist</source>
-        <translation>Composer / Parolier</translation>
+        <translation>Compositeur / Parolier</translation>
     </message>
     <message>
         <location filename="wizard.cpp" line="24"/>
