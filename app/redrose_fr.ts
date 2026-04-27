@@ -173,17 +173,17 @@ Fermer cette partition quand-même ?</translation>
     <message>
         <location filename="EditVBoxLayout.cpp" line="366"/>
         <source>Exporting WAV...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportation en WAV...</translation>
     </message>
     <message>
         <location filename="EditVBoxLayout.cpp" line="396"/>
         <source>Exporting PS...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportation en PS...</translation>
     </message>
     <message>
         <location filename="EditVBoxLayout.cpp" line="412"/>
         <source>Exporting PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportation en PDF...</translation>
     </message>
     <message>
         <location filename="EditVBoxLayout.cpp" line="553"/>
@@ -663,7 +663,7 @@ Redrose version </source>
     <message>
         <location filename="ScoreMenu.cpp" line="50"/>
         <source>Export to WAV</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter vers WAV</translation>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="51"/>
@@ -754,12 +754,12 @@ Voulez-vous quitter malgré tout ?</translation>
     <message>
         <location filename="ScoreMenu.cpp" line="414"/>
         <source>Export WAV file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en fichier WAV</translation>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="414"/>
         <source>WAV file (*.wav)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier WAV (*.wav)</translation>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="439"/>
