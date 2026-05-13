@@ -196,7 +196,8 @@ void EditVBoxLayout::manageTextOrCursorChange(const QTextCursor& tc)
 
     /* follow mouse click or kbd arrows */
     int tick = m_model.midiTickFromCharIndex(tc.position());
-    if (tick >= 0) {
+    bool follow = settings.value(EDITOR_FOLLOW).toBool();
+    if (tick >= 0 && follow) {
         synth->m_tick = tick;
         synth->seek(tick);
         positionslider.setValue(tick);
@@ -209,6 +210,7 @@ void EditVBoxLayout::manageTextOrCursorChange(const QTextCursor& tc)
 #endif
 }
 
+#ifdef NEW_AUTOPLAY
 void EditVBoxLayout::fireNoteUnderCursor() {
     if (!synth->isPlaying() && m_autoplay) {
         QTextCursor tc = abcplaintextedit.textCursor();
@@ -217,6 +219,7 @@ void EditVBoxLayout::fireNoteUnderCursor() {
             synth->fire(0, 0, key, 80);
     }
 }
+#endif
 
 void EditVBoxLayout::onXChanged(int value)
 {

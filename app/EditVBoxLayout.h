@@ -84,7 +84,9 @@ protected slots:
     void popupWarning(const QString& title, const QString& text);
     void onSliderMoved(int val);
     void onSynthTickChanged(int tick);
+#ifdef NEW_AUTOPLAY
     void fireNoteUnderCursor();
+#endif
 
 private:
     bool generating = false;
