@@ -27,7 +27,7 @@ public:
     bool isPlaying(void);
     fluid_synth_t* synth() { return fluid_synth; }
     fluid_player_t* player() { return fluid_player; }
-    int m_tick;
+    int m_next_tick;
 
 signals:
     void initFinished(bool err);

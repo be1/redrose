@@ -7,6 +7,7 @@
 ScorePsWidget::ScorePsWidget(QWidget* parent):
     QGraphicsView(parent)
 {
+    setFocusPolicy(Qt::NoFocus);
     initialize();
 }
 

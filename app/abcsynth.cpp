@@ -22,10 +22,10 @@ static int handle_midi_event(void* data, fluid_midi_event_t* event) {
 static int handle_midi_tick(void* data, int tick) {
     AbcSynth* self = static_cast<AbcSynth*>(data);
 
-    if (self->m_tick == tick)
+    if (self->m_next_tick == tick)
         return FLUID_OK;
 
-    self->m_tick = tick;
+    self->m_next_tick = tick;
     emit self->tickChanged(tick);
     return FLUID_OK;
 }
@@ -263,8 +263,8 @@ void AbcSynth::play(const QString& midifile) {
         /* start synthesizer thread */
         fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
 
-        if (m_tick > 0) {
-            fluid_player_seek(fluid_player, m_tick);
+        if (m_next_tick > 0) {
+            fluid_player_seek(fluid_player, m_next_tick);
         }
 
         m_err = fluid_player_play(fluid_player);
@@ -295,8 +295,8 @@ void AbcSynth::play(const QByteArray& ba)
         /* start synthesizer thread */
         fluid_adriver = new_fluid_audio_driver(fluid_settings, fluid_synth);
 
-        if (m_tick > 0) {
-            fluid_player_seek(fluid_player, m_tick);
+        if (m_next_tick > 0) {
+            fluid_player_seek(fluid_player, m_next_tick);
         }
 
         m_err = fluid_player_play(fluid_player);
@@ -353,7 +353,7 @@ void AbcSynth::render(const QString& wav_filename, const QString& midifile)
 
 void AbcSynth::render(const QString& wav_filename, const QByteArray& ba)
 {
-// FIXME with fluid_player_add_mem(fplayer, buf, len);
+// FIXME with fluid_player_add_mem(fplayer, ba.constData(), ba.size());
 }
 
 void AbcSynth::seek(int tick)

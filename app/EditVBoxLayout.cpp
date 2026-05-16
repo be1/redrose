@@ -178,9 +178,12 @@ void EditVBoxLayout::onCursorPositionChanged() {
 void EditVBoxLayout::manageTextOrCursorChange(const QTextCursor& tc)
 {
     int x = abcplaintextedit.currentXV('X');
+    bool follow = settings.value(EDITOR_FOLLOW).toBool();
+    bool xChanged = xspinbox.value() != x;
+    bool playing = synth->isPlaying();
 
     /* reset things only if cursor goes a different tune */
-    if (xspinbox.value() != x) {
+    if (xChanged) {
         removeMIDIFile(xspinbox.value());
         m_regenerate = true;
 
@@ -188,21 +191,32 @@ void EditVBoxLayout::manageTextOrCursorChange(const QTextCursor& tc)
         xspinbox.setValue(x);
         scheduleDisplay();
 
+        /* always stop on X change */
         synth->stop();
-        synth->m_tick = 0;
-    }
 
-    int v = abcplaintextedit.currentXV('V');
+        int v = abcplaintextedit.currentXV('V');
+        m_model.selectVoiceNo(x, v);
+        int tick = m_model.midiTickFromCharIndex(tc.position());
 
-    m_model.selectVoiceNo(x, v);
-
-    /* follow mouse click or kbd arrows */
-    int tick = m_model.midiTickFromCharIndex(tc.position());
-    bool follow = settings.value(EDITOR_FOLLOW).toBool();
-    if (tick >= 0 && follow) {
-        synth->m_tick = tick;
-        synth->seek(tick);
-        positionslider.setValue(tick);
+        /* if was already stopped: seek to new position */
+        if (follow && !playing && tick >= 0) {
+            synth->m_next_tick = tick;
+            synth->seek(tick);
+            positionslider.setValue(tick);
+        } else {
+            /* seek to 0 */
+            synth->m_next_tick = 0;
+            positionslider.setValue(0);
+        }
+    } else {
+        /* follow mouse click or kbd arrows */
+        int tick = m_model.midiTickFromCharIndex(tc.position());
+        if (tick >= 0 && follow) {
+            synth->stop();
+            synth->m_next_tick = tick;
+            synth->seek(tick);
+            positionslider.setValue(tick);
+        }
     }
 #ifdef NEW_AUTOPLAY
     //FIXME midiKeyFromCharIndex is too restrictive!
@@ -289,7 +303,7 @@ void EditVBoxLayout::onPlayClicked()
 
             /* pre seek for next play */
             if (positionSlider()->value() > 0)
-                synth->m_tick = positionslider.value();
+                synth->m_next_tick = positionslider.value();
         }
     }
 }
@@ -468,13 +482,13 @@ void EditVBoxLayout::onGenerateMIDIFinished(int exitCode, const QString& errstr,
 
             /* rewind synth if we selected a portion */
             if (!selection.isEmpty())
-                synth->m_tick = 0;
+                synth->m_next_tick = 0;
             else {
                 long charidx = abcPlainTextEdit()->textCursor().position();
                 long tick = m_model.midiTickFromCharIndex(charidx);
                 /* if we position cursor outside of music */
                 if (m_parse_success && tick < 0) {
-                    synth->m_tick = 0;
+                    synth->m_next_tick = 0;
                 }
             }
 
@@ -502,7 +516,7 @@ void EditVBoxLayout::onSynthFinished(bool err)
 
     /* end reached : reset to start */
     if (positionslider.value() == positionslider.maximum()) {
-        synth->m_tick = 0;
+        synth->m_next_tick = 0;
     }
 #if 0
     /* remove midi file after play */
@@ -528,7 +542,6 @@ void EditVBoxLayout::onSliderMoved(int val)
         positionslider.setValue(val);
     }
 
-    synth->m_tick = val;
     synth->seek(val);
 }
 
