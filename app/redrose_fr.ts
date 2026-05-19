@@ -13,26 +13,41 @@
     <name>AbcPlainTextEdit</name>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="67"/>
-        <location filename="AbcPlainTextEdit.cpp" line="242"/>
+        <location filename="AbcPlainTextEdit.cpp" line="273"/>
         <source>Find...</source>
         <translation>Rechercher...</translation>
     </message>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="73"/>
-        <location filename="AbcPlainTextEdit.cpp" line="256"/>
+        <location filename="AbcPlainTextEdit.cpp" line="287"/>
         <source>Find forward</source>
         <translation>Rechercher en avant</translation>
     </message>
     <message>
         <location filename="AbcPlainTextEdit.cpp" line="79"/>
-        <location filename="AbcPlainTextEdit.cpp" line="270"/>
+        <location filename="AbcPlainTextEdit.cpp" line="301"/>
         <source>Find backward</source>
         <translation>Rechercher en arrière</translation>
     </message>
     <message>
-        <location filename="AbcPlainTextEdit.cpp" line="242"/>
-        <location filename="AbcPlainTextEdit.cpp" line="256"/>
-        <location filename="AbcPlainTextEdit.cpp" line="270"/>
+        <location filename="AbcPlainTextEdit.cpp" line="122"/>
+        <source>_plus_</source>
+        <translation>_plus_</translation>
+    </message>
+    <message>
+        <location filename="AbcPlainTextEdit.cpp" line="122"/>
+        <source>_tunes.abc</source>
+        <translation>_morceaux.abc</translation>
+    </message>
+    <message>
+        <location filename="AbcPlainTextEdit.cpp" line="122"/>
+        <source>_tune.abc</source>
+        <translation>morceau.abc</translation>
+    </message>
+    <message>
+        <location filename="AbcPlainTextEdit.cpp" line="273"/>
+        <location filename="AbcPlainTextEdit.cpp" line="287"/>
+        <location filename="AbcPlainTextEdit.cpp" line="301"/>
         <source>Text:</source>
         <translation>Texte :</translation>
     </message>
@@ -123,7 +138,7 @@ Fermer cette partition quand-même ?</translation>
         <translation type="vanished">Arrêt de la synthèse...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="265"/>
+        <location filename="EditVBoxLayout.cpp" line="268"/>
         <source>Please wait...</source>
         <translation>Veuillez patienter...</translation>
     </message>
@@ -132,32 +147,32 @@ Fermer cette partition quand-même ?</translation>
         <translation type="vanished">Export de la partition...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="436"/>
+        <location filename="EditVBoxLayout.cpp" line="439"/>
         <source>Error during MIDI generation.</source>
         <translation>Erreur pendant la génération du MIDI.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="439"/>
-        <location filename="EditVBoxLayout.cpp" line="441"/>
-        <location filename="EditVBoxLayout.cpp" line="553"/>
-        <location filename="EditVBoxLayout.cpp" line="562"/>
-        <location filename="EditVBoxLayout.cpp" line="571"/>
-        <location filename="EditVBoxLayout.cpp" line="701"/>
+        <location filename="EditVBoxLayout.cpp" line="442"/>
+        <location filename="EditVBoxLayout.cpp" line="444"/>
+        <location filename="EditVBoxLayout.cpp" line="556"/>
+        <location filename="EditVBoxLayout.cpp" line="565"/>
+        <location filename="EditVBoxLayout.cpp" line="574"/>
+        <location filename="EditVBoxLayout.cpp" line="704"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="441"/>
+        <location filename="EditVBoxLayout.cpp" line="444"/>
         <source>Parse error in selected notes.</source>
         <translation>Erreur d&apos;analyse dans les notes sélectionnées.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="450"/>
+        <location filename="EditVBoxLayout.cpp" line="453"/>
         <source>MIDI generation finished.</source>
         <translation>Génération du MIDI terminée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="496"/>
+        <location filename="EditVBoxLayout.cpp" line="499"/>
         <source>Synthesis error.</source>
         <translation>Erreur durant la synthèse sonore.</translation>
     </message>
@@ -166,52 +181,52 @@ Fermer cette partition quand-même ?</translation>
         <translation type="vanished">Synthèse terminée.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="327"/>
+        <location filename="EditVBoxLayout.cpp" line="330"/>
         <source>Internal ABC parser error: playback following will not work!</source>
-        <translation>Erreur interne d'analyse ABC: le suivi de la lecture ne fonctionnera pas !</translation>
+        <translation>Erreur interne d&apos;analyse ABC: le suivi de la lecture ne fonctionnera pas !</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="366"/>
+        <location filename="EditVBoxLayout.cpp" line="369"/>
         <source>Exporting WAV...</source>
         <translation>Exportation en WAV...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="396"/>
+        <location filename="EditVBoxLayout.cpp" line="399"/>
         <source>Exporting PS...</source>
         <translation>Exportation en PS...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="412"/>
+        <location filename="EditVBoxLayout.cpp" line="415"/>
         <source>Exporting PDF...</source>
         <translation>Exportation en PDF...</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="553"/>
+        <location filename="EditVBoxLayout.cpp" line="556"/>
         <source>Could not find PS score</source>
         <translation>Impossible de trouver la partition PS</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="562"/>
+        <location filename="EditVBoxLayout.cpp" line="565"/>
         <source>Could not load PS score</source>
         <translation>Impossible de charger la partition PS</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="571"/>
+        <location filename="EditVBoxLayout.cpp" line="574"/>
         <source>Could not save to PDF</source>
         <translation>Impossible de sauvegarder en PDF</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="700"/>
+        <location filename="EditVBoxLayout.cpp" line="703"/>
         <source>Error during score generation.</source>
         <translation>Erreur pendant la génération de la partition.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="708"/>
+        <location filename="EditVBoxLayout.cpp" line="711"/>
         <source>Some errors during score generation. See log Window.</source>
         <translation>Des erreurs sont apparues durant la génération de la partition. Voir la fenêtre de log.</translation>
     </message>
     <message>
-        <location filename="EditVBoxLayout.cpp" line="713"/>
+        <location filename="EditVBoxLayout.cpp" line="716"/>
         <source>Score generated.</source>
         <translation>Partition générée.</translation>
     </message>
@@ -695,45 +710,45 @@ Do you want to quit anyway?</source>
 Voulez-vous quitter malgré tout ?</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="102"/>
+        <location filename="ScoreMenu.cpp" line="103"/>
         <source>Open ABC score</source>
         <translation>Ouvrir une partition ABC</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="102"/>
-        <location filename="ScoreMenu.cpp" line="370"/>
+        <location filename="ScoreMenu.cpp" line="103"/>
+        <location filename="ScoreMenu.cpp" line="390"/>
         <source>ABC score (*.abc)</source>
         <translation>Partition ABC (*.abc)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="322"/>
-        <location filename="ScoreMenu.cpp" line="339"/>
-        <location filename="ScoreMenu.cpp" line="353"/>
+        <location filename="ScoreMenu.cpp" line="341"/>
+        <location filename="ScoreMenu.cpp" line="358"/>
+        <location filename="ScoreMenu.cpp" line="372"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="322"/>
+        <location filename="ScoreMenu.cpp" line="341"/>
         <source>Could not open score!</source>
         <translation>Impossible d&apos;ouvrir la partition !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="339"/>
+        <location filename="ScoreMenu.cpp" line="358"/>
         <source>Could not save an untitled ABC file!</source>
         <translation>Impossible d&apos;enregistrer un fichier ABC sans nom !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="351"/>
+        <location filename="ScoreMenu.cpp" line="370"/>
         <source>Score saved.</source>
         <translation>Partition enregistrée.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="353"/>
+        <location filename="ScoreMenu.cpp" line="372"/>
         <source>Could not save ABC score!</source>
         <translation>Impossible d&apos;enregistrer la partition ABC !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="370"/>
+        <location filename="ScoreMenu.cpp" line="390"/>
         <source>Save ABC score</source>
         <translation>Enregistrer la partition ABC</translation>
     </message>
@@ -742,52 +757,52 @@ Voulez-vous quitter malgré tout ?</translation>
         <translation type="vanished">Veuillez sauvegarder la partition avant de l&apos;exporter.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="395"/>
+        <location filename="ScoreMenu.cpp" line="415"/>
         <source>Export MIDI file</source>
         <translation>Exporter en fichier MIDI</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="395"/>
+        <location filename="ScoreMenu.cpp" line="415"/>
         <source>MIDI file (*.mid)</source>
         <translation>Fichier MIDI (*.mid)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="414"/>
+        <location filename="ScoreMenu.cpp" line="434"/>
         <source>Export WAV file</source>
         <translation>Exporter en fichier WAV</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="414"/>
+        <location filename="ScoreMenu.cpp" line="434"/>
         <source>WAV file (*.wav)</source>
         <translation>Fichier WAV (*.wav)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="439"/>
+        <location filename="ScoreMenu.cpp" line="459"/>
         <source>Export Postscript file</source>
         <translation>Exporter en fichier Postscript</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="439"/>
+        <location filename="ScoreMenu.cpp" line="459"/>
         <source>Postscript file (*.ps)</source>
         <translation>Fichier Postscript (*.ps)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="464"/>
+        <location filename="ScoreMenu.cpp" line="484"/>
         <source>Export PDF file</source>
         <translation>Exporter en fichier PDF</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="464"/>
+        <location filename="ScoreMenu.cpp" line="484"/>
         <source>PDF file (*.pdf)</source>
         <translation>Fichier PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="502"/>
+        <location filename="ScoreMenu.cpp" line="522"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="502"/>
+        <location filename="ScoreMenu.cpp" line="522"/>
         <source>Composer</source>
         <translation>Compositeur</translation>
     </message>
