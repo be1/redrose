@@ -383,12 +383,11 @@ void ScoreMenu::onSaveAsActionTriggered()
     if (!ew)
         return;
 
-    //QString  home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    //home += QDir::separator();
-    //home += "score.abc";
-
+    QString title = ew->editVBoxLayout()->abcPlainTextEdit()->makeTitleFileName();
     QString workdir = settings.value(WORKDIR_KEY).toString();
-    QString fileName = QFileDialog::getSaveFileName(w, tr("Save ABC score"), workdir, tr("ABC score (*.abc)"));
+    QString path = workdir + QDir::separator() + title;
+
+    QString fileName = QFileDialog::getSaveFileName(w, tr("Save ABC score"), path, tr("ABC score (*.abc)"));
     if (fileName.isEmpty())
         return; /* cancelled */
 

@@ -50,7 +50,7 @@ public:
 	AbcPlainTextEdit(QWidget* parent = nullptr);
     ~AbcPlainTextEdit();
     void setPlainText(const QString& plaintext); /* oveload QPlaintextEdit's */
-
+    QString makeTitleFileName();
     void lineNumberAreaPaintEvent(QPaintEvent* event);
     int lineNumberAreaWidth();
 

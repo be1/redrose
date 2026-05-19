@@ -96,6 +96,37 @@ void AbcPlainTextEdit::setPlainText(const QString& plaintext)
     emit plainTextSet();
 }
 
+QString AbcPlainTextEdit::makeTitleFileName()
+{
+    QString wholetext = toPlainText();
+    QString first = "untitled";
+
+    QRegularExpression tre("^T:([^\n]*)", QRegularExpression::MultilineOption);
+    QRegularExpressionMatchIterator tmatch = tre.globalMatch(wholetext);
+
+    if (tmatch.hasNext()) {
+        QRegularExpressionMatch match = tmatch.next();
+        first = match.captured(1).toLower();
+    }
+
+    QRegularExpression xre("^X:", QRegularExpression::MultilineOption);
+    QRegularExpressionMatchIterator xmatch = xre.globalMatch(wholetext);
+    int others = -1;
+    while (xmatch.hasNext()) {
+        others++;
+        xmatch.next();
+    }
+
+    QString ret = first.replace(" ", "_");
+    if (others > 0) {
+        ret += tr("_plus_") + QString::number(others) + (others > 1 ? tr("_tunes.abc") : tr("_tune.abc"));
+    } else {
+        ret += ".abc";
+    }
+
+    return ret;
+}
+
 void AbcPlainTextEdit::setCompleter(QCompleter* completer)
 {
     if (c)
