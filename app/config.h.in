@@ -53,4 +53,6 @@
 
 #define VOLUME_KEY "ABC/volume"
 #define REVERB_KEY "ABC/reverb"
+
+#define WORKDIR_KEY \"ABC/workdir\"
 #endif

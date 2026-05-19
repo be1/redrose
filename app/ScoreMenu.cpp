@@ -99,7 +99,8 @@ void ScoreMenu::onOpenActionTriggered()
     AbcMainWindow* w = a->mainWindow();
 
     //QString  home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString fileName = QFileDialog::getOpenFileName(w, tr("Open ABC score"), QString(), tr("ABC score (*.abc)"));
+    QString workdir = settings.value(WORKDIR_KEY).toString();
+    QString fileName = QFileDialog::getOpenFileName(w, tr("Open ABC score"), workdir, tr("ABC score (*.abc)"));
 
     /* user cancelled */
     if (fileName.isEmpty())
@@ -285,6 +286,20 @@ void ScoreMenu::setRecentFile(const QString& fileName, bool ok)
     updateRecentFileActions();
 }
 
+QString ScoreMenu::dirPath(const QString &path)
+{
+    QString dirpath;
+
+    QStringList parts = path.split(QDir::separator());
+    if (!parts.isEmpty()) {
+        parts.removeLast();
+        dirpath = parts.join(QDir::separator());
+    }
+
+    qDebug() << dirpath;
+    return dirpath;
+}
+
 bool ScoreMenu::loadFile(const QString& fileName)
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
@@ -303,6 +318,10 @@ bool ScoreMenu::loadFile(const QString& fileName)
         edittabs->addTab(widget);
 
         setRecentFile(fileName, true);
+
+        /* save current working directory */
+        QString workdir = dirPath(fileName);
+        settings.setValue(WORKDIR_KEY, workdir);
 
         return true;
     }
@@ -364,10 +383,12 @@ void ScoreMenu::onSaveAsActionTriggered()
     if (!ew)
         return;
 
-    QString  home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    home += QDir::separator();
-    home += "score.abc";
-    QString fileName = QFileDialog::getSaveFileName(w, tr("Save ABC score"), home, tr("ABC score (*.abc)"));
+    //QString  home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    //home += QDir::separator();
+    //home += "score.abc";
+
+    QString workdir = settings.value(WORKDIR_KEY).toString();
+    QString fileName = QFileDialog::getSaveFileName(w, tr("Save ABC score"), workdir, tr("ABC score (*.abc)"));
     if (fileName.isEmpty())
         return; /* cancelled */
 
