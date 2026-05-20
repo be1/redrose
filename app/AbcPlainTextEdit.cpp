@@ -117,7 +117,7 @@ QString AbcPlainTextEdit::makeTitleFileName()
         xmatch.next();
     }
 
-    QString ret = first.replace(" ", "_");
+    QString ret = first.replace("[[:punct:]]", "_");
     if (others > 0) {
         ret += tr("_plus_") + QString::number(others) + (others > 1 ? tr("_tunes.abc") : tr("_tune.abc"));
     } else {
