@@ -12,6 +12,7 @@ ScorePsWidget::ScorePsWidget(QWidget* parent):
 
 void ScorePsWidget::initialize()
 {
+    setFocusPolicy(Qt::NoFocus);
     viewport()->installEventFilter(this);
     setMouseTracking(true);
 

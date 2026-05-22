@@ -3,6 +3,7 @@
 PlayPushButton::PlayPushButton(QWidget* parent)
 	: QPushButton(parent)
 {
+    setFocusPolicy(Qt::NoFocus);
     play = true;
     setText(tr("&Play"));
     setIcon(QIcon::fromTheme("media-playback-start"));

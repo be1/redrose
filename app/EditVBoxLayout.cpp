@@ -33,6 +33,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     generationTimer.setInterval(500);
     generationTimer.setSingleShot(true);
 
+    xspinbox.setFocusPolicy(Qt::NoFocus);
     xspinbox.setMinimum(1);
     xspinbox.setMaximum(MAXTUNES);
 
@@ -44,6 +45,7 @@ EditVBoxLayout::EditVBoxLayout(const QString& fileName, QWidget* parent)
     progress->setColor(qApp->palette().color(QPalette::Text));
     progress->startAnimation();
 
+    positionslider.setFocusPolicy(Qt::NoFocus);
     positionslider.setOrientation(Qt::Orientation::Horizontal);
     positionslider.setTickPosition(QSlider::TickPosition::NoTicks);
     positionslider.setTickInterval(0);
