@@ -58,9 +58,10 @@ ViewVSplitter::~ViewVSplitter()
 {
 }
 
-void ViewVSplitter::initBasename(const QString& orig, const QString& tmpbase, const QString& tmpdir)
+void ViewVSplitter::initBasename(const QString& orig, int x, const QString& tmpbase, const QString& tmpdir)
 {
-    qDebug() << __func__ << tmpbase;
+    qDebug() << __func__ << tmpbase << orig << x;
+    xfield = x;
     origname = orig;
     basename = tmpbase;
     basedir = tmpdir;
@@ -145,9 +146,9 @@ void ViewVSplitter::printClicked()
     /* FIXME: HighResolution (1200 DPI) freeze main thread */
     printer.setResolution(300.); /* 300 DPI is enough */
     printer.setCreator("Redrose");
-    printer.setDocName(origname);
+    printer.setDocName(origname + QString::number(xfield));
     QFileInfo info(origname);
-    printer.setOutputFileName(info.absolutePath() + QDir::separator() + info.baseName() + ".pdf");
+    printer.setOutputFileName(info.absolutePath() + QDir::separator() + info.baseName() + QString::number(xfield) + ".pdf");
     printer.setPageOrientation(QPageLayout::Portrait);
     QPrintDialog dialog(&printer, this);
     if (dialog.exec() == QDialog::Accepted) {

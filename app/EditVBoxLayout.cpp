@@ -727,7 +727,7 @@ void EditVBoxLayout::onGeneratePSFinished(int exitCode, const QString& errstr, A
         QString b(info.baseName());
         QString d = info.dir().absolutePath();
         a->mainWindow()->mainHSplitter()->viewWidget()->cleanup();
-        a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(fileName, b, d);
+        a->mainWindow()->mainHSplitter()->viewWidget()->initBasename(fileName, xspinbox.value(), b, d);
         a->mainWindow()->mainHSplitter()->viewWidget()->turnPage(1);
     } else if (cont == AbcProcess::ContinuationConvert) /* PDF Export */ {
         /* continuation: convert to PDF */

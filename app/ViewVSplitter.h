@@ -19,7 +19,8 @@ public:
     QPushButton* printButton() { return &print; }
     QPushButton* nextButton() { return &next; }
 
-    void initBasename(const QString& orig, const QString& tmpbase, const QString& tmpdir);
+    /* orig: file path, x: tune field, tmpdir/tmpbase: temp ps path */
+    void initBasename(const QString& orig, int x, const QString& tmpbase, const QString& tmpdir);
 
     long currentPage() { return currentpage; }
     long lastPage() { return lastpage; }
@@ -47,6 +48,7 @@ private:
 
     long currentpage = 0;
     long lastpage = 0;
+    int xfield;
     QString origname;
     QString basename;
     QString basedir;
