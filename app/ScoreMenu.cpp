@@ -98,7 +98,6 @@ void ScoreMenu::onOpenActionTriggered()
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
 
-    //QString  home = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QString workdir = settings.value(WORKDIR_KEY).toString();
     QString fileName = QFileDialog::getOpenFileName(w, tr("Open ABC score"), workdir, tr("ABC score (*.abc)"));
 
@@ -253,7 +252,6 @@ EditWidget* ScoreMenu::getCurrentEditWidget()
 
 void ScoreMenu::updateRecentFileActions()
 {
-    Settings settings;
     QStringList files = settings.value("recentFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
@@ -272,7 +270,6 @@ void ScoreMenu::updateRecentFileActions()
 
 void ScoreMenu::setRecentFile(const QString& fileName, bool ok)
 {
-    Settings settings;
     QStringList files = settings.value("recentFileList").toStringList();
     files.removeAll(fileName);
 
@@ -440,7 +437,6 @@ void ScoreMenu::onExportWavActionTriggered()
 
 void ScoreMenu::onExportPsActionTriggered()
 {
-    Settings settings;
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
 
@@ -465,7 +461,6 @@ void ScoreMenu::onExportPsActionTriggered()
 
 void ScoreMenu::onExportPdfActionTriggered()
 {
-    Settings settings;
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
     AbcMainWindow* w = a->mainWindow();
 
