@@ -25,6 +25,8 @@ AbcApplication::AbcApplication(int& argc, char** argv)
     abcminit();
 #endif
 
+    QIcon::setFallbackThemeName("HighContrast");
+
     /* check pipewire */
     pipewire_handle = dlopen("libpipewire-0.3.so", RTLD_LAZY);
 
