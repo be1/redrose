@@ -6,6 +6,7 @@ PlayPushButton::PlayPushButton(QWidget* parent)
     setFocusPolicy(Qt::NoFocus);
     play = true;
     setText(tr("&Play"));
+    QIcon::setFallbackThemeName("HighContrast");
     setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart));
 }
 
