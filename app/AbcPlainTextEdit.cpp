@@ -117,14 +117,15 @@ QString AbcPlainTextEdit::makeTitleFileName()
         xmatch.next();
     }
 
-    QString ret = first.replace("[[:punct:]]", "_");
+    first = first.replace(QRegularExpression("[ \t]"), "_");
+    first = first.replace(QRegularExpression("[[:punct:]]"), "_");
     if (others > 0) {
-        ret += tr("_plus_") + QString::number(others) + (others > 1 ? tr("_tunes.abc") : tr("_tune.abc"));
+        first += tr("_plus_") + QString::number(others) + (others > 1 ? tr("_tunes.abc") : tr("_tune.abc"));
     } else {
-        ret += ".abc";
+        first += ".abc";
     }
 
-    return ret;
+    return first;
 }
 
 void AbcPlainTextEdit::setCompleter(QCompleter* completer)
