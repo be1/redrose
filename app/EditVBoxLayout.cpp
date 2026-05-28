@@ -178,6 +178,9 @@ void EditVBoxLayout::onCursorPositionChanged() {
 void EditVBoxLayout::manageTextOrCursorChange(const QTextCursor& tc)
 {
     int x = abcplaintextedit.currentXV('X');
+    int v = abcplaintextedit.currentXV('V');
+    m_model.selectVoiceNo(x, v);
+
     bool follow = settings.value(EDITOR_FOLLOW).toBool();
     bool xChanged = xspinbox.value() != x;
     bool playing = synth->isPlaying();
@@ -194,8 +197,6 @@ void EditVBoxLayout::manageTextOrCursorChange(const QTextCursor& tc)
         /* always stop on X change */
         synth->stop();
 
-        int v = abcplaintextedit.currentXV('V');
-        m_model.selectVoiceNo(x, v);
         int tick = m_model.midiTickFromCharIndex(tc.position());
 
         /* if was already stopped: seek to new position */
