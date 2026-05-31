@@ -6,8 +6,11 @@ PlayPushButton::PlayPushButton(QWidget* parent)
     setFocusPolicy(Qt::NoFocus);
     play = true;
     setText(tr("&Play"));
-    //setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart));
+#if (QT_VERSION < QT_VERSION_CHECK(6, 7, 0))
     setIcon(QIcon::fromTheme("media-playback-start"));
+#else
+    setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart));
+#endif
 }
 
 PlayPushButton::~PlayPushButton()
@@ -18,12 +21,18 @@ void PlayPushButton::flip()
 {
     if (play) {
         setText(tr("Sto&p"));
-        //setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStop));
+#if (QT_VERSION < QT_VERSION_CHECK(6, 7, 0))
         setIcon(QIcon::fromTheme("media-playback-stop"));
+#else
+        setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStop));
+#endif
     } else {
         setText(tr("&Play"));
-        //setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart));
+#if (QT_VERSION < QT_VERSION_CHECK(6, 7, 0))
         setIcon(QIcon::fromTheme("media-playback-start"));
+#else
+        setIcon(QIcon::fromTheme(QIcon::ThemeIcon::MediaPlaybackStart));
+#endif
     }
 
     play = !play;

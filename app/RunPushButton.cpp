@@ -5,8 +5,11 @@ RunPushButton::RunPushButton(QWidget* parent)
 {
     setFocusPolicy(Qt::NoFocus);
     setText(tr("View score"));
-    //setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentPrintPreview));
+#if (QT_VERSION < QT_VERSION_CHECK(6, 7, 0))
     setIcon(QIcon::fromTheme("document-print-preview"));
+#else
+    setIcon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentPrintPreview));
+#endif
 }
 
 RunPushButton::~RunPushButton()
