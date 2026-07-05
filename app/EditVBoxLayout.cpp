@@ -539,11 +539,21 @@ void EditVBoxLayout::popupWarning(const QString& title, const QString& text) {
 /* manual move */
 void EditVBoxLayout::onSliderMoved(int val)
 {
-    if (!synth->isPlaying()) {
-        positionslider.setValue(val);
-    }
-
     synth->seek(val);
+    synth->m_next_tick = val;
+
+    bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
+    if (follow) {
+        setCursorFromSynthTick(val);
+    }
+}
+
+void EditVBoxLayout::setCursorFromSynthTick(int val) {
+    int cidx = m_model.charIndexFromMidiTick(val);
+    if (cidx >= 0) {
+        QSignalBlocker blocker(abcplaintextedit);
+        abcplaintextedit.setTextCursorPosition(cidx);
+    }
 }
 
 void EditVBoxLayout::onSynthTickChanged(int tick)
@@ -557,11 +567,7 @@ void EditVBoxLayout::onSynthTickChanged(int tick)
     /* follow only if full tune (no partial selection) */
     bool follow = settings.value(EDITOR_FOLLOW).toBool() && selection.isEmpty();
     if (follow) {
-        int cidx = m_model.charIndexFromMidiTick(tick);
-        if (cidx >= 0) {
-            QSignalBlocker blocker(abcplaintextedit);
-            abcplaintextedit.setTextCursorPosition(cidx);
-        }
+        setCursorFromSynthTick(tick);
     }
 }
 

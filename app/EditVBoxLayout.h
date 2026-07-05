@@ -64,6 +64,7 @@ protected:
     void cleanupThreads();
     void scheduleDisplay();
     void manageTextOrCursorChange(const QTextCursor& tc);
+    void setCursorFromSynthTick(int val);
 
 public slots:
     void onCursorPositionChanged();
