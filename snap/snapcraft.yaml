@@ -84,7 +84,7 @@ parts:
       #- libgdk-pixbuf-2.0-0
       #- gnome-themes-extra-data
       #- gnome-accessibility-themes
-      #- humanity-icon-theme
+      - humanity-icon-theme
       #- hicolor-icon-theme
       #- adwaita-icon-theme
       #- yaru-theme-icon
