@@ -229,9 +229,9 @@ void AbcSmf::parseVoiceHeader(const char* v) {
         /* this is a clef */
         QString clef = matchClef.captured(last);
         if (clef.endsWith("-8"))
-            m_transpose -= 12;
+            m_transpose = -12;
         else if (clef.endsWith("+8"))
-            m_transpose += 12;
+            m_transpose = +12;
     }
 
     QRegularExpression reName("na?me?=\"([^\"]+)\"");
@@ -448,7 +448,7 @@ void AbcSmf::writeTrack(smf_track_t* track, int voice_nr) {
             if (sscanf(s->text, "MIDI program %d", &val)) {
                 writeMidiEvent(track, 0, m_program | chan, val);
             } else if (sscanf(s->text, "MIDI transpose %d", &val)) {
-                m_transpose += val;
+                m_transpose = val;
             } else if (sscanf(s->text, "MIDI channel %d", &val)) {
                 chan = val -1;
                 if (m_manage_expression)
