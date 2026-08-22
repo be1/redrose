@@ -46,10 +46,11 @@ ScoreMenu::ScoreMenu(QWidget* parent)
     addAction(tr("Save"), QKeySequence::Save, this, &ScoreMenu::onSaveActionTriggered);
     addAction(tr("Save as"), QKeySequence::SaveAs, this, &ScoreMenu::onSaveAsActionTriggered);
 #endif
-    addAction(tr("Export to MIDI"), this, &ScoreMenu::onExportMidiActionTriggered);
-    addAction(tr("Export to WAV"), this, &ScoreMenu::onExportWavActionTriggered);
-    addAction(tr("Export to Postscript"), this, &ScoreMenu::onExportPsActionTriggered);
-    addAction(tr("Export to PDF"), this, &ScoreMenu::onExportPdfActionTriggered);
+    QMenu* exports = addMenu(tr("Export as..."));
+    exports->addAction(tr("Export to MIDI"), this, &ScoreMenu::onExportMidiActionTriggered);
+    exports->addAction(tr("Export to WAV"), this, &ScoreMenu::onExportWavActionTriggered);
+    exports->addAction(tr("Export to Postscript"), this, &ScoreMenu::onExportPsActionTriggered);
+    exports->addAction(tr("Export to PDF"), this, &ScoreMenu::onExportPdfActionTriggered);
 #if (QT_VERSION < QT_VERSION_CHECK(6, 3, 0))
     addAction(tr("Close"), this, &ScoreMenu::onCloseActionTriggered, QKeySequence::Close);
     addAction(tr("Quit"), this, &ScoreMenu::onQuitActionTriggered, QKeySequence::Quit);
