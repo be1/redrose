@@ -275,7 +275,7 @@ void ScorePsWidget::printPage(int index, QPainter* painter)
     spectre_render_context_set_scale(context, (double) pwidth / (double) w, (double) pheight / (double) h);
     spectre_page_render(page, context, &page_data, &row_length);
 
-    QImage image(page_data, pwidth, pheight, row_length, QImage::Format_RGBX8888);
+    QImage image(page_data, pwidth, pheight, row_length, QImage::Format_RGB32);
     painter->drawImage(0, 0, image);
 
     spectre_page_free(page);
