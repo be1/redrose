@@ -977,7 +977,7 @@ AbcHighlighter::AbcHighlighter(QTextDocument* parent)
     highlightingRules.append(rule);
 
     color = settings.value(EDITOR_EXTRAINSTR_COLOR).toString();
-    extraInstructionFormat.setFontWeight(QFont::Bold);
+    extraInstructionFormat.setFontWeight(QFont::ExtraLight);
     extraInstructionFormat.setForeground(color);
     rule.pattern = QRegularExpression(QStringLiteral("^%%[^%\n]+"));
     rule.format = extraInstructionFormat;
@@ -1010,12 +1010,13 @@ AbcHighlighter::AbcHighlighter(QTextDocument* parent)
         highlightingRules.append(rule);
     }
 
-#if 0
-    multiLineHeaderFormat.setForeground(Qt::darkMagenta);
+    extraMultiLineStartExpression = QRegularExpression(QStringLiteral("^%%begin[^\n]+"));
+    extraMultiLineEndExpression = QRegularExpression(QStringLiteral("^%%end[^\n]+"));
 
-    headerStartExpression = QRegularExpression(QStringLiteral("^X:"));
-    headerEndExpression = QRegularExpression(QStringLiteral("^K:[^\n]+"));
-#endif
+    /* we use the same color and font weight as extraInstructions sicne they all begin with ^%% */
+    extraMultiLineFormat.setFontWeight(QFont::ExtraLight);
+    color = settings.value(EDITOR_EXTRAINSTR_COLOR).toString();
+    extraMultiLineFormat.setForeground(color);
 }
 
 void AbcHighlighter::highlightBlock(const QString& text)
@@ -1027,28 +1028,29 @@ void AbcHighlighter::highlightBlock(const QString& text)
             setFormat(match.capturedStart(), match.capturedLength(), rule.format);
         }
     }
-#if 0
+
+    /* override highlighting for extraMultiline text (other rules could highlight some of its chars) */
+
     setCurrentBlockState(0);
 
     int startIndex = 0;
     if (previousBlockState() != 1)
-        startIndex = text.indexOf(headerStartExpression);
+        startIndex = text.indexOf(extraMultiLineStartExpression);
 
     while (startIndex >= 0) {
-        QRegularExpressionMatch match = headerEndExpression.match(text, startIndex);
+        QRegularExpressionMatch match = extraMultiLineEndExpression.match(text, startIndex);
         int endIndex = match.capturedStart();
-        int headerLength = 0;
+        int multiLineLength = 0;
         if (endIndex == -1) {
             setCurrentBlockState(1);
-            headerLength = text.length() - startIndex;
+            multiLineLength = text.length() - startIndex;
         } else {
-            headerLength = endIndex - startIndex
+            multiLineLength = endIndex - startIndex
                             + match.capturedLength();
         }
-        setFormat(startIndex, headerLength, multiLineHeaderFormat);
-        startIndex = text.indexOf(headerStartExpression, startIndex + headerLength);
+        setFormat(startIndex, multiLineLength, extraMultiLineFormat);
+        startIndex = text.indexOf(extraMultiLineStartExpression, startIndex + multiLineLength);
     }
-#endif
 }
 
 QAbstractItemModel* AbcPlainTextEdit::modelFromFile(const QString& fileName)
