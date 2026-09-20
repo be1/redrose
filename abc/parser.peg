@@ -42,29 +42,31 @@ static void gen_error(struct abc* auxil) {
 
 }
 
-TuneBook <- Ignored* Tune TuneBook
+File <- Ignored* TuneBook
+
+TuneBook <- Tune Ignored* TuneBook
+	/ Tune Ignored*
 	/ EOF
 
-Ignored <- < "%abc" (!EOL .)* >
-	/ Ps
-	/ Text
-	/ Svg
-	/ EarlyComment EOL
-	/ EOL { abc_ignored_append(auxil, $0s, $0e); }
+Ignored <- Comment EOL
+	/ PsBlock
+	/ TextBlock
+	/ SvgBlock
+	/ EOL
 
-Ps <- BeginPs (!EndPs .)* EndPs
+PsBlock <- BeginPs (!EndPs .)* EndPs
 BeginPs <- "%%beginps" (!EOL .)* EOL
 EndPs <- "%%endps" EOL
 
-Text <- BeginText (!EndText .)* EndText
+TextBlock <- BeginText (!EndText .)* EndText
 BeginText <- "%%begintext" (!EOL .)* EOL
 EndText <- "%%endtext" EOL
 
-Svg <- BeginSvg (!EndSvg .)* EndSvg
+SvgBlock <- BeginSvg (!EndSvg .)* EndSvg
 BeginSvg <- "%%beginsvg" (!EOL .)* EOL
 EndSvg <- "%%endsvg" EOL
 
-Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (TuneComment EOL)* Score (Words EOL?)*
+Tune <- Xheader EOL (Header EOL)* (Kheader EOL)? (TuneComment EOL)* Score (Words EOL)*
 
 Words <- "W:" [ \t]* (!EOL .)*
 
@@ -83,16 +85,15 @@ Oheader <- Iheader
 
 VoiceDef <- "V:" (!EOL .)+
 
-Score <- Vheader EOL FragmentLine Score
+Score <- Vheader EOL Score
 	/ FragmentLine Score
-	/ EOL
-	/ EOF
+	/ FragmentLine
 
 FragmentLine <- "%%" MidiInstruction (EOL / EOF)
 	/ TuneComment (EOL / EOF)
 	/ Change (EOL / EOF)
 	/ "w:" Lyrics* (EOL / EOF)
-	/ Fragment+ (LineCont? TuneComment? EOL / LineBreak)?
+	/ Fragment+ (LineCont? TuneComment? / LineBreak)? (EOL / EOF)
 
 Fragment <- _ / "y"
 	/ InlineChange
@@ -124,7 +125,6 @@ Tempo <- < "Q:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 Special <- "beginps" / "endps" / "begintext" / "endtext" / "beginsvg" / "endsvg" / "MIDI"
 
 TuneComment <- Comment { abc_comment_append(auxil, $0s, $0e); }
-EarlyComment <- Comment
 
 Comment <- "%" ! "%" (!EOL .)*
 	/ "%%" ! Special (!EOL .)*
