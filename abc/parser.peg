@@ -52,7 +52,10 @@ Ignored <- Comment EOL
 	/ PsBlock
 	/ TextBlock
 	/ SvgBlock
-	/ EOL
+	/ EOLs
+
+EOLs <- [ \t]* EOL EOLs
+	/ [ \t]* EOL
 
 PsBlock <- BeginPs (!EndPs .)* EndPs
 BeginPs <- "%%beginps" (!EOL .)* EOL

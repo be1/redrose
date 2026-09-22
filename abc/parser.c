@@ -2176,6 +2176,7 @@ static void pcc_action_LineBreak_1(pcc_context_t *pcc_ctx, pcc_thunk_t *pcc_in, 
 static pcc_thunk_chunk_t *pcc_evaluate_rule_File(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_TuneBook(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Ignored(pcc_context_t *ctx);
+static pcc_thunk_chunk_t *pcc_evaluate_rule_EOLs(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_PsBlock(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_BeginPs(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_EndPs(pcc_context_t *ctx);
@@ -2361,7 +2362,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Ignored(pcc_context_t *ctx) {
     L0005:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0006;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOLs, &(chunk->thunks), NULL)) goto L0006;
         goto L0001;
     L0006:;
         ctx->cur = p;
@@ -2375,6 +2376,84 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Ignored(pcc_context_t *ctx) {
 L0000:;
     ctx->level--;
     PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Ignored", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
+    pcc_thunk_chunk__destroy(ctx, chunk);
+    return NULL;
+}
+
+static pcc_thunk_chunk_t *pcc_evaluate_rule_EOLs(pcc_context_t *ctx) {
+    pcc_thunk_chunk_t *const chunk = pcc_thunk_chunk__create(ctx);
+    chunk->pos = ctx->cur;
+    PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "EOLs", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->buffer.n - chunk->pos));
+    ctx->level++;
+    {
+        MARK_VAR_AS_USED
+        const size_t p = ctx->cur;
+        MARK_VAR_AS_USED
+        const size_t n = chunk->thunks.n;
+        {
+            for (;;) {
+                const size_t p = ctx->cur;
+                const size_t n = chunk->thunks.n;
+                {
+                    int u;
+                    const size_t n = pcc_get_char_as_utf32(ctx, &u);
+                    if (n == 0) goto L0003;
+                    if (!(
+                        u == 0x000020 ||
+                        u == 0x000009
+                    )) goto L0003;
+                    ctx->cur += n;
+                }
+                if (ctx->cur == p) break;
+                continue;
+            L0003:;
+                ctx->cur = p;
+                pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+                break;
+            }
+        }
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0002;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOLs, &(chunk->thunks), NULL)) goto L0002;
+        goto L0001;
+    L0002:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+        {
+            for (;;) {
+                const size_t p = ctx->cur;
+                const size_t n = chunk->thunks.n;
+                {
+                    int u;
+                    const size_t n = pcc_get_char_as_utf32(ctx, &u);
+                    if (n == 0) goto L0005;
+                    if (!(
+                        u == 0x000020 ||
+                        u == 0x000009
+                    )) goto L0005;
+                    ctx->cur += n;
+                }
+                if (ctx->cur == p) break;
+                continue;
+            L0005:;
+                ctx->cur = p;
+                pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+                break;
+            }
+        }
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0004;
+        goto L0001;
+    L0004:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+        goto L0000;
+    L0001:;
+    }
+    ctx->level--;
+    PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "EOLs", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
+    return chunk;
+L0000:;
+    ctx->level--;
+    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "EOLs", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
     pcc_thunk_chunk__destroy(ctx, chunk);
     return NULL;
 }
