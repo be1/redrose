@@ -2196,6 +2196,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_Oheader(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_VoiceDef(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Score(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_FragmentLine(pcc_context_t *ctx);
+static pcc_thunk_chunk_t *pcc_evaluate_rule_Fragments(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Fragment(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_InlineChange(pcc_context_t *ctx);
 static pcc_thunk_chunk_t *pcc_evaluate_rule_Change(pcc_context_t *ctx);
@@ -3729,82 +3730,7 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_FragmentLine(pcc_context_t *ctx) {
     L0014:;
         ctx->cur = p;
         pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-        {
-            const size_t p0 = ctx->cur;
-            const size_t n0 = chunk->thunks.n;
-            int i;
-            for (i = 0;; i++) {
-                const size_t p = ctx->cur;
-                const size_t n = chunk->thunks.n;
-                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragment, &(chunk->thunks), NULL)) goto L0020;
-                if (ctx->cur == p) break;
-                continue;
-            L0020:;
-                ctx->cur = p;
-                pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-                break;
-            }
-            if (i < 1) {
-                ctx->cur = p0;
-                pcc_thunk_array__revert(ctx, &(chunk->thunks), n0);
-                goto L0019;
-            }
-        }
-        {
-            MARK_VAR_AS_USED
-            const size_t p = ctx->cur;
-            MARK_VAR_AS_USED
-            const size_t n = chunk->thunks.n;
-            {
-                MARK_VAR_AS_USED
-                const size_t p = ctx->cur;
-                MARK_VAR_AS_USED
-                const size_t n = chunk->thunks.n;
-                {
-                    MARK_VAR_AS_USED
-                    const size_t p = ctx->cur;
-                    MARK_VAR_AS_USED
-                    const size_t n = chunk->thunks.n;
-                    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineCont, &(chunk->thunks), NULL)) goto L0024;
-                    goto L0025;
-                L0024:;
-                    ctx->cur = p;
-                    pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-                L0025:;
-                }
-                {
-                    MARK_VAR_AS_USED
-                    const size_t p = ctx->cur;
-                    MARK_VAR_AS_USED
-                    const size_t n = chunk->thunks.n;
-                    if (!pcc_apply_rule(ctx, pcc_evaluate_rule_TuneComment, &(chunk->thunks), NULL)) goto L0026;
-                    goto L0027;
-                L0026:;
-                    ctx->cur = p;
-                    pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-                L0027:;
-                }
-                /* unreachable codes omitted */
-            }
-        }
-        {
-            MARK_VAR_AS_USED
-            const size_t p = ctx->cur;
-            MARK_VAR_AS_USED
-            const size_t n = chunk->thunks.n;
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0029;
-            goto L0028;
-        L0029:;
-            ctx->cur = p;
-            pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOF, &(chunk->thunks), NULL)) goto L0030;
-            goto L0028;
-        L0030:;
-            ctx->cur = p;
-            pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
-            goto L0019;
-        L0028:;
-        }
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragments, &(chunk->thunks), NULL)) goto L0019;
         goto L0001;
     L0019:;
         ctx->cur = p;
@@ -3818,6 +3744,111 @@ static pcc_thunk_chunk_t *pcc_evaluate_rule_FragmentLine(pcc_context_t *ctx) {
 L0000:;
     ctx->level--;
     PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "FragmentLine", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
+    pcc_thunk_chunk__destroy(ctx, chunk);
+    return NULL;
+}
+
+static pcc_thunk_chunk_t *pcc_evaluate_rule_Fragments(pcc_context_t *ctx) {
+    pcc_thunk_chunk_t *const chunk = pcc_thunk_chunk__create(ctx);
+    chunk->pos = ctx->cur;
+    PCC_DEBUG(ctx->auxil, PCC_DBG_EVALUATE, "Fragments", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->buffer.n - chunk->pos));
+    ctx->level++;
+    {
+        MARK_VAR_AS_USED
+        const size_t p = ctx->cur;
+        MARK_VAR_AS_USED
+        const size_t n = chunk->thunks.n;
+        {
+            const size_t p0 = ctx->cur;
+            const size_t n0 = chunk->thunks.n;
+            int i;
+            for (i = 0;; i++) {
+                const size_t p = ctx->cur;
+                const size_t n = chunk->thunks.n;
+                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragment, &(chunk->thunks), NULL)) goto L0003;
+                if (ctx->cur == p) break;
+                continue;
+            L0003:;
+                ctx->cur = p;
+                pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+                break;
+            }
+            if (i < 1) {
+                ctx->cur = p0;
+                pcc_thunk_array__revert(ctx, &(chunk->thunks), n0);
+                goto L0002;
+            }
+        }
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineBreak, &(chunk->thunks), NULL)) goto L0002;
+        if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragments, &(chunk->thunks), NULL)) goto L0002;
+        goto L0001;
+    L0002:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+        {
+            const size_t p0 = ctx->cur;
+            const size_t n0 = chunk->thunks.n;
+            int i;
+            for (i = 0;; i++) {
+                const size_t p = ctx->cur;
+                const size_t n = chunk->thunks.n;
+                if (!pcc_apply_rule(ctx, pcc_evaluate_rule_Fragment, &(chunk->thunks), NULL)) goto L0005;
+                if (ctx->cur == p) break;
+                continue;
+            L0005:;
+                ctx->cur = p;
+                pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+                break;
+            }
+            if (i < 1) {
+                ctx->cur = p0;
+                pcc_thunk_array__revert(ctx, &(chunk->thunks), n0);
+                goto L0004;
+            }
+        }
+        {
+            MARK_VAR_AS_USED
+            const size_t p = ctx->cur;
+            MARK_VAR_AS_USED
+            const size_t n = chunk->thunks.n;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_LineCont, &(chunk->thunks), NULL)) goto L0006;
+            goto L0007;
+        L0006:;
+            ctx->cur = p;
+            pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+        L0007:;
+        }
+        {
+            MARK_VAR_AS_USED
+            const size_t p = ctx->cur;
+            MARK_VAR_AS_USED
+            const size_t n = chunk->thunks.n;
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOL, &(chunk->thunks), NULL)) goto L0009;
+            goto L0008;
+        L0009:;
+            ctx->cur = p;
+            pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+            if (!pcc_apply_rule(ctx, pcc_evaluate_rule_EOF, &(chunk->thunks), NULL)) goto L0010;
+            goto L0008;
+        L0010:;
+            ctx->cur = p;
+            pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+            goto L0004;
+        L0008:;
+        }
+        goto L0001;
+    L0004:;
+        ctx->cur = p;
+        pcc_thunk_array__revert(ctx, &(chunk->thunks), n);
+        goto L0000;
+    L0001:;
+    }
+    ctx->level--;
+    PCC_DEBUG(ctx->auxil, PCC_DBG_MATCH, "Fragments", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
+    return chunk;
+L0000:;
+    ctx->level--;
+    PCC_DEBUG(ctx->auxil, PCC_DBG_NOMATCH, "Fragments", ctx->level, chunk->pos, (ctx->buffer.p + chunk->pos), (ctx->cur - chunk->pos));
     pcc_thunk_chunk__destroy(ctx, chunk);
     return NULL;
 }
