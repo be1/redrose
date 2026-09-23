@@ -99,7 +99,8 @@ FragmentLine <- "%%" MidiInstruction (EOL / EOF)
 	/ Fragments
 
 Fragments <- Fragment+ LineBreak Fragments
-	/ Fragment+ LineCont? (EOL / EOF)
+	/ Fragment+ LineCont [ \t]* (EOL / EOF)
+	/ Fragment+ (EOL / EOF)
 
 Fragment <- _ / "y"
 	/ InlineChange
@@ -125,7 +126,7 @@ Change <- KeySig / Unit / TimeSig / Tempo / Part
 KeySig <- < "K:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 Unit <- < "L:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 TimeSig <- < "M:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
-Part <- < "P:" [ \t]* (!EOL [^\]])+ > #ignore
+Part <- < "P:" [ \t]* (!EOL [^\]])+ >
 Tempo <- < "Q:" [ \t]* (!EOL [^\]])+ > { abc_change_append(auxil, $1); }
 
 Special <- "beginps" / "endps" / "begintext" / "endtext" / "beginsvg" / "endsvg" / "MIDI"
@@ -176,7 +177,7 @@ SimpleAlter <- < [1-9]+([-,][1-9]+)* > { abc_alt_append(auxil, $0); }
 
 Alternative <- < "["[1-9]+([-,][1-9]+)* > { abc_alt_append(auxil, $0); }
 
-Bar <- < "["?[:|\]]+ > { abc_bar_append(auxil, $0); }
+Bar <- ":"? ("||]" / "|]")  / ("[||" / "[|") ":"? / "::" / ":|:" / "|:" / ":||:" / ":|" / "|" { abc_bar_append(auxil, $0); }
 
 ChordDuration <- < [0-9]*"/" > { abc_duration_chord_num_set(auxil, $0); } < [1-9][0-9]* > { abc_duration_chord_den_set(auxil, $2); }
 	/ < [0-9]+ > { abc_duration_chord_num_set(auxil, $0); }
@@ -190,7 +191,7 @@ Note <- < ([_=^]*[A-Ga-g][,']* / [XxZz]) > { abc_note_append(auxil, $0, $0s, $0e
 
 EOL <- "\r\n" / "\r" / "\n"
 
-LineCont <- "\\" [ \t]*
+LineCont <- "\\"
 
 LineBreak <- < EOL > { if (($1)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $1); }
 	/ < (!Fragment .) > { if (($2)[0] == auxil->tunes[auxil->count -1]->lbc) abc_eol_append(auxil, $2); else { auxil->buffer->index = $2s; gen_error(auxil); } }
