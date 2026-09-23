@@ -177,7 +177,8 @@ SimpleAlter <- < [1-9]+([-,][1-9]+)* > { abc_alt_append(auxil, $0); }
 
 Alternative <- < "["[1-9]+([-,][1-9]+)* > { abc_alt_append(auxil, $0); }
 
-Bar <- ":"? ("||]" / "|]")  / ("[||" / "[|") ":"? / "::" / ":|:" / "|:" / ":||:" / ":|" / "|" { abc_bar_append(auxil, $0); }
+# Bar <- < "["?[:|\]]+ > { abc_bar_append(auxil, $0); }
+Bar <- < ":"? ("||]" / "|]")  / ("[||" / "[|") ":"? / "::" / ":|:" / "|:" / ":||:" / ":|" / "|" > { abc_bar_append(auxil, $0); }
 
 ChordDuration <- < [0-9]*"/" > { abc_duration_chord_num_set(auxil, $0); } < [1-9][0-9]* > { abc_duration_chord_den_set(auxil, $2); }
 	/ < [0-9]+ > { abc_duration_chord_num_set(auxil, $0); }
