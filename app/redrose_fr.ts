@@ -692,68 +692,74 @@ Redrose version </source>
     </message>
     <message>
         <location filename="ScoreMenu.cpp" line="55"/>
-        <location filename="ScoreMenu.cpp" line="58"/>
+        <location filename="ScoreMenu.cpp" line="59"/>
+        <source>Print</source>
+        <translation>Imprimer</translation>
+    </message>
+    <message>
+        <location filename="ScoreMenu.cpp" line="56"/>
+        <location filename="ScoreMenu.cpp" line="60"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="56"/>
-        <location filename="ScoreMenu.cpp" line="59"/>
+        <location filename="ScoreMenu.cpp" line="57"/>
+        <location filename="ScoreMenu.cpp" line="61"/>
         <source>Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="79"/>
+        <location filename="ScoreMenu.cpp" line="81"/>
         <source>Really quit?</source>
         <translation>Quitter vraiment ?</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="81"/>
+        <location filename="ScoreMenu.cpp" line="83"/>
         <source> score(s) not saved.
 Do you want to quit anyway?</source>
         <translation> partition(s) non enregistrée(s).
 Voulez-vous quitter malgré tout ?</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="103"/>
+        <location filename="ScoreMenu.cpp" line="105"/>
         <source>Open ABC score</source>
         <translation>Ouvrir une partition ABC</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="103"/>
-        <location filename="ScoreMenu.cpp" line="388"/>
+        <location filename="ScoreMenu.cpp" line="105"/>
+        <location filename="ScoreMenu.cpp" line="390"/>
         <source>ABC score (*.abc)</source>
         <translation>Partition ABC (*.abc)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="339"/>
-        <location filename="ScoreMenu.cpp" line="356"/>
-        <location filename="ScoreMenu.cpp" line="370"/>
+        <location filename="ScoreMenu.cpp" line="341"/>
+        <location filename="ScoreMenu.cpp" line="358"/>
+        <location filename="ScoreMenu.cpp" line="372"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="339"/>
+        <location filename="ScoreMenu.cpp" line="341"/>
         <source>Could not open score!</source>
         <translation>Impossible d&apos;ouvrir la partition !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="356"/>
+        <location filename="ScoreMenu.cpp" line="358"/>
         <source>Could not save an untitled ABC file!</source>
         <translation>Impossible d&apos;enregistrer un fichier ABC sans nom !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="368"/>
+        <location filename="ScoreMenu.cpp" line="370"/>
         <source>Score saved.</source>
         <translation>Partition enregistrée.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="370"/>
+        <location filename="ScoreMenu.cpp" line="372"/>
         <source>Could not save ABC score!</source>
         <translation>Impossible d&apos;enregistrer la partition ABC !</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="388"/>
+        <location filename="ScoreMenu.cpp" line="390"/>
         <source>Save ABC score</source>
         <translation>Enregistrer la partition ABC</translation>
     </message>
@@ -762,52 +768,52 @@ Voulez-vous quitter malgré tout ?</translation>
         <translation type="vanished">Veuillez sauvegarder la partition avant de l&apos;exporter.</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="413"/>
+        <location filename="ScoreMenu.cpp" line="415"/>
         <source>Export MIDI file</source>
         <translation>Exporter en fichier MIDI</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="413"/>
+        <location filename="ScoreMenu.cpp" line="415"/>
         <source>MIDI file (*.mid)</source>
         <translation>Fichier MIDI (*.mid)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="432"/>
+        <location filename="ScoreMenu.cpp" line="434"/>
         <source>Export WAV file</source>
         <translation>Exporter en fichier WAV</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="432"/>
+        <location filename="ScoreMenu.cpp" line="434"/>
         <source>WAV file (*.wav)</source>
         <translation>Fichier WAV (*.wav)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="456"/>
+        <location filename="ScoreMenu.cpp" line="458"/>
         <source>Export Postscript file</source>
         <translation>Exporter en fichier Postscript</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="456"/>
+        <location filename="ScoreMenu.cpp" line="458"/>
         <source>Postscript file (*.ps)</source>
         <translation>Fichier Postscript (*.ps)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="480"/>
+        <location filename="ScoreMenu.cpp" line="482"/>
         <source>Export PDF file</source>
         <translation>Exporter en fichier PDF</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="480"/>
+        <location filename="ScoreMenu.cpp" line="482"/>
         <source>PDF file (*.pdf)</source>
         <translation>Fichier PDF (*.pdf)</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="518"/>
+        <location filename="ScoreMenu.cpp" line="528"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="ScoreMenu.cpp" line="518"/>
+        <location filename="ScoreMenu.cpp" line="528"/>
         <source>Composer</source>
         <translation>Compositeur</translation>
     </message>
@@ -825,12 +831,11 @@ Voulez-vous quitter malgré tout ?</translation>
         <translation>Précédent</translation>
     </message>
     <message>
-        <location filename="ViewVSplitter.cpp" line="14"/>
         <source>Print</source>
-        <translation>Imprimer</translation>
+        <translation type="vanished">Imprimer</translation>
     </message>
     <message>
-        <location filename="ViewVSplitter.cpp" line="15"/>
+        <location filename="ViewVSplitter.cpp" line="14"/>
         <source>Next</source>
         <translation>Suivant</translation>
     </message>
