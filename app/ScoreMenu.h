@@ -38,6 +38,7 @@ protected slots:
     void onExportPdfActionTriggered();
     void onCloseActionTriggered();
     void onNewActionTriggered();
+    void onPrintActionTriggered();
 
 private:
     enum { MaxRecentFiles = 5 };

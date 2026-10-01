@@ -11,7 +11,6 @@
 ViewVSplitter::ViewVSplitter(QWidget* parent)
     : QSplitter(parent)
     , prev(QIcon::fromTheme("go-previous"), tr("Previous"), this)
-    , print(QIcon::fromTheme("document-print"), tr("Print"), this)
     , next(QIcon::fromTheme("go-next"), tr("Next"), this)
 {
     setOrientation(Qt::Vertical);
@@ -32,8 +31,6 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     pagesWidget.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     connect(&prev, &QPushButton::clicked, this, &ViewVSplitter::prevPageClicked);
     pageslayout.addWidget(&prev, 0, Qt::AlignLeft);
-    connect(&print, &QPushButton::clicked, this, &ViewVSplitter::printClicked);
-    pageslayout.addWidget(&print, 0, Qt::AlignCenter);
     connect(&next, &QPushButton::clicked, this, &ViewVSplitter::nextPageClicked);
     pageslayout.addWidget(&next, 0, Qt::AlignRight);
     pagesWidget.setLayout(&pageslayout);
@@ -50,8 +47,8 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     setCollapsible(1, false);
 
     prev.setEnabled(false);
-    print.setEnabled(false);
     next.setEnabled(false);
+    this->empty = true;
 }
 
 ViewVSplitter::~ViewVSplitter()
@@ -68,13 +65,13 @@ void ViewVSplitter::initBasename(const QString& orig, int x, const QString& tmpb
     currentpage = 0; /* invalidate */
     psWidget()->load(tmpdir + QDir::separator() + tmpbase + ".ps");
     lastpage = psWidget()->getNumberOfPages();
+    this->empty = false;
 }
 
 bool ViewVSplitter::gotoPage (int page) {
     if (page > 0 && page <= lastpage) {
         currentpage = page;
         psWidget()->displayPage(page -1);
-        print.setEnabled(true);
 
         if (page > 1)
             prev.setEnabled(true);
@@ -106,9 +103,9 @@ void ViewVSplitter::cleanup()
 {
     pswidget.displayPage(-1);
     prev.setEnabled(false);
-    print.setEnabled(false);
     next.setEnabled(false);
     pswidget.verticalScrollBar()->setSliderPosition(0);
+    this->empty = true;
 }
 
 void ViewVSplitter::resizeEvent(QResizeEvent* event) {
@@ -140,8 +137,11 @@ void ViewVSplitter::prevPageClicked()
     turnPage(-1);
 }
 
-void ViewVSplitter::printClicked()
+void ViewVSplitter::printScore()
 {
+    if (this->empty)
+        return;
+
     QPrinter printer(QPrinter::PrinterResolution);
     /* FIXME: HighResolution (1200 DPI) freeze main thread */
     printer.setResolution(300.); /* 300 DPI is enough */

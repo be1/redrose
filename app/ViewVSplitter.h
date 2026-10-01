@@ -16,7 +16,6 @@ public:
 
     ScorePsWidget* psWidget();
     QPushButton* prevButton() { return &prev; }
-    QPushButton* printButton() { return &print; }
     QPushButton* nextButton() { return &next; }
 
     /* orig: file path, x: tune field, tmpdir/tmpbase: temp ps path */
@@ -30,12 +29,13 @@ public:
 
     void cleanup();
 
+    void printScore();
+
 protected:
     void resizeEvent(QResizeEvent* event) override;
 
 protected slots:
     void prevPageClicked();
-    void printClicked();
     void nextPageClicked();
 
 private:
@@ -43,7 +43,6 @@ private:
     QWidget pagesWidget;
     QHBoxLayout pageslayout;
     QPushButton prev;
-    QPushButton print;
     QPushButton next;
 
     long currentpage = 0;
@@ -52,5 +51,6 @@ private:
     QString origname;
     QString basename;
     QString basedir;
+    bool empty = true;
 };
 #endif

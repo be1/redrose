@@ -52,9 +52,11 @@ ScoreMenu::ScoreMenu(QWidget* parent)
     exports->addAction(tr("Export to Postscript"), this, &ScoreMenu::onExportPsActionTriggered);
     exports->addAction(tr("Export to PDF"), this, &ScoreMenu::onExportPdfActionTriggered);
 #if (QT_VERSION < QT_VERSION_CHECK(6, 3, 0))
+    addAction(tr("Print"), this, &ScoreMenu::onPrintActionTriggered, QKeySequence::Print);
     addAction(tr("Close"), this, &ScoreMenu::onCloseActionTriggered, QKeySequence::Close);
     addAction(tr("Quit"), this, &ScoreMenu::onQuitActionTriggered, QKeySequence::Quit);
 #else
+    addAction(tr("Print"), QKeySequence::Print, this, &ScoreMenu::onPrintActionTriggered);
     addAction(tr("Close"), QKeySequence::Close, this, &ScoreMenu::onCloseActionTriggered);
     addAction(tr("Quit"), QKeySequence::Quit, this, &ScoreMenu::onQuitActionTriggered);
 #endif
@@ -482,6 +484,14 @@ void ScoreMenu::onExportPdfActionTriggered()
         return; /* cancelled */
 
     ew->editVBoxLayout()->exportPDF(fileName);
+}
+
+void ScoreMenu::onPrintActionTriggered()
+{
+    AbcApplication* a = static_cast<AbcApplication*>(qApp);
+    AbcMainWindow* w = a->mainWindow();
+    ViewVSplitter* view = w->mainHSplitter()->viewWidget();
+    view->printScore();
 }
 
 void ScoreMenu::onCloseActionTriggered()
