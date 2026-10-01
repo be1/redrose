@@ -29,10 +29,16 @@ ViewVSplitter::ViewVSplitter(QWidget* parent)
     /* configure the pages buttons */
     pagesWidget.setMinimumHeight(210);
     pagesWidget.setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
     connect(&prev, &QPushButton::clicked, this, &ViewVSplitter::prevPageClicked);
     pageslayout.addWidget(&prev, 0, Qt::AlignLeft);
+
+    page_nr.setText("0/0");
+    pageslayout.addWidget(&page_nr, 0, Qt::AlignCenter);
+
     connect(&next, &QPushButton::clicked, this, &ViewVSplitter::nextPageClicked);
     pageslayout.addWidget(&next, 0, Qt::AlignRight);
+
     pagesWidget.setLayout(&pageslayout);
     pagesWidget.setFixedHeight(pageslayout.sizeHint().height());
 
@@ -70,6 +76,8 @@ void ViewVSplitter::initBasename(const QString& orig, int x, const QString& tmpb
 
 bool ViewVSplitter::gotoPage (int page) {
     if (page > 0 && page <= lastpage) {
+        page_nr.setText(QString::number(page) + "/" + QString::number(lastpage));
+
         currentpage = page;
         psWidget()->displayPage(page -1);
 
@@ -103,6 +111,7 @@ void ViewVSplitter::cleanup()
 {
     pswidget.displayPage(-1);
     prev.setEnabled(false);
+    page_nr.setText("0/0");
     next.setEnabled(false);
     pswidget.verticalScrollBar()->setSliderPosition(0);
     this->empty = true;

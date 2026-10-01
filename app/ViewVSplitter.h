@@ -5,6 +5,7 @@
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QLabel>
 
 class ViewVSplitter: public QSplitter
 {
@@ -43,6 +44,7 @@ private:
     QWidget pagesWidget;
     QHBoxLayout pageslayout;
     QPushButton prev;
+    QLabel page_nr;
     QPushButton next;
 
     long currentpage = 0;
