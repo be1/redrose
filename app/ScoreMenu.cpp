@@ -89,11 +89,8 @@ QMessageBox::StandardButton ScoreMenu::gracefulQuit()
 void ScoreMenu::onQuitActionTriggered()
 {
     AbcApplication* a = static_cast<AbcApplication*>(qApp);
-    EditTabWidget* tabs = a->mainWindow()->mainHSplitter()->editTabWidget();
-    if (QMessageBox::StandardButton::Yes == gracefulQuit()) {
-            tabs->removeTabs();
-            a->quit();
-    }
+    AbcMainWindow* w = a->mainWindow();
+    w->close();
 }
 
 void ScoreMenu::onOpenActionTriggered()
