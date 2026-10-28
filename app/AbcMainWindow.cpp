@@ -36,6 +36,8 @@ void AbcMainWindow::closeEvent(QCloseEvent* event)
         AbcApplication* a = static_cast<AbcApplication*>(qApp);
         EditTabWidget* tabs = a->mainWindow()->mainHSplitter()->editTabWidget();
         tabs->removeTabs();
+        /* explicitely quit app, for LogWindow may be opened */
+        a->quit();
         event->accept();
     } else {
         event->ignore();
